@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'slds_breakpoints.dart';
+
 /// SLDS type scale — Desktop and Mobile variants, per the Foundation
 /// Documentation spec (Google Sans, exact px/line-height/letter-spacing).
 ///
@@ -66,12 +68,9 @@ abstract final class SldsTypography {
     labelSmall: _style(fontSize: 11, lineHeight: 16, letterSpacing: 2.0, fontWeight: FontWeight.w500),
   );
 
-  /// Below this width, [mobile] is used; at or above it, [desktop].
-  static const double breakpoint = 600;
-
-  /// Picks [desktop] or [mobile] from the current [MediaQuery] width.
+  /// Picks [desktop] or [mobile] from the current [MediaQuery] width, per
+  /// [SldsBreakpoints].
   static TextTheme of(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    return width >= breakpoint ? desktop : mobile;
+    return SldsBreakpoints.isMobile(context) ? mobile : desktop;
   }
 }

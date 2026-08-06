@@ -29,12 +29,11 @@ class HomePage extends StatelessWidget {
                 BlocBuilder<ThemeModeCubit, ThemeMode>(
                   builder: (context, mode) {
                     return SldsButton(
-                       
                       label: mode == ThemeMode.light
                           ? 'Switch to dark'
                           : 'Switch to light',
                       onPressed: () => context.read<ThemeModeCubit>().toggle(),
-                      variant: SldsButtonVariant.secondary,
+                      variant: SldsButtonVariant.primary,
                     );
                   },
                 ),

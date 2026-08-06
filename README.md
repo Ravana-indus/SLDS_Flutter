@@ -2,17 +2,34 @@
 
 Flutter component library for **SLDS** — the design system for Sri Lanka's
 government digital services, maintained by GovTech Sri Lanka — plus a
-[Widgetbook](https://widgetbook.io) app for developing components in isolation.
+[Widgetbook](https://widgetbook.io) app for developing components in
+isolation, and an example app showing how to consume the library in a real
+Flutter app.
 
-## Layout
+## Repo layout
+
+This is a [Dart pub workspace](https://dart.dev/tools/pub/workspaces)
+managed with [Melos](https://melos.invertase.dev). Three packages, each a
+workspace member (listed in the root `pubspec.yaml`):
 
 ```
-packages/slds_components/   # the published package: tokens, theme, widgets
-widgetbook/                 # Widgetbook preview app (depends on slds_components)
+packages/slds_components/   # the published package: design tokens, theme, widgets, l10n
+widgetbook/                 # Widgetbook preview app — browse slds_components in isolation
+app/                         # example Flutter app — consumes slds_components, bloc + clean architecture
 ```
 
-This is a [Dart pub workspace](https://dart.dev/tools/pub/workspaces) managed
-with [Melos](https://melos.invertase.dev).
+`slds_components` has no dependency on the other two — `widgetbook` and
+`app` both depend on it via a workspace path dependency
+(`slds_components: {path: ../packages/slds_components}`), so local edits to
+the design system are picked up immediately by both without publishing.
+
+### app
+
+Example Flutter application demonstrating how a real app consumes
+`slds_components`. Structured with **Clean Architecture**
+(domain/data/presentation per feature) and **flutter_bloc** for state
+management. See [`app/README.md`](app/README.md) for the architecture
+breakdown and how to add a feature.
 
 ## Getting started
 
@@ -23,12 +40,27 @@ melos run widgetbook  # launch Widgetbook (Chrome)
 melos run test        # run tests in all packages
 ```
 
-## Adding a component
+To run the example app:
+
+```sh
+cd app
+flutter run           # pick a connected device/simulator, or -d chrome
+```
+
+## Adding a component (to slds_components)
 
 1. Add the widget under `packages/slds_components/lib/src/widgets/`, export it
    from `packages/slds_components/lib/slds_components.dart`.
 2. Add a `@widgetbook.UseCase` in `widgetbook/lib/use_cases/`.
 3. `melos run gen` to regenerate `main.directories.g.dart`.
+4. Use it from `app/` (or any consumer) via
+   `import 'package:slds_components/slds_components.dart';`.
+
+## Adding a feature (to app)
+
+See [`app/README.md`](app/README.md#adding-a-feature) — each feature gets
+its own `domain/` (business rules), `data/` (repositories, only if needed),
+and `presentation/` (bloc + pages) folders under `app/lib/features/<name>/`.
 
 ## Localization
 

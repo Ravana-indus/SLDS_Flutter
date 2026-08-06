@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/gen/slds_localizations.dart';
+import '../tokens/slds_breakpoints.dart';
 import '../tokens/slds_colors.dart';
 import 'slds_button.dart';
 
-/// SLDS icon-only button — same variant palette as [SldsButton], sized for
-/// a 44×44 minimum touch target per the SLDS mobile spec. Colors resolve
-/// from the ambient [Theme]'s [ColorScheme] (light/dark aware); pass
-/// [color] to override the accent for one instance.
+/// SLDS icon-only button — same variant palette as [SldsButton]. Colors
+/// resolve from the ambient [Theme]'s [ColorScheme] (light/dark aware);
+/// pass [color] to override the accent for one instance.
+///
+/// Touch target is 44×44 at/above [SldsBreakpoints.mobile], 52×52 below it
+/// (matching [SldsButton]'s mobile height).
 class SldsIconButton extends StatelessWidget {
   const SldsIconButton({
     super.key,
@@ -53,6 +56,7 @@ class SldsIconButton extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final base = _baseColor(context);
     final onBase = _onBaseColor(context);
+    final size = SldsBreakpoints.isMobile(context) ? 52.0 : 44.0;
 
     return IconButton(
       onPressed: _enabled ? onPressed : null,
@@ -67,7 +71,7 @@ class SldsIconButton extends StatelessWidget {
               ),
             )
           : Icon(icon),
-      constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+      constraints: BoxConstraints(minWidth: size, minHeight: size),
       style: IconButton.styleFrom(
         backgroundColor: _isFilled ? base : Colors.transparent,
         foregroundColor: _isFilled ? onBase : base,

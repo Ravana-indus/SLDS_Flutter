@@ -88,4 +88,30 @@ void main() {
     final style = tester.widget<FilledButton>(find.byType(FilledButton)).style!;
     expect(style.backgroundColor!.resolve({}), override);
   });
+
+  Future<void> setViewSize(WidgetTester tester, Size size) async {
+    tester.view.physicalSize = size;
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+  }
+
+  testWidgets('is full-width and 52px tall below the mobile breakpoint', (tester) async {
+    await setViewSize(tester, const Size(360, 800));
+
+    await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
+
+    final size = tester.getSize(find.byType(SldsButton));
+    expect(size.width, 360);
+    expect(size.height, 52);
+  });
+
+  testWidgets('is intrinsic-width and 44px tall at/above the mobile breakpoint', (tester) async {
+    await setViewSize(tester, const Size(1024, 800));
+
+    await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
+
+    final size = tester.getSize(find.byType(SldsButton));
+    expect(size.width, lessThan(1024));
+    expect(size.height, 44);
+  });
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/gen/slds_localizations.dart';
+import '../tokens/slds_breakpoints.dart';
 import '../tokens/slds_colors.dart';
 import '../tokens/slds_spacing.dart';
 
@@ -37,6 +38,9 @@ enum SldsButtonVariant {
 /// `MaterialApp` must include `SldsLocalizations.localizationsDelegates` /
 /// `.supportedLocales` (merge them into your own lists if you have other
 /// localized packages).
+///
+/// Sized per the SLDS action spec: 44px tall and intrinsic width at/above
+/// [SldsBreakpoints.mobile]; 52px tall and full-width below it.
 class SldsButton extends StatelessWidget {
   const SldsButton({
     super.key,
@@ -111,22 +115,31 @@ class SldsButton extends StatelessWidget {
   }
 
   Widget _styledButton(BuildContext context, Widget content) {
+    final isMobile = SldsBreakpoints.isMobile(context);
+    final height = isMobile ? 52.0 : 44.0;
     final style = _buildStyle(
       context,
       padding: const EdgeInsets.symmetric(horizontal: SldsSpacing.lg, vertical: SldsSpacing.md),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SldsSpacing.sm)),
+    ).copyWith(
+      minimumSize: WidgetStatePropertyAll(Size(isMobile ? double.infinity : 0, height)),
+      // Without this, Material pads the tap target to its own 48px a11y
+      // minimum regardless of minimumSize, overriding the 44px SLDS spec.
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
 
-    switch (variant) {
-      case SldsButtonVariant.primary:
-      case SldsButtonVariant.destructive:
-        return FilledButton(onPressed: _enabled ? onPressed : null, style: style, child: content);
-      case SldsButtonVariant.secondary:
-      case SldsButtonVariant.tertiary:
-        return OutlinedButton(onPressed: _enabled ? onPressed : null, style: style, child: content);
-      case SldsButtonVariant.text:
-        return TextButton(onPressed: _enabled ? onPressed : null, style: style, child: content);
-    }
+    final Widget button = switch (variant) {
+      SldsButtonVariant.primary ||
+      SldsButtonVariant.destructive =>
+        FilledButton(onPressed: _enabled ? onPressed : null, style: style, child: content),
+      SldsButtonVariant.secondary ||
+      SldsButtonVariant.tertiary =>
+        OutlinedButton(onPressed: _enabled ? onPressed : null, style: style, child: content),
+      SldsButtonVariant.text =>
+        TextButton(onPressed: _enabled ? onPressed : null, style: style, child: content),
+    };
+
+    return isMobile ? SizedBox(width: double.infinity, child: button) : button;
   }
 
   /// The resolved accent color: [color] override, else the token driven by

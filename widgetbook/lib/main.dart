@@ -29,6 +29,14 @@ class WidgetbookApp extends StatelessWidget {
           locales: SldsLocalizations.supportedLocales,
           localizationsDelegates: SldsLocalizations.localizationsDelegates,
         ),
+        // Web + "emulator" device sizes — iOS/Android/desktop presets, plus
+        // "None" for freeform responsive testing against the browser window.
+        ViewportAddon(Viewports.all),
+        AlignmentAddon(),
+        TextScaleAddon(),
+        GridAddon(),
+        InspectorAddon(),
+        ZoomAddon(),
       ],
     );
   }

@@ -10,4 +10,6 @@ export 'src/tokens/slds_typography.dart';
 export 'src/theme/slds_theme.dart';
 export 'src/widgets/slds_button.dart';
 export 'src/widgets/slds_card.dart';
+export 'src/widgets/slds_fab.dart';
 export 'src/widgets/slds_icon_button.dart';
+export 'src/widgets/slds_link_button.dart';

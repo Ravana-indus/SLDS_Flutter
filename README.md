@@ -115,7 +115,7 @@ selectable) — see `widgetbook/lib/main.dart`'s `MaterialThemeAddon`.
 
 ## Responsive type
 
-`SldsTypography.desktop`/`.mobile` swap at `SldsTypography.breakpoint` (600px
+`SldsTypography.desktop`/`.mobile` swap at `SldsBreakpoints.mobile` (600px
 width). Wrap `MaterialApp.builder` with `SldsResponsiveText` to have the
 active `TextTheme` follow window/screen width automatically:
 
@@ -133,3 +133,22 @@ Components resolve color from the ambient `Theme`'s `ColorScheme` by
 default (so they follow light/dark mode), but accept an optional `color`
 param to override the accent for one instance without forking the widget —
 e.g. `SldsButton(color: Colors.purple, ...)`.
+
+## Widgetbook toolbar
+
+`widgetbook/lib/main.dart` wires the full addon set, all in the toolbar at
+the top of the preview:
+
+- **Theme** — Light / Dark (`MaterialThemeAddon`, defaults to Light)
+- **Locale** — en / si / ta (`LocalizationAddon`)
+- **Viewport** — None (freeform, follows the browser/window) plus every
+  built-in iOS, Android, macOS, Windows, and Linux device preset
+  (`ViewportAddon(Viewports.all)`) — this is the "run on an emulator" view;
+  Widgetbook itself already runs as a normal web app (`flutter run -d chrome`
+  / `flutter build web`), so no separate web target was needed
+- **Alignment** — reposition the use-case within its canvas (`AlignmentAddon`)
+- **Text Scale** — simulate OS accessibility text-scaling, 0.5×–2.0×
+  (`TextScaleAddon`)
+- **Grid** — overlay a spacing/alignment grid (`GridAddon`)
+- **Inspector** — toggle Flutter's widget-inspector overlay (`InspectorAddon`)
+- **Zoom** — zoom the canvas in/out (`ZoomAddon`)

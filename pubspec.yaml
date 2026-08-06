@@ -10,6 +10,7 @@ dev_dependencies:
 workspace:
   - packages/slds_components
   - widgetbook
+  - app
 
 melos:
   name: slds_flutter

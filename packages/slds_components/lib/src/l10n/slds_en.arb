@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "loading": "Loading",
+  "@loading": {
+    "description": "Screen-reader label announced while an SldsButton/SldsIconButton is in its loading state."
+  }
+}

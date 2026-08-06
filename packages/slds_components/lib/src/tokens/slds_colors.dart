@@ -14,4 +14,12 @@ abstract final class SldsColors {
   static const onSurface = Color(0xFF1A1C1E);
   static const error = Color(0xFFBA1A1A);
   static const onError = Color(0xFFFFFFFF);
+
+  /// Outline/border color for outlined and ghost styles.
+  static const outline = Color(0xFF74777F);
+
+  /// Disabled-state opacity applied to fills, borders, and content alike —
+  /// matches Material's own disabled convention rather than inventing a
+  /// separate muted palette.
+  static const disabledOpacity = 0.38;
 }

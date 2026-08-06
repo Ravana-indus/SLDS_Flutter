@@ -1,0 +1,40 @@
+name: slds_flutter_workspace
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+dev_dependencies:
+  melos: ^7.3.0
+
+workspace:
+  - packages/slds_components
+  - widgetbook
+
+melos:
+  name: slds_flutter
+
+  scripts:
+    gen:
+      description: Run build_runner for Widgetbook use-case generation.
+      run: dart run build_runner build -d
+      exec:
+        concurrency: 1
+      packageFilters:
+        dirExists: lib/use_cases
+
+    widgetbook:
+      description: Launch the Widgetbook app.
+      run: flutter run -d chrome
+      exec:
+        concurrency: 1
+      packageFilters:
+        dirExists: lib/use_cases
+
+    test:
+      description: Run tests in all packages.
+      run: flutter test
+      exec:
+        concurrency: 1
+      packageFilters:
+        dirExists: test

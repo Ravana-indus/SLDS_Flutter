@@ -1,0 +1,19 @@
+# Dart/Flutter (workspace root; pub workspace resolves here too)
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+
+# Melos
+.melos_tool/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Claude Code local settings
+.claude/

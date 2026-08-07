@@ -78,6 +78,27 @@ void main() {
     expect(resolvedBackground, isNot(SldsColors.primary)); // dark seed differs from the light token
   });
 
+  for (final variant in [SldsButtonVariant.secondary, SldsButtonVariant.tertiary]) {
+    testWidgets('$variant is transparent in light mode', (tester) async {
+      await pump(tester, SldsButton(label: 'Continue', variant: variant, onPressed: () {}));
+      final style = tester.widget<OutlinedButton>(find.byType(OutlinedButton)).style!;
+      expect(style.backgroundColor!.resolve({}), isNull);
+    });
+
+    testWidgets('$variant is filled with a surface tone in dark mode', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: SldsTheme.dark(),
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          home: Scaffold(body: SldsButton(label: 'Continue', variant: variant, onPressed: () {})),
+        ),
+      );
+      final style = tester.widget<OutlinedButton>(find.byType(OutlinedButton)).style!;
+      expect(style.backgroundColor!.resolve({}), isNotNull);
+    });
+  }
+
   testWidgets('color override wins over the variant token', (tester) async {
     const override = Color(0xFF00FF00);
     await pump(

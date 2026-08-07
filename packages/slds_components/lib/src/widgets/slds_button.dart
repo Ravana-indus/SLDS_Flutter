@@ -163,10 +163,23 @@ class SldsButton extends StatelessWidget {
   }
 
   Color? _background(BuildContext context, Set<WidgetState> states) {
-    if (variant == SldsButtonVariant.secondary ||
-        variant == SldsButtonVariant.tertiary ||
-        variant == SldsButtonVariant.text) {
-      return null; // outlined/text styles stay transparent at rest
+    if (variant == SldsButtonVariant.text) {
+      return null; // text style stays transparent in both light and dark
+    }
+    if (variant == SldsButtonVariant.secondary || variant == SldsButtonVariant.tertiary) {
+      // Light mode: transparent-with-border. Dark mode: filled with a dark
+      // surface tone (per the SLDS dark-mode spec) — border stays too.
+      final theme = Theme.of(context);
+      if (theme.brightness == Brightness.light) return null;
+      final container = theme.colorScheme.surfaceContainerHighest;
+      if (states.contains(WidgetState.disabled)) {
+        return container.withValues(alpha: SldsColors.disabledOpacity);
+      }
+      if (states.contains(WidgetState.pressed)) return Color.lerp(container, Colors.white, 0.08);
+      if (states.contains(WidgetState.hovered) || states.contains(WidgetState.focused)) {
+        return Color.lerp(container, Colors.white, 0.04);
+      }
+      return container;
     }
     final base = _baseColor(context);
     if (states.contains(WidgetState.disabled)) {

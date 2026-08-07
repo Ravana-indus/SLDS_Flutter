@@ -10,6 +10,7 @@ void main() {
 }
 
 final _lightTheme = WidgetbookTheme(name: 'Light', data: SldsTheme.light());
+final _darkTheme = WidgetbookTheme(name: 'Dark', data: SldsTheme.dark());
 
 @widgetbook.App()
 class WidgetbookApp extends StatelessWidget {
@@ -20,7 +21,10 @@ class WidgetbookApp extends StatelessWidget {
     return Widgetbook.material(
       directories: directories,
       addons: [
-        MaterialThemeAddon(themes: [_lightTheme], initialTheme: _lightTheme), // Light only
+        MaterialThemeAddon(
+          themes: [_lightTheme, _darkTheme],
+          initialTheme: _lightTheme, // Widgetbook still opens in Light by default
+        ),
         LocalizationAddon(
           locales: SldsLocalizations.supportedLocales,
           localizationsDelegates: SldsLocalizations.localizationsDelegates,

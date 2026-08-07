@@ -13,3 +13,4 @@ export 'src/widgets/slds_card.dart';
 export 'src/widgets/slds_fab.dart';
 export 'src/widgets/slds_icon_button.dart';
 export 'src/widgets/slds_link_button.dart';
+export 'src/widgets/slds_text_field.dart';

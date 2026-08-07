@@ -3,7 +3,7 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsFab)
+@widgetbook.UseCase(name: 'Playground', type: SldsFab, path: '[Actions]')
 Widget buildSldsFabUseCase(BuildContext context) {
   final variant = context.knobs.object.dropdown<SldsButtonVariant>(
     label: 'Variant',

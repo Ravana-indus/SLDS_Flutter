@@ -43,7 +43,11 @@ class SldsLinkButton extends StatelessWidget {
           return base;
         }),
       ),
-      child: Text(label, style: const TextStyle(decoration: TextDecoration.underline)),
+      child: Text(
+        label,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(decoration: TextDecoration.underline),
+      ),
     );
   }
 }

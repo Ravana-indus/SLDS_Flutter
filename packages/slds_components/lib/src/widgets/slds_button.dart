@@ -86,7 +86,9 @@ class SldsButton extends StatelessWidget {
                 Icon(leadingIcon, size: 18),
                 const SizedBox(width: SldsSpacing.xs),
               ],
-              Text(label),
+              // Flexible so a long/translated label ellipsizes instead of
+              // overflowing past the button on a narrow phone.
+              Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
               if (trailingIcon != null) ...[
                 const SizedBox(width: SldsSpacing.xs),
                 Icon(trailingIcon, size: 18),

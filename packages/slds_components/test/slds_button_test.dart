@@ -114,4 +114,21 @@ void main() {
     expect(size.width, lessThan(1024));
     expect(size.height, 44);
   });
+
+  testWidgets('a long label ellipsizes instead of overflowing on a narrow phone', (tester) async {
+    await setViewSize(tester, const Size(320, 640)); // iPhone SE (1st gen) width
+
+    await pump(
+      tester,
+      SldsButton(
+        label: 'Continue to the next step of the application process',
+        trailingIcon: Icons.chevron_right,
+        onPressed: () {},
+      ),
+    );
+
+    expect(tester.takeException(), isNull); // no RenderFlex overflow error
+    final text = tester.widget<Text>(find.text('Continue to the next step of the application process'));
+    expect(text.overflow, TextOverflow.ellipsis);
+  });
 }

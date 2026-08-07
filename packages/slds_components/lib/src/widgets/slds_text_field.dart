@@ -85,7 +85,12 @@ class SldsTextField extends StatelessWidget {
           keyboardType: keyboardType,
           onChanged: onChanged,
           validator: validator,
-          style: Theme.of(context).textTheme.bodyLarge,
+          // The default '•' obscuring dot renders oversized at bodyLarge's
+          // 18px next to normal letters — a slightly smaller size keeps the
+          // obscured and revealed states visually balanced.
+          style: obscureText
+              ? Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 14)
+              : Theme.of(context).textTheme.bodyLarge,
           decoration: InputDecoration(
             hintText: hintText,
             prefixIcon: leadingIcon != null ? Icon(leadingIcon, size: 20) : null,

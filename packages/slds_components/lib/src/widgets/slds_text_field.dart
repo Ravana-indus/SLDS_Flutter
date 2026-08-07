@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../tokens/slds_colors.dart';
 import '../tokens/slds_spacing.dart';
@@ -22,11 +23,14 @@ class SldsTextField extends StatelessWidget {
     this.errorText,
     this.hintText,
     this.leadingIcon,
+    this.leadingWidget,
     this.trailingIcon,
+    this.trailingIconColor,
     this.onTrailingIconPressed,
     this.enabled = true,
     this.obscureText = false,
     this.keyboardType,
+    this.inputFormatters,
     this.onChanged,
     this.validator,
     this.color,
@@ -39,11 +43,20 @@ class SldsTextField extends StatelessWidget {
   final String? errorText;
   final String? hintText;
   final IconData? leadingIcon;
+
+  /// A full leading widget (e.g. a country-code prefix) — takes precedence
+  /// over [leadingIcon] when both are given.
+  final Widget? leadingWidget;
   final IconData? trailingIcon;
+
+  /// Overrides the trailing icon's color; defaults to [ColorScheme.onSurface]
+  /// (or [ColorScheme.error] while [errorText] is set).
+  final Color? trailingIconColor;
   final VoidCallback? onTrailingIconPressed;
   final bool enabled;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
 
@@ -83,6 +96,7 @@ class SldsTextField extends StatelessWidget {
           enabled: enabled,
           obscureText: obscureText,
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           onChanged: onChanged,
           validator: validator,
           // The default '•' obscuring dot renders oversized at bodyLarge's
@@ -93,10 +107,14 @@ class SldsTextField extends StatelessWidget {
               : Theme.of(context).textTheme.bodyLarge,
           decoration: InputDecoration(
             hintText: hintText,
-            prefixIcon: leadingIcon != null ? Icon(leadingIcon, size: 20) : null,
+            prefixIcon: leadingWidget != null
+                ? Center(widthFactor: 1, child: leadingWidget)
+                : (leadingIcon != null ? Icon(leadingIcon, size: 20) : null),
+            prefixIconConstraints:
+                leadingWidget != null ? const BoxConstraints(minWidth: 0) : null,
             suffixIcon: trailingIcon != null
                 ? IconButton(
-                    icon: Icon(trailingIcon, size: 20),
+                    icon: Icon(trailingIcon, size: 20, color: trailingIconColor),
                     onPressed: onTrailingIconPressed,
                   )
                 : null,

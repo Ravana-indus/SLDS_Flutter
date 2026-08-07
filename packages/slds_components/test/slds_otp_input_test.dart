@@ -1,0 +1,135 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:slds_components/slds_components.dart';
+
+void main() {
+  Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
+        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
+      );
+
+  testWidgets('renders `length` boxes, defaulting to 6', (tester) async {
+    await pump(tester, const SldsOtpInput());
+    expect(find.byType(TextField), findsNWidgets(6));
+  });
+
+  testWidgets('length can be overridden', (tester) async {
+    await pump(tester, const SldsOtpInput(length: 4));
+    expect(find.byType(TextField), findsNWidgets(4));
+  });
+
+  testWidgets('typing a digit advances focus to the next box', (tester) async {
+    await pump(tester, const SldsOtpInput(length: 4));
+    final fields = find.byType(TextField);
+
+    await tester.enterText(fields.at(0), '7');
+    await tester.pump();
+
+    expect(tester.widget<TextField>(fields.at(1)).focusNode!.hasFocus, isTrue);
+  });
+
+  testWidgets('onChanged fires with the joined code as digits are entered', (
+    tester,
+  ) async {
+    String? value;
+    await pump(
+      tester,
+      SldsOtpInput(length: 4, onChanged: (v) => value = v),
+    );
+    final fields = find.byType(TextField);
+
+    await tester.enterText(fields.at(0), '1');
+    await tester.pump();
+    expect(value, '1');
+
+    await tester.enterText(fields.at(1), '2');
+    await tester.pump();
+    expect(value, '12');
+  });
+
+  testWidgets('onCompleted fires once all boxes are filled', (tester) async {
+    String? completed;
+    await pump(
+      tester,
+      SldsOtpInput(length: 4, onCompleted: (v) => completed = v),
+    );
+    final fields = find.byType(TextField);
+
+    for (var i = 0; i < 4; i++) {
+      await tester.enterText(fields.at(i), '$i');
+      await tester.pump();
+    }
+
+    expect(completed, '0123');
+  });
+
+  testWidgets('pasting the full code distributes across all boxes', (
+    tester,
+  ) async {
+    String? value;
+    await pump(
+      tester,
+      SldsOtpInput(length: 4, onChanged: (v) => value = v),
+    );
+
+    await tester.enterText(find.byType(TextField).first, '1234');
+    await tester.pump();
+
+    expect(value, '1234');
+  });
+
+  testWidgets('error state colors every box border red', (tester) async {
+    await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
+    final theme = SldsTheme.light();
+
+    for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
+      final border = field.decoration!.enabledBorder as OutlineInputBorder;
+      expect(border.borderSide.color, theme.colorScheme.error);
+    }
+  });
+
+  testWidgets('success state colors every box border green', (tester) async {
+    await pump(tester, const SldsOtpInput(length: 4, success: true));
+
+    for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
+      final border = field.decoration!.enabledBorder as OutlineInputBorder;
+      expect(border.borderSide.color, Colors.green);
+    }
+  });
+
+  testWidgets('focused empty box shows a gold border and cursor', (
+    tester,
+  ) async {
+    await pump(tester, const SldsOtpInput(length: 4));
+    final theme = SldsTheme.light();
+
+    await tester.tap(find.byType(TextField).first);
+    await tester.pump();
+
+    final field = tester.widget<TextField>(find.byType(TextField).first);
+    final border = field.decoration!.enabledBorder as OutlineInputBorder;
+    expect(border.borderSide.color, theme.colorScheme.primary);
+    expect(field.cursorColor, theme.colorScheme.primary);
+  });
+
+  testWidgets('focus does not override error/success coloring', (
+    tester,
+  ) async {
+    await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
+    final theme = SldsTheme.light();
+
+    await tester.tap(find.byType(TextField).first);
+    await tester.pump();
+
+    final field = tester.widget<TextField>(find.byType(TextField).first);
+    final border = field.decoration!.enabledBorder as OutlineInputBorder;
+    expect(border.borderSide.color, theme.colorScheme.error);
+  });
+
+  testWidgets('disabled boxes cannot be edited', (tester) async {
+    await pump(tester, const SldsOtpInput(length: 4, enabled: false));
+
+    for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
+      expect(field.enabled, isFalse);
+    }
+  });
+}

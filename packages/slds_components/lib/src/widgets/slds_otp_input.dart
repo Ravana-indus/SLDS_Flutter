@@ -4,18 +4,32 @@ import 'package:flutter/services.dart';
 import '../tokens/slds_colors.dart';
 import '../tokens/slds_spacing.dart';
 
+/// Fixed box dimensions for [SldsOtpInput], per the SLDS spec's size scale.
+enum SldsOtpInputSize {
+  large(width: 56, height: 80),
+  medium(width: 48, height: 68),
+  small(width: 44, height: 60);
+
+  const SldsOtpInputSize({required this.width, required this.height});
+
+  final double width;
+  final double height;
+}
+
 /// SLDS OTP (one-time-passcode) input — a row of single-digit boxes that
 /// auto-advances focus as the user types, supports pasting the full code,
-/// and colors each box by state: empty (outline), filled (primary),
-/// [errorText] set (error, all boxes), [success] (green, all boxes).
+/// and colors each box by state: empty (outline), active/focused (gold
+/// border), filled (outline, black digit), [errorText] set (red border,
+/// black digit), [success] (green border + digit), disabled (dimmed).
 ///
-/// Responsive by construction — each box is an [Expanded] cell in a [Row],
-/// so the whole control scales to its parent's width instead of a fixed
-/// pixel grid; wrap it in a [SizedBox]/constrained parent to cap its width.
+/// Boxes are a fixed size from [SldsOtpInputSize] (large/medium/small) per
+/// the design spec, rather than stretching to fill the parent — pick the
+/// size that fits the breakpoint you're rendering at.
 class SldsOtpInput extends StatefulWidget {
   const SldsOtpInput({
     super.key,
     this.length = 6,
+    this.size = SldsOtpInputSize.large,
     this.onChanged,
     this.onCompleted,
     this.errorText,
@@ -27,13 +41,17 @@ class SldsOtpInput extends StatefulWidget {
   /// Number of digit boxes. Defaults to 6.
   final int length;
 
+  /// Box dimensions. Defaults to [SldsOtpInputSize.large].
+  final SldsOtpInputSize size;
+
   /// Called with the current joined digits on every change.
   final ValueChanged<String>? onChanged;
 
   /// Called once with the full code when all [length] boxes are filled.
   final ValueChanged<String>? onCompleted;
 
-  /// Non-null/non-empty colors every box red, per SLDS error convention.
+  /// Non-null/non-empty colors every box's border red, per SLDS error
+  /// convention — the digit itself stays normal ink.
   final String? errorText;
 
   /// Colors every box green — set once the caller has verified the code.
@@ -142,12 +160,14 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    return Row(
+    // Wrap (not Row+Expanded) — boxes are a fixed [widget.size], so at
+    // narrow widths (mobile) the row wraps onto a second line instead of
+    // overflowing or squeezing the boxes out of spec.
+    return Wrap(
+      spacing: SldsSpacing.sm,
+      runSpacing: SldsSpacing.sm,
       children: [
-        for (var i = 0; i < widget.length; i++) ...[
-          if (i > 0) const SizedBox(width: SldsSpacing.sm),
-          Expanded(child: _buildBox(context, scheme, i)),
-        ],
+        for (var i = 0; i < widget.length; i++) _buildBox(context, scheme, i),
       ],
     );
   }
@@ -162,8 +182,9 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
       borderColor = scheme.outline.withValues(alpha: SldsColors.disabledOpacity);
       textColor = scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
     } else if (_hasError) {
+      // Only the border goes red — the digit itself stays normal ink.
       borderColor = scheme.error;
-      textColor = scheme.error;
+      textColor = scheme.onSurface;
     } else if (widget.success) {
       borderColor = Colors.green;
       textColor = Colors.green;
@@ -177,8 +198,12 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
       textColor = scheme.onSurface;
     }
 
-    return AspectRatio(
-      aspectRatio: 112 / 154, // matches the reference design's box proportions
+    final radius = widget.size.width / 3.5; // scales with box size, ~16 at large
+    final fontSize = widget.size.width / 2.5; // ~22 at large, ~18 at small
+
+    return SizedBox(
+      width: widget.size.width,
+      height: widget.size.height,
       child: KeyboardListener(
         focusNode: FocusNode(skipTraversal: true),
         onKeyEvent: (event) => _onKey(index, event),
@@ -193,6 +218,7 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
           cursorColor: borderColor,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: textColor,
+                fontSize: fontSize,
                 fontWeight: FontWeight.w600,
               ),
           decoration: InputDecoration(
@@ -201,15 +227,15 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
             fillColor: widget.enabled ? scheme.surface : scheme.onSurface.withValues(alpha: 0.04),
             contentPadding: EdgeInsets.zero,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(SldsSpacing.lg),
+              borderRadius: BorderRadius.circular(radius),
               borderSide: BorderSide(color: borderColor),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(SldsSpacing.lg),
+              borderRadius: BorderRadius.circular(radius),
               borderSide: BorderSide(color: borderColor),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(SldsSpacing.lg),
+              borderRadius: BorderRadius.circular(radius),
               borderSide: BorderSide(color: borderColor, width: 2),
             ),
           ),

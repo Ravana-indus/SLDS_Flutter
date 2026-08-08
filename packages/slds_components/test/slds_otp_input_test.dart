@@ -77,14 +77,31 @@ void main() {
     expect(value, '1234');
   });
 
-  testWidgets('error state colors every box border red', (tester) async {
+  testWidgets('error state colors every box border red but keeps digits black', (
+    tester,
+  ) async {
     await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
     final theme = SldsTheme.light();
 
     for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
       final border = field.decoration!.enabledBorder as OutlineInputBorder;
       expect(border.borderSide.color, theme.colorScheme.error);
+      expect(field.style?.color, theme.colorScheme.onSurface);
     }
+  });
+
+  testWidgets('size controls box dimensions, defaulting to large (56x80)', (
+    tester,
+  ) async {
+    await pump(tester, const SldsOtpInput(length: 2));
+    var box = tester.widget<SizedBox>(find.byType(SizedBox).first);
+    expect(box.width, 56);
+    expect(box.height, 80);
+
+    await pump(tester, const SldsOtpInput(length: 2, size: SldsOtpInputSize.small));
+    box = tester.widget<SizedBox>(find.byType(SizedBox).first);
+    expect(box.width, 44);
+    expect(box.height, 60);
   });
 
   testWidgets('success state colors every box border green', (tester) async {

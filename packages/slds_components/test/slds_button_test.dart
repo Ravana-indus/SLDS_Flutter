@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
@@ -46,7 +47,7 @@ void main() {
       SldsButton(label: 'Continue', isLoading: true, onPressed: () => tapped = true),
     );
 
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(CupertinoActivityIndicator), findsOneWidget);
     expect(find.text('Continue'), findsNothing);
 
     await tester.tap(find.byType(FilledButton), warnIfMissed: false);

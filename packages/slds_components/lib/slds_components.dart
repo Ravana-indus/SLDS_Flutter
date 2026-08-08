@@ -24,3 +24,4 @@ export 'src/widgets/slds_radio.dart';
 export 'src/widgets/slds_text_area.dart';
 export 'src/widgets/slds_text_field.dart';
 export 'src/widgets/slds_toggle.dart';
+export 'src/widgets/slds_upload_field.dart';

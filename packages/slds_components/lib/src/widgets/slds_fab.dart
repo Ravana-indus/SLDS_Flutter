@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/gen/slds_localizations.dart';
@@ -69,10 +70,7 @@ class SldsFab extends StatelessWidget {
             child: SizedBox(
               width: 20,
               height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation(_isFilled ? onBase : base),
-              ),
+              child: CupertinoActivityIndicator(color: _isFilled ? onBase : base),
             ),
           )
         : Icon(icon, color: _isFilled ? onBase : base);

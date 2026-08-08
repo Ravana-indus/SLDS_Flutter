@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/gen/slds_localizations.dart';
@@ -65,10 +66,7 @@ class SldsIconButton extends StatelessWidget {
           ? SizedBox(
               width: 18,
               height: 18,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation(_isFilled ? onBase : base),
-              ),
+              child: CupertinoActivityIndicator(color: _isFilled ? onBase : base),
             )
           : Icon(icon),
       constraints: BoxConstraints(minWidth: size, minHeight: size),

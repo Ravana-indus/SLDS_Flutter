@@ -1,322 +1,325 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_colors.dart';
-import '../tokens/slds_spacing.dart';
-import 'slds_checkbox.dart';
+import '../theme/slds_tokens.dart';
+import 'slds_focus.dart';
 
-/// SLDS multi-select combo box — like [SldsDropdown] but [value] is a
-/// `List<T>`: the closed field shows each selection as a removable chip
-/// (wrapping onto new lines as more are picked), and the panel's option
-/// list rows carry checkboxes instead of a single highlighted row.
+/// Figma states for [SldsComboBox], matching node `543:5821`.
+enum SldsComboBoxState { defaultState, filling, multiSelect, inputExpanded }
+
+/// A controlled, filterable single- or multi-select combo box.
 ///
-/// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
-/// aware); pass [color] to override the focus/accent color for one instance.
-class SldsComboBox<T> extends StatefulWidget {
+/// [selectedValues] and [onSelectionChanged] form the component contract; no
+/// option list or selected copy is hardcoded into the design-system package.
+class SldsComboBox extends StatefulWidget {
+  /// Creates an SLDS combo box.
   const SldsComboBox({
     super.key,
     required this.label,
-    required this.items,
-    required this.itemLabel,
-    this.value = const [],
-    this.onChanged,
-    this.isRequired = false,
-    this.helpText,
-    this.errorText,
-    this.hintText = 'Select district',
-    this.searchHintText = 'Search',
-    this.enabled = true,
-    this.color,
+    required this.placeholder,
+    required this.options,
+    required this.selectedValues,
+    required this.onSelectionChanged,
+    this.helperText,
+    this.required = true,
+    this.multiple = false,
+    this.visualState,
+    this.width,
+    this.semanticLabel,
+    this.clearSelectionSemanticLabel,
   });
 
+  /// Visible field label.
   final String label;
 
-  /// The full option list; [searchHintText]'s search box filters this by
-  /// [itemLabel] client-side (case-insensitive substring match).
-  final List<T> items;
-  final String Function(T item) itemLabel;
-  final List<T> value;
-  final ValueChanged<List<T>>? onChanged;
-  final bool isRequired;
-  final String? helpText;
-  final String? errorText;
-  final String hintText;
-  final String searchHintText;
-  final bool enabled;
+  /// Localized input hint.
+  final String placeholder;
 
-  /// Overrides the token-driven focus/accent color for this instance only.
-  final Color? color;
+  /// Application-owned option labels.
+  final List<String> options;
+
+  /// Currently selected option labels.
+  final List<String> selectedValues;
+
+  /// Reports the next controlled selection list.
+  final ValueChanged<List<String>> onSelectionChanged;
+
+  /// Optional supporting guidance.
+  final String? helperText;
+
+  /// Whether to display the required marker.
+  final bool required;
+
+  /// Enables Figma multi-select chip behavior.
+  final bool multiple;
+
+  /// Forced Figma state for documentation and visual tests.
+  final SldsComboBoxState? visualState;
+
+  /// Preferred width, clamped to parent constraints.
+  final double? width;
+
+  /// Accessible name for the editable filter field.
+  final String? semanticLabel;
+
+  /// Optional accessible text for a chip removal button.
+  final String? clearSelectionSemanticLabel;
 
   @override
-  State<SldsComboBox<T>> createState() => _SldsComboBoxState<T>();
+  State<SldsComboBox> createState() => _SldsComboBoxState();
 }
 
-class _SldsComboBoxState<T> extends State<SldsComboBox<T>> {
+class _SldsComboBoxState extends State<SldsComboBox> {
+  final _controller = TextEditingController();
+  final _focusNode = FocusNode(debugLabel: 'SldsComboBox');
   bool _open = false;
-  String _query = '';
-  final _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_refresh);
+    _focusNode.addListener(_refresh);
+  }
+
+  void _refresh() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    _controller
+      ..removeListener(_refresh)
+      ..dispose();
+    _focusNode
+      ..removeListener(_refresh)
+      ..dispose();
     super.dispose();
   }
 
-  bool get _hasError => widget.errorText != null && widget.errorText!.isNotEmpty;
-
-  List<T> get _filtered {
-    if (_query.isEmpty) return widget.items;
-    final q = _query.toLowerCase();
-    return widget.items.where((i) => widget.itemLabel(i).toLowerCase().contains(q)).toList();
-  }
-
-  void _toggleOpen() {
-    if (!widget.enabled) return;
-    setState(() {
-      _open = !_open;
-      if (!_open) {
-        _query = '';
-        _searchController.clear();
+  void _select(String option) {
+    final next = List<String>.of(widget.selectedValues);
+    if (widget.multiple) {
+      if (next.contains(option)) {
+        next.remove(option);
+      } else {
+        next.add(option);
       }
-    });
-  }
-
-  void _toggleItem(T item) {
-    final next = List<T>.from(widget.value);
-    if (next.contains(item)) {
-      next.remove(item);
     } else {
-      next.add(item);
+      next
+        ..clear()
+        ..add(option);
+      _controller.clear();
+      _open = false;
     }
-    widget.onChanged?.call(next);
+    widget.onSelectionChanged(next);
   }
 
-  void _remove(T item) {
-    final next = List<T>.from(widget.value)..remove(item);
-    widget.onChanged?.call(next);
+  void _remove(String value) {
+    final next = List<String>.of(widget.selectedValues)..remove(value);
+    widget.onSelectionChanged(next);
   }
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final accent = widget.color ?? scheme.primary;
+    final tokens = context.slds;
+    final dimensions = tokens.dimensions;
+    final colors = tokens.colors;
+    final forcedOpen = widget.visualState == SldsComboBoxState.filling ||
+        widget.visualState == SldsComboBoxState.multiSelect ||
+        widget.visualState == SldsComboBoxState.inputExpanded;
+    final expanded = widget.visualState == SldsComboBoxState.inputExpanded ||
+        (widget.visualState == null && widget.selectedValues.length > 2);
+    final focused = _focusNode.hasFocus ||
+        widget.visualState == SldsComboBoxState.filling ||
+        widget.visualState == SldsComboBoxState.inputExpanded;
+    final displayChips = widget.multiple && widget.selectedValues.isNotEmpty;
+    final fieldHeight = expanded ? null : dimensions.inputHeight;
+    final query = _controller.text.toLowerCase();
+    final filtered = widget.options
+        .where((option) => option.toLowerCase().contains(query))
+        .toList(growable: false);
 
-    final borderColor = !widget.enabled
-        ? scheme.outline.withValues(alpha: SldsColors.disabledOpacity)
-        : _hasError
-            ? scheme.error
-            : (_open ? accent : scheme.outline);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text.rich(
-          TextSpan(
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(color: scheme.onSurface),
-            children: [
-              TextSpan(text: widget.label),
-              if (widget.isRequired) TextSpan(text: ' *', style: TextStyle(color: scheme.error)),
-            ],
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: SldsSpacing.xs),
-        InkWell(
-          onTap: _toggleOpen,
-          borderRadius: BorderRadius.circular(SldsSpacing.sm),
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 48),
-            padding: const EdgeInsets.symmetric(
-              horizontal: SldsSpacing.md,
-              vertical: SldsSpacing.sm,
-            ),
-            decoration: BoxDecoration(
-              color: widget.enabled ? scheme.surface : scheme.onSurface.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(SldsSpacing.sm),
-              border: Border.all(color: borderColor, width: _open ? 2 : 1),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: widget.value.isEmpty
-                      ? Text(
-                          widget.hintText,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: scheme.onSurface.withValues(alpha: 0.5),
-                              ),
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      : Wrap(
-                          spacing: SldsSpacing.xs,
-                          runSpacing: SldsSpacing.xs,
-                          children: [
-                            for (final item in widget.value)
-                              _SelectedChip(
-                                label: widget.itemLabel(item),
-                                enabled: widget.enabled,
-                                onRemove: () => _remove(item),
-                              ),
-                          ],
-                        ),
-                ),
-                Icon(
-                  _open ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  size: 20,
-                  color: widget.enabled
-                      ? scheme.onSurface
-                      : scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity),
-                ),
-              ],
-            ),
-          ),
-        ),
-        if (_open) ...[
-          const SizedBox(height: SldsSpacing.sm),
+    return LayoutBuilder(builder: (context, constraints) {
+      const referenceWidth = 361.0;
+      final desired = widget.width ?? referenceWidth;
+      final width = constraints.hasBoundedWidth
+          ? desired.clamp(0.0, constraints.maxWidth).toDouble()
+          : desired;
+      return SizedBox(
+        width: width,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            Flexible(
+                child: Text(widget.label,
+                    style: tokens.typography.fieldLabel
+                        .copyWith(color: colors.inputLabel))),
+            if (widget.required)
+              Text('*',
+                  style: tokens.typography.fieldLabel
+                      .copyWith(color: colors.inputBorderError)),
+          ]),
+          SizedBox(height: dimensions.space4),
           Container(
+            constraints: fieldHeight == null
+                ? const BoxConstraints(minHeight: 52)
+                : BoxConstraints.tightFor(height: fieldHeight),
+            padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
             decoration: BoxDecoration(
-              color: scheme.surface,
-              borderRadius: BorderRadius.circular(SldsSpacing.sm),
-              border: Border.all(color: scheme.outline),
+              color: colors.surfaceCard,
+              border: Border.all(
+                color: focused
+                    ? colors.inputBorderFocused
+                    : colors.inputBorderDefault,
+                width: focused
+                    ? dimensions.emphasizedBorderWidth
+                    : dimensions.controlBorderWidth,
+              ),
+              borderRadius: BorderRadius.circular(dimensions.radius2xl),
+              boxShadow: focused ? sldsFocusRing(tokens) : null,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(SldsSpacing.sm),
-                  child: TextField(
-                    controller: _searchController,
-                    autofocus: true,
-                    onChanged: (v) => setState(() => _query = v),
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    decoration: InputDecoration(
-                      hintText: widget.searchHintText,
-                      prefixIcon: Icon(Icons.search, size: 20, color: scheme.onSurface.withValues(alpha: 0.5)),
-                      isDense: true,
-                      filled: true,
-                      fillColor: scheme.surface,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: SldsSpacing.md,
-                        vertical: SldsSpacing.sm,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(SldsSpacing.sm),
-                        borderSide: BorderSide(color: scheme.outline),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(SldsSpacing.sm),
-                        borderSide: BorderSide(color: scheme.outline),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(SldsSpacing.sm),
-                        borderSide: BorderSide(color: accent),
-                      ),
-                    ),
-                  ),
-                ),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 240),
-                  child: _filtered.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.all(SldsSpacing.lg),
-                          child: Text(
-                            'No results',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: scheme.onSurface.withValues(alpha: 0.5),
-                                ),
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Expanded(
+                child: displayChips
+                    ? Wrap(
+                        spacing: 10,
+                        runSpacing: 6,
+                        children: [
+                          for (final value in widget.selectedValues)
+                            _SelectionChip(
+                              value: value,
+                              semanticLabel: widget.clearSelectionSemanticLabel,
+                              onRemove: () => _remove(value),
+                            ),
+                          SizedBox(
+                            width: expanded ? 48 : 28,
+                            child: TextField(
+                              controller: _controller,
+                              focusNode: _focusNode,
+                              onTap: () => setState(() => _open = true),
+                              decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.zero),
+                            ),
                           ),
-                        )
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: _filtered.length,
-                          itemBuilder: (context, index) {
-                            final item = _filtered[index];
-                            final selected = widget.value.contains(item);
-                            return InkWell(
-                              onTap: () => _toggleItem(item),
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: SldsSpacing.md,
-                                  vertical: SldsSpacing.md,
-                                ),
-                                color: selected ? scheme.onSurface.withValues(alpha: 0.06) : null,
-                                child: Row(
-                                  children: [
-                                    SldsCheckbox(
-                                      value: selected,
-                                      onChanged: (_) => _toggleItem(item),
-                                      size: SldsCheckboxSize.small,
-                                      color: widget.color,
-                                    ),
-                                    const SizedBox(width: SldsSpacing.sm),
-                                    Text(
-                                      widget.itemLabel(item),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(color: scheme.onSurface),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                        ],
+                      )
+                    : Semantics(
+                        textField: true,
+                        label: widget.semanticLabel ?? widget.label,
+                        child: TextField(
+                          controller: _controller,
+                          focusNode: _focusNode,
+                          onTap: () => setState(() => _open = true),
+                          style: tokens.typography.body1,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 8),
+                            hintText: widget.selectedValues.isEmpty
+                                ? widget.placeholder
+                                : widget.selectedValues.first,
+                            hintStyle: tokens.typography.body1
+                                .copyWith(color: colors.inputPlaceholder),
+                          ),
                         ),
+                      ),
+              ),
+              IconButton(
+                onPressed: () => setState(() => _open = !_open),
+                icon: Icon(_open || forcedOpen
+                    ? Icons.keyboard_arrow_up
+                    : Icons.keyboard_arrow_down),
+                iconSize: 20,
+                constraints:
+                    const BoxConstraints.tightFor(width: 36, height: 36),
+                padding: EdgeInsets.zero,
+              ),
+            ]),
+          ),
+          if (widget.helperText != null) ...[
+            SizedBox(height: dimensions.space6),
+            Text(widget.helperText!,
+                style: tokens.typography.caption1
+                    .copyWith(color: colors.inputHelper)),
+          ],
+          if (_open || forcedOpen) ...[
+            const SizedBox(height: 4),
+            Material(
+              color: colors.surfacePage,
+              borderRadius: BorderRadius.circular(dimensions.radius3xl),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 240),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: filtered.length,
+                  itemBuilder: (context, index) {
+                    final option = filtered[index];
+                    final selected = widget.selectedValues.contains(option);
+                    return Semantics(
+                      button: true,
+                      selected: selected,
+                      label: option,
+                      child: InkWell(
+                        onTap: () => _select(option),
+                        child: SizedBox(
+                          height: 38,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(children: [
+                              Expanded(
+                                  child: Text(option,
+                                      style: tokens.typography.body2)),
+                              if (selected) const Icon(Icons.check, size: 16),
+                            ]),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
-        if (_hasError || (widget.helpText != null && widget.helpText!.isNotEmpty)) ...[
-          const SizedBox(height: SldsSpacing.xs),
-          Text(
-            _hasError ? widget.errorText! : widget.helpText!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: _hasError
-                      ? scheme.error
-                      : scheme.onSurface.withValues(alpha: widget.enabled ? 0.6 : SldsColors.disabledOpacity),
-                ),
-          ),
-        ],
-      ],
-    );
+          ],
+        ]),
+      );
+    });
   }
 }
 
-class _SelectedChip extends StatelessWidget {
-  const _SelectedChip({required this.label, required this.enabled, required this.onRemove});
+class _SelectionChip extends StatelessWidget {
+  const _SelectionChip({
+    required this.value,
+    required this.semanticLabel,
+    required this.onRemove,
+  });
 
-  final String label;
-  final bool enabled;
+  final String value;
+  final String? semanticLabel;
   final VoidCallback onRemove;
 
   @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: SldsSpacing.sm, vertical: 2),
-      decoration: BoxDecoration(
-        color: scheme.onSurface.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(SldsSpacing.xs),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: enabled ? scheme.onSurface : scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity),
-                ),
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
+        decoration: BoxDecoration(
+          color: context.slds.colors.badgeNeutralBackground,
+          borderRadius: BorderRadius.circular(9999),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(value, style: context.slds.typography.body1),
+          Semantics(
+            container: true,
+            excludeSemantics: true,
+            button: true,
+            label: semanticLabel == null ? value : '$semanticLabel $value',
+            child: InkWell(
+              onTap: onRemove,
+              child: const SizedBox(
+                  width: 20, height: 20, child: Icon(Icons.close, size: 16)),
+            ),
           ),
-          const SizedBox(width: 4),
-          GestureDetector(
-            onTap: enabled ? onRemove : null,
-            child: Icon(Icons.close, size: 14, color: scheme.onSurface.withValues(alpha: 0.6)),
-          ),
-        ],
-      ),
-    );
-  }
+        ]),
+      );
 }

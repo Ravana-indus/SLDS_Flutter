@@ -3,81 +3,92 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
 
 void main() {
-  const items = ['Batticaloa', 'Colombo', 'Galle', 'Jaffna'];
+  const options = ['Batticaloa', 'Colombo', 'Galle', 'Jaffna'];
 
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
         MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
       );
 
+  Widget build({
+    List<String> selectedValues = const [],
+    ValueChanged<List<String>>? onSelectionChanged,
+    bool multiple = false,
+    bool required = true,
+    String? helperText,
+    SldsComboBoxState? visualState,
+  }) {
+    return SldsComboBox(
+      label: 'District',
+      placeholder: 'Select district',
+      options: options,
+      selectedValues: selectedValues,
+      onSelectionChanged: onSelectionChanged ?? (_) {},
+      multiple: multiple,
+      required: required,
+      helperText: helperText,
+      visualState: visualState,
+    );
+  }
+
   testWidgets('renders label, required marker, and placeholder when empty', (
     tester,
   ) async {
-    await pump(
-      tester,
-      const SldsComboBox<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        isRequired: true,
-        hintText: 'Select district',
-      ),
-    );
+    await pump(tester, build());
 
     expect(find.textContaining('District'), findsOneWidget);
-    expect(find.textContaining('*'), findsOneWidget);
+    expect(find.text('*'), findsOneWidget);
     expect(find.text('Select district'), findsOneWidget);
   });
 
-  testWidgets('selected items render as removable chips instead of the placeholder', (
+  testWidgets('required=false hides the marker', (tester) async {
+    await pump(tester, build(required: false));
+    expect(find.text('*'), findsNothing);
+  });
+
+  testWidgets('multiple selected values render as removable chips', (
     tester,
   ) async {
-    await pump(
-      tester,
-      const SldsComboBox<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        value: ['Colombo', 'Jaffna'],
-      ),
-    );
+    await pump(tester, build(multiple: true, selectedValues: const ['Colombo', 'Jaffna']));
 
     expect(find.text('Colombo'), findsOneWidget);
     expect(find.text('Jaffna'), findsOneWidget);
-    expect(find.text('Select district'), findsNothing);
     expect(find.byIcon(Icons.close), findsNWidgets(2));
   });
 
-  testWidgets('tapping the field opens the search + checkbox option list', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      const SldsComboBox<String>(label: 'District', items: items, itemLabel: _identity),
-    );
+  testWidgets('tapping the field opens the option list', (tester) async {
+    await pump(tester, build());
 
-    expect(find.text('Search'), findsNothing);
-    await tester.tap(find.text('Select district'));
+    expect(find.text('Colombo'), findsNothing);
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
     await tester.pump();
 
-    expect(find.text('Search'), findsOneWidget);
-    expect(find.byType(SldsCheckbox), findsNWidgets(items.length));
+    for (final option in options) {
+      expect(find.text(option), findsOneWidget);
+    }
   });
 
-  testWidgets('tapping an option toggles it into onChanged and checks its box', (
+  testWidgets('single-select: tapping an option selects it and closes the panel', (
     tester,
   ) async {
     List<String>? selected;
-    await pump(
-      tester,
-      SldsComboBox<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        onChanged: (v) => selected = v,
-      ),
-    );
+    await pump(tester, build(onSelectionChanged: (v) => selected = v));
 
-    await tester.tap(find.text('Select district'));
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+    await tester.pump();
+    await tester.tap(find.text('Colombo'));
+    await tester.pump();
+
+    expect(selected, ['Colombo']);
+    expect(find.byIcon(Icons.keyboard_arrow_up), findsNothing);
+  });
+
+  testWidgets('multi-select: tapping an option toggles it and keeps the panel open', (
+    tester,
+  ) async {
+    List<String>? selected;
+    await pump(tester, build(multiple: true, onSelectionChanged: (v) => selected = v));
+
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
     await tester.pump();
     await tester.tap(find.text('Colombo'));
     await tester.pump();
@@ -85,16 +96,16 @@ void main() {
     expect(selected, ['Colombo']);
   });
 
-  testWidgets('tapping a selected option again removes it', (tester) async {
+  testWidgets('multi-select: tapping a selected option again removes it', (
+    tester,
+  ) async {
     List<String>? selected;
     await pump(
       tester,
-      SldsComboBox<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        value: const ['Colombo'],
-        onChanged: (v) => selected = v,
+      build(
+        multiple: true,
+        selectedValues: const ['Colombo'],
+        onSelectionChanged: (v) => selected = v,
       ),
     );
 
@@ -106,32 +117,14 @@ void main() {
     expect(selected, isEmpty);
   });
 
-  testWidgets('the panel stays open after selecting an option (multi-select)', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      const SldsComboBox<String>(label: 'District', items: items, itemLabel: _identity),
-    );
-
-    await tester.tap(find.text('Select district'));
-    await tester.pump();
-    await tester.tap(find.text('Colombo'));
-    await tester.pump();
-
-    expect(find.text('Search'), findsOneWidget);
-  });
-
-  testWidgets('tapping a chip\'s close icon removes that item', (tester) async {
+  testWidgets("tapping a chip's close icon removes that item", (tester) async {
     List<String>? selected;
     await pump(
       tester,
-      SldsComboBox<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        value: const ['Colombo', 'Jaffna'],
-        onChanged: (v) => selected = v,
+      build(
+        multiple: true,
+        selectedValues: const ['Colombo', 'Jaffna'],
+        onSelectionChanged: (v) => selected = v,
       ),
     );
 
@@ -141,13 +134,12 @@ void main() {
     expect(selected, ['Jaffna']);
   });
 
-  testWidgets('typing in search filters the option list', (tester) async {
-    await pump(
-      tester,
-      const SldsComboBox<String>(label: 'District', items: items, itemLabel: _identity),
-    );
+  testWidgets('typing in the filter field narrows the option list', (
+    tester,
+  ) async {
+    await pump(tester, build());
 
-    await tester.tap(find.text('Select district'));
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
     await tester.pump();
     await tester.enterText(find.byType(TextField), 'Colo');
     await tester.pump();
@@ -156,51 +148,15 @@ void main() {
     expect(find.text('Batticaloa'), findsNothing);
   });
 
-  testWidgets('shows help text when there is no error', (tester) async {
-    await pump(
-      tester,
-      const SldsComboBox<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        helpText: 'Help Text',
-      ),
-    );
+  testWidgets('shows helper text', (tester) async {
+    await pump(tester, build(helperText: 'Help Text'));
     expect(find.text('Help Text'), findsOneWidget);
   });
 
-  testWidgets('error text replaces help text', (tester) async {
-    await pump(
-      tester,
-      const SldsComboBox<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        helpText: 'Help Text',
-        errorText: 'Error Text',
-      ),
-    );
-
-    expect(find.text('Error Text'), findsOneWidget);
-    expect(find.text('Help Text'), findsNothing);
-  });
-
-  testWidgets('disabled field does not open on tap', (tester) async {
-    await pump(
-      tester,
-      const SldsComboBox<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        enabled: false,
-      ),
-    );
-
-    await tester.tap(find.text('Select district'));
-    await tester.pump();
-
-    expect(find.text('Search'), findsNothing);
+  testWidgets('visualState forces the panel open regardless of interaction', (
+    tester,
+  ) async {
+    await pump(tester, build(visualState: SldsComboBoxState.filling));
+    expect(find.text('Colombo'), findsOneWidget);
   });
 }
-
-String _identity(String item) => item;

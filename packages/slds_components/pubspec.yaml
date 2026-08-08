@@ -15,7 +15,6 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_svg: ^2.3.0
   intl: ^0.20.2
 
 dev_dependencies:
@@ -29,9 +28,6 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   generate: true
-
-  assets:
-    - assets/flags/
 
   # For details regarding assets in packages, see
   # https://flutter.dev/to/asset-from-package

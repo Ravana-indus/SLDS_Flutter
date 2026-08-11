@@ -19,7 +19,7 @@ void main() {
     expect(find.text('Upload'), findsWidgets); // label + affordance text
     expect(find.text(' *'), findsOneWidget);
     expect(find.text('PDF, JPEG or PNG less than 5MB'), findsOneWidget);
-    expect(find.byIcon(Icons.upload), findsOneWidget);
+    expect(find.byIcon(Icons.file_upload_outlined), findsOneWidget);
   });
 
   testWidgets('required=false hides the marker', (tester) async {
@@ -53,10 +53,12 @@ void main() {
 
     expect(find.text('Birth_certificate.pdf'), findsOneWidget);
     expect(find.text('72%'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    // iOS-style spinner throughout — the percent is a text label, not an
+    // arc drawn into the indicator (Cupertino has no determinate ring).
+    expect(find.byType(CupertinoActivityIndicator), findsOneWidget);
   });
 
-  testWidgets('uploading state with null progress shows an indeterminate spinner', (
+  testWidgets('uploading state with null progress still shows the Cupertino spinner', (
     tester,
   ) async {
     await pump(
@@ -68,10 +70,7 @@ void main() {
       ),
     );
 
-    // No progress -> falls back to the Cupertino spinner (indeterminate-only;
-    // it has no percentage/value variant).
     expect(find.byType(CupertinoActivityIndicator), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
   testWidgets('uploaded state shows a green check, filename, and "Uploaded"', (
@@ -88,7 +87,7 @@ void main() {
 
     expect(find.text('Birth_certificate.pdf'), findsOneWidget);
     expect(find.text('Uploaded'), findsOneWidget);
-    expect(find.byIcon(Icons.check_circle), findsOneWidget);
+    expect(find.byIcon(Icons.check), findsOneWidget);
   });
 
   testWidgets('error state shows the error text and a close icon', (

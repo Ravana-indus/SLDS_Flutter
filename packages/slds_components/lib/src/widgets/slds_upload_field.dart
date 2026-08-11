@@ -125,7 +125,7 @@ class SldsUploadField extends StatelessWidget {
               SldsUploadStatus.uploading => _UploadingRow(fileName: fileName ?? '', progress: progress),
               SldsUploadStatus.uploaded => _ResultRow(
                   fileName: fileName ?? '',
-                  leading: Icon(Icons.check_circle, color: colors.success, size: dimensions.avatarIconLarge),
+                  leading: Icon(Icons.check, color: colors.textSecondary, size: 16),
                   leadingBackground: colors.badgeSuccessBackground,
                   caption: 'Uploaded',
                   captionColor: colors.inputHelper,
@@ -133,7 +133,7 @@ class SldsUploadField extends StatelessWidget {
                 ),
               SldsUploadStatus.error => _ResultRow(
                   fileName: fileName ?? '',
-                  leading: Icon(Icons.close, color: colors.error, size: dimensions.avatarIconLarge),
+                  leading: Icon(Icons.close, color: colors.error, size: 16),
                   leadingBackground: colors.badgeErrorBackground,
                   caption: errorText,
                   captionColor: colors.error,
@@ -168,7 +168,7 @@ class _EmptyRow extends StatelessWidget {
             border: Border.all(color: colors.borderDefault),
             borderRadius: BorderRadius.circular(tokens.dimensions.radiusLg),
           ),
-          child: Icon(Icons.upload, size: tokens.dimensions.avatarIconMedium, color: iconColor),
+          child: Icon(Icons.file_upload_outlined, size: tokens.dimensions.avatarIconMedium, color: iconColor),
         ),
         SizedBox(width: tokens.dimensions.space12),
         Column(
@@ -209,22 +209,11 @@ class _UploadingRow extends StatelessWidget {
         SizedBox(
           width: tokens.dimensions.avatarSize40,
           height: tokens.dimensions.avatarSize40,
-          child: Center(
-            child: progress == null
-                // Cupertino has no determinate/percentage variant — use it
-                // only for the indeterminate case; the progress ring below
-                // needs Material's CircularProgressIndicator(value: ...).
-                ? CupertinoActivityIndicator(color: colors.inputBorderFocused)
-                : SizedBox(
-                    width: tokens.dimensions.avatarIconMedium,
-                    height: tokens.dimensions.avatarIconMedium,
-                    child: CircularProgressIndicator(
-                      strokeWidth: tokens.dimensions.progressStrokeWidth,
-                      value: progress,
-                      valueColor: AlwaysStoppedAnimation(colors.inputBorderFocused),
-                    ),
-                  ),
-          ),
+          // iOS-style spinner throughout — Cupertino has no determinate/
+          // percentage ring, so the percent is shown as text below instead
+          // of drawn into the indicator itself (matches the design: the
+          // ring never actually renders "72%" as an arc, only as a label).
+          child: Center(child: CupertinoActivityIndicator(color: colors.inputBorderFocused)),
         ),
         SizedBox(width: tokens.dimensions.space12),
         Expanded(

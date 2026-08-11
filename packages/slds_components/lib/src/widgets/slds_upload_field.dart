@@ -125,7 +125,7 @@ class SldsUploadField extends StatelessWidget {
               SldsUploadStatus.uploading => _UploadingRow(fileName: fileName ?? '', progress: progress),
               SldsUploadStatus.uploaded => _ResultRow(
                   fileName: fileName ?? '',
-                  leading: Icon(Icons.check, color: colors.textSecondary, size: 16),
+                  leading: Icon(Icons.check, color: colors.success, size: 16),
                   leadingBackground: colors.badgeSuccessBackground,
                   caption: 'Uploaded',
                   captionColor: colors.inputHelper,

@@ -87,7 +87,8 @@ void main() {
 
     expect(find.text('Birth_certificate.pdf'), findsOneWidget);
     expect(find.text('Uploaded'), findsOneWidget);
-    expect(find.byIcon(Icons.check), findsOneWidget);
+    final icon = tester.widget<Icon>(find.byIcon(Icons.check));
+    expect(icon.color, SldsColorTokens.light().success);
   });
 
   testWidgets('error state shows the error text and a close icon', (

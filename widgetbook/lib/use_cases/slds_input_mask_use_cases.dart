@@ -8,21 +8,21 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 /// rather than passing `null` as an option itself.
 enum _ForcedState { auto, defaultState, filled, focused, error, disabled }
 
-SldsInputState? _toVisualState(_ForcedState state) => switch (state) {
+SldsInputMaskState? _toVisualState(_ForcedState state) => switch (state) {
       _ForcedState.auto => null,
-      _ForcedState.defaultState => SldsInputState.defaultState,
-      _ForcedState.filled => SldsInputState.filled,
-      _ForcedState.focused => SldsInputState.focused,
-      _ForcedState.error => SldsInputState.error,
-      _ForcedState.disabled => SldsInputState.disabled,
+      _ForcedState.defaultState => SldsInputMaskState.defaultState,
+      _ForcedState.filled => SldsInputMaskState.filled,
+      _ForcedState.focused => SldsInputMaskState.focused,
+      _ForcedState.error => SldsInputMaskState.error,
+      _ForcedState.disabled => SldsInputMaskState.disabled,
     };
 
-@widgetbook.UseCase(name: 'Playground', type: SldsInput, path: '[Forms & Inputs]')
-Widget buildSldsInputUseCase(BuildContext context) {
+@widgetbook.UseCase(name: 'Playground', type: SldsInputMask, path: '[Forms & Inputs]')
+Widget buildSldsInputMaskUseCase(BuildContext context) {
   final label = context.knobs.string(label: 'Label', initialValue: 'Input');
-  final prefixText = context.knobs.string(label: 'Prefix', initialValue: 'LKR');
-  final suffixText = context.knobs.string(label: 'Suffix', initialValue: 'KG');
-  final hintText = context.knobs.string(label: 'Hint', initialValue: '0000');
+  final prefixText = context.knobs.string(label: 'Prefix', initialValue: 'http://');
+  final suffixText = context.knobs.string(label: 'Suffix', initialValue: '.com');
+  final hintText = context.knobs.string(label: 'Hint', initialValue: 'slds');
   final helperText = context.knobs.string(label: 'Help text', initialValue: 'Help Text');
   final isRequired = context.knobs.boolean(label: 'Required', initialValue: true);
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
@@ -35,7 +35,7 @@ Widget buildSldsInputUseCase(BuildContext context) {
 
   return Padding(
     padding: const EdgeInsets.all(24),
-    child: SldsInput(
+    child: SldsInputMask(
       label: label,
       prefixText: prefixText.isEmpty ? null : prefixText,
       suffixText: suffixText.isEmpty ? null : suffixText,

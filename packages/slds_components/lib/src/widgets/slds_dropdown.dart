@@ -127,7 +127,11 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
             decoration: BoxDecoration(
               color: widget.enabled ? scheme.surface : scheme.onSurface.withValues(alpha: 0.04),
               borderRadius: BorderRadius.circular(SldsSpacing.sm),
-              border: Border.all(color: borderColor, width: _open ? 2 : 1),
+              // 1.5 matches every other field's focused-border weight
+              // (SldsInput/SldsMobileNumberInput/SldsSearchBar's
+              // emphasizedBorderWidth token) — this widget predates that
+              // token system, so it's hardcoded here to stay in lockstep.
+              border: Border.all(color: borderColor, width: _open ? 1.5 : 1),
             ),
             child: Row(
               children: [

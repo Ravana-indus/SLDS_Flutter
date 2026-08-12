@@ -17,6 +17,7 @@ export 'src/widgets/slds_dropdown.dart';
 export 'src/widgets/slds_fab.dart';
 export 'src/widgets/slds_icon_button.dart';
 export 'src/widgets/slds_input.dart';
+export 'src/widgets/slds_input_mask.dart';
 export 'src/widgets/slds_link_button.dart';
 export 'src/widgets/slds_mobile_number_input.dart';
 export 'src/widgets/slds_otp_input.dart';

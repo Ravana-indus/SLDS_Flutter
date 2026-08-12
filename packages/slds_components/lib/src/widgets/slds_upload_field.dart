@@ -53,6 +53,14 @@ class SldsUploadField extends StatelessWidget {
     this.onTap,
     this.onRemove,
     this.enabled = true,
+    this.emptyIcon,
+    this.emptyWidget,
+    this.uploadedIcon,
+    this.uploadedWidget,
+    this.errorIcon,
+    this.errorWidget,
+    this.removeIcon,
+    this.removeWidget,
   });
 
   /// Visible field label.
@@ -89,12 +97,42 @@ class SldsUploadField extends StatelessWidget {
 
   final bool enabled;
 
+  /// Custom icon data for empty state.
+  final IconData? emptyIcon;
+
+  /// Custom widget override for empty state leading affordance.
+  final Widget? emptyWidget;
+
+  /// Custom icon data for uploaded badge.
+  final IconData? uploadedIcon;
+
+  /// Custom widget override for uploaded badge inside circular background.
+  final Widget? uploadedWidget;
+
+  /// Custom icon data for error badge.
+  final IconData? errorIcon;
+
+  /// Custom widget override for error badge inside circular background.
+  final Widget? errorWidget;
+
+  /// Custom icon data for remove button.
+  final IconData? removeIcon;
+
+  /// Custom widget override for remove button inside IconButton.
+  final Widget? removeWidget;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final interactive = enabled && status == SldsUploadStatus.empty && onTap != null;
+
+    final leadingUploaded = uploadedWidget ??
+        Icon(uploadedIcon ?? Icons.check, color: colors.success, size: 16);
+
+    final leadingError = errorWidget ??
+        Icon(errorIcon ?? Icons.close, color: colors.error, size: 16);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,23 +159,32 @@ class SldsUploadField extends StatelessWidget {
               borderRadius: BorderRadius.circular(dimensions.radius2xl),
             ),
             child: switch (status) {
-              SldsUploadStatus.empty => _EmptyRow(hintText: hintText, enabled: enabled),
+              SldsUploadStatus.empty => _EmptyRow(
+                  hintText: hintText,
+                  enabled: enabled,
+                  icon: emptyIcon,
+                  customWidget: emptyWidget,
+                ),
               SldsUploadStatus.uploading => _UploadingRow(fileName: fileName ?? '', progress: progress),
               SldsUploadStatus.uploaded => _ResultRow(
                   fileName: fileName ?? '',
-                  leading: Icon(Icons.check, color: colors.success, size: 16),
+                  leading: leadingUploaded,
                   leadingBackground: colors.badgeSuccessBackground,
                   caption: 'Uploaded',
                   captionColor: colors.inputHelper,
                   onRemove: onRemove,
+                  removeIcon: removeIcon,
+                  removeWidget: removeWidget,
                 ),
               SldsUploadStatus.error => _ResultRow(
                   fileName: fileName ?? '',
-                  leading: Icon(Icons.close, color: colors.error, size: 16),
+                  leading: leadingError,
                   leadingBackground: colors.badgeErrorBackground,
                   caption: errorText,
                   captionColor: colors.error,
                   onRemove: onRemove,
+                  removeIcon: removeIcon,
+                  removeWidget: removeWidget,
                 ),
             },
           ),
@@ -148,16 +195,30 @@ class SldsUploadField extends StatelessWidget {
 }
 
 class _EmptyRow extends StatelessWidget {
-  const _EmptyRow({required this.hintText, required this.enabled});
+  const _EmptyRow({
+    required this.hintText,
+    required this.enabled,
+    this.icon,
+    this.customWidget,
+  });
 
   final String hintText;
   final bool enabled;
+  final IconData? icon;
+  final Widget? customWidget;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final iconColor = enabled ? colors.textPrimary : colors.disabledForeground;
+
+    final leadingChild = customWidget ??
+        Icon(
+          icon ?? Icons.file_upload_outlined,
+          size: tokens.dimensions.avatarIconMedium,
+          color: iconColor,
+        );
 
     return Row(
       children: [
@@ -168,7 +229,7 @@ class _EmptyRow extends StatelessWidget {
             border: Border.all(color: colors.borderDefault),
             borderRadius: BorderRadius.circular(tokens.dimensions.radiusLg),
           ),
-          child: Icon(Icons.file_upload_outlined, size: tokens.dimensions.avatarIconMedium, color: iconColor),
+          child: Center(child: leadingChild),
         ),
         SizedBox(width: tokens.dimensions.space12),
         Column(
@@ -246,6 +307,8 @@ class _ResultRow extends StatelessWidget {
     required this.caption,
     required this.captionColor,
     required this.onRemove,
+    this.removeIcon,
+    this.removeWidget,
   });
 
   final String fileName;
@@ -254,11 +317,15 @@ class _ResultRow extends StatelessWidget {
   final String? caption;
   final Color captionColor;
   final VoidCallback? onRemove;
+  final IconData? removeIcon;
+  final Widget? removeWidget;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
+
+    final trailingWidget = removeWidget ?? Icon(removeIcon ?? Icons.close);
 
     return Row(
       children: [
@@ -288,7 +355,7 @@ class _ResultRow extends StatelessWidget {
           SizedBox(width: tokens.dimensions.space8),
           IconButton(
             onPressed: onRemove,
-            icon: const Icon(Icons.close),
+            icon: trailingWidget,
             iconSize: tokens.dimensions.avatarIconMedium,
             color: colors.inputIcon,
             constraints: BoxConstraints.tightFor(

@@ -218,6 +218,10 @@ class _SuggestionRow extends StatelessWidget {
 
   final String label;
   final IconData? icon;
+
+  /// True for the suggestion row matching the current query — gets a gray
+  /// background and a trailing checkmark (never applies to recent-search
+  /// rows, which have no notion of "currently matches").
   final bool highlighted;
   final VoidCallback onTap;
 
@@ -245,6 +249,8 @@ class _SuggestionRow extends StatelessWidget {
                 style: tokens.typography.body1.copyWith(color: colors.textPrimary),
               ),
             ),
+            if (highlighted)
+              Icon(Icons.check, size: tokens.dimensions.iconSizeMedium, color: colors.textPrimary),
           ],
         ),
       ),

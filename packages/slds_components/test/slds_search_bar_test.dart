@@ -135,4 +135,38 @@ void main() {
     final field = tester.widget<TextField>(find.byType(TextField));
     expect(field.enabled, isFalse);
   });
+
+  testWidgets('the suggestion matching the current query shows a checkmark', (
+    tester,
+  ) async {
+    final controller = TextEditingController(text: 'Driving License');
+    await pump(
+      tester,
+      SldsSearchBar(
+        controller: controller,
+        suggestions: const ['Birth Certificate', 'Driving License'],
+      ),
+    );
+
+    await tester.tap(find.byType(TextField));
+    await tester.pump();
+
+    expect(find.byIcon(Icons.check), findsOneWidget);
+  });
+
+  testWidgets('recent-search rows never show a checkmark', (tester) async {
+    final controller = TextEditingController(text: 'Birth Certificate');
+    await pump(
+      tester,
+      SldsSearchBar(
+        controller: controller,
+        recentSearches: const ['Birth Certificate'],
+      ),
+    );
+
+    await tester.tap(find.byType(TextField));
+    await tester.pump();
+
+    expect(find.byIcon(Icons.check), findsNothing);
+  });
 }

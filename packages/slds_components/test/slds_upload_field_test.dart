@@ -149,4 +149,100 @@ void main() {
     await tester.tap(find.text('Upload').last);
     expect(tapped, isFalse);
   });
+
+  testWidgets('custom emptyIcon and emptyWidget renders custom leading affordance', (tester) async {
+    await pump(
+      tester,
+      const SldsUploadField(
+        label: 'Upload',
+        emptyIcon: Icons.cloud_upload,
+      ),
+    );
+    expect(find.byIcon(Icons.cloud_upload), findsOneWidget);
+
+    await pump(
+      tester,
+      const SldsUploadField(
+        label: 'Upload',
+        emptyWidget: Text('CUSTOM_EMPTY'),
+      ),
+    );
+    expect(find.text('CUSTOM_EMPTY'), findsOneWidget);
+  });
+
+  testWidgets('custom uploadedIcon and uploadedWidget overrides uploaded status indicator', (tester) async {
+    await pump(
+      tester,
+      const SldsUploadField(
+        label: 'Upload',
+        status: SldsUploadStatus.uploaded,
+        fileName: 'Birth_certificate.pdf',
+        uploadedIcon: Icons.check_circle_outline,
+      ),
+    );
+    expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
+
+    await pump(
+      tester,
+      const SldsUploadField(
+        label: 'Upload',
+        status: SldsUploadStatus.uploaded,
+        fileName: 'Birth_certificate.pdf',
+        uploadedWidget: Text('CUSTOM_UPLOADED'),
+      ),
+    );
+    expect(find.text('CUSTOM_UPLOADED'), findsOneWidget);
+  });
+
+  testWidgets('custom errorIcon and errorWidget overrides error status indicator', (tester) async {
+    await pump(
+      tester,
+      const SldsUploadField(
+        label: 'Upload',
+        status: SldsUploadStatus.error,
+        fileName: 'Birth_certificate.pdf',
+        errorText: 'Invalid file',
+        errorIcon: Icons.warning_amber,
+      ),
+    );
+    expect(find.byIcon(Icons.warning_amber), findsOneWidget);
+
+    await pump(
+      tester,
+      const SldsUploadField(
+        label: 'Upload',
+        status: SldsUploadStatus.error,
+        fileName: 'Birth_certificate.pdf',
+        errorText: 'Invalid file',
+        errorWidget: Text('CUSTOM_ERROR'),
+      ),
+    );
+    expect(find.text('CUSTOM_ERROR'), findsOneWidget);
+  });
+
+  testWidgets('custom removeIcon and removeWidget overrides remove action icon', (tester) async {
+    await pump(
+      tester,
+      SldsUploadField(
+        label: 'Upload',
+        status: SldsUploadStatus.uploaded,
+        fileName: 'Birth_certificate.pdf',
+        onRemove: () {},
+        removeIcon: Icons.delete_outline,
+      ),
+    );
+    expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+
+    await pump(
+      tester,
+      SldsUploadField(
+        label: 'Upload',
+        status: SldsUploadStatus.uploaded,
+        fileName: 'Birth_certificate.pdf',
+        onRemove: () {},
+        removeWidget: const Text('REMOVE'),
+      ),
+    );
+    expect(find.text('REMOVE'), findsOneWidget);
+  });
 }

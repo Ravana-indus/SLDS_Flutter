@@ -24,5 +24,7 @@ export 'src/widgets/slds_radio.dart';
 export 'src/widgets/slds_search_bar.dart';
 export 'src/widgets/slds_text_area.dart';
 export 'src/widgets/slds_text_field.dart';
+export 'src/widgets/slds_date_picker.dart';
+export 'src/widgets/slds_time_picker.dart';
 export 'src/widgets/slds_toggle.dart';
 export 'src/widgets/slds_upload_field.dart';

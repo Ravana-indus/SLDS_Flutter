@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/slds_tokens.dart';
+import '../tokens/slds_breakpoints.dart';
+import 'slds_button.dart';
 import 'slds_text_field.dart';
 
 /// Which unit is currently being edited in [SldsTimePickerDialog].
@@ -290,37 +292,43 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
 
           const SizedBox(height: 20),
 
-          // Footer Action Bar
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              OutlinedButton(
-                onPressed: widget.onCancel,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: colors.textPrimary,
-                  side: BorderSide(color: colors.borderDefault),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          // Footer Action Bar — SldsButton goes full-width below the
+          // SldsBreakpoints.mobile screen width, so the row would overflow;
+          // stack Cancel/Apply instead on mobile, matching the button's own
+          // responsive behavior rather than fighting it.
+          if (SldsBreakpoints.isMobile(context))
+            Column(
+              children: [
+                SldsButton(
+                  label: widget.applyText,
+                  onPressed: () => widget.onApply?.call(_currentTimeOfDay),
+                  color: primaryAccent,
                 ),
-                child: Text(widget.cancelText),
-              ),
-              const SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: () => widget.onApply?.call(_currentTimeOfDay),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryAccent,
-                  foregroundColor: const Color(0xFF1C1B1F),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                const SizedBox(height: 12),
+                SldsButton(
+                  label: widget.cancelText,
+                  onPressed: widget.onCancel,
+                  variant: SldsButtonVariant.secondary,
                 ),
-                child: Text(
-                  widget.applyText,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+              ],
+            )
+          else
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SldsButton(
+                  label: widget.cancelText,
+                  onPressed: widget.onCancel,
+                  variant: SldsButtonVariant.secondary,
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 12),
+                SldsButton(
+                  label: widget.applyText,
+                  onPressed: () => widget.onApply?.call(_currentTimeOfDay),
+                  color: primaryAccent,
+                ),
+              ],
+            ),
         ],
       ),
     );

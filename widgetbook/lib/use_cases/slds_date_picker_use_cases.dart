@@ -6,7 +6,7 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsDatePicker,
-  path: '[Pickers]',
+  path: '[Forms & Inputs]',
 )
 Widget buildSldsDatePickerUseCase(BuildContext context) {
   final mode = context.knobs.object.dropdown<SldsDatePickerMode>(

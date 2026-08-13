@@ -49,14 +49,18 @@ class SldsEmptyState extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: tokens.typography.heading3.copyWith(color: colors.textPrimary),
+              style: tokens.typography.heading3.copyWith(
+                color: colors.textPrimary,
+              ),
             ),
             if (description != null) ...[
               SizedBox(height: dimensions.space8),
               Text(
                 description!,
                 textAlign: TextAlign.center,
-                style: tokens.typography.body2.copyWith(color: colors.textSecondary),
+                style: tokens.typography.body2.copyWith(
+                  color: colors.textSecondary,
+                ),
               ),
             ],
             if (actionLabel != null && onAction != null) ...[

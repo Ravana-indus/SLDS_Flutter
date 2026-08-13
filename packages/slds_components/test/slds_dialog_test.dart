@@ -4,15 +4,21 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Widget host(Widget Function(BuildContext) buttonBuilder) => MaterialApp(
-        theme: SldsTheme.light(),
-        home: Scaffold(body: Center(child: Builder(builder: buttonBuilder))),
-      );
+    theme: SldsTheme.light(),
+    home: Scaffold(
+      body: Center(child: Builder(builder: buttonBuilder)),
+    ),
+  );
 
   testWidgets('renders title and message', (tester) async {
     await tester.pumpWidget(
       host(
         (context) => ElevatedButton(
-          onPressed: () => SldsDialog.show(context, title: 'Basic dialog title', message: 'A dialog is a modal window'),
+          onPressed: () => SldsDialog.show(
+            context,
+            title: 'Basic dialog title',
+            message: 'A dialog is a modal window',
+          ),
           child: const Text('open'),
         ),
       ),
@@ -27,7 +33,12 @@ void main() {
 
   testWidgets('hides message when null', (tester) async {
     await tester.pumpWidget(
-      host((context) => ElevatedButton(onPressed: () => SldsDialog.show(context, title: 'Title'), child: const Text('open'))),
+      host(
+        (context) => ElevatedButton(
+          onPressed: () => SldsDialog.show(context, title: 'Title'),
+          child: const Text('open'),
+        ),
+      ),
     );
 
     await tester.tap(find.text('open'));
@@ -37,22 +48,46 @@ void main() {
     expect(find.byType(SldsDialog), findsOneWidget);
   });
 
-  testWidgets('cancel and confirm buttons only render when their label is set, and fire callbacks', (
-    tester,
-  ) async {
-    var cancelled = false;
-    var confirmed = false;
+  testWidgets(
+    'cancel and confirm buttons only render when their label is set, and fire callbacks',
+    (tester) async {
+      var cancelled = false;
+      var confirmed = false;
+      await tester.pumpWidget(
+        host(
+          (context) => ElevatedButton(
+            onPressed: () => SldsDialog.show(
+              context,
+              title: 'Title',
+              cancelLabel: 'Cancel',
+              onCancel: () => cancelled = true,
+              confirmLabel: 'Continue',
+              onConfirm: () => confirmed = true,
+            ),
+            child: const Text('open'),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Cancel'), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
+
+      await tester.tap(find.text('Cancel'));
+      expect(cancelled, isTrue);
+
+      await tester.tap(find.text('Continue'));
+      expect(confirmed, isTrue);
+    },
+  );
+
+  testWidgets('no actions render when both labels are null', (tester) async {
     await tester.pumpWidget(
       host(
         (context) => ElevatedButton(
-          onPressed: () => SldsDialog.show(
-            context,
-            title: 'Title',
-            cancelLabel: 'Cancel',
-            onCancel: () => cancelled = true,
-            confirmLabel: 'Continue',
-            onConfirm: () => confirmed = true,
-          ),
+          onPressed: () => SldsDialog.show(context, title: 'Title'),
           child: const Text('open'),
         ),
       ),
@@ -61,28 +96,12 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Cancel'), findsOneWidget);
-    expect(find.text('Continue'), findsOneWidget);
-
-    await tester.tap(find.text('Cancel'));
-    expect(cancelled, isTrue);
-
-    await tester.tap(find.text('Continue'));
-    expect(confirmed, isTrue);
-  });
-
-  testWidgets('no actions render when both labels are null', (tester) async {
-    await tester.pumpWidget(
-      host((context) => ElevatedButton(onPressed: () => SldsDialog.show(context, title: 'Title'), child: const Text('open'))),
-    );
-
-    await tester.tap(find.text('open'));
-    await tester.pumpAndSettle();
-
     expect(find.byType(SldsButton), findsNothing);
   });
 
-  testWidgets('renders without crashing at a mobile viewport width', (tester) async {
+  testWidgets('renders without crashing at a mobile viewport width', (
+    tester,
+  ) async {
     // Regression class: SldsButton goes full-width below the mobile
     // breakpoint using an internal LayoutBuilder — anything that queries
     // its intrinsic size (rather than giving it loose/unbounded width like
@@ -114,11 +133,17 @@ void main() {
     expect(find.text('Continue'), findsOneWidget);
   });
 
-  testWidgets('barrierDismissible false blocks tapping outside', (tester) async {
+  testWidgets('barrierDismissible false blocks tapping outside', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       host(
         (context) => ElevatedButton(
-          onPressed: () => SldsDialog.show(context, title: 'Title', barrierDismissible: false),
+          onPressed: () => SldsDialog.show(
+            context,
+            title: 'Title',
+            barrierDismissible: false,
+          ),
           child: const Text('open'),
         ),
       ),

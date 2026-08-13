@@ -18,7 +18,11 @@ class SldsAccordionItem {
 /// be open at once (unlike [SldsFlyoutMenu], which allows only one);
 /// pass [initiallyExpanded] to control which start open.
 class SldsAccordion extends StatefulWidget {
-  const SldsAccordion({super.key, required this.items, this.initiallyExpanded = const {}});
+  const SldsAccordion({
+    super.key,
+    required this.items,
+    this.initiallyExpanded = const {},
+  });
 
   final List<SldsAccordionItem> items;
 
@@ -56,7 +60,11 @@ class _SldsAccordionState extends State<SldsAccordion> {
 }
 
 class _AccordionTile extends StatelessWidget {
-  const _AccordionTile({required this.item, required this.expanded, required this.onTap});
+  const _AccordionTile({
+    required this.item,
+    required this.expanded,
+    required this.onTap,
+  });
 
   final SldsAccordionItem item;
   final bool expanded;
@@ -91,11 +99,15 @@ class _AccordionTile extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.title,
-                        style: tokens.typography.body1.copyWith(color: colors.textPrimary),
+                        style: tokens.typography.body1.copyWith(
+                          color: colors.textPrimary,
+                        ),
                       ),
                     ),
                     Icon(
-                      expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                      expanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
                       size: dimensions.iconSizeMedium,
                       color: colors.textPrimary,
                     ),

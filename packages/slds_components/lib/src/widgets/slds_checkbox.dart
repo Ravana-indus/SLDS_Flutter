@@ -52,7 +52,9 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() => setState(() => _focused = _focusNode.hasFocus));
+    _focusNode.addListener(
+      () => setState(() => _focused = _focusNode.hasFocus),
+    );
   }
 
   @override
@@ -81,13 +83,18 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
     final Color borderColor;
     final Color iconColor;
     if (!_enabled) {
-      boxColor = filled ? scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity) : Colors.transparent;
-      borderColor = scheme.outline.withValues(alpha: SldsColors.disabledOpacity);
+      boxColor = filled
+          ? scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity)
+          : Colors.transparent;
+      borderColor = scheme.outline.withValues(
+        alpha: SldsColors.disabledOpacity,
+      );
       iconColor = scheme.surface;
     } else if (filled) {
       boxColor = accent;
       borderColor = accent;
-      iconColor = ThemeData.estimateBrightnessForColor(accent) == Brightness.dark
+      iconColor =
+          ThemeData.estimateBrightnessForColor(accent) == Brightness.dark
           ? Colors.white
           : Colors.black;
     } else {
@@ -128,8 +135,12 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
                     ),
                   )
                 : (widget.value == true
-                    ? Icon(Icons.check, size: widget.size.icon, color: iconColor)
-                    : null),
+                      ? Icon(
+                          Icons.check,
+                          size: widget.size.icon,
+                          color: iconColor,
+                        )
+                      : null),
           ),
         ),
       ),

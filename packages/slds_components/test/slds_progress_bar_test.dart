@@ -4,10 +4,15 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: child)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: child),
+    ),
+  );
 
-  testWidgets('renders the rounded percentage label by default', (tester) async {
+  testWidgets('renders the rounded percentage label by default', (
+    tester,
+  ) async {
     await pump(tester, const SldsProgressBar(value: 0.4));
     expect(find.text('40%'), findsOneWidget);
   });
@@ -28,14 +33,19 @@ void main() {
   testWidgets('fill width scales with value', (tester) async {
     await pump(
       tester,
-      const SizedBox(width: 200, child: SldsProgressBar(value: 0.5, showLabel: false)),
+      const SizedBox(
+        width: 200,
+        child: SldsProgressBar(value: 0.5, showLabel: false),
+      ),
     );
     await tester.pumpAndSettle();
     final fillWidth = tester.getSize(find.byType(AnimatedContainer)).width;
     expect(fillWidth, closeTo(100, 0.01)); // 200 * 0.5
   });
 
-  testWidgets('exposes progressbar semantics with the current value', (tester) async {
+  testWidgets('exposes progressbar semantics with the current value', (
+    tester,
+  ) async {
     await pump(tester, const SldsProgressBar(value: 0.4));
     final semantics = tester.getSemantics(find.byType(SldsProgressBar));
     expect(semantics.value, '40%');

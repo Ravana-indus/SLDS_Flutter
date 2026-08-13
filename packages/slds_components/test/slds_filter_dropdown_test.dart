@@ -6,8 +6,11 @@ void main() {
   const options = ['Option One', 'Option Two', 'Option Three'];
 
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders every option, checkboxes when multiple', (tester) async {
     await pump(
@@ -40,22 +43,23 @@ void main() {
     expect(find.byType(SldsCheckbox), findsNothing);
   });
 
-  testWidgets('multi-select: tapping a row toggles it into onSelectionChanged', (
-    tester,
-  ) async {
-    List<String>? next;
-    await pump(
-      tester,
-      SldsFilterDropdown(
-        options: options,
-        selectedValues: const [],
-        onSelectionChanged: (v) => next = v,
-      ),
-    );
+  testWidgets(
+    'multi-select: tapping a row toggles it into onSelectionChanged',
+    (tester) async {
+      List<String>? next;
+      await pump(
+        tester,
+        SldsFilterDropdown(
+          options: options,
+          selectedValues: const [],
+          onSelectionChanged: (v) => next = v,
+        ),
+      );
 
-    await tester.tap(find.text('Option One'));
-    expect(next, ['Option One']);
-  });
+      await tester.tap(find.text('Option One'));
+      expect(next, ['Option One']);
+    },
+  );
 
   testWidgets('multi-select: tapping a selected row again removes it', (
     tester,
@@ -74,23 +78,24 @@ void main() {
     expect(next, isEmpty);
   });
 
-  testWidgets('single-select: picking a new option replaces the prior selection', (
-    tester,
-  ) async {
-    List<String>? next;
-    await pump(
-      tester,
-      SldsFilterDropdown(
-        options: options,
-        selectedValues: const ['Option One'],
-        multiple: false,
-        onSelectionChanged: (v) => next = v,
-      ),
-    );
+  testWidgets(
+    'single-select: picking a new option replaces the prior selection',
+    (tester) async {
+      List<String>? next;
+      await pump(
+        tester,
+        SldsFilterDropdown(
+          options: options,
+          selectedValues: const ['Option One'],
+          multiple: false,
+          onSelectionChanged: (v) => next = v,
+        ),
+      );
 
-    await tester.tap(find.text('Option Two'));
-    expect(next, ['Option Two']);
-  });
+      await tester.tap(find.text('Option Two'));
+      expect(next, ['Option Two']);
+    },
+  );
 
   testWidgets('Apply calls onApply with the current selectedValues', (
     tester,

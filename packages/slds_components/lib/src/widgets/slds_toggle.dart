@@ -7,7 +7,11 @@ enum SldsToggleSize {
   large(width: 48, height: 28, thumb: 22),
   small(width: 40, height: 24, thumb: 18);
 
-  const SldsToggleSize({required this.width, required this.height, required this.thumb});
+  const SldsToggleSize({
+    required this.width,
+    required this.height,
+    required this.thumb,
+  });
 
   final double width;
   final double height;
@@ -50,7 +54,9 @@ class _SldsToggleState extends State<SldsToggle> {
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() => setState(() => _focused = _focusNode.hasFocus));
+    _focusNode.addListener(
+      () => setState(() => _focused = _focusNode.hasFocus),
+    );
   }
 
   @override
@@ -100,7 +106,9 @@ class _SldsToggleState extends State<SldsToggle> {
           padding: _focused ? const EdgeInsets.all(2) : EdgeInsets.zero,
           decoration: _focused
               ? BoxDecoration(
-                  borderRadius: BorderRadius.circular((widget.size.height + 4) / 2),
+                  borderRadius: BorderRadius.circular(
+                    (widget.size.height + 4) / 2,
+                  ),
                   border: Border.all(color: accent, width: 1.5),
                 )
               : null,
@@ -111,13 +119,18 @@ class _SldsToggleState extends State<SldsToggle> {
               color: trackColor,
               borderRadius: BorderRadius.circular(widget.size.height / 2),
             ),
-            alignment: widget.value ? Alignment.centerRight : Alignment.centerLeft,
+            alignment: widget.value
+                ? Alignment.centerRight
+                : Alignment.centerLeft,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               curve: Curves.easeOut,
               width: widget.size.thumb,
               height: widget.size.thumb,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: thumbColor),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: thumbColor,
+              ),
             ),
           ),
         ),

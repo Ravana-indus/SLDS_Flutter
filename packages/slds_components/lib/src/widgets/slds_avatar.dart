@@ -38,28 +38,28 @@ class SldsAvatar extends StatelessWidget {
   final String? semanticLabel;
 
   double _diameter(SldsDimensionTokens dimensions) => switch (size) {
-        SldsAvatarSize.small => dimensions.avatarSize24,
-        SldsAvatarSize.medium => dimensions.avatarSize32,
-        SldsAvatarSize.large => dimensions.avatarSize40,
-        SldsAvatarSize.extraLarge => dimensions.avatarSize48,
-        SldsAvatarSize.huge => dimensions.avatarSize56,
-      };
+    SldsAvatarSize.small => dimensions.avatarSize24,
+    SldsAvatarSize.medium => dimensions.avatarSize32,
+    SldsAvatarSize.large => dimensions.avatarSize40,
+    SldsAvatarSize.extraLarge => dimensions.avatarSize48,
+    SldsAvatarSize.huge => dimensions.avatarSize56,
+  };
 
   double _iconSize(SldsDimensionTokens dimensions) => switch (size) {
-        SldsAvatarSize.small => dimensions.avatarIconSmall,
-        SldsAvatarSize.medium => dimensions.avatarIconMedium,
-        SldsAvatarSize.large => dimensions.avatarIconLarge,
-        SldsAvatarSize.extraLarge => dimensions.avatarIconExtraLarge,
-        SldsAvatarSize.huge => dimensions.avatarIconExtraLarge * 2,
-      };
+    SldsAvatarSize.small => dimensions.avatarIconSmall,
+    SldsAvatarSize.medium => dimensions.avatarIconMedium,
+    SldsAvatarSize.large => dimensions.avatarIconLarge,
+    SldsAvatarSize.extraLarge => dimensions.avatarIconExtraLarge,
+    SldsAvatarSize.huge => dimensions.avatarIconExtraLarge * 2,
+  };
 
   double _initialsFontSize() => switch (size) {
-        SldsAvatarSize.small => 11,
-        SldsAvatarSize.medium => 13,
-        SldsAvatarSize.large => 15,
-        SldsAvatarSize.extraLarge => 18,
-        SldsAvatarSize.huge => 28,
-      };
+    SldsAvatarSize.small => 11,
+    SldsAvatarSize.medium => 13,
+    SldsAvatarSize.large => 15,
+    SldsAvatarSize.extraLarge => 18,
+    SldsAvatarSize.huge => 28,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +73,21 @@ class SldsAvatar extends StatelessWidget {
     Widget content;
     if (imageProvider != null) {
       content = ClipOval(
-        child: Image(image: imageProvider!, width: diameter, height: diameter, fit: BoxFit.cover),
+        child: Image(
+          image: imageProvider!,
+          width: diameter,
+          height: diameter,
+          fit: BoxFit.cover,
+        ),
       );
     } else if (trimmedInitials != null && trimmedInitials.isNotEmpty) {
       content = Container(
         decoration: BoxDecoration(color: background, shape: BoxShape.circle),
         alignment: Alignment.center,
         child: Text(
-          trimmedInitials.length > 2 ? trimmedInitials.substring(0, 2) : trimmedInitials,
+          trimmedInitials.length > 2
+              ? trimmedInitials.substring(0, 2)
+              : trimmedInitials,
           style: TextStyle(
             color: colors.textStaticBlack,
             fontSize: _initialsFontSize(),
@@ -92,7 +99,11 @@ class SldsAvatar extends StatelessWidget {
       content = Container(
         decoration: BoxDecoration(color: background, shape: BoxShape.circle),
         alignment: Alignment.center,
-        child: Icon(Icons.person_outline, size: _iconSize(dimensions), color: colors.textStaticBlack),
+        child: Icon(
+          Icons.person_outline,
+          size: _iconSize(dimensions),
+          color: colors.textStaticBlack,
+        ),
       );
     }
 

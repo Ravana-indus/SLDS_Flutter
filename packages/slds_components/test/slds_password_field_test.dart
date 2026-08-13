@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('starts obscured with the "show" icon', (tester) async {
     await pump(tester, const SldsPasswordField());
@@ -58,14 +61,22 @@ void main() {
     expect(value, 'DGH347847#');
   });
 
-  testWidgets('the obscured dot renders smaller than revealed text', (tester) async {
+  testWidgets('the obscured dot renders smaller than revealed text', (
+    tester,
+  ) async {
     await pump(tester, const SldsPasswordField());
 
-    final obscuredSize = tester.widget<TextField>(find.byType(TextField)).style?.fontSize;
+    final obscuredSize = tester
+        .widget<TextField>(find.byType(TextField))
+        .style
+        ?.fontSize;
 
     await tester.tap(find.byIcon(Icons.visibility_outlined));
     await tester.pump();
-    final revealedSize = tester.widget<TextField>(find.byType(TextField)).style?.fontSize;
+    final revealedSize = tester
+        .widget<TextField>(find.byType(TextField))
+        .style
+        ?.fontSize;
 
     expect(obscuredSize, lessThan(revealedSize!));
   });

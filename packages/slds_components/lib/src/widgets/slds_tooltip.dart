@@ -67,7 +67,10 @@ class SldsTooltip extends StatelessWidget {
             builder: (context, constraints) {
               const figmaReferenceWidth = 360.0;
               final requestedWidth =
-                  width ?? (constraints.hasBoundedWidth ? constraints.maxWidth : figmaReferenceWidth);
+                  width ??
+                  (constraints.hasBoundedWidth
+                      ? constraints.maxWidth
+                      : figmaReferenceWidth);
               final resolvedWidth = constraints.hasBoundedWidth
                   ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
                   : requestedWidth;
@@ -100,7 +103,8 @@ class SldsTooltip extends StatelessWidget {
           child: Transform.translate(
             offset: const Offset(0, -1),
             child: Transform.rotate(
-              angle: 0.785398, // 45deg — a square clipped to its top-left corner reads as a triangle.
+              angle:
+                  0.785398, // 45deg — a square clipped to its top-left corner reads as a triangle.
               child: Container(
                 width: dimensions.space12,
                 height: dimensions.space12,
@@ -126,9 +130,18 @@ class _CompactCard extends StatelessWidget {
     final dimensions = tokens.dimensions;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: dimensions.space12, vertical: dimensions.space8),
-      decoration: BoxDecoration(color: colors.tooltipBackground, borderRadius: BorderRadius.circular(dimensions.radiusMd)),
-      child: Text(title, style: tokens.typography.caption1.copyWith(color: colors.tooltipText)),
+      padding: EdgeInsets.symmetric(
+        horizontal: dimensions.space12,
+        vertical: dimensions.space8,
+      ),
+      decoration: BoxDecoration(
+        color: colors.tooltipBackground,
+        borderRadius: BorderRadius.circular(dimensions.radiusMd),
+      ),
+      child: Text(
+        title,
+        style: tokens.typography.caption1.copyWith(color: colors.tooltipText),
+      ),
     );
   }
 }
@@ -162,7 +175,10 @@ class _FullCard extends StatelessWidget {
     return Container(
       width: width,
       padding: EdgeInsets.all(dimensions.space16),
-      decoration: BoxDecoration(color: colors.tooltipBackground, borderRadius: BorderRadius.circular(dimensions.radiusLg)),
+      decoration: BoxDecoration(
+        color: colors.tooltipBackground,
+        borderRadius: BorderRadius.circular(dimensions.radiusLg),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,7 +189,10 @@ class _FullCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: tokens.typography.body1.copyWith(color: colors.tooltipText, fontWeight: FontWeight.w700),
+                  style: tokens.typography.body1.copyWith(
+                    color: colors.tooltipText,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               if (onClose != null)
@@ -183,20 +202,32 @@ class _FullCard extends StatelessWidget {
                   child: InkWell(
                     onTap: onClose,
                     borderRadius: BorderRadius.circular(dimensions.radiusFull),
-                    child: Icon(Icons.close, size: dimensions.iconSizeMedium, color: colors.tooltipText),
+                    child: Icon(
+                      Icons.close,
+                      size: dimensions.iconSizeMedium,
+                      color: colors.tooltipText,
+                    ),
                   ),
                 ),
             ],
           ),
           SizedBox(height: dimensions.space4),
-          Text(description, style: tokens.typography.body2.copyWith(color: colors.tooltipText)),
+          Text(
+            description,
+            style: tokens.typography.body2.copyWith(color: colors.tooltipText),
+          ),
           if (showFooter) ...[
             SizedBox(height: dimensions.space12),
             Row(
               children: [
                 if (stepLabel != null)
                   Expanded(
-                    child: Text(stepLabel!, style: tokens.typography.caption1.copyWith(color: colors.tooltipText)),
+                    child: Text(
+                      stepLabel!,
+                      style: tokens.typography.caption1.copyWith(
+                        color: colors.tooltipText,
+                      ),
+                    ),
                   ),
                 if (actionLabel != null)
                   Material(
@@ -206,7 +237,10 @@ class _FullCard extends StatelessWidget {
                       onTap: onAction,
                       borderRadius: BorderRadius.circular(dimensions.radiusMd),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: dimensions.space12, vertical: dimensions.space6),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: dimensions.space12,
+                          vertical: dimensions.space6,
+                        ),
                         child: Text(
                           actionLabel!,
                           style: tokens.typography.caption1.copyWith(

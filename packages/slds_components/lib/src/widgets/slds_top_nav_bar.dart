@@ -20,8 +20,8 @@ class SldsTopNavBar extends StatelessWidget {
     this.onMenu,
     this.style = SldsTopNavBarStyle.light,
     this.color,
-  })  : totalSteps = null,
-        currentStep = null;
+  }) : totalSteps = null,
+       currentStep = null;
 
   /// A bar showing a segmented step-progress indicator instead of a title
   /// (e.g. a multi-page form's position) between the back and menu icons.
@@ -62,10 +62,15 @@ class SldsTopNavBar extends StatelessWidget {
     final foreground = dark ? Colors.white : colors.textPrimary;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: dimensions.space16, vertical: dimensions.space12),
+      padding: EdgeInsets.symmetric(
+        horizontal: dimensions.space16,
+        vertical: dimensions.space12,
+      ),
       decoration: BoxDecoration(
         color: dark ? Colors.black : colors.surfaceCard,
-        border: dark ? null : Border(bottom: BorderSide(color: colors.borderDefault)),
+        border: dark
+            ? null
+            : Border(bottom: BorderSide(color: colors.borderDefault)),
       ),
       child: SafeArea(
         bottom: false,
@@ -110,7 +115,12 @@ class SldsTopNavBar extends StatelessWidget {
 }
 
 class _IconSlot extends StatelessWidget {
-  const _IconSlot({required this.icon, required this.onTap, required this.color, required this.semanticLabel});
+  const _IconSlot({
+    required this.icon,
+    required this.onTap,
+    required this.color,
+    required this.semanticLabel,
+  });
 
   final IconData icon;
   final VoidCallback? onTap;

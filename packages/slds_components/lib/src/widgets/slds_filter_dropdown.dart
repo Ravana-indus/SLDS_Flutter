@@ -78,8 +78,11 @@ class SldsFilterDropdown extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const figmaReferenceWidth = 280.0;
-        final requestedWidth = width ??
-            (constraints.hasBoundedWidth ? constraints.maxWidth : figmaReferenceWidth);
+        final requestedWidth =
+            width ??
+            (constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
             ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
             : requestedWidth;
@@ -129,7 +132,9 @@ class SldsFilterDropdown extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 option,
-                                style: tokens.typography.body1.copyWith(color: colors.textPrimary),
+                                style: tokens.typography.body1.copyWith(
+                                  color: colors.textPrimary,
+                                ),
                               ),
                             ),
                           ],

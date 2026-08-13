@@ -4,12 +4,13 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
-  testWidgets('renders the title, back chevron, and menu icon', (
-    tester,
-  ) async {
+  testWidgets('renders the title, back chevron, and menu icon', (tester) async {
     await pump(
       tester,
       SldsTopNavBar(title: 'Page Title', onBack: () {}, onMenu: () {}),
@@ -22,7 +23,10 @@ void main() {
 
   testWidgets('tapping back invokes onBack', (tester) async {
     var tapped = false;
-    await pump(tester, SldsTopNavBar(title: 'Page Title', onBack: () => tapped = true));
+    await pump(
+      tester,
+      SldsTopNavBar(title: 'Page Title', onBack: () => tapped = true),
+    );
 
     await tester.tap(find.byIcon(Icons.chevron_left));
     expect(tapped, isTrue);
@@ -30,7 +34,10 @@ void main() {
 
   testWidgets('tapping menu invokes onMenu', (tester) async {
     var tapped = false;
-    await pump(tester, SldsTopNavBar(title: 'Page Title', onMenu: () => tapped = true));
+    await pump(
+      tester,
+      SldsTopNavBar(title: 'Page Title', onMenu: () => tapped = true),
+    );
 
     await tester.tap(find.byIcon(Icons.menu));
     expect(tapped, isTrue);
@@ -56,28 +63,41 @@ void main() {
 
     expect(find.text('Page Title'), findsNothing);
     final containers = tester.widgetList<Container>(
-      find.descendant(of: find.byType(Row).last, matching: find.byType(Container)),
+      find.descendant(
+        of: find.byType(Row).last,
+        matching: find.byType(Container),
+      ),
     );
     expect(containers.length, greaterThanOrEqualTo(6));
   });
 
-  testWidgets('.progress: segments before currentStep are filled with the accent', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      const SldsTopNavBar.progress(totalSteps: 4, currentStep: 2),
-    );
+  testWidgets(
+    '.progress: segments before currentStep are filled with the accent',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsTopNavBar.progress(totalSteps: 4, currentStep: 2),
+      );
 
-    final segments = tester
-        .widgetList<Container>(find.descendant(of: find.byType(Row).last, matching: find.byType(Container)))
-        .where((c) => c.decoration is BoxDecoration)
-        .toList();
+      final segments = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(Row).last,
+              matching: find.byType(Container),
+            ),
+          )
+          .where((c) => c.decoration is BoxDecoration)
+          .toList();
 
-    final theme = SldsColorTokens.light();
-    final filled = segments.where((c) => (c.decoration! as BoxDecoration).color == theme.buttonPrimaryBackground);
-    expect(filled.length, 2);
-  });
+      final theme = SldsColorTokens.light();
+      final filled = segments.where(
+        (c) =>
+            (c.decoration! as BoxDecoration).color ==
+            theme.buttonPrimaryBackground,
+      );
+      expect(filled.length, 2);
+    },
+  );
 
   testWidgets('dark style renders a solid black background', (tester) async {
     await pump(

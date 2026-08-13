@@ -44,13 +44,21 @@ class SldsErrorState extends StatelessWidget {
     VoidCallback? onAction,
   }) {
     final (defaultCode, defaultTitle, defaultDescription) = switch (kind) {
-      SldsErrorKind.notFound => ('404', 'Page not found', 'Sorry we were unable to find that page'),
+      SldsErrorKind.notFound => (
+        '404',
+        'Page not found',
+        'Sorry we were unable to find that page',
+      ),
       SldsErrorKind.serverError => (
-          '500',
-          "This page isn't working",
-          "We apologise and are fixing the problem. Please try again later.",
-        ),
-      SldsErrorKind.unauthorized => ('401', 'Unauthorized', "Something has gone wrong on the app's server"),
+        '500',
+        "This page isn't working",
+        "We apologise and are fixing the problem. Please try again later.",
+      ),
+      SldsErrorKind.unauthorized => (
+        '401',
+        'Unauthorized',
+        "Something has gone wrong on the app's server",
+      ),
     };
     return SldsErrorState(
       key: key,
@@ -97,26 +105,36 @@ class SldsErrorState extends StatelessWidget {
               Text(
                 code!,
                 textAlign: TextAlign.center,
-                style: tokens.typography.display2.copyWith(color: colors.textTertiary),
+                style: tokens.typography.display2.copyWith(
+                  color: colors.textTertiary,
+                ),
               ),
               SizedBox(height: dimensions.space8),
             ],
             Text(
               title,
               textAlign: TextAlign.center,
-              style: tokens.typography.heading3.copyWith(color: colors.textPrimary),
+              style: tokens.typography.heading3.copyWith(
+                color: colors.textPrimary,
+              ),
             ),
             if (description != null) ...[
               SizedBox(height: dimensions.space8),
               Text(
                 description!,
                 textAlign: TextAlign.center,
-                style: tokens.typography.body2.copyWith(color: colors.textSecondary),
+                style: tokens.typography.body2.copyWith(
+                  color: colors.textSecondary,
+                ),
               ),
             ],
             if (actionLabel != null && onAction != null) ...[
               SizedBox(height: dimensions.space24),
-              SldsButton(label: actionLabel!, onPressed: onAction, variant: SldsButtonVariant.secondary),
+              SldsButton(
+                label: actionLabel!,
+                onPressed: onAction,
+                variant: SldsButtonVariant.secondary,
+              ),
             ],
           ],
         ),
@@ -143,7 +161,10 @@ class _ErrorIllustration extends StatelessWidget {
     final (IconData baseIcon, IconData badgeIcon) = switch (kind) {
       SldsErrorKind.notFound => (Icons.description_outlined, Icons.search),
       SldsErrorKind.serverError => (Icons.cloud_outlined, Icons.dns_outlined),
-      SldsErrorKind.unauthorized => (Icons.description_outlined, Icons.lock_outline),
+      SldsErrorKind.unauthorized => (
+        Icons.description_outlined,
+        Icons.lock_outline,
+      ),
     };
 
     return SizedBox(
@@ -155,7 +176,10 @@ class _ErrorIllustration extends StatelessWidget {
           Container(
             width: 96,
             height: 96,
-            decoration: BoxDecoration(color: colors.surfaceHover, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: colors.surfaceHover,
+              shape: BoxShape.circle,
+            ),
           ),
           Icon(baseIcon, size: 48, color: colors.textTertiary),
           Positioned(

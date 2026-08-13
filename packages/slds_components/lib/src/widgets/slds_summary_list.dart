@@ -20,7 +20,11 @@ enum SldsSummaryBadgeStatus {
 /// One label/value row inside [SldsSummaryList]. Pass [badgeStatus] to
 /// render [value] as a status pill instead of plain text.
 class SldsSummaryRow {
-  const SldsSummaryRow({required this.label, required this.value, this.badgeStatus});
+  const SldsSummaryRow({
+    required this.label,
+    required this.value,
+    this.badgeStatus,
+  });
 
   final String label;
   final String value;
@@ -51,8 +55,11 @@ class SldsSummaryList extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const figmaReferenceWidth = 400.0;
-        final requestedWidth = width ??
-            (constraints.hasBoundedWidth ? constraints.maxWidth : figmaReferenceWidth);
+        final requestedWidth =
+            width ??
+            (constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
             ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
             : requestedWidth;
@@ -98,17 +105,30 @@ class _SummaryRowTile extends StatelessWidget {
       child: Container(
         width: double.infinity,
         color: colors.surfacePage,
-        padding: EdgeInsets.symmetric(horizontal: dimensions.space16, vertical: dimensions.space8),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimensions.space16,
+          vertical: dimensions.space8,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(row.label, style: tokens.typography.body2.copyWith(color: colors.textSecondary)),
+            Text(
+              row.label,
+              style: tokens.typography.body2.copyWith(
+                color: colors.textSecondary,
+              ),
+            ),
             SizedBox(height: dimensions.space4),
             if (row.badgeStatus != null)
               _StatusBadge(text: row.value, status: row.badgeStatus!)
             else
-              Text(row.value, style: tokens.typography.body1.copyWith(color: colors.textPrimary)),
+              Text(
+                row.value,
+                style: tokens.typography.body1.copyWith(
+                  color: colors.textPrimary,
+                ),
+              ),
           ],
         ),
       ),
@@ -129,20 +149,53 @@ class _StatusBadge extends StatelessWidget {
     final dimensions = tokens.dimensions;
 
     final (Color background, Color foreground) = switch (status) {
-      SldsSummaryBadgeStatus.pending => (colors.badgePendingBackground, colors.badgePendingText),
-      SldsSummaryBadgeStatus.error => (colors.badgeErrorBackground, colors.badgeErrorText),
-      SldsSummaryBadgeStatus.submitted => (colors.badgeSubmittedBackground, colors.badgeSubmittedText),
-      SldsSummaryBadgeStatus.inReview => (colors.badgeInReviewBackground, colors.badgeInReviewText),
-      SldsSummaryBadgeStatus.approved => (colors.badgeApprovedBackground, colors.badgeApprovedText),
-      SldsSummaryBadgeStatus.escalated => (colors.badgeEscalatedBackground, colors.badgeEscalatedText),
-      SldsSummaryBadgeStatus.onHold => (colors.badgeOnHoldBackground, colors.badgeOnHoldText),
-      SldsSummaryBadgeStatus.neutral => (colors.badgeNeutralBackground, colors.badgeNeutralText),
+      SldsSummaryBadgeStatus.pending => (
+        colors.badgePendingBackground,
+        colors.badgePendingText,
+      ),
+      SldsSummaryBadgeStatus.error => (
+        colors.badgeErrorBackground,
+        colors.badgeErrorText,
+      ),
+      SldsSummaryBadgeStatus.submitted => (
+        colors.badgeSubmittedBackground,
+        colors.badgeSubmittedText,
+      ),
+      SldsSummaryBadgeStatus.inReview => (
+        colors.badgeInReviewBackground,
+        colors.badgeInReviewText,
+      ),
+      SldsSummaryBadgeStatus.approved => (
+        colors.badgeApprovedBackground,
+        colors.badgeApprovedText,
+      ),
+      SldsSummaryBadgeStatus.escalated => (
+        colors.badgeEscalatedBackground,
+        colors.badgeEscalatedText,
+      ),
+      SldsSummaryBadgeStatus.onHold => (
+        colors.badgeOnHoldBackground,
+        colors.badgeOnHoldText,
+      ),
+      SldsSummaryBadgeStatus.neutral => (
+        colors.badgeNeutralBackground,
+        colors.badgeNeutralText,
+      ),
     };
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: dimensions.space12, vertical: dimensions.space4),
-      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(dimensions.radiusFull)),
-      child: Text(text, style: tokens.typography.caption1.copyWith(color: foreground)),
+      padding: EdgeInsets.symmetric(
+        horizontal: dimensions.space12,
+        vertical: dimensions.space4,
+      ),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(dimensions.radiusFull),
+      ),
+      child: Text(
+        text,
+        style: tokens.typography.caption1.copyWith(color: foreground),
+      ),
     );
   }
 }

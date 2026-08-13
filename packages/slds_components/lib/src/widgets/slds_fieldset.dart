@@ -62,13 +62,15 @@ class SldsFieldset extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final gap = spacing ?? dimensions.space16;
-    final legendColor = enabled ? colors.textPrimary : colors.disabledForeground;
+    final legendColor = enabled
+        ? colors.textPrimary
+        : colors.disabledForeground;
     final supportText = _hasError ? errorText : helperText;
     final supportColor = !enabled
         ? colors.disabledForeground
         : _hasError
-            ? colors.error
-            : colors.textSecondary;
+        ? colors.error
+        : colors.textSecondary;
 
     return Semantics(
       container: true,
@@ -81,12 +83,17 @@ class SldsFieldset extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(legend, style: tokens.typography.heading4.copyWith(color: legendColor)),
+              Text(
+                legend,
+                style: tokens.typography.heading4.copyWith(color: legendColor),
+              ),
               if (required)
                 Text(
                   '*',
                   style: tokens.typography.heading4.copyWith(
-                    color: enabled ? colors.inputBorderError : colors.disabledForeground,
+                    color: enabled
+                        ? colors.inputBorderError
+                        : colors.disabledForeground,
                   ),
                 ),
             ],
@@ -96,7 +103,9 @@ class SldsFieldset extends StatelessWidget {
             Text(
               description!,
               style: tokens.typography.body2.copyWith(
-                color: enabled ? colors.textSecondary : colors.disabledForeground,
+                color: enabled
+                    ? colors.textSecondary
+                    : colors.disabledForeground,
               ),
             ),
           ],
@@ -107,7 +116,10 @@ class SldsFieldset extends StatelessWidget {
           ],
           if (supportText != null) ...[
             SizedBox(height: dimensions.space8),
-            Text(supportText, style: tokens.typography.caption1.copyWith(color: supportColor)),
+            Text(
+              supportText,
+              style: tokens.typography.caption1.copyWith(color: supportColor),
+            ),
           ],
         ],
       ),

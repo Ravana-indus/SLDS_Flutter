@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: child)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: child),
+    ),
+  );
 
   testWidgets('renders a plain line when child is null', (tester) async {
     await pump(tester, const SldsDivider());
@@ -13,7 +16,9 @@ void main() {
     expect(find.byType(Row), findsNothing);
   });
 
-  testWidgets('renders child centered between two rule segments', (tester) async {
+  testWidgets('renders child centered between two rule segments', (
+    tester,
+  ) async {
     await pump(tester, const SldsDivider(child: Text('Button')));
     expect(find.byType(Divider), findsNWidgets(2));
     expect(find.text('Button'), findsOneWidget);

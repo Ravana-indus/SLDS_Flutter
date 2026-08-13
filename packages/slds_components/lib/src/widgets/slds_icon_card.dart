@@ -82,8 +82,12 @@ class _SldsIconCardState extends State<SldsIconCard> {
       SldsIconCardState.hover => colors.surfaceHover,
       _ => colors.surfaceCard,
     };
-    final Color titleColor = disabled ? colors.disabledForeground : colors.textPrimary;
-    final Color descriptionColor = disabled ? colors.disabledForeground : colors.textSecondary;
+    final Color titleColor = disabled
+        ? colors.disabledForeground
+        : colors.textPrimary;
+    final Color descriptionColor = disabled
+        ? colors.disabledForeground
+        : colors.textSecondary;
     final (double height, double iconSize) = switch (widget.size) {
       SldsIconCardSize.small => (158.0, 40.0),
       SldsIconCardSize.large => (220.0, 64.0),
@@ -103,7 +107,9 @@ class _SldsIconCardState extends State<SldsIconCard> {
           final width = switch (widget.size) {
             SldsIconCardSize.small => 150.0,
             SldsIconCardSize.large =>
-              constraints.hasBoundedWidth ? constraints.maxWidth : figmaLargeWidth,
+              constraints.hasBoundedWidth
+                  ? constraints.maxWidth
+                  : figmaLargeWidth,
           };
 
           return SizedBox(
@@ -124,11 +130,15 @@ class _SldsIconCardState extends State<SldsIconCard> {
                       borderRadius: BorderRadius.circular(dimensions.radius2xl),
                       child: InkWell(
                         onTap: disabled ? null : widget.onTap,
-                        borderRadius: BorderRadius.circular(dimensions.radius2xl),
+                        borderRadius: BorderRadius.circular(
+                          dimensions.radius2xl,
+                        ),
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: colors.borderDecorative),
-                            borderRadius: BorderRadius.circular(dimensions.radius2xl),
+                            borderRadius: BorderRadius.circular(
+                              dimensions.radius2xl,
+                            ),
                           ),
                           padding: EdgeInsets.all(dimensions.space12),
                           // badgeLabel needs room to float above the icon
@@ -140,14 +150,20 @@ class _SldsIconCardState extends State<SldsIconCard> {
                             children: [
                               Opacity(
                                 opacity: disabled ? 0.5 : 1,
-                                child: SizedBox(width: iconSize, height: iconSize, child: widget.icon),
+                                child: SizedBox(
+                                  width: iconSize,
+                                  height: iconSize,
+                                  child: widget.icon,
+                                ),
                               ),
                               SizedBox(height: dimensions.space8),
                               Text(
                                 widget.title,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: tokens.typography.body1.copyWith(color: titleColor),
+                                style: tokens.typography.body1.copyWith(
+                                  color: titleColor,
+                                ),
                               ),
                               if (widget.description != null) ...[
                                 SizedBox(height: dimensions.space4),
@@ -155,7 +171,9 @@ class _SldsIconCardState extends State<SldsIconCard> {
                                   widget.description!,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: tokens.typography.caption1.copyWith(color: descriptionColor),
+                                  style: tokens.typography.caption1.copyWith(
+                                    color: descriptionColor,
+                                  ),
                                 ),
                               ],
                             ],
@@ -176,7 +194,9 @@ class _SldsIconCardState extends State<SldsIconCard> {
                       ),
                       decoration: BoxDecoration(
                         color: colors.notificationBadgeBackground,
-                        borderRadius: BorderRadius.circular(dimensions.radiusLg),
+                        borderRadius: BorderRadius.circular(
+                          dimensions.radiusLg,
+                        ),
                       ),
                       child: Text(
                         widget.badgeLabel!,

@@ -108,13 +108,24 @@ class SldsButton extends StatelessWidget {
     return ButtonStyle(
       padding: WidgetStatePropertyAll(padding),
       shape: WidgetStatePropertyAll(shape),
-      backgroundColor: WidgetStateProperty.resolveWith((states) => _background(context, states)),
-      foregroundColor: WidgetStateProperty.resolveWith(
-        (states) => _foreground(context, selected: !states.contains(WidgetState.disabled)),
+      backgroundColor: WidgetStateProperty.resolveWith(
+        (states) => _background(context, states),
       ),
-      side: WidgetStateProperty.resolveWith((states) => _border(context, states)),
-      overlayColor: WidgetStateProperty.resolveWith((states) => _overlay(context, states)),
-      minimumSize: WidgetStatePropertyAll(Size(minWidth, SldsBreakpoints.isMobile(context) ? 52.0 : 44.0)),
+      foregroundColor: WidgetStateProperty.resolveWith(
+        (states) => _foreground(
+          context,
+          selected: !states.contains(WidgetState.disabled),
+        ),
+      ),
+      side: WidgetStateProperty.resolveWith(
+        (states) => _border(context, states),
+      ),
+      overlayColor: WidgetStateProperty.resolveWith(
+        (states) => _overlay(context, states),
+      ),
+      minimumSize: WidgetStatePropertyAll(
+        Size(minWidth, SldsBreakpoints.isMobile(context) ? 52.0 : 44.0),
+      ),
       // Without this, Material pads the tap target to its own 48px a11y
       // minimum regardless of minimumSize, overriding the 44px SLDS spec.
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -155,23 +166,41 @@ class SldsButton extends StatelessWidget {
     );
   }
 
-  Widget _buttonForVariant(BuildContext context, Widget content, {required double minWidth}) {
+  Widget _buttonForVariant(
+    BuildContext context,
+    Widget content, {
+    required double minWidth,
+  }) {
     final style = _buildStyle(
       context,
-      padding: const EdgeInsets.symmetric(horizontal: SldsSpacing.lg, vertical: SldsSpacing.md),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SldsSpacing.sm)),
+      padding: const EdgeInsets.symmetric(
+        horizontal: SldsSpacing.lg,
+        vertical: SldsSpacing.md,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(SldsSpacing.sm),
+      ),
       minWidth: minWidth,
     );
 
     return switch (variant) {
       SldsButtonVariant.primary ||
-      SldsButtonVariant.destructive =>
-        FilledButton(onPressed: _enabled ? onPressed : null, style: style, child: content),
+      SldsButtonVariant.destructive => FilledButton(
+        onPressed: _enabled ? onPressed : null,
+        style: style,
+        child: content,
+      ),
       SldsButtonVariant.secondary ||
-      SldsButtonVariant.tertiary =>
-        OutlinedButton(onPressed: _enabled ? onPressed : null, style: style, child: content),
-      SldsButtonVariant.text =>
-        TextButton(onPressed: _enabled ? onPressed : null, style: style, child: content),
+      SldsButtonVariant.tertiary => OutlinedButton(
+        onPressed: _enabled ? onPressed : null,
+        style: style,
+        child: content,
+      ),
+      SldsButtonVariant.text => TextButton(
+        onPressed: _enabled ? onPressed : null,
+        style: style,
+        child: content,
+      ),
     };
   }
 
@@ -180,7 +209,9 @@ class SldsButton extends StatelessWidget {
   Color _baseColor(BuildContext context) {
     if (color != null) return color!;
     final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive ? scheme.error : scheme.primary;
+    return variant == SldsButtonVariant.destructive
+        ? scheme.error
+        : scheme.primary;
   }
 
   Color _onBaseColor(BuildContext context) {
@@ -190,14 +221,17 @@ class SldsButton extends StatelessWidget {
           : Colors.black;
     }
     final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive ? scheme.onError : scheme.onPrimary;
+    return variant == SldsButtonVariant.destructive
+        ? scheme.onError
+        : scheme.onPrimary;
   }
 
   Color? _background(BuildContext context, Set<WidgetState> states) {
     if (variant == SldsButtonVariant.text) {
       return null; // text style stays transparent in both light and dark
     }
-    if (variant == SldsButtonVariant.secondary || variant == SldsButtonVariant.tertiary) {
+    if (variant == SldsButtonVariant.secondary ||
+        variant == SldsButtonVariant.tertiary) {
       // Light mode: transparent-with-border. Dark mode: filled with a dark
       // surface tone (per the SLDS dark-mode spec) — border stays too.
       final theme = Theme.of(context);
@@ -206,8 +240,11 @@ class SldsButton extends StatelessWidget {
       if (states.contains(WidgetState.disabled)) {
         return container.withValues(alpha: SldsColors.disabledOpacity);
       }
-      if (states.contains(WidgetState.pressed)) return Color.lerp(container, Colors.white, 0.08);
-      if (states.contains(WidgetState.hovered) || states.contains(WidgetState.focused)) {
+      if (states.contains(WidgetState.pressed)) {
+        return Color.lerp(container, Colors.white, 0.08);
+      }
+      if (states.contains(WidgetState.hovered) ||
+          states.contains(WidgetState.focused)) {
         return Color.lerp(container, Colors.white, 0.04);
       }
       return container;
@@ -219,38 +256,56 @@ class SldsButton extends StatelessWidget {
     if (states.contains(WidgetState.pressed)) {
       return Color.lerp(base, Colors.black, 0.16);
     }
-    if (states.contains(WidgetState.hovered) || states.contains(WidgetState.focused)) {
+    if (states.contains(WidgetState.hovered) ||
+        states.contains(WidgetState.focused)) {
       return Color.lerp(base, Colors.black, 0.08);
     }
     return base;
   }
 
   Color _foreground(BuildContext context, {required bool selected}) {
-    final isFilled = variant == SldsButtonVariant.primary || variant == SldsButtonVariant.destructive;
+    final isFilled =
+        variant == SldsButtonVariant.primary ||
+        variant == SldsButtonVariant.destructive;
     if (!selected) {
-      return Theme.of(context).colorScheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
+      return Theme.of(
+        context,
+      ).colorScheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
     }
     return isFilled ? _onBaseColor(context) : _baseColor(context);
   }
 
   BorderSide? _border(BuildContext context, Set<WidgetState> states) {
-    if (variant != SldsButtonVariant.secondary && variant != SldsButtonVariant.tertiary) {
+    if (variant != SldsButtonVariant.secondary &&
+        variant != SldsButtonVariant.tertiary) {
       return null;
     }
     final outline = Theme.of(context).colorScheme.outline;
     if (states.contains(WidgetState.disabled)) {
-      return BorderSide(color: outline.withValues(alpha: SldsColors.disabledOpacity));
+      return BorderSide(
+        color: outline.withValues(alpha: SldsColors.disabledOpacity),
+      );
     }
-    final color = variant == SldsButtonVariant.tertiary ? outline : _baseColor(context);
+    final color = variant == SldsButtonVariant.tertiary
+        ? outline
+        : _baseColor(context);
     return BorderSide(color: color);
   }
 
   Color _overlay(BuildContext context, Set<WidgetState> states) {
-    final isFilled = variant == SldsButtonVariant.primary || variant == SldsButtonVariant.destructive;
+    final isFilled =
+        variant == SldsButtonVariant.primary ||
+        variant == SldsButtonVariant.destructive;
     final base = isFilled ? _onBaseColor(context) : _baseColor(context);
-    if (states.contains(WidgetState.pressed)) return base.withValues(alpha: 0.12);
-    if (states.contains(WidgetState.hovered)) return base.withValues(alpha: 0.08);
-    if (states.contains(WidgetState.focused)) return base.withValues(alpha: 0.10);
+    if (states.contains(WidgetState.pressed)) {
+      return base.withValues(alpha: 0.12);
+    }
+    if (states.contains(WidgetState.hovered)) {
+      return base.withValues(alpha: 0.08);
+    }
+    if (states.contains(WidgetState.focused)) {
+      return base.withValues(alpha: 0.10);
+    }
     return Colors.transparent;
   }
 }

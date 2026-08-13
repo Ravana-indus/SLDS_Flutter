@@ -59,8 +59,11 @@ class SldsNotificationCard extends StatelessWidget {
     final content = LayoutBuilder(
       builder: (context, constraints) {
         const figmaReferenceWidth = 375.0;
-        final requestedWidth = width ??
-            (constraints.hasBoundedWidth ? constraints.maxWidth : figmaReferenceWidth);
+        final requestedWidth =
+            width ??
+            (constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
             ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
             : requestedWidth;
@@ -91,12 +94,19 @@ class SldsNotificationCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: dimensions.space4),
-                    Text(body, style: tokens.typography.body2.copyWith(color: colors.textSecondary)),
+                    Text(
+                      body,
+                      style: tokens.typography.body2.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                    ),
                     if (timestamp != null) ...[
                       SizedBox(height: dimensions.space8),
                       Text(
                         timestamp!,
-                        style: tokens.typography.caption1.copyWith(color: colors.textTertiary),
+                        style: tokens.typography.caption1.copyWith(
+                          color: colors.textTertiary,
+                        ),
                       ),
                     ],
                     if (actionLabel != null) ...[
@@ -108,13 +118,15 @@ class SldsNotificationCard extends StatelessWidget {
                       // to content-sized. IntrinsicWidth doesn't work here:
                       // SldsButton has its own LayoutBuilder inside, and
                       // LayoutBuilder can't answer intrinsic-size queries.
-                      Wrap(children: [
-                        SldsButton(
-                          label: actionLabel!,
-                          onPressed: onAction,
-                          variant: SldsButtonVariant.primary,
-                        ),
-                      ]),
+                      Wrap(
+                        children: [
+                          SldsButton(
+                            label: actionLabel!,
+                            onPressed: onAction,
+                            variant: SldsButtonVariant.primary,
+                          ),
+                        ],
+                      ),
                     ],
                   ],
                 ),
@@ -124,7 +136,10 @@ class SldsNotificationCard extends StatelessWidget {
                 Container(
                   width: 8,
                   height: 8,
-                  decoration: BoxDecoration(color: colors.info, shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: colors.info,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ],
             ],
@@ -164,10 +179,26 @@ class _TypeIcon extends StatelessWidget {
     final colors = tokens.colors;
 
     final (Color background, Color foreground, IconData icon) = switch (type) {
-      SldsNotificationType.document => (colors.surfaceCard, colors.textPrimary, Icons.description_outlined),
-      SldsNotificationType.warning => (colors.badgePendingBackground, colors.badgePendingText, Icons.warning_amber_rounded),
-      SldsNotificationType.success => (colors.badgeSuccessBackground, colors.badgeSuccessText, Icons.check_circle_outline),
-      SldsNotificationType.error => (colors.badgeErrorBackground, colors.badgeErrorText, Icons.cancel_outlined),
+      SldsNotificationType.document => (
+        colors.surfaceCard,
+        colors.textPrimary,
+        Icons.description_outlined,
+      ),
+      SldsNotificationType.warning => (
+        colors.badgePendingBackground,
+        colors.badgePendingText,
+        Icons.warning_amber_rounded,
+      ),
+      SldsNotificationType.success => (
+        colors.badgeSuccessBackground,
+        colors.badgeSuccessText,
+        Icons.check_circle_outline,
+      ),
+      SldsNotificationType.error => (
+        colors.badgeErrorBackground,
+        colors.badgeErrorText,
+        Icons.cancel_outlined,
+      ),
     };
 
     return Container(
@@ -176,7 +207,9 @@ class _TypeIcon extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         shape: BoxShape.circle,
-        border: type == SldsNotificationType.document ? Border.all(color: colors.borderDecorative) : null,
+        border: type == SldsNotificationType.document
+            ? Border.all(color: colors.borderDecorative)
+            : null,
       ),
       alignment: Alignment.center,
       child: Icon(icon, size: 20, color: foreground),

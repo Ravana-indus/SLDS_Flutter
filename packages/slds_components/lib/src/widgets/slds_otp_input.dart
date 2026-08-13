@@ -96,7 +96,8 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
     super.dispose();
   }
 
-  bool get _hasError => widget.errorText != null && widget.errorText!.isNotEmpty;
+  bool get _hasError =>
+      widget.errorText != null && widget.errorText!.isNotEmpty;
 
   String get _code => controllers.map((c) => c.text).join();
 
@@ -179,8 +180,12 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
     final Color borderColor;
     final Color textColor;
     if (!widget.enabled) {
-      borderColor = scheme.outline.withValues(alpha: SldsColors.disabledOpacity);
-      textColor = scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
+      borderColor = scheme.outline.withValues(
+        alpha: SldsColors.disabledOpacity,
+      );
+      textColor = scheme.onSurface.withValues(
+        alpha: SldsColors.disabledOpacity,
+      );
     } else if (_hasError) {
       // Only the border goes red — the digit itself stays normal ink.
       borderColor = scheme.error;
@@ -198,7 +203,8 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
       textColor = scheme.onSurface;
     }
 
-    final radius = widget.size.width / 3.5; // scales with box size, ~16 at large
+    final radius =
+        widget.size.width / 3.5; // scales with box size, ~16 at large
     final fontSize = widget.size.width / 2.5; // ~22 at large, ~18 at small
 
     return SizedBox(
@@ -217,14 +223,16 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
           maxLength: widget.length, // allows pasting the full code into one box
           cursorColor: borderColor,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: textColor,
-                fontSize: fontSize,
-                fontWeight: FontWeight.w600,
-              ),
+            color: textColor,
+            fontSize: fontSize,
+            fontWeight: FontWeight.w600,
+          ),
           decoration: InputDecoration(
             counterText: '',
             filled: true,
-            fillColor: widget.enabled ? scheme.surface : scheme.onSurface.withValues(alpha: 0.04),
+            fillColor: widget.enabled
+                ? scheme.surface
+                : scheme.onSurface.withValues(alpha: 0.04),
             contentPadding: EdgeInsets.zero,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(radius),

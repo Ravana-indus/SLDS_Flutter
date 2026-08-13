@@ -14,7 +14,12 @@ import '../theme/slds_tokens.dart';
 /// Not a loading spinner — [value] must be known/derivable. Use
 /// [CircularProgressIndicator] for unknown-duration work.
 class SldsProgressBar extends StatelessWidget {
-  const SldsProgressBar({super.key, required this.value, this.showLabel = true, this.color});
+  const SldsProgressBar({
+    super.key,
+    required this.value,
+    this.showLabel = true,
+    this.color,
+  });
 
   /// Progress fraction, 0.0-1.0. Values outside that range are clamped.
   final double value;
@@ -49,7 +54,9 @@ class SldsProgressBar extends StatelessWidget {
                         height: 6,
                         decoration: BoxDecoration(
                           color: colors.surfaceHover,
-                          borderRadius: BorderRadius.circular(dimensions.radiusFull),
+                          borderRadius: BorderRadius.circular(
+                            dimensions.radiusFull,
+                          ),
                         ),
                       ),
                       AnimatedContainer(
@@ -59,7 +66,9 @@ class SldsProgressBar extends StatelessWidget {
                         width: constraints.maxWidth * clamped,
                         decoration: BoxDecoration(
                           color: fill,
-                          borderRadius: BorderRadius.circular(dimensions.radiusFull),
+                          borderRadius: BorderRadius.circular(
+                            dimensions.radiusFull,
+                          ),
                         ),
                       ),
                     ],
@@ -74,7 +83,9 @@ class SldsProgressBar extends StatelessWidget {
                 child: Text(
                   '$percent%',
                   textAlign: TextAlign.right,
-                  style: tokens.typography.body1.copyWith(color: colors.textSecondary),
+                  style: tokens.typography.body1.copyWith(
+                    color: colors.textSecondary,
+                  ),
                 ),
               ),
             ],

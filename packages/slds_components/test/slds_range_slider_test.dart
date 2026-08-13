@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders a Slider with the given value/min/max', (tester) async {
     await pump(
@@ -55,7 +58,11 @@ void main() {
     var called = false;
     await pump(
       tester,
-      SldsRangeSlider(value: 0, enabled: false, onChanged: (_) => called = true),
+      SldsRangeSlider(
+        value: 0,
+        enabled: false,
+        onChanged: (_) => called = true,
+      ),
     );
 
     await tester.tap(find.byType(Slider));
@@ -64,7 +71,9 @@ void main() {
     expect(called, isFalse);
   });
 
-  testWidgets('divisions is forwarded to the underlying Slider', (tester) async {
+  testWidgets('divisions is forwarded to the underlying Slider', (
+    tester,
+  ) async {
     await pump(
       tester,
       SldsRangeSlider(value: 40, divisions: 4, onChanged: (_) {}),

@@ -48,53 +48,75 @@ class SldsPullToRefresh extends StatelessWidget {
       // refuses that, so the gesture would silently do nothing there
       // without this override. AlwaysScrollableScrollPhysics on top so it
       // still works when child content is shorter than the viewport.
-      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       slivers: [
         CupertinoSliverRefreshControl(
           onRefresh: onRefresh,
-          builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
-            final active = refreshState == RefreshIndicatorMode.armed ||
-                refreshState == RefreshIndicatorMode.refresh ||
-                refreshState == RefreshIndicatorMode.drag;
-            if (!active || pulledExtent <= 0) return const SizedBox.shrink();
+          builder:
+              (
+                context,
+                refreshState,
+                pulledExtent,
+                refreshTriggerPullDistance,
+                refreshIndicatorExtent,
+              ) {
+                final active =
+                    refreshState == RefreshIndicatorMode.armed ||
+                    refreshState == RefreshIndicatorMode.refresh ||
+                    refreshState == RefreshIndicatorMode.drag;
+                if (!active || pulledExtent <= 0) {
+                  return const SizedBox.shrink();
+                }
 
-            return Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: tokens.dimensions.space16,
-                  vertical: tokens.dimensions.space8,
-                ),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: tokens.dimensions.space12),
-                  decoration: BoxDecoration(
-                    color: dark ? Colors.black.withValues(alpha: 0.85) : colors.surfaceCard,
-                    borderRadius: BorderRadius.circular(tokens.dimensions.radius2xl),
-                    border: dark ? null : Border.all(color: colors.borderDefault),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CupertinoActivityIndicator(color: dark ? Colors.white : colors.textSecondary),
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: tokens.dimensions.space16,
+                      vertical: tokens.dimensions.space8,
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        vertical: tokens.dimensions.space12,
                       ),
-                      SizedBox(width: tokens.dimensions.space8),
-                      Text(
-                        loadingText,
-                        style: tokens.typography.body2.copyWith(
-                          color: dark ? Colors.white : colors.textSecondary,
+                      decoration: BoxDecoration(
+                        color: dark
+                            ? Colors.black.withValues(alpha: 0.85)
+                            : colors.surfaceCard,
+                        borderRadius: BorderRadius.circular(
+                          tokens.dimensions.radius2xl,
                         ),
+                        border: dark
+                            ? null
+                            : Border.all(color: colors.borderDefault),
                       ),
-                    ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CupertinoActivityIndicator(
+                              color: dark ? Colors.white : colors.textSecondary,
+                            ),
+                          ),
+                          SizedBox(width: tokens.dimensions.space8),
+                          Text(
+                            loadingText,
+                            style: tokens.typography.body2.copyWith(
+                              color: dark ? Colors.white : colors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
+                );
+              },
         ),
         SliverToBoxAdapter(child: child),
       ],

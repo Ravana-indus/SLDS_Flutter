@@ -68,10 +68,15 @@ class SldsBottomNav extends StatelessWidget {
     final accent = color ?? colors.buttonPrimaryBackground;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: dimensions.space8, vertical: dimensions.space8),
+      padding: EdgeInsets.symmetric(
+        horizontal: dimensions.space8,
+        vertical: dimensions.space8,
+      ),
       decoration: BoxDecoration(
         color: dark ? Colors.black : colors.surfaceCard,
-        border: dark ? null : Border(top: BorderSide(color: colors.borderDefault)),
+        border: dark
+            ? null
+            : Border(top: BorderSide(color: colors.borderDefault)),
       ),
       child: SafeArea(
         top: false,
@@ -158,17 +163,30 @@ class _NavItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: dimensions.space20, vertical: dimensions.space8),
-                decoration: BoxDecoration(color: pillColor, borderRadius: BorderRadius.circular(dimensions.radiusFull)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: dimensions.space20,
+                  vertical: dimensions.space8,
+                ),
+                decoration: BoxDecoration(
+                  color: pillColor,
+                  borderRadius: BorderRadius.circular(dimensions.radiusFull),
+                ),
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    Icon(item.icon, size: dimensions.iconSizeMedium, color: iconColor),
+                    Icon(
+                      item.icon,
+                      size: dimensions.iconSizeMedium,
+                      color: iconColor,
+                    ),
                     if (item.badgeCount != null && item.badgeCount! > 0)
                       Positioned(
                         right: -6,
                         top: -4,
-                        child: _CountBadge(count: item.badgeCount!, background: colors.notificationBadgeBackground),
+                        child: _CountBadge(
+                          count: item.badgeCount!,
+                          background: colors.notificationBadgeBackground,
+                        ),
                       ),
                   ],
                 ),
@@ -176,7 +194,10 @@ class _NavItem extends StatelessWidget {
               SizedBox(height: dimensions.space4),
               Text(
                 item.label,
-                style: tokens.typography.caption1.copyWith(color: labelColor, fontWeight: selected ? FontWeight.w600 : FontWeight.w400),
+                style: tokens.typography.caption1.copyWith(
+                  color: labelColor,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                ),
               ),
             ],
           ),
@@ -198,11 +219,18 @@ class _CountBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
       constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(9)),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(9),
+      ),
       alignment: Alignment.center,
       child: Text(
         label,
-        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('unchecked shows no icon', (tester) async {
     await pump(tester, SldsCheckbox(value: false, onChanged: (_) {}));
@@ -24,7 +27,10 @@ void main() {
 
   testWidgets('tapping unchecked calls onChanged(true)', (tester) async {
     bool? result;
-    await pump(tester, SldsCheckbox(value: false, onChanged: (v) => result = v));
+    await pump(
+      tester,
+      SldsCheckbox(value: false, onChanged: (v) => result = v),
+    );
 
     await tester.tap(find.byType(SldsCheckbox));
     expect(result, isTrue);
@@ -42,7 +48,11 @@ void main() {
     bool called = false;
     await pump(
       tester,
-      SldsCheckbox(value: false, enabled: false, onChanged: (_) => called = true),
+      SldsCheckbox(
+        value: false,
+        enabled: false,
+        onChanged: (_) => called = true,
+      ),
     );
 
     await tester.tap(find.byType(SldsCheckbox));
@@ -59,16 +69,30 @@ void main() {
   ) async {
     await pump(tester, SldsCheckbox(value: false, onChanged: (_) {}));
     var box = tester.widget<Container>(
-      find.descendant(of: find.byType(SldsCheckbox), matching: find.byType(Container)).first,
+      find
+          .descendant(
+            of: find.byType(SldsCheckbox),
+            matching: find.byType(Container),
+          )
+          .first,
     );
     expect(box.constraints?.maxWidth, 24);
 
     await pump(
       tester,
-      SldsCheckbox(value: false, onChanged: (_) {}, size: SldsCheckboxSize.small),
+      SldsCheckbox(
+        value: false,
+        onChanged: (_) {},
+        size: SldsCheckboxSize.small,
+      ),
     );
     box = tester.widget<Container>(
-      find.descendant(of: find.byType(SldsCheckbox), matching: find.byType(Container)).first,
+      find
+          .descendant(
+            of: find.byType(SldsCheckbox),
+            matching: find.byType(Container),
+          )
+          .first,
     );
     expect(box.constraints?.maxWidth, 20);
   });

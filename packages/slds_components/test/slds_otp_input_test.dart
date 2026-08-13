@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders `length` boxes, defaulting to 6', (tester) async {
     await pump(tester, const SldsOtpInput());
@@ -31,10 +34,7 @@ void main() {
     tester,
   ) async {
     String? value;
-    await pump(
-      tester,
-      SldsOtpInput(length: 4, onChanged: (v) => value = v),
-    );
+    await pump(tester, SldsOtpInput(length: 4, onChanged: (v) => value = v));
     final fields = find.byType(TextField);
 
     await tester.enterText(fields.at(0), '1');
@@ -66,10 +66,7 @@ void main() {
     tester,
   ) async {
     String? value;
-    await pump(
-      tester,
-      SldsOtpInput(length: 4, onChanged: (v) => value = v),
-    );
+    await pump(tester, SldsOtpInput(length: 4, onChanged: (v) => value = v));
 
     await tester.enterText(find.byType(TextField).first, '1234');
     await tester.pump();
@@ -77,18 +74,21 @@ void main() {
     expect(value, '1234');
   });
 
-  testWidgets('error state colors every box border red but keeps digits black', (
-    tester,
-  ) async {
-    await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
-    final theme = SldsTheme.light();
+  testWidgets(
+    'error state colors every box border red but keeps digits black',
+    (tester) async {
+      await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
+      final theme = SldsTheme.light();
 
-    for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
-      final border = field.decoration!.enabledBorder as OutlineInputBorder;
-      expect(border.borderSide.color, theme.colorScheme.error);
-      expect(field.style?.color, theme.colorScheme.onSurface);
-    }
-  });
+      for (final field in tester.widgetList<TextField>(
+        find.byType(TextField),
+      )) {
+        final border = field.decoration!.enabledBorder as OutlineInputBorder;
+        expect(border.borderSide.color, theme.colorScheme.error);
+        expect(field.style?.color, theme.colorScheme.onSurface);
+      }
+    },
+  );
 
   testWidgets('size controls box dimensions, defaulting to large (56x80)', (
     tester,
@@ -98,7 +98,10 @@ void main() {
     expect(box.width, 56);
     expect(box.height, 80);
 
-    await pump(tester, const SldsOtpInput(length: 2, size: SldsOtpInputSize.small));
+    await pump(
+      tester,
+      const SldsOtpInput(length: 2, size: SldsOtpInputSize.small),
+    );
     box = tester.widget<SizedBox>(find.byType(SizedBox).first);
     expect(box.width, 44);
     expect(box.height, 60);
@@ -128,9 +131,7 @@ void main() {
     expect(field.cursorColor, theme.colorScheme.primary);
   });
 
-  testWidgets('focus does not override error/success coloring', (
-    tester,
-  ) async {
+  testWidgets('focus does not override error/success coloring', (tester) async {
     await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
     final theme = SldsTheme.light();
 

@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders the label', (tester) async {
     await pump(
@@ -19,7 +22,11 @@ void main() {
     bool? result;
     await pump(
       tester,
-      SldsCheckButton(label: 'Option One', selected: false, onChanged: (v) => result = v),
+      SldsCheckButton(
+        label: 'Option One',
+        selected: false,
+        onChanged: (v) => result = v,
+      ),
     );
 
     await tester.tap(find.byType(SldsCheckButton));
@@ -30,14 +37,20 @@ void main() {
     bool? result;
     await pump(
       tester,
-      SldsCheckButton(label: 'Option One', selected: true, onChanged: (v) => result = v),
+      SldsCheckButton(
+        label: 'Option One',
+        selected: true,
+        onChanged: (v) => result = v,
+      ),
     );
 
     await tester.tap(find.byType(SldsCheckButton));
     expect(result, isFalse);
   });
 
-  testWidgets('selected renders filled with the accent background', (tester) async {
+  testWidgets('selected renders filled with the accent background', (
+    tester,
+  ) async {
     await pump(
       tester,
       SldsCheckButton(label: 'Option One', selected: true, onChanged: (_) {}),
@@ -48,7 +61,9 @@ void main() {
     expect(decoration.color, SldsColorTokens.light().buttonPrimaryBackground);
   });
 
-  testWidgets('unselected renders with a plain surface background', (tester) async {
+  testWidgets('unselected renders with a plain surface background', (
+    tester,
+  ) async {
     await pump(
       tester,
       SldsCheckButton(label: 'Option One', selected: false, onChanged: (_) {}),
@@ -76,7 +91,10 @@ void main() {
   });
 
   testWidgets('null onChanged is treated as non-interactive', (tester) async {
-    await pump(tester, const SldsCheckButton(label: 'Option One', selected: false));
+    await pump(
+      tester,
+      const SldsCheckButton(label: 'Option One', selected: false),
+    );
     await tester.tap(find.byType(SldsCheckButton)); // must not throw
   });
 }

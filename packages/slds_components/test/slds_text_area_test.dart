@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders label, required marker, hint, and 0/max counter', (
     tester,
@@ -46,12 +49,18 @@ void main() {
   });
 
   testWidgets('counter is hidden when maxLength is null', (tester) async {
-    await pump(tester, const SldsTextArea(label: 'Description', maxLength: null));
+    await pump(
+      tester,
+      const SldsTextArea(label: 'Description', maxLength: null),
+    );
     expect(find.textContaining('/'), findsNothing);
   });
 
   testWidgets('shows help text when there is no error', (tester) async {
-    await pump(tester, const SldsTextArea(label: 'Description', helpText: 'Help Text'));
+    await pump(
+      tester,
+      const SldsTextArea(label: 'Description', helpText: 'Help Text'),
+    );
     expect(find.text('Help Text'), findsOneWidget);
   });
 
@@ -76,14 +85,20 @@ void main() {
   });
 
   testWidgets('disabled field is not enabled', (tester) async {
-    await pump(tester, const SldsTextArea(label: 'Description', enabled: false));
+    await pump(
+      tester,
+      const SldsTextArea(label: 'Description', enabled: false),
+    );
     final field = tester.widget<TextField>(find.byType(TextField));
     expect(field.enabled, isFalse);
   });
 
   testWidgets('typing invokes onChanged', (tester) async {
     String? value;
-    await pump(tester, SldsTextArea(label: 'Description', onChanged: (v) => value = v));
+    await pump(
+      tester,
+      SldsTextArea(label: 'Description', onChanged: (v) => value = v),
+    );
 
     await tester.enterText(find.byType(TextFormField), 'hello world');
     expect(value, 'hello world');

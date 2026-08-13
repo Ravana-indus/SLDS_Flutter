@@ -4,13 +4,20 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders label, required marker, and hint', (tester) async {
     await pump(
       tester,
-      const SldsTextField(label: 'Email', isRequired: true, hintText: 'info@example.com'),
+      const SldsTextField(
+        label: 'Email',
+        isRequired: true,
+        hintText: 'info@example.com',
+      ),
     );
 
     expect(find.textContaining('Email'), findsOneWidget);
@@ -19,14 +26,23 @@ void main() {
   });
 
   testWidgets('shows help text when there is no error', (tester) async {
-    await pump(tester, const SldsTextField(label: 'Email', helpText: 'Help Text'));
+    await pump(
+      tester,
+      const SldsTextField(label: 'Email', helpText: 'Help Text'),
+    );
     expect(find.text('Help Text'), findsOneWidget);
   });
 
-  testWidgets('error text replaces help text and colors the border red', (tester) async {
+  testWidgets('error text replaces help text and colors the border red', (
+    tester,
+  ) async {
     await pump(
       tester,
-      const SldsTextField(label: 'Email', helpText: 'Help Text', errorText: 'Error Text'),
+      const SldsTextField(
+        label: 'Email',
+        helpText: 'Help Text',
+        errorText: 'Error Text',
+      ),
     );
 
     expect(find.text('Error Text'), findsOneWidget);
@@ -45,7 +61,10 @@ void main() {
 
   testWidgets('typing invokes onChanged', (tester) async {
     String? value;
-    await pump(tester, SldsTextField(label: 'Email', onChanged: (v) => value = v));
+    await pump(
+      tester,
+      SldsTextField(label: 'Email', onChanged: (v) => value = v),
+    );
 
     await tester.enterText(find.byType(TextFormField), 'hello@slds.lk');
     expect(value, 'hello@slds.lk');

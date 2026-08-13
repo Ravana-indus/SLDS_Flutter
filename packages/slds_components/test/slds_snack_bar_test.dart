@@ -3,26 +3,33 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
 
 void main() {
-  Future<void> pumpHost(WidgetTester tester, void Function(BuildContext) onPressed) => tester.pumpWidget(
-        MaterialApp(
-          theme: SldsTheme.light(),
-          home: Scaffold(
-            body: Center(
-              child: Builder(
-                builder: (context) => ElevatedButton(
-                  onPressed: () => onPressed(context),
-                  child: const Text('show'),
-                ),
-              ),
+  Future<void> pumpHost(
+    WidgetTester tester,
+    void Function(BuildContext) onPressed,
+  ) => tester.pumpWidget(
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(
+        body: Center(
+          child: Builder(
+            builder: (context) => ElevatedButton(
+              onPressed: () => onPressed(context),
+              child: const Text('show'),
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 
   testWidgets('shows title and message', (tester) async {
     await pumpHost(
       tester,
-      (context) => SldsSnackBar.show(context, title: 'Title Text', message: 'Enter the description text'),
+      (context) => SldsSnackBar.show(
+        context,
+        title: 'Title Text',
+        message: 'Enter the description text',
+      ),
     );
 
     await tester.tap(find.text('show'));
@@ -34,7 +41,10 @@ void main() {
   });
 
   testWidgets('hides the message line when null', (tester) async {
-    await pumpHost(tester, (context) => SldsSnackBar.show(context, title: 'Title Text'));
+    await pumpHost(
+      tester,
+      (context) => SldsSnackBar.show(context, title: 'Title Text'),
+    );
 
     await tester.tap(find.text('show'));
     await tester.pump();
@@ -66,7 +76,10 @@ void main() {
   });
 
   testWidgets('no action button when actionLabel is null', (tester) async {
-    await pumpHost(tester, (context) => SldsSnackBar.show(context, title: 'Title Text'));
+    await pumpHost(
+      tester,
+      (context) => SldsSnackBar.show(context, title: 'Title Text'),
+    );
 
     await tester.tap(find.text('show'));
     await tester.pump();
@@ -76,7 +89,10 @@ void main() {
   });
 
   testWidgets('auto-dismisses after the default 4s duration', (tester) async {
-    await pumpHost(tester, (context) => SldsSnackBar.show(context, title: 'Title Text'));
+    await pumpHost(
+      tester,
+      (context) => SldsSnackBar.show(context, title: 'Title Text'),
+    );
 
     await tester.tap(find.text('show'));
     await tester.pump();
@@ -88,7 +104,9 @@ void main() {
     expect(find.text('Title Text'), findsNothing);
   });
 
-  testWidgets('renders without crashing at a mobile viewport width', (tester) async {
+  testWidgets('renders without crashing at a mobile viewport width', (
+    tester,
+  ) async {
     // SldsButton goes full-width below the mobile breakpoint via an
     // internal LayoutBuilder — safe here because it sits in a Row beside an
     // Expanded (unconstrained width slot), but worth pinning down since

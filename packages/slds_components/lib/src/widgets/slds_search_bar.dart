@@ -64,7 +64,8 @@ class SldsSearchBar extends StatefulWidget {
 }
 
 class _SldsSearchBarState extends State<SldsSearchBar> {
-  late final TextEditingController _controller = widget.controller ?? TextEditingController();
+  late final TextEditingController _controller =
+      widget.controller ?? TextEditingController();
   late final bool _ownsController = widget.controller == null;
   late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
   late final bool _ownsFocusNode = widget.focusNode == null;
@@ -96,7 +97,8 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
   }
 
   bool get _panelOpen =>
-      _focusNode.hasFocus && (widget.suggestions.isNotEmpty || widget.recentSearches.isNotEmpty);
+      _focusNode.hasFocus &&
+      (widget.suggestions.isNotEmpty || widget.recentSearches.isNotEmpty);
 
   @override
   Widget build(BuildContext context) {
@@ -109,8 +111,8 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
     final borderColor = !widget.enabled
         ? colors.inputBorderDisabled
         : focused
-            ? colors.inputBorderFocused
-            : colors.inputBorderDefault;
+        ? colors.inputBorderFocused
+        : colors.inputBorderDefault;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,13 +123,24 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
           decoration: BoxDecoration(
             // Resting gray fill (not surfaceCard/white) — matches the
             // reference's neutral search-field look, not an active input.
-            color: widget.enabled ? colors.surfaceRaised : colors.disabledBackground,
-            border: Border.all(color: borderColor, width: focused ? dimensions.emphasizedBorderWidth : dimensions.controlBorderWidth),
+            color: widget.enabled
+                ? colors.surfaceRaised
+                : colors.disabledBackground,
+            border: Border.all(
+              color: borderColor,
+              width: focused
+                  ? dimensions.emphasizedBorderWidth
+                  : dimensions.controlBorderWidth,
+            ),
             borderRadius: BorderRadius.circular(dimensions.radius2xl),
           ),
           child: Row(
             children: [
-              Icon(Icons.search, size: dimensions.iconSizeMedium, color: colors.inputIcon),
+              Icon(
+                Icons.search,
+                size: dimensions.iconSizeMedium,
+                color: colors.inputIcon,
+              ),
               SizedBox(width: dimensions.space8),
               Expanded(
                 child: TextField(
@@ -136,13 +149,19 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
                   enabled: widget.enabled,
                   onChanged: widget.onChanged,
                   onSubmitted: widget.onSubmitted,
-                  style: tokens.typography.body1.copyWith(color: colors.textPrimary),
+                  style: tokens.typography.body1.copyWith(
+                    color: colors.textPrimary,
+                  ),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: dimensions.space12),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: dimensions.space12,
+                    ),
                     hintText: widget.hintText,
-                    hintStyle: tokens.typography.body1.copyWith(color: colors.inputPlaceholder),
+                    hintStyle: tokens.typography.body1.copyWith(
+                      color: colors.inputPlaceholder,
+                    ),
                   ),
                 ),
               ),
@@ -159,7 +178,11 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
                       shape: BoxShape.circle,
                       border: Border.all(color: colors.borderDefault),
                     ),
-                    child: Icon(Icons.close, size: dimensions.iconSizeMedium, color: colors.inputIcon),
+                    child: Icon(
+                      Icons.close,
+                      size: dimensions.iconSizeMedium,
+                      color: colors.inputIcon,
+                    ),
                   ),
                 ),
             ],
@@ -184,17 +207,23 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
                     highlighted: suggestion == _controller.text,
                     onTap: () => _select(suggestion),
                   ),
-                if (widget.suggestions.isNotEmpty && widget.recentSearches.isNotEmpty) ...[
+                if (widget.suggestions.isNotEmpty &&
+                    widget.recentSearches.isNotEmpty) ...[
                   SizedBox(height: dimensions.space8),
                   Divider(height: 1, color: colors.borderDecorative),
                   SizedBox(height: dimensions.space8),
                 ],
                 if (widget.recentSearches.isNotEmpty) ...[
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: dimensions.space16, vertical: dimensions.space4),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: dimensions.space16,
+                      vertical: dimensions.space4,
+                    ),
                     child: Text(
                       widget.recentSearchesLabel,
-                      style: tokens.typography.caption2.copyWith(color: colors.textTertiary),
+                      style: tokens.typography.caption2.copyWith(
+                        color: colors.textTertiary,
+                      ),
                     ),
                   ),
                   for (final recent in widget.recentSearches)
@@ -214,7 +243,12 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
 }
 
 class _SuggestionRow extends StatelessWidget {
-  const _SuggestionRow({required this.label, this.icon, this.highlighted = false, required this.onTap});
+  const _SuggestionRow({
+    required this.label,
+    this.icon,
+    this.highlighted = false,
+    required this.onTap,
+  });
 
   final String label;
   final IconData? icon;
@@ -235,22 +269,35 @@ class _SuggestionRow extends StatelessWidget {
       child: Container(
         width: double.infinity,
         color: highlighted ? colors.surfaceHover : null,
-        padding: EdgeInsets.symmetric(horizontal: tokens.dimensions.space16, vertical: tokens.dimensions.space12),
+        padding: EdgeInsets.symmetric(
+          horizontal: tokens.dimensions.space16,
+          vertical: tokens.dimensions.space12,
+        ),
         child: Row(
           children: [
             if (icon != null) ...[
-              Icon(icon, size: tokens.dimensions.iconSizeMedium, color: colors.textTertiary),
+              Icon(
+                icon,
+                size: tokens.dimensions.iconSizeMedium,
+                color: colors.textTertiary,
+              ),
               SizedBox(width: tokens.dimensions.space8),
             ],
             Expanded(
               child: Text(
                 label,
                 overflow: TextOverflow.ellipsis,
-                style: tokens.typography.body1.copyWith(color: colors.textPrimary),
+                style: tokens.typography.body1.copyWith(
+                  color: colors.textPrimary,
+                ),
               ),
             ),
             if (highlighted)
-              Icon(Icons.check, size: tokens.dimensions.iconSizeMedium, color: colors.textPrimary),
+              Icon(
+                Icons.check,
+                size: tokens.dimensions.iconSizeMedium,
+                color: colors.textPrimary,
+              ),
           ],
         ),
       ),

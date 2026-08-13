@@ -64,7 +64,10 @@ class SldsFilterButton extends StatelessWidget {
       onTap: interactive ? onTap : null,
       borderRadius: BorderRadius.circular(dimensions.radiusFull),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: dimensions.space16, vertical: dimensions.space8),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimensions.space16,
+          vertical: dimensions.space8,
+        ),
         decoration: BoxDecoration(
           color: background,
           border: Border.all(color: borderColor),
@@ -73,12 +76,18 @@ class SldsFilterButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(label, style: tokens.typography.compactLabel.copyWith(color: foreground)),
+            Text(
+              label,
+              style: tokens.typography.compactLabel.copyWith(color: foreground),
+            ),
             if (_active) ...[
               SizedBox(width: dimensions.space8),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: dimensions.space6),
-                decoration: BoxDecoration(color: colors.surfaceCard, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: colors.surfaceCard,
+                  shape: BoxShape.circle,
+                ),
                 child: Text(
                   '$count',
                   style: tokens.typography.caption2.copyWith(
@@ -89,7 +98,11 @@ class SldsFilterButton extends StatelessWidget {
               ),
             ],
             SizedBox(width: dimensions.space4),
-            Icon(Icons.keyboard_arrow_down, size: dimensions.iconSizeMedium, color: foreground),
+            Icon(
+              Icons.keyboard_arrow_down,
+              size: dimensions.iconSizeMedium,
+              color: foreground,
+            ),
           ],
         ),
       ),

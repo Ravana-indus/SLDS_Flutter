@@ -6,13 +6,20 @@ void main() {
   const items = [
     SldsBottomNavItem(icon: Icons.home, label: 'Home'),
     SldsBottomNavItem(icon: Icons.search, label: 'Search'),
-    SldsBottomNavItem(icon: Icons.notifications, label: 'Alerts', badgeCount: 2),
+    SldsBottomNavItem(
+      icon: Icons.notifications,
+      label: 'Alerts',
+      badgeCount: 2,
+    ),
     SldsBottomNavItem(icon: Icons.person, label: 'Profile'),
   ];
 
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(bottomNavigationBar: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(bottomNavigationBar: field),
+    ),
+  );
 
   testWidgets('renders every item icon and label', (tester) async {
     await pump(
@@ -63,7 +70,10 @@ void main() {
   });
 
   testWidgets('null onTap makes items non-interactive', (tester) async {
-    await pump(tester, const SldsBottomNav(items: items, currentIndex: 0, onTap: null));
+    await pump(
+      tester,
+      const SldsBottomNav(items: items, currentIndex: 0, onTap: null),
+    );
     await tester.tap(find.byIcon(Icons.home)); // must not throw
   });
 
@@ -107,22 +117,23 @@ void main() {
     expect(decoration.color, Colors.black);
   });
 
-  testWidgets('dark style: the selected label stays white, not black-on-black', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      SldsBottomNav(
-        items: items,
-        currentIndex: 0, // "Home" is selected
-        style: SldsBottomNavStyle.dark,
-        onTap: (_) {},
-      ),
-    );
+  testWidgets(
+    'dark style: the selected label stays white, not black-on-black',
+    (tester) async {
+      await pump(
+        tester,
+        SldsBottomNav(
+          items: items,
+          currentIndex: 0, // "Home" is selected
+          style: SldsBottomNavStyle.dark,
+          onTap: (_) {},
+        ),
+      );
 
-    final label = tester.widget<Text>(find.text('Home'));
-    expect(label.style?.color, Colors.white);
-  });
+      final label = tester.widget<Text>(find.text('Home'));
+      expect(label.style?.color, Colors.white);
+    },
+  );
 
   testWidgets('light style (default) renders a surface background', (
     tester,
@@ -137,22 +148,23 @@ void main() {
     expect(decoration.color, SldsColorTokens.light().surfaceCard);
   });
 
-  testWidgets('light style: the selected item gets a solid gold pill, not a soft tint', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      SldsBottomNav(items: items, currentIndex: 0, onTap: (_) {}),
-    );
+  testWidgets(
+    'light style: the selected item gets a solid gold pill, not a soft tint',
+    (tester) async {
+      await pump(
+        tester,
+        SldsBottomNav(items: items, currentIndex: 0, onTap: (_) {}),
+      );
 
-    final colors = tester
-        .widgetList<Container>(find.byType(Container))
-        .map((c) => c.decoration)
-        .whereType<BoxDecoration>()
-        .map((d) => d.color)
-        .whereType<Color>();
-    expect(colors, contains(SldsColorTokens.light().buttonPrimaryBackground));
-  });
+      final colors = tester
+          .widgetList<Container>(find.byType(Container))
+          .map((c) => c.decoration)
+          .whereType<BoxDecoration>()
+          .map((d) => d.color)
+          .whereType<Color>();
+      expect(colors, contains(SldsColorTokens.light().buttonPrimaryBackground));
+    },
+  );
 
   testWidgets('a disabled item renders a white pill and a muted label', (
     tester,
@@ -179,7 +191,11 @@ void main() {
     int? tapped;
     await pump(
       tester,
-      SldsBottomNav(items: withDisabled, currentIndex: 0, onTap: (i) => tapped = i),
+      SldsBottomNav(
+        items: withDisabled,
+        currentIndex: 0,
+        onTap: (i) => tapped = i,
+      ),
     );
 
     await tester.tap(find.byIcon(Icons.person));

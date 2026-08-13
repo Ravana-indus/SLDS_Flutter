@@ -158,7 +158,8 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
 
   void _attachFocusNode(FocusNode? provided) {
     _ownsFocusNode = provided == null;
-    _focusNode = provided ??
+    _focusNode =
+        provided ??
         FocusNode(debugLabel: 'SldsMobileNumberInput:${widget.label}');
     _focusNode.addListener(_onFocusChange);
   }
@@ -197,27 +198,28 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
     final borderColor = disabled
         ? colors.inputBorderDisabled
         : error
-            ? colors.inputBorderError
-            : focused
-                ? colors.inputBorderFocused
-                : colors.inputBorderDefault;
+        ? colors.inputBorderError
+        : focused
+        ? colors.inputBorderFocused
+        : colors.inputBorderDefault;
     final borderWidth = disabled
         ? dimensions.inputDisabledBorderWidth
         : error || focused
-            ? dimensions.emphasizedBorderWidth
-            : dimensions.controlBorderWidth;
+        ? dimensions.emphasizedBorderWidth
+        : dimensions.controlBorderWidth;
     final labelColor = disabled ? colors.disabledForeground : colors.inputLabel;
     final supportText = error ? widget.errorText : widget.helperText;
     final supportColor = disabled
         ? colors.disabledForeground
         : error
-            ? colors.error
-            : colors.inputHelper;
+        ? colors.error
+        : colors.inputHelper;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         const figmaReferenceWidth = 361.0;
-        final requestedWidth = widget.width ??
+        final requestedWidth =
+            widget.width ??
             (constraints.hasBoundedWidth
                 ? constraints.maxWidth
                 : figmaReferenceWidth);
@@ -243,8 +245,9 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                 height: dimensions.inputHeight,
                 padding: EdgeInsets.symmetric(horizontal: dimensions.space8),
                 decoration: BoxDecoration(
-                  color:
-                      disabled ? colors.disabledBackground : colors.surfaceCard,
+                  color: disabled
+                      ? colors.disabledBackground
+                      : colors.surfaceCard,
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(dimensions.radius2xl),
                   boxShadow: focused ? sldsFocusRing(tokens) : null,
@@ -271,7 +274,8 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                           onChanged: widget.onChanged,
                           onFieldSubmitted: widget.onSubmitted,
                           readOnly: widget.readOnly,
-                          inputFormatters: widget.inputFormatters ??
+                          inputFormatters:
+                              widget.inputFormatters ??
                               [FilteringTextInputFormatter.digitsOnly],
                           validator: widget.validator,
                           autovalidateMode: widget.autovalidateMode,
@@ -297,7 +301,8 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                     if (widget.trailing != null) ...[
                       SizedBox(width: dimensions.space4),
                       SizedBox(
-                        width: widget.trailingWidth ??
+                        width:
+                            widget.trailingWidth ??
                             dimensions.buttonHeightSmall,
                         height: dimensions.buttonHeightSmall,
                         child: Center(
@@ -321,8 +326,9 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                 Text(
                   supportText,
                   locale: Localizations.maybeLocaleOf(context),
-                  style:
-                      tokens.typography.caption1.copyWith(color: supportColor),
+                  style: tokens.typography.caption1.copyWith(
+                    color: supportColor,
+                  ),
                 ),
               ],
             ],
@@ -360,8 +366,10 @@ class _MobileNumberLabel extends StatelessWidget {
           ),
         ),
         if (required)
-          Text('*',
-              style: typography.fieldLabel.copyWith(color: requiredColor)),
+          Text(
+            '*',
+            style: typography.fieldLabel.copyWith(color: requiredColor),
+          ),
       ],
     );
   }
@@ -385,19 +393,19 @@ class _CountryPrefix extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
-    final color =
-        disabled ? tokens.colors.disabledForeground : tokens.colors.textPrimary;
+    final color = disabled
+        ? tokens.colors.disabledForeground
+        : tokens.colors.textPrimary;
     final content = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox.square(
-          dimension: 36,
-          child: Center(child: flag),
-        ),
+        SizedBox.square(dimension: 36, child: Center(child: flag)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
-          child:
-              Text(code, style: tokens.typography.body1.copyWith(color: color)),
+          child: Text(
+            code,
+            style: tokens.typography.body1.copyWith(color: color),
+          ),
         ),
         const SizedBox(
           width: 20,

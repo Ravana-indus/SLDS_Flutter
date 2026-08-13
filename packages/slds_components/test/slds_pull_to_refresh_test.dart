@@ -4,19 +4,16 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(
-          theme: SldsTheme.light(),
-          home: Scaffold(body: SizedBox(height: 400, child: field)),
-        ),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: SizedBox(height: 400, child: field)),
+    ),
+  );
 
   testWidgets('renders child content', (tester) async {
     await pump(
       tester,
-      SldsPullToRefresh(
-        onRefresh: () async {},
-        child: const Text('Content'),
-      ),
+      SldsPullToRefresh(onRefresh: () async {}, child: const Text('Content')),
     );
 
     expect(find.text('Content'), findsOneWidget);
@@ -37,7 +34,9 @@ void main() {
     // the trigger threshold" test below; a single drag+pump call can land
     // before CupertinoSliverRefreshControl's internal state updates for the
     // new pulledExtent.
-    final gesture = await tester.startGesture(tester.getCenter(find.byType(CustomScrollView)));
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byType(CustomScrollView)),
+    );
     await gesture.moveBy(const Offset(0, 150));
     await tester.pump();
 
@@ -62,7 +61,9 @@ void main() {
     // release — matches how CupertinoSliverRefreshControl expects to be
     // exercised in tests (a fling's momentum can overshoot past the trigger
     // and retract before the framework ever registers `armed`).
-    final gesture = await tester.startGesture(tester.getCenter(find.byType(CustomScrollView)));
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byType(CustomScrollView)),
+    );
     await gesture.moveBy(const Offset(0, 150));
     await tester.pump();
     await gesture.up();
@@ -81,7 +82,9 @@ void main() {
       ),
     );
 
-    final gesture = await tester.startGesture(tester.getCenter(find.byType(CustomScrollView)));
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byType(CustomScrollView)),
+    );
     await gesture.moveBy(const Offset(0, 150));
     await tester.pump();
 
@@ -103,7 +106,9 @@ void main() {
       ),
     );
 
-    final gesture = await tester.startGesture(tester.getCenter(find.byType(CustomScrollView)));
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byType(CustomScrollView)),
+    );
     await gesture.moveBy(const Offset(0, 150));
     await tester.pump();
 

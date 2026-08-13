@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('tapping an unselected radio calls onChanged with its value', (
     tester,
@@ -13,7 +16,11 @@ void main() {
     String? selected;
     await pump(
       tester,
-      SldsRadio<String>(value: 'a', groupValue: 'b', onChanged: (v) => selected = v),
+      SldsRadio<String>(
+        value: 'a',
+        groupValue: 'b',
+        onChanged: (v) => selected = v,
+      ),
     );
 
     await tester.tap(find.byType(SldsRadio<String>));
@@ -26,7 +33,11 @@ void main() {
     var callCount = 0;
     await pump(
       tester,
-      SldsRadio<String>(value: 'a', groupValue: 'a', onChanged: (_) => callCount++),
+      SldsRadio<String>(
+        value: 'a',
+        groupValue: 'a',
+        onChanged: (_) => callCount++,
+      ),
     );
 
     await tester.tap(find.byType(SldsRadio<String>));
@@ -65,7 +76,12 @@ void main() {
       SldsRadio<String>(value: 'a', groupValue: 'a', onChanged: (_) {}),
     );
     var box = tester.widget<Container>(
-      find.descendant(of: find.byType(SldsRadio<String>), matching: find.byType(Container)).first,
+      find
+          .descendant(
+            of: find.byType(SldsRadio<String>),
+            matching: find.byType(Container),
+          )
+          .first,
     );
     expect(box.constraints?.maxWidth, 24);
 
@@ -79,7 +95,12 @@ void main() {
       ),
     );
     box = tester.widget<Container>(
-      find.descendant(of: find.byType(SldsRadio<String>), matching: find.byType(Container)).first,
+      find
+          .descendant(
+            of: find.byType(SldsRadio<String>),
+            matching: find.byType(Container),
+          )
+          .first,
     );
     expect(box.constraints?.maxWidth, 20);
   });

@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget card) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: card)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: card),
+    ),
+  );
 
   const icon = Icon(Icons.description);
 
@@ -28,7 +31,11 @@ void main() {
   testWidgets('hides badge when badgeText is null', (tester) async {
     await pump(
       tester,
-      const SldsServiceCard(icon: icon, title: 'Service Name', description: 'Description'),
+      const SldsServiceCard(
+        icon: icon,
+        title: 'Service Name',
+        description: 'Description',
+      ),
     );
 
     expect(find.byType(Icon), findsNWidgets(2)); // leading icon + chevron only
@@ -51,11 +58,13 @@ void main() {
   });
 
   Finder cardMaterial() => find.descendant(
-        of: find.byType(SldsServiceCard),
-        matching: find.byType(Material),
-      );
+    of: find.byType(SldsServiceCard),
+    matching: find.byType(Material),
+  );
 
-  testWidgets('selected renders solid active background with black text', (tester) async {
+  testWidgets('selected renders solid active background with black text', (
+    tester,
+  ) async {
     await pump(
       tester,
       const SldsServiceCard(
@@ -77,7 +86,11 @@ void main() {
   testWidgets('default state renders surface page background', (tester) async {
     await pump(
       tester,
-      const SldsServiceCard(icon: icon, title: 'Service Name', description: 'Description'),
+      const SldsServiceCard(
+        icon: icon,
+        title: 'Service Name',
+        description: 'Description',
+      ),
     );
 
     final colors = SldsColorTokens.light();
@@ -85,7 +98,9 @@ void main() {
     expect(material.color, colors.surfacePage);
   });
 
-  testWidgets('forced selected state renders blue-100 background', (tester) async {
+  testWidgets('forced selected state renders blue-100 background', (
+    tester,
+  ) async {
     await pump(
       tester,
       const SldsServiceCard(
@@ -112,7 +127,9 @@ void main() {
       ),
     );
 
-    final semantics = find.byWidgetPredicate((w) => w is Semantics && w.properties.label == 'Service Name');
+    final semantics = find.byWidgetPredicate(
+      (w) => w is Semantics && w.properties.label == 'Service Name',
+    );
 
     expect(
       tester.getSemantics(semantics),

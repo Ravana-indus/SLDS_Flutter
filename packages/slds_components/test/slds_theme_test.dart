@@ -8,7 +8,10 @@ void main() {
 
     expect(theme.colorScheme.primary, SldsColors.primary);
     expect(theme.colorScheme.error, SldsColors.error);
-    expect(theme.textTheme.bodyLarge?.fontSize, SldsTypography.desktop.bodyLarge?.fontSize);
+    expect(
+      theme.textTheme.bodyLarge?.fontSize,
+      SldsTypography.desktop.bodyLarge?.fontSize,
+    );
     expect(theme.useMaterial3, isTrue);
     expect(theme.brightness, Brightness.light);
   });

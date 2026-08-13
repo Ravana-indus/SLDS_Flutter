@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'slds_design_tokens.g.dart';
+import 'slds_design_tokens.dart';
 
-export 'slds_design_tokens.g.dart';
+export 'slds_design_tokens.dart';
 
 /// `context.slds` — the [SldsTokenSet] matching the ambient [Theme]'s
 /// brightness, re-derived on every read (not cached) so it tracks

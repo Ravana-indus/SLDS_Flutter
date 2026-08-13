@@ -83,17 +83,29 @@ class SldsDialog extends StatelessWidget {
     // Column/Row of real content works exactly like anywhere else.
     return Dialog(
       backgroundColor: colors.surfaceCard,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(dimensions.radius2xl)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(dimensions.radius2xl),
+      ),
       child: Padding(
         padding: EdgeInsets.all(dimensions.space24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: tokens.typography.heading4.copyWith(color: colors.textPrimary)),
+            Text(
+              title,
+              style: tokens.typography.heading4.copyWith(
+                color: colors.textPrimary,
+              ),
+            ),
             if (message != null) ...[
               SizedBox(height: dimensions.space8),
-              Text(message!, style: tokens.typography.body2.copyWith(color: colors.textSecondary)),
+              Text(
+                message!,
+                style: tokens.typography.body2.copyWith(
+                  color: colors.textSecondary,
+                ),
+              ),
             ],
             if (_hasActions) ...[
               SizedBox(height: dimensions.space16),
@@ -101,9 +113,15 @@ class SldsDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (cancelLabel != null)
-                    SldsButton(label: cancelLabel!, onPressed: onCancel, variant: SldsButtonVariant.secondary),
-                  if (cancelLabel != null && confirmLabel != null) SizedBox(width: dimensions.space8),
-                  if (confirmLabel != null) SldsButton(label: confirmLabel!, onPressed: onConfirm),
+                    SldsButton(
+                      label: cancelLabel!,
+                      onPressed: onCancel,
+                      variant: SldsButtonVariant.secondary,
+                    ),
+                  if (cancelLabel != null && confirmLabel != null)
+                    SizedBox(width: dimensions.space8),
+                  if (confirmLabel != null)
+                    SldsButton(label: confirmLabel!, onPressed: onConfirm),
                 ],
               ),
             ],

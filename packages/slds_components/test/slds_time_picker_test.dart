@@ -4,28 +4,29 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget widget) => tester.pumpWidget(
-        MaterialApp(
-          theme: SldsTheme.light(),
-          home: Scaffold(body: Center(child: widget)),
-        ),
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: Center(child: widget)),
+    ),
+  );
+
+  testWidgets(
+    'renders title, digital hour/minute boxes, AM/PM, and action buttons',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsTimePickerDialog(initialTime: TimeOfDay(hour: 7, minute: 0)),
       );
 
-  testWidgets('renders title, digital hour/minute boxes, AM/PM, and action buttons', (tester) async {
-    await pump(
-      tester,
-      const SldsTimePickerDialog(
-        initialTime: TimeOfDay(hour: 7, minute: 0),
-      ),
-    );
-
-    expect(find.text('Set Your Time'), findsOneWidget);
-    expect(find.text('07'), findsOneWidget);
-    expect(find.text('00'), findsOneWidget);
-    expect(find.text('AM'), findsOneWidget);
-    expect(find.text('PM'), findsOneWidget);
-    expect(find.text('Cancel'), findsOneWidget);
-    expect(find.text('Apply'), findsOneWidget);
-  });
+      expect(find.text('Set Your Time'), findsOneWidget);
+      expect(find.text('07'), findsOneWidget);
+      expect(find.text('00'), findsOneWidget);
+      expect(find.text('AM'), findsOneWidget);
+      expect(find.text('PM'), findsOneWidget);
+      expect(find.text('Cancel'), findsOneWidget);
+      expect(find.text('Apply'), findsOneWidget);
+    },
+  );
 
   testWidgets('toggling AM/PM updates period', (tester) async {
     TimeOfDay? changedTime;
@@ -64,7 +65,9 @@ void main() {
     expect(appliedTime?.minute, equals(30));
   });
 
-  testWidgets('SldsTimePicker renders as text field and opens dialog', (tester) async {
+  testWidgets('SldsTimePicker renders as text field and opens dialog', (
+    tester,
+  ) async {
     TimeOfDay? changedTime;
     await pump(
       tester,
@@ -84,11 +87,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SldsTimePickerDialog), findsOneWidget);
-    
+
     // Tap PM before applying so the value changes
     await tester.tap(find.text('PM'));
     await tester.pumpAndSettle();
-    
+
     // Tap apply
     await tester.tap(find.text('Apply'));
     await tester.pumpAndSettle();

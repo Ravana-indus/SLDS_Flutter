@@ -56,7 +56,10 @@ class SldsChip extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(dimensions.radiusFull),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: dimensions.space12, vertical: dimensions.space8),
+            padding: EdgeInsets.symmetric(
+              horizontal: dimensions.space12,
+              vertical: dimensions.space8,
+            ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -64,10 +67,19 @@ class SldsChip extends StatelessWidget {
                   avatar!,
                   SizedBox(width: dimensions.space8),
                 ] else if (icon != null) ...[
-                  Icon(icon, size: dimensions.iconSizeMedium, color: colors.textPrimary),
+                  Icon(
+                    icon,
+                    size: dimensions.iconSizeMedium,
+                    color: colors.textPrimary,
+                  ),
                   SizedBox(width: dimensions.space8),
                 ],
-                Text(label, style: tokens.typography.body1.copyWith(color: colors.textPrimary)),
+                Text(
+                  label,
+                  style: tokens.typography.body1.copyWith(
+                    color: colors.textPrimary,
+                  ),
+                ),
                 if (onDeleted != null) ...[
                   SizedBox(width: dimensions.space8),
                   Semantics(
@@ -75,8 +87,14 @@ class SldsChip extends StatelessWidget {
                     label: 'Remove $label',
                     child: InkWell(
                       onTap: onDeleted,
-                      borderRadius: BorderRadius.circular(dimensions.radiusFull),
-                      child: Icon(Icons.close, size: dimensions.iconSizeMedium, color: colors.textPrimary),
+                      borderRadius: BorderRadius.circular(
+                        dimensions.radiusFull,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        size: dimensions.iconSizeMedium,
+                        color: colors.textPrimary,
+                      ),
                     ),
                   ),
                 ],

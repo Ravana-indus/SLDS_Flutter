@@ -46,7 +46,9 @@ class SldsRangeSlider extends StatelessWidget {
     final interactive = enabled && onChanged != null;
 
     final activeColor = interactive ? accent : colors.disabledForeground;
-    final inactiveColor = interactive ? colors.borderDefault : colors.disabledBackground;
+    final inactiveColor = interactive
+        ? colors.borderDefault
+        : colors.disabledBackground;
     final thumbColor = interactive ? accent : colors.disabledForeground;
 
     return SliderTheme(

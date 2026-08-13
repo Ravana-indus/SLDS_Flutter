@@ -64,7 +64,9 @@ class SldsBottomSheet extends StatelessWidget {
 
     return Material(
       color: colors.surfaceCard,
-      borderRadius: BorderRadius.vertical(top: Radius.circular(dimensions.radius2xl)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(dimensions.radius2xl),
+      ),
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -73,16 +75,26 @@ class SldsBottomSheet extends StatelessWidget {
               padding: EdgeInsets.all(dimensions.space16),
               child: Row(
                 children: [
-                  _IconSquare(icon: Icons.arrow_back, onTap: onBack, semanticLabel: 'Back'),
+                  _IconSquare(
+                    icon: Icons.arrow_back,
+                    onTap: onBack,
+                    semanticLabel: 'Back',
+                  ),
                   Expanded(
                     child: Text(
                       title,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
-                      style: tokens.typography.heading4.copyWith(color: colors.textPrimary),
+                      style: tokens.typography.heading4.copyWith(
+                        color: colors.textPrimary,
+                      ),
                     ),
                   ),
-                  _IconSquare(icon: Icons.close, onTap: onClose, semanticLabel: 'Close'),
+                  _IconSquare(
+                    icon: Icons.close,
+                    onTap: onClose,
+                    semanticLabel: 'Close',
+                  ),
                 ],
               ),
             ),
@@ -95,7 +107,11 @@ class SldsBottomSheet extends StatelessWidget {
 }
 
 class _IconSquare extends StatelessWidget {
-  const _IconSquare({required this.icon, required this.onTap, required this.semanticLabel});
+  const _IconSquare({
+    required this.icon,
+    required this.onTap,
+    required this.semanticLabel,
+  });
 
   final IconData icon;
   final VoidCallback? onTap;
@@ -126,7 +142,9 @@ class _IconSquare extends StatelessWidget {
           child: SizedBox(
             width: 40,
             height: 40,
-            child: Center(child: Icon(icon, size: 20, color: colors.textPrimary)),
+            child: Center(
+              child: Icon(icon, size: 20, color: colors.textPrimary),
+            ),
           ),
         ),
       ),

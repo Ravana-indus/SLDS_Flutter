@@ -52,7 +52,9 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() => setState(() => _focused = _focusNode.hasFocus));
+    _focusNode.addListener(
+      () => setState(() => _focused = _focusNode.hasFocus),
+    );
   }
 
   @override
@@ -96,7 +98,10 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
           height: widget.size.circle,
           padding: _focused ? const EdgeInsets.all(2) : EdgeInsets.zero,
           decoration: _focused
-              ? BoxDecoration(shape: BoxShape.circle, border: Border.all(color: accent, width: 1.5))
+              ? BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: accent, width: 1.5),
+                )
               : null,
           child: Container(
             decoration: BoxDecoration(
@@ -108,7 +113,10 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
                 duration: const Duration(milliseconds: 120),
                 width: _selected ? widget.size.dot : 0,
                 height: _selected ? widget.size.dot : 0,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: dotColor,
+                ),
               ),
             ),
           ),

@@ -24,7 +24,11 @@ class SldsFlyoutMenuGroup {
 /// place to reveal them when tapped; a row with no [groups] is a plain
 /// tappable link (fires [onTap] directly, never expands).
 class SldsFlyoutMenuItem {
-  const SldsFlyoutMenuItem({required this.label, this.groups = const [], this.onTap});
+  const SldsFlyoutMenuItem({
+    required this.label,
+    this.groups = const [],
+    this.onTap,
+  });
 
   final String label;
   final List<SldsFlyoutMenuGroup> groups;
@@ -86,7 +90,9 @@ class _SldsFlyoutMenuState extends State<SldsFlyoutMenu> {
                 expanded: i == _expandedIndex,
                 onTap: widget.items[i].groups.isEmpty
                     ? widget.items[i].onTap
-                    : () => setState(() => _expandedIndex = _expandedIndex == i ? null : i),
+                    : () => setState(
+                        () => _expandedIndex = _expandedIndex == i ? null : i,
+                      ),
               ),
             SizedBox(height: dimensions.space12),
           ],
@@ -97,7 +103,11 @@ class _SldsFlyoutMenuState extends State<SldsFlyoutMenu> {
 }
 
 class _FlyoutItem extends StatelessWidget {
-  const _FlyoutItem({required this.item, required this.expanded, required this.onTap});
+  const _FlyoutItem({
+    required this.item,
+    required this.expanded,
+    required this.onTap,
+  });
 
   final SldsFlyoutMenuItem item;
   final bool expanded;
@@ -116,7 +126,10 @@ class _FlyoutItem extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: dimensions.space20, vertical: dimensions.space16),
+            padding: EdgeInsets.symmetric(
+              horizontal: dimensions.space20,
+              vertical: dimensions.space16,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -130,7 +143,9 @@ class _FlyoutItem extends StatelessWidget {
                 ),
                 if (expandable)
                   Icon(
-                    expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    expanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
                     size: dimensions.iconSizeMedium,
                     color: colors.textPrimary,
                   ),
@@ -146,10 +161,14 @@ class _FlyoutItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: dimensions.space20),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: dimensions.space20,
+                    ),
                     child: Text(
                       group.header,
-                      style: tokens.typography.caption1.copyWith(color: colors.textTertiary),
+                      style: tokens.typography.caption1.copyWith(
+                        color: colors.textTertiary,
+                      ),
                     ),
                   ),
                   SizedBox(height: dimensions.space8),
@@ -157,17 +176,26 @@ class _FlyoutItem extends StatelessWidget {
                     InkWell(
                       onTap: entry.onTap,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: dimensions.space20, vertical: dimensions.space8),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: dimensions.space20,
+                          vertical: dimensions.space8,
+                        ),
                         child: Row(
                           children: [
                             if (entry.icon != null) ...[
-                              Icon(entry.icon, size: dimensions.iconSizeMedium, color: colors.textSecondary),
+                              Icon(
+                                entry.icon,
+                                size: dimensions.iconSizeMedium,
+                                color: colors.textSecondary,
+                              ),
                               SizedBox(width: dimensions.space12),
                             ],
                             Expanded(
                               child: Text(
                                 entry.label,
-                                style: tokens.typography.body2.copyWith(color: colors.textPrimary),
+                                style: tokens.typography.body2.copyWith(
+                                  color: colors.textPrimary,
+                                ),
                               ),
                             ),
                           ],
@@ -187,7 +215,10 @@ class _FlyoutItem extends StatelessWidget {
 /// [SldsFlyoutMenu] docs on when to reach for this vs. rolling your own
 /// shell. Dismiss by tapping the scrim, the close button, or the back
 /// gesture.
-Future<void> showSldsFlyoutMenu(BuildContext context, {required List<SldsFlyoutMenuItem> items}) {
+Future<void> showSldsFlyoutMenu(
+  BuildContext context, {
+  required List<SldsFlyoutMenuItem> items,
+}) {
   return showGeneralDialog<void>(
     context: context,
     barrierLabel: 'Navigation menu',
@@ -199,7 +230,10 @@ Future<void> showSldsFlyoutMenu(BuildContext context, {required List<SldsFlyoutM
           alignment: Alignment.topCenter,
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: SldsFlyoutMenu(items: items, onClose: () => Navigator.of(context).pop()),
+            child: SldsFlyoutMenu(
+              items: items,
+              onClose: () => Navigator.of(context).pop(),
+            ),
           ),
         ),
       );

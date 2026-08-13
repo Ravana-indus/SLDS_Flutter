@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders legend and its children', (tester) async {
     await pump(
@@ -24,13 +27,21 @@ void main() {
   testWidgets('required=true shows the marker, false hides it', (tester) async {
     await pump(
       tester,
-      const SldsFieldset(legend: 'Group', required: true, children: [Text('Field')]),
+      const SldsFieldset(
+        legend: 'Group',
+        required: true,
+        children: [Text('Field')],
+      ),
     );
     expect(find.text('*'), findsOneWidget);
 
     await pump(
       tester,
-      const SldsFieldset(legend: 'Group', required: false, children: [Text('Field')]),
+      const SldsFieldset(
+        legend: 'Group',
+        required: false,
+        children: [Text('Field')],
+      ),
     );
     expect(find.text('*'), findsNothing);
   });
@@ -59,7 +70,9 @@ void main() {
     expect(find.text('All fields are required.'), findsOneWidget);
   });
 
-  testWidgets('error text replaces helper text and colors it red', (tester) async {
+  testWidgets('error text replaces helper text and colors it red', (
+    tester,
+  ) async {
     await pump(
       tester,
       const SldsFieldset(
@@ -73,45 +86,56 @@ void main() {
     expect(find.text('Please complete every field.'), findsOneWidget);
     expect(find.text('All fields are required.'), findsNothing);
 
-    final errorLabel = tester.widget<Text>(find.text('Please complete every field.'));
+    final errorLabel = tester.widget<Text>(
+      find.text('Please complete every field.'),
+    );
     expect(errorLabel.style?.color, SldsColorTokens.light().error);
   });
 
   testWidgets('enabled=false dims the legend', (tester) async {
     await pump(
       tester,
-      const SldsFieldset(legend: 'Group', enabled: false, children: [Text('Field')]),
+      const SldsFieldset(
+        legend: 'Group',
+        enabled: false,
+        children: [Text('Field')],
+      ),
     );
 
     final legend = tester.widget<Text>(find.text('Group'));
     expect(legend.style?.color, SldsColorTokens.light().disabledForeground);
   });
 
-  testWidgets('renders multiple children with spacing between them, none before the first', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      const SldsFieldset(
-        legend: 'Group',
-        children: [Text('A'), Text('B'), Text('C')],
-      ),
-    );
+  testWidgets(
+    'renders multiple children with spacing between them, none before the first',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsFieldset(
+          legend: 'Group',
+          children: [Text('A'), Text('B'), Text('C')],
+        ),
+      );
 
-    expect(find.text('A'), findsOneWidget);
-    expect(find.text('B'), findsOneWidget);
-    expect(find.text('C'), findsOneWidget);
-  });
+      expect(find.text('A'), findsOneWidget);
+      expect(find.text('B'), findsOneWidget);
+      expect(find.text('C'), findsOneWidget);
+    },
+  );
 
-  testWidgets('is exposed as a single semantics container labeled with the legend', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      const SldsFieldset(legend: 'Shipping address', children: [Text('Field')]),
-    );
+  testWidgets(
+    'is exposed as a single semantics container labeled with the legend',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsFieldset(
+          legend: 'Shipping address',
+          children: [Text('Field')],
+        ),
+      );
 
-    final semantics = tester.getSemantics(find.byType(SldsFieldset));
-    expect(semantics.label, 'Shipping address');
-  });
+      final semantics = tester.getSemantics(find.byType(SldsFieldset));
+      expect(semantics.label, 'Shipping address');
+    },
+  );
 }

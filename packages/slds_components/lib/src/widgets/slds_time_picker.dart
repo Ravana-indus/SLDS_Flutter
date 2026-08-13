@@ -7,10 +7,7 @@ import 'slds_button.dart';
 import 'slds_text_field.dart';
 
 /// Which unit is currently being edited in [SldsTimePickerDialog].
-enum SldsTimePickerUnit {
-  hour,
-  minute,
-}
+enum SldsTimePickerUnit { hour, minute }
 
 /// SLDS Time Picker Dialog — the analog & digital modal dialog portion
 /// of the time picker.
@@ -148,7 +145,11 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                   shape: BoxShape.circle,
                   border: Border.all(color: colors.textPrimary, width: 1.5),
                 ),
-                child: Icon(Icons.access_time, size: 18, color: colors.textPrimary),
+                child: Icon(
+                  Icons.access_time,
+                  size: 18,
+                  color: colors.textPrimary,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -166,7 +167,10 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
           const SizedBox(height: 12),
 
           // Divider
-          Divider(color: colors.borderDefault.withValues(alpha: 0.6), height: 1),
+          Divider(
+            color: colors.borderDefault.withValues(alpha: 0.6),
+            height: 1,
+          ),
 
           const SizedBox(height: 16),
 
@@ -176,21 +180,28 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
             children: [
               // Hour Box
               GestureDetector(
-                onTap: () => setState(() => _activeUnit = SldsTimePickerUnit.hour),
+                onTap: () =>
+                    setState(() => _activeUnit = SldsTimePickerUnit.hour),
                 child: Container(
                   width: 54,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: _activeUnit == SldsTimePickerUnit.hour ? _defaultLightYellow : colors.surfaceCard,
+                    color: _activeUnit == SldsTimePickerUnit.hour
+                        ? _defaultLightYellow
+                        : colors.surfaceCard,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _activeUnit == SldsTimePickerUnit.hour ? primaryAccent : colors.borderDefault,
+                      color: _activeUnit == SldsTimePickerUnit.hour
+                          ? primaryAccent
+                          : colors.borderDefault,
                       width: _activeUnit == SldsTimePickerUnit.hour ? 1.5 : 1.0,
                     ),
                   ),
                   child: Center(
                     child: Text(
-                      _selectedHour12 < 10 ? '0$_selectedHour12' : '$_selectedHour12',
+                      _selectedHour12 < 10
+                          ? '0$_selectedHour12'
+                          : '$_selectedHour12',
                       style: tokens.typography.heading4.copyWith(
                         fontWeight: FontWeight.w600,
                         color: colors.textPrimary,
@@ -210,21 +221,30 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
 
               // Minute Box
               GestureDetector(
-                onTap: () => setState(() => _activeUnit = SldsTimePickerUnit.minute),
+                onTap: () =>
+                    setState(() => _activeUnit = SldsTimePickerUnit.minute),
                 child: Container(
                   width: 54,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: _activeUnit == SldsTimePickerUnit.minute ? _defaultLightYellow : colors.surfaceCard,
+                    color: _activeUnit == SldsTimePickerUnit.minute
+                        ? _defaultLightYellow
+                        : colors.surfaceCard,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _activeUnit == SldsTimePickerUnit.minute ? primaryAccent : colors.borderDefault,
-                      width: _activeUnit == SldsTimePickerUnit.minute ? 1.5 : 1.0,
+                      color: _activeUnit == SldsTimePickerUnit.minute
+                          ? primaryAccent
+                          : colors.borderDefault,
+                      width: _activeUnit == SldsTimePickerUnit.minute
+                          ? 1.5
+                          : 1.0,
                     ),
                   ),
                   child: Center(
                     child: Text(
-                      _selectedMinute < 10 ? '0$_selectedMinute' : '$_selectedMinute',
+                      _selectedMinute < 10
+                          ? '0$_selectedMinute'
+                          : '$_selectedMinute',
                       style: tokens.typography.heading4.copyWith(
                         fontWeight: FontWeight.w600,
                         color: colors.textPrimary,
@@ -242,12 +262,17 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                   GestureDetector(
                     onTap: () => _setPeriod(DayPeriod.am),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 4,
+                      ),
                       child: Text(
                         'AM',
                         style: tokens.typography.body1.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: _period == DayPeriod.am ? primaryAccent : colors.textSecondary.withValues(alpha: 0.6),
+                          color: _period == DayPeriod.am
+                              ? primaryAccent
+                              : colors.textSecondary.withValues(alpha: 0.6),
                         ),
                       ),
                     ),
@@ -255,12 +280,17 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                   GestureDetector(
                     onTap: () => _setPeriod(DayPeriod.pm),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 4,
+                      ),
                       child: Text(
                         'PM',
                         style: tokens.typography.body1.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: _period == DayPeriod.pm ? primaryAccent : colors.textSecondary.withValues(alpha: 0.6),
+                          color: _period == DayPeriod.pm
+                              ? primaryAccent
+                              : colors.textSecondary.withValues(alpha: 0.6),
                         ),
                       ),
                     ),
@@ -280,7 +310,9 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
               child: CustomPaint(
                 painter: _RadialClockDialPainter(
                   activeUnit: _activeUnit,
-                  selectedValue: _activeUnit == SldsTimePickerUnit.hour ? _selectedHour12 : _selectedMinute,
+                  selectedValue: _activeUnit == SldsTimePickerUnit.hour
+                      ? _selectedHour12
+                      : _selectedMinute,
                   primaryColor: primaryAccent,
                   borderColor: colors.borderDefault,
                   textColor: colors.textPrimary,
@@ -385,7 +417,9 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    color: isSelected ? const Color(0xFF1C1B1F) : const Color(0xFF1C1B1F),
+                    color: isSelected
+                        ? const Color(0xFF1C1B1F)
+                        : const Color(0xFF1C1B1F),
                   ),
                 ),
               ),

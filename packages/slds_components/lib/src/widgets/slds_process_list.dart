@@ -42,8 +42,11 @@ class SldsProcessList extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const figmaReferenceWidth = 480.0;
-        final requestedWidth = width ??
-            (constraints.hasBoundedWidth ? constraints.maxWidth : figmaReferenceWidth);
+        final requestedWidth =
+            width ??
+            (constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
             ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
             : requestedWidth;
@@ -84,9 +87,18 @@ class _ProcessStepTile extends StatelessWidget {
     final dimensions = tokens.dimensions;
 
     final (Color background, Color foreground) = switch (step.status) {
-      SldsProcessStepStatus.done => (colors.badgeApprovedBackground, colors.badgeApprovedText),
-      SldsProcessStepStatus.current => (colors.badgePendingBackground, colors.badgePendingText),
-      SldsProcessStepStatus.upcoming => (colors.disabledBackground, colors.disabledForeground),
+      SldsProcessStepStatus.done => (
+        colors.badgeApprovedBackground,
+        colors.badgeApprovedText,
+      ),
+      SldsProcessStepStatus.current => (
+        colors.badgePendingBackground,
+        colors.badgePendingText,
+      ),
+      SldsProcessStepStatus.upcoming => (
+        colors.disabledBackground,
+        colors.disabledForeground,
+      ),
     };
 
     return Semantics(
@@ -94,7 +106,10 @@ class _ProcessStepTile extends StatelessWidget {
       explicitChildNodes: true,
       label: 'Step $index: ${step.title}. ${step.description}',
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: dimensions.space16, vertical: dimensions.space16),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimensions.space16,
+          vertical: dimensions.space16,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -102,10 +117,16 @@ class _ProcessStepTile extends StatelessWidget {
               width: 32,
               height: 32,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(dimensions.radiusMd)),
+              decoration: BoxDecoration(
+                color: background,
+                borderRadius: BorderRadius.circular(dimensions.radiusMd),
+              ),
               child: Text(
                 '$index',
-                style: tokens.typography.body1.copyWith(color: foreground, fontWeight: FontWeight.w600),
+                style: tokens.typography.body1.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             SizedBox(width: dimensions.space16),
@@ -114,11 +135,18 @@ class _ProcessStepTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(step.title, style: tokens.typography.body1.copyWith(color: colors.textPrimary)),
+                  Text(
+                    step.title,
+                    style: tokens.typography.body1.copyWith(
+                      color: colors.textPrimary,
+                    ),
+                  ),
                   SizedBox(height: dimensions.space4),
                   Text(
                     step.description,
-                    style: tokens.typography.body2.copyWith(color: colors.textSecondary),
+                    style: tokens.typography.body2.copyWith(
+                      color: colors.textSecondary,
+                    ),
                   ),
                 ],
               ),

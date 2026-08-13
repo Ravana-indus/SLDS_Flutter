@@ -148,7 +148,8 @@ class _SldsInputState extends State<SldsInput> {
     super.dispose();
   }
 
-  bool get _hasError => widget.errorText != null && widget.errorText!.isNotEmpty;
+  bool get _hasError =>
+      widget.errorText != null && widget.errorText!.isNotEmpty;
   bool get _hasValue => _controller.text.isNotEmpty;
 
   SldsInputState get _resolvedState {
@@ -174,30 +175,37 @@ class _SldsInputState extends State<SldsInput> {
     final borderColor = disabled
         ? colors.inputBorderDisabled
         : error
-            ? colors.inputBorderError
-            : focused
-                ? colors.inputBorderFocused
-                : colors.inputBorderDefault;
+        ? colors.inputBorderError
+        : focused
+        ? colors.inputBorderFocused
+        : colors.inputBorderDefault;
     final borderWidth = disabled
         ? dimensions.inputDisabledBorderWidth
         : error || focused
-            ? dimensions.emphasizedBorderWidth
-            : dimensions.controlBorderWidth;
+        ? dimensions.emphasizedBorderWidth
+        : dimensions.controlBorderWidth;
     final labelColor = disabled ? colors.disabledForeground : colors.inputLabel;
-    final affixColor = disabled ? colors.disabledForeground : colors.textSecondary;
-    final valueColor = disabled ? colors.disabledForeground : colors.textPrimary;
+    final affixColor = disabled
+        ? colors.disabledForeground
+        : colors.textSecondary;
+    final valueColor = disabled
+        ? colors.disabledForeground
+        : colors.textPrimary;
     final supportText = error ? widget.errorText : widget.helperText;
     final supportColor = disabled
         ? colors.disabledForeground
         : error
-            ? colors.error
-            : colors.inputHelper;
+        ? colors.error
+        : colors.inputHelper;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         const figmaReferenceWidth = 361.0;
-        final requestedWidth = widget.width ??
-            (constraints.hasBoundedWidth ? constraints.maxWidth : figmaReferenceWidth);
+        final requestedWidth =
+            widget.width ??
+            (constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
             ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
             : requestedWidth;
@@ -211,12 +219,19 @@ class _SldsInputState extends State<SldsInput> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(widget.label, style: tokens.typography.fieldLabel.copyWith(color: labelColor)),
+                  Text(
+                    widget.label,
+                    style: tokens.typography.fieldLabel.copyWith(
+                      color: labelColor,
+                    ),
+                  ),
                   if (widget.required)
                     Text(
                       '*',
                       style: tokens.typography.fieldLabel.copyWith(
-                        color: disabled ? colors.disabledForeground : colors.inputBorderError,
+                        color: disabled
+                            ? colors.disabledForeground
+                            : colors.inputBorderError,
                       ),
                     ),
                 ],
@@ -226,14 +241,21 @@ class _SldsInputState extends State<SldsInput> {
                 height: dimensions.inputHeight,
                 padding: EdgeInsets.symmetric(horizontal: dimensions.space12),
                 decoration: BoxDecoration(
-                  color: disabled ? colors.disabledBackground : colors.surfaceCard,
+                  color: disabled
+                      ? colors.disabledBackground
+                      : colors.surfaceCard,
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(dimensions.radius2xl),
                 ),
                 child: Row(
                   children: [
                     if (widget.prefixText != null) ...[
-                      Text(widget.prefixText!, style: tokens.typography.body1.copyWith(color: affixColor)),
+                      Text(
+                        widget.prefixText!,
+                        style: tokens.typography.body1.copyWith(
+                          color: affixColor,
+                        ),
+                      ),
                       SizedBox(width: dimensions.space8),
                     ],
                     Expanded(
@@ -245,26 +267,40 @@ class _SldsInputState extends State<SldsInput> {
                         inputFormatters: widget.inputFormatters,
                         onChanged: widget.onChanged,
                         onSubmitted: widget.onSubmitted,
-                        style: tokens.typography.body1.copyWith(color: valueColor),
+                        style: tokens.typography.body1.copyWith(
+                          color: valueColor,
+                        ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           isDense: true,
                           contentPadding: EdgeInsets.zero,
                           hintText: widget.hintText,
-                          hintStyle: tokens.typography.body1.copyWith(color: colors.inputPlaceholder),
+                          hintStyle: tokens.typography.body1.copyWith(
+                            color: colors.inputPlaceholder,
+                          ),
                         ),
                       ),
                     ),
                     if (widget.suffixText != null) ...[
                       SizedBox(width: dimensions.space8),
-                      Text(widget.suffixText!, style: tokens.typography.body1.copyWith(color: affixColor)),
+                      Text(
+                        widget.suffixText!,
+                        style: tokens.typography.body1.copyWith(
+                          color: affixColor,
+                        ),
+                      ),
                     ],
                   ],
                 ),
               ),
               if (supportText != null) ...[
                 SizedBox(height: dimensions.space6),
-                Text(supportText, style: tokens.typography.caption1.copyWith(color: supportColor)),
+                Text(
+                  supportText,
+                  style: tokens.typography.caption1.copyWith(
+                    color: supportColor,
+                  ),
+                ),
               ],
             ],
           ),

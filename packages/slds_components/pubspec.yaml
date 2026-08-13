@@ -16,6 +16,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
+  # Path dependency while both packages live in this workspace. Switch to a
+  # hosted version constraint against the private pub registry before
+  # publishing — a publishable package can't ship a path dependency.
+  slds_tokens:
+    path: ../slds_tokens
 
 dev_dependencies:
   flutter_test:

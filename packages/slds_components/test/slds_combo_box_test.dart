@@ -6,8 +6,11 @@ void main() {
   const options = ['Batticaloa', 'Colombo', 'Galle', 'Jaffna'];
 
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   Widget build({
     List<String> selectedValues = const [],
@@ -48,7 +51,10 @@ void main() {
   testWidgets('multiple selected values render as removable chips', (
     tester,
   ) async {
-    await pump(tester, build(multiple: true, selectedValues: const ['Colombo', 'Jaffna']));
+    await pump(
+      tester,
+      build(multiple: true, selectedValues: const ['Colombo', 'Jaffna']),
+    );
 
     expect(find.text('Colombo'), findsOneWidget);
     expect(find.text('Jaffna'), findsOneWidget);
@@ -67,34 +73,39 @@ void main() {
     }
   });
 
-  testWidgets('single-select: tapping an option selects it and closes the panel', (
-    tester,
-  ) async {
-    List<String>? selected;
-    await pump(tester, build(onSelectionChanged: (v) => selected = v));
+  testWidgets(
+    'single-select: tapping an option selects it and closes the panel',
+    (tester) async {
+      List<String>? selected;
+      await pump(tester, build(onSelectionChanged: (v) => selected = v));
 
-    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
-    await tester.pump();
-    await tester.tap(find.text('Colombo'));
-    await tester.pump();
+      await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+      await tester.pump();
+      await tester.tap(find.text('Colombo'));
+      await tester.pump();
 
-    expect(selected, ['Colombo']);
-    expect(find.byIcon(Icons.keyboard_arrow_up), findsNothing);
-  });
+      expect(selected, ['Colombo']);
+      expect(find.byIcon(Icons.keyboard_arrow_up), findsNothing);
+    },
+  );
 
-  testWidgets('multi-select: tapping an option toggles it and keeps the panel open', (
-    tester,
-  ) async {
-    List<String>? selected;
-    await pump(tester, build(multiple: true, onSelectionChanged: (v) => selected = v));
+  testWidgets(
+    'multi-select: tapping an option toggles it and keeps the panel open',
+    (tester) async {
+      List<String>? selected;
+      await pump(
+        tester,
+        build(multiple: true, onSelectionChanged: (v) => selected = v),
+      );
 
-    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
-    await tester.pump();
-    await tester.tap(find.text('Colombo'));
-    await tester.pump();
+      await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+      await tester.pump();
+      await tester.tap(find.text('Colombo'));
+      await tester.pump();
 
-    expect(selected, ['Colombo']);
-  });
+      expect(selected, ['Colombo']);
+    },
+  );
 
   testWidgets('multi-select: tapping a selected option again removes it', (
     tester,

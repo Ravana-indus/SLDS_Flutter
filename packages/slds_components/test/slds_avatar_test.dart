@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: child)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: child),
+    ),
+  );
 
   testWidgets('renders initials when given', (tester) async {
     await pump(tester, const SldsAvatar(initials: 'LK'));
@@ -17,12 +20,16 @@ void main() {
     expect(find.text('AB'), findsOneWidget);
   });
 
-  testWidgets('falls back to the person icon when initials is null', (tester) async {
+  testWidgets('falls back to the person icon when initials is null', (
+    tester,
+  ) async {
     await pump(tester, const SldsAvatar());
     expect(find.byIcon(Icons.person_outline), findsOneWidget);
   });
 
-  testWidgets('falls back to the person icon when initials is empty', (tester) async {
+  testWidgets('falls back to the person icon when initials is empty', (
+    tester,
+  ) async {
     await pump(tester, const SldsAvatar(initials: ''));
     expect(find.byIcon(Icons.person_outline), findsOneWidget);
   });

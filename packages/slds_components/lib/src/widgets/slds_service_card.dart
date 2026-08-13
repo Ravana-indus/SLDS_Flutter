@@ -74,10 +74,12 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
       SldsServiceCardState.selected => const Color(0xffE3EDFF),
       SldsServiceCardState.active => colors.buttonPrimaryBackground,
     };
-    final Color titleColor =
-        state == SldsServiceCardState.active ? colors.textStaticBlack : colors.textPrimary;
-    final Color descriptionColor =
-        state == SldsServiceCardState.active ? colors.textStaticBlack : colors.textSecondary;
+    final Color titleColor = state == SldsServiceCardState.active
+        ? colors.textStaticBlack
+        : colors.textPrimary;
+    final Color descriptionColor = state == SldsServiceCardState.active
+        ? colors.textStaticBlack
+        : colors.textSecondary;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
@@ -126,7 +128,9 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
                         ),
                         Text(
                           widget.description,
-                          style: typography.body2.copyWith(color: descriptionColor),
+                          style: typography.body2.copyWith(
+                            color: descriptionColor,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -136,15 +140,21 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
                     SizedBox(width: dimensions.space16),
                     Container(
                       height: 28,
-                      padding: EdgeInsets.symmetric(horizontal: dimensions.space12),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: dimensions.space12,
+                      ),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: colors.badgeSuccessBackground,
-                        borderRadius: BorderRadius.circular(dimensions.radius2xl),
+                        borderRadius: BorderRadius.circular(
+                          dimensions.radius2xl,
+                        ),
                       ),
                       child: Text(
                         widget.badgeText!,
-                        style: typography.caption1.copyWith(color: colors.badgeSuccessText),
+                        style: typography.caption1.copyWith(
+                          color: colors.badgeSuccessText,
+                        ),
                       ),
                     ),
                   ],

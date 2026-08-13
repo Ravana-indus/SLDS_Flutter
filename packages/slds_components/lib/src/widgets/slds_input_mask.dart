@@ -118,7 +118,8 @@ class _SldsInputMaskState extends State<SldsInputMask> {
 
   void _attachFocusNode(FocusNode? provided) {
     _ownsFocusNode = provided == null;
-    _focusNode = provided ?? FocusNode(debugLabel: 'SldsInputMask:${widget.label}');
+    _focusNode =
+        provided ?? FocusNode(debugLabel: 'SldsInputMask:${widget.label}');
     _focusNode.addListener(_onFocusChange);
   }
 
@@ -145,7 +146,8 @@ class _SldsInputMaskState extends State<SldsInputMask> {
     super.dispose();
   }
 
-  bool get _hasError => widget.errorText != null && widget.errorText!.isNotEmpty;
+  bool get _hasError =>
+      widget.errorText != null && widget.errorText!.isNotEmpty;
   bool get _hasValue => _controller.text.isNotEmpty;
 
   SldsInputMaskState get _resolvedState {
@@ -155,7 +157,9 @@ class _SldsInputMaskState extends State<SldsInputMask> {
     if (widget.visualState != null) return widget.visualState!;
     if (_hasError) return SldsInputMaskState.error;
     if (_focusNode.hasFocus) return SldsInputMaskState.focused;
-    return _hasValue ? SldsInputMaskState.filled : SldsInputMaskState.defaultState;
+    return _hasValue
+        ? SldsInputMaskState.filled
+        : SldsInputMaskState.defaultState;
   }
 
   @override
@@ -171,24 +175,28 @@ class _SldsInputMaskState extends State<SldsInputMask> {
     final borderColor = disabled
         ? colors.inputBorderDisabled
         : error
-            ? colors.inputBorderError
-            : focused
-                ? colors.inputBorderFocused
-                : colors.inputBorderDefault;
+        ? colors.inputBorderError
+        : focused
+        ? colors.inputBorderFocused
+        : colors.inputBorderDefault;
     final borderWidth = disabled
         ? dimensions.inputDisabledBorderWidth
         : error || focused
-            ? dimensions.emphasizedBorderWidth
-            : dimensions.controlBorderWidth;
+        ? dimensions.emphasizedBorderWidth
+        : dimensions.controlBorderWidth;
     final labelColor = disabled ? colors.disabledForeground : colors.inputLabel;
-    final affixColor = disabled ? colors.disabledForeground : colors.textSecondary;
-    final valueColor = disabled ? colors.disabledForeground : colors.textPrimary;
+    final affixColor = disabled
+        ? colors.disabledForeground
+        : colors.textSecondary;
+    final valueColor = disabled
+        ? colors.disabledForeground
+        : colors.textPrimary;
     final supportText = error ? widget.errorText : widget.helperText;
     final supportColor = disabled
         ? colors.disabledForeground
         : error
-            ? colors.error
-            : colors.inputHelper;
+        ? colors.error
+        : colors.inputHelper;
     // Boxier corners than SldsInput's pill-ish radius2xl — matches the
     // reference's segmented-cell look (radiusLg is Figma's compact-field radius).
     final radius = dimensions.radiusLg;
@@ -196,8 +204,11 @@ class _SldsInputMaskState extends State<SldsInputMask> {
     return LayoutBuilder(
       builder: (context, constraints) {
         const figmaReferenceWidth = 361.0;
-        final requestedWidth = widget.width ??
-            (constraints.hasBoundedWidth ? constraints.maxWidth : figmaReferenceWidth);
+        final requestedWidth =
+            widget.width ??
+            (constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
             ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
             : requestedWidth;
@@ -211,12 +222,19 @@ class _SldsInputMaskState extends State<SldsInputMask> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(widget.label, style: tokens.typography.fieldLabel.copyWith(color: labelColor)),
+                  Text(
+                    widget.label,
+                    style: tokens.typography.fieldLabel.copyWith(
+                      color: labelColor,
+                    ),
+                  ),
                   if (widget.required)
                     Text(
                       '*',
                       style: tokens.typography.fieldLabel.copyWith(
-                        color: disabled ? colors.disabledForeground : colors.inputBorderError,
+                        color: disabled
+                            ? colors.disabledForeground
+                            : colors.inputBorderError,
                       ),
                     ),
                 ],
@@ -225,7 +243,9 @@ class _SldsInputMaskState extends State<SldsInputMask> {
               Container(
                 height: dimensions.inputHeight,
                 decoration: BoxDecoration(
-                  color: disabled ? colors.disabledBackground : colors.surfaceCard,
+                  color: disabled
+                      ? colors.disabledBackground
+                      : colors.surfaceCard,
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(radius),
                 ),
@@ -242,7 +262,9 @@ class _SldsInputMaskState extends State<SldsInputMask> {
                       ),
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: dimensions.space12),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: dimensions.space12,
+                        ),
                         child: TextField(
                           controller: _controller,
                           focusNode: _focusNode,
@@ -251,13 +273,17 @@ class _SldsInputMaskState extends State<SldsInputMask> {
                           inputFormatters: widget.inputFormatters,
                           onChanged: widget.onChanged,
                           onSubmitted: widget.onSubmitted,
-                          style: tokens.typography.body1.copyWith(color: valueColor),
+                          style: tokens.typography.body1.copyWith(
+                            color: valueColor,
+                          ),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             isDense: true,
                             contentPadding: EdgeInsets.zero,
                             hintText: widget.hintText,
-                            hintStyle: tokens.typography.body1.copyWith(color: colors.inputPlaceholder),
+                            hintStyle: tokens.typography.body1.copyWith(
+                              color: colors.inputPlaceholder,
+                            ),
                           ),
                         ),
                       ),
@@ -277,7 +303,12 @@ class _SldsInputMaskState extends State<SldsInputMask> {
               ),
               if (supportText != null) ...[
                 SizedBox(height: dimensions.space6),
-                Text(supportText, style: tokens.typography.caption1.copyWith(color: supportColor)),
+                Text(
+                  supportText,
+                  style: tokens.typography.caption1.copyWith(
+                    color: supportColor,
+                  ),
+                ),
               ],
             ],
           ),
@@ -319,8 +350,12 @@ class _MaskCell extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: dimensions.space12),
       decoration: BoxDecoration(
         border: Border(
-          left: leading ? BorderSide(color: dividerColor, width: dividerWidth) : BorderSide.none,
-          right: leading ? BorderSide.none : BorderSide(color: dividerColor, width: dividerWidth),
+          left: leading
+              ? BorderSide(color: dividerColor, width: dividerWidth)
+              : BorderSide.none,
+          right: leading
+              ? BorderSide.none
+              : BorderSide(color: dividerColor, width: dividerWidth),
         ),
       ),
       child: Text(text, style: typography.body1.copyWith(color: color)),

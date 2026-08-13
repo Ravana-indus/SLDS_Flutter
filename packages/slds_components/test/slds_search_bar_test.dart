@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('shows the hint and a search icon, no clear button when empty', (
     tester,
@@ -49,19 +52,16 @@ void main() {
   testWidgets('panel is closed when unfocused even with suggestions set', (
     tester,
   ) async {
-    await pump(
-      tester,
-      const SldsSearchBar(suggestions: ['Driving License']),
-    );
+    await pump(tester, const SldsSearchBar(suggestions: ['Driving License']));
     expect(find.text('Driving License'), findsNothing);
   });
 
-  testWidgets('focusing opens the panel and shows suggestions', (
-    tester,
-  ) async {
+  testWidgets('focusing opens the panel and shows suggestions', (tester) async {
     await pump(
       tester,
-      const SldsSearchBar(suggestions: ['Birth Certificate', 'Driving License']),
+      const SldsSearchBar(
+        suggestions: ['Birth Certificate', 'Driving License'],
+      ),
     );
 
     await tester.tap(find.byType(TextField));
@@ -71,44 +71,48 @@ void main() {
     expect(find.text('Driving License'), findsOneWidget);
   });
 
-  testWidgets('recent searches render under a heading with a history icon each', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      const SldsSearchBar(recentSearches: ['National Identity Card', 'Birth Certificate']),
-    );
+  testWidgets(
+    'recent searches render under a heading with a history icon each',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsSearchBar(
+          recentSearches: ['National Identity Card', 'Birth Certificate'],
+        ),
+      );
 
-    await tester.tap(find.byType(TextField));
-    await tester.pump();
+      await tester.tap(find.byType(TextField));
+      await tester.pump();
 
-    expect(find.text('RECENT SEARCHES'), findsOneWidget);
-    expect(find.text('National Identity Card'), findsOneWidget);
-    expect(find.text('Birth Certificate'), findsOneWidget);
-    expect(find.byIcon(Icons.history), findsNWidgets(2));
-  });
+      expect(find.text('RECENT SEARCHES'), findsOneWidget);
+      expect(find.text('National Identity Card'), findsOneWidget);
+      expect(find.text('Birth Certificate'), findsOneWidget);
+      expect(find.byIcon(Icons.history), findsNWidgets(2));
+    },
+  );
 
-  testWidgets('tapping a suggestion fills the field and calls onSuggestionSelected', (
-    tester,
-  ) async {
-    String? selected;
-    await pump(
-      tester,
-      SldsSearchBar(
-        suggestions: const ['Driving License'],
-        onSuggestionSelected: (s) => selected = s,
-      ),
-    );
+  testWidgets(
+    'tapping a suggestion fills the field and calls onSuggestionSelected',
+    (tester) async {
+      String? selected;
+      await pump(
+        tester,
+        SldsSearchBar(
+          suggestions: const ['Driving License'],
+          onSuggestionSelected: (s) => selected = s,
+        ),
+      );
 
-    await tester.tap(find.byType(TextField));
-    await tester.pump();
-    await tester.tap(find.text('Driving License'));
-    await tester.pump();
+      await tester.tap(find.byType(TextField));
+      await tester.pump();
+      await tester.tap(find.text('Driving License'));
+      await tester.pump();
 
-    expect(selected, 'Driving License');
-    final field = tester.widget<TextField>(find.byType(TextField));
-    expect(field.controller!.text, 'Driving License');
-  });
+      expect(selected, 'Driving License');
+      final field = tester.widget<TextField>(find.byType(TextField));
+      expect(field.controller!.text, 'Driving License');
+    },
+  );
 
   testWidgets('tapping a recent search also calls onSuggestionSelected', (
     tester,

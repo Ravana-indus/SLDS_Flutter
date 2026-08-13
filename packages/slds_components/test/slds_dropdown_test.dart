@@ -6,8 +6,11 @@ void main() {
   const items = ['Batticaloa', 'Colombo', 'Galle', 'Gampaha'];
 
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders label, required marker, and placeholder', (
     tester,
@@ -33,7 +36,11 @@ void main() {
   ) async {
     await pump(
       tester,
-      const SldsDropdown<String>(label: 'District', items: items, itemLabel: _identity),
+      const SldsDropdown<String>(
+        label: 'District',
+        items: items,
+        itemLabel: _identity,
+      ),
     );
 
     expect(find.text('Search'), findsNothing);
@@ -49,7 +56,11 @@ void main() {
   testWidgets('typing in search filters the option list', (tester) async {
     await pump(
       tester,
-      const SldsDropdown<String>(label: 'District', items: items, itemLabel: _identity),
+      const SldsDropdown<String>(
+        label: 'District',
+        items: items,
+        itemLabel: _identity,
+      ),
     );
 
     await tester.tap(find.text('Select an option'));
@@ -63,35 +74,40 @@ void main() {
     expect(find.text('Galle'), findsNothing);
   });
 
-  testWidgets('selecting an item calls onChanged, closes the panel, and shows the value', (
-    tester,
-  ) async {
-    String? selected;
-    await pump(
-      tester,
-      SldsDropdown<String>(
-        label: 'District',
-        items: items,
-        itemLabel: _identity,
-        onChanged: (v) => selected = v,
-      ),
-    );
+  testWidgets(
+    'selecting an item calls onChanged, closes the panel, and shows the value',
+    (tester) async {
+      String? selected;
+      await pump(
+        tester,
+        SldsDropdown<String>(
+          label: 'District',
+          items: items,
+          itemLabel: _identity,
+          onChanged: (v) => selected = v,
+        ),
+      );
 
-    await tester.tap(find.text('Select an option'));
-    await tester.pump();
-    await tester.tap(find.text('Colombo'));
-    await tester.pump();
+      await tester.tap(find.text('Select an option'));
+      await tester.pump();
+      await tester.tap(find.text('Colombo'));
+      await tester.pump();
 
-    expect(selected, 'Colombo');
-    expect(find.text('Search'), findsNothing);
-  });
+      expect(selected, 'Colombo');
+      expect(find.text('Search'), findsNothing);
+    },
+  );
 
   testWidgets('shows "No results" when the search matches nothing', (
     tester,
   ) async {
     await pump(
       tester,
-      const SldsDropdown<String>(label: 'District', items: items, itemLabel: _identity),
+      const SldsDropdown<String>(
+        label: 'District',
+        items: items,
+        itemLabel: _identity,
+      ),
     );
 
     await tester.tap(find.text('Select an option'));

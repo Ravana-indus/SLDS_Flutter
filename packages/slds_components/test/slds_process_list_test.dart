@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget list) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: list)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: list),
+    ),
+  );
 
   const steps = [
     SldsProcessStep(
@@ -24,24 +27,33 @@ void main() {
     ),
   ];
 
-  testWidgets('renders every step title, description and 1-based number', (tester) async {
+  testWidgets('renders every step title, description and 1-based number', (
+    tester,
+  ) async {
     await pump(tester, const SldsProcessList(steps: steps));
 
     expect(find.text('Prepare documents'), findsOneWidget);
-    expect(find.text('Gather all required identification and supporting files'), findsOneWidget);
+    expect(
+      find.text('Gather all required identification and supporting files'),
+      findsOneWidget,
+    );
     expect(find.text('1'), findsOneWidget);
     expect(find.text('2'), findsOneWidget);
     expect(find.text('3'), findsOneWidget);
   });
 
-  testWidgets('done/current/upcoming badges use distinct colors', (tester) async {
+  testWidgets('done/current/upcoming badges use distinct colors', (
+    tester,
+  ) async {
     await pump(tester, const SldsProcessList(steps: steps));
 
     final colors = SldsColorTokens.light();
 
     Color badgeColorFor(String number) {
       final container = tester.widget<Container>(
-        find.ancestor(of: find.text(number), matching: find.byType(Container)).first,
+        find
+            .ancestor(of: find.text(number), matching: find.byType(Container))
+            .first,
       );
       return (container.decoration as BoxDecoration).color!;
     }
@@ -51,7 +63,9 @@ void main() {
     expect(badgeColorFor('3'), colors.disabledBackground); // upcoming
   });
 
-  testWidgets('draws a divider between steps but not before the first', (tester) async {
+  testWidgets('draws a divider between steps but not before the first', (
+    tester,
+  ) async {
     await pump(tester, const SldsProcessList(steps: steps));
 
     expect(find.byType(Divider), findsNWidgets(steps.length - 1));
@@ -62,7 +76,9 @@ void main() {
       tester,
       SizedBox(
         width: 200,
-        child: SingleChildScrollView(child: SldsProcessList(steps: steps, width: 480)),
+        child: SingleChildScrollView(
+          child: SldsProcessList(steps: steps, width: 480),
+        ),
       ),
     );
 
@@ -70,14 +86,17 @@ void main() {
     expect(size.width, 200);
   });
 
-  testWidgets('exposes step number, title and description as combined semantics', (tester) async {
-    await pump(tester, const SldsProcessList(steps: steps));
+  testWidgets(
+    'exposes step number, title and description as combined semantics',
+    (tester) async {
+      await pump(tester, const SldsProcessList(steps: steps));
 
-    expect(
-      find.bySemanticsLabel(
-        'Step 1: Prepare documents. Gather all required identification and supporting files',
-      ),
-      findsOneWidget,
-    );
-  });
+      expect(
+        find.bySemanticsLabel(
+          'Step 1: Prepare documents. Gather all required identification and supporting files',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
 }

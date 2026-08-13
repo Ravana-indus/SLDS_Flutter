@@ -126,12 +126,15 @@ class SldsUploadField extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final interactive = enabled && status == SldsUploadStatus.empty && onTap != null;
+    final interactive =
+        enabled && status == SldsUploadStatus.empty && onTap != null;
 
-    final leadingUploaded = uploadedWidget ??
+    final leadingUploaded =
+        uploadedWidget ??
         Icon(uploadedIcon ?? Icons.check, color: colors.success, size: 16);
 
-    final leadingError = errorWidget ??
+    final leadingError =
+        errorWidget ??
         Icon(errorIcon ?? Icons.close, color: colors.error, size: 16);
 
     return Column(
@@ -141,9 +144,19 @@ class SldsUploadField extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(label, style: tokens.typography.fieldLabel.copyWith(color: colors.inputLabel)),
+            Text(
+              label,
+              style: tokens.typography.fieldLabel.copyWith(
+                color: colors.inputLabel,
+              ),
+            ),
             if (required)
-              Text(' *', style: tokens.typography.fieldLabel.copyWith(color: colors.inputBorderError)),
+              Text(
+                ' *',
+                style: tokens.typography.fieldLabel.copyWith(
+                  color: colors.inputBorderError,
+                ),
+              ),
           ],
         ),
         SizedBox(height: dimensions.space4),
@@ -151,8 +164,13 @@ class SldsUploadField extends StatelessWidget {
           onTap: interactive ? onTap : null,
           borderRadius: BorderRadius.circular(dimensions.radius2xl),
           child: Container(
-            constraints: BoxConstraints(minHeight: dimensions.buttonHeightExtraLarge),
-            padding: EdgeInsets.symmetric(horizontal: dimensions.space12, vertical: dimensions.space12),
+            constraints: BoxConstraints(
+              minHeight: dimensions.buttonHeightExtraLarge,
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: dimensions.space12,
+              vertical: dimensions.space12,
+            ),
             decoration: BoxDecoration(
               color: enabled ? colors.surfaceCard : colors.disabledBackground,
               border: Border.all(color: colors.borderDefault),
@@ -160,32 +178,35 @@ class SldsUploadField extends StatelessWidget {
             ),
             child: switch (status) {
               SldsUploadStatus.empty => _EmptyRow(
-                  hintText: hintText,
-                  enabled: enabled,
-                  icon: emptyIcon,
-                  customWidget: emptyWidget,
-                ),
-              SldsUploadStatus.uploading => _UploadingRow(fileName: fileName ?? '', progress: progress),
+                hintText: hintText,
+                enabled: enabled,
+                icon: emptyIcon,
+                customWidget: emptyWidget,
+              ),
+              SldsUploadStatus.uploading => _UploadingRow(
+                fileName: fileName ?? '',
+                progress: progress,
+              ),
               SldsUploadStatus.uploaded => _ResultRow(
-                  fileName: fileName ?? '',
-                  leading: leadingUploaded,
-                  leadingBackground: colors.badgeSuccessBackground,
-                  caption: 'Uploaded',
-                  captionColor: colors.inputHelper,
-                  onRemove: onRemove,
-                  removeIcon: removeIcon,
-                  removeWidget: removeWidget,
-                ),
+                fileName: fileName ?? '',
+                leading: leadingUploaded,
+                leadingBackground: colors.badgeSuccessBackground,
+                caption: 'Uploaded',
+                captionColor: colors.inputHelper,
+                onRemove: onRemove,
+                removeIcon: removeIcon,
+                removeWidget: removeWidget,
+              ),
               SldsUploadStatus.error => _ResultRow(
-                  fileName: fileName ?? '',
-                  leading: leadingError,
-                  leadingBackground: colors.badgeErrorBackground,
-                  caption: errorText,
-                  captionColor: colors.error,
-                  onRemove: onRemove,
-                  removeIcon: removeIcon,
-                  removeWidget: removeWidget,
-                ),
+                fileName: fileName ?? '',
+                leading: leadingError,
+                leadingBackground: colors.badgeErrorBackground,
+                caption: errorText,
+                captionColor: colors.error,
+                onRemove: onRemove,
+                removeIcon: removeIcon,
+                removeWidget: removeWidget,
+              ),
             },
           ),
         ),
@@ -213,7 +234,8 @@ class _EmptyRow extends StatelessWidget {
     final colors = tokens.colors;
     final iconColor = enabled ? colors.textPrimary : colors.disabledForeground;
 
-    final leadingChild = customWidget ??
+    final leadingChild =
+        customWidget ??
         Icon(
           icon ?? Icons.file_upload_outlined,
           size: tokens.dimensions.avatarIconMedium,
@@ -245,7 +267,9 @@ class _EmptyRow extends StatelessWidget {
             ),
             Text(
               hintText,
-              style: tokens.typography.caption1.copyWith(color: colors.inputHelper),
+              style: tokens.typography.caption1.copyWith(
+                color: colors.inputHelper,
+              ),
             ),
           ],
         ),
@@ -274,7 +298,9 @@ class _UploadingRow extends StatelessWidget {
           // percentage ring, so the percent is shown as text below instead
           // of drawn into the indicator itself (matches the design: the
           // ring never actually renders "72%" as an arc, only as a label).
-          child: Center(child: CupertinoActivityIndicator(color: colors.inputBorderFocused)),
+          child: Center(
+            child: CupertinoActivityIndicator(color: colors.inputBorderFocused),
+          ),
         ),
         SizedBox(width: tokens.dimensions.space12),
         Expanded(
@@ -285,11 +311,17 @@ class _UploadingRow extends StatelessWidget {
               Text(
                 fileName,
                 overflow: TextOverflow.ellipsis,
-                style: tokens.typography.body1.copyWith(color: colors.textPrimary),
+                style: tokens.typography.body1.copyWith(
+                  color: colors.textPrimary,
+                ),
               ),
               Text(
-                progress != null ? '${(progress! * 100).round()}%' : 'Uploading…',
-                style: tokens.typography.caption1.copyWith(color: colors.inputHelper),
+                progress != null
+                    ? '${(progress! * 100).round()}%'
+                    : 'Uploading…',
+                style: tokens.typography.caption1.copyWith(
+                  color: colors.inputHelper,
+                ),
               ),
             ],
           ),
@@ -332,7 +364,10 @@ class _ResultRow extends StatelessWidget {
         Container(
           width: tokens.dimensions.avatarSize40,
           height: tokens.dimensions.avatarSize40,
-          decoration: BoxDecoration(color: leadingBackground, shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: leadingBackground,
+            shape: BoxShape.circle,
+          ),
           child: Center(child: leading),
         ),
         SizedBox(width: tokens.dimensions.space12),
@@ -344,10 +379,17 @@ class _ResultRow extends StatelessWidget {
               Text(
                 fileName,
                 overflow: TextOverflow.ellipsis,
-                style: tokens.typography.body1.copyWith(color: colors.textPrimary),
+                style: tokens.typography.body1.copyWith(
+                  color: colors.textPrimary,
+                ),
               ),
               if (caption != null)
-                Text(caption!, style: tokens.typography.caption1.copyWith(color: captionColor)),
+                Text(
+                  caption!,
+                  style: tokens.typography.caption1.copyWith(
+                    color: captionColor,
+                  ),
+                ),
             ],
           ),
         ),

@@ -73,7 +73,8 @@ class _SldsTextAreaState extends State<SldsTextArea> {
     super.dispose();
   }
 
-  bool get _hasError => widget.errorText != null && widget.errorText!.isNotEmpty;
+  bool get _hasError =>
+      widget.errorText != null && widget.errorText!.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +82,9 @@ class _SldsTextAreaState extends State<SldsTextArea> {
     final accent = widget.color ?? scheme.primary;
 
     OutlineInputBorder border(Color borderColor) => OutlineInputBorder(
-          borderRadius: BorderRadius.circular(SldsSpacing.sm),
-          borderSide: BorderSide(color: borderColor),
-        );
+      borderRadius: BorderRadius.circular(SldsSpacing.sm),
+      borderSide: BorderSide(color: borderColor),
+    );
 
     final counterColor = widget.enabled
         ? scheme.onSurface.withValues(alpha: 0.6)
@@ -95,10 +96,16 @@ class _SldsTextAreaState extends State<SldsTextArea> {
       children: [
         Text.rich(
           TextSpan(
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(color: scheme.onSurface),
+            style: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(color: scheme.onSurface),
             children: [
               TextSpan(text: widget.label),
-              if (widget.isRequired) TextSpan(text: ' *', style: TextStyle(color: scheme.error)),
+              if (widget.isRequired)
+                TextSpan(
+                  text: ' *',
+                  style: TextStyle(color: scheme.error),
+                ),
             ],
           ),
           maxLines: 1,
@@ -119,7 +126,9 @@ class _SldsTextAreaState extends State<SldsTextArea> {
           decoration: InputDecoration(
             hintText: widget.hintText,
             filled: true,
-            fillColor: widget.enabled ? scheme.surface : scheme.onSurface.withValues(alpha: 0.04),
+            fillColor: widget.enabled
+                ? scheme.surface
+                : scheme.onSurface.withValues(alpha: 0.04),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: SldsSpacing.md,
               vertical: SldsSpacing.md,
@@ -129,22 +138,29 @@ class _SldsTextAreaState extends State<SldsTextArea> {
             focusedBorder: border(_hasError ? scheme.error : accent),
             errorBorder: border(scheme.error),
             focusedErrorBorder: border(scheme.error),
-            disabledBorder: border(scheme.outline.withValues(alpha: SldsColors.disabledOpacity)),
+            disabledBorder: border(
+              scheme.outline.withValues(alpha: SldsColors.disabledOpacity),
+            ),
             counterText: widget.maxLength != null
                 ? '${_controller.text.length}/${widget.maxLength}'
                 : '',
-            counterStyle: Theme.of(context).textTheme.bodySmall?.copyWith(color: counterColor),
+            counterStyle: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: counterColor),
           ),
         ),
-        if (_hasError || (widget.helpText != null && widget.helpText!.isNotEmpty)) ...[
+        if (_hasError ||
+            (widget.helpText != null && widget.helpText!.isNotEmpty)) ...[
           const SizedBox(height: SldsSpacing.xs),
           Text(
             _hasError ? widget.errorText! : widget.helpText!,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: _hasError
-                      ? scheme.error
-                      : scheme.onSurface.withValues(alpha: widget.enabled ? 0.6 : SldsColors.disabledOpacity),
-                ),
+              color: _hasError
+                  ? scheme.error
+                  : scheme.onSurface.withValues(
+                      alpha: widget.enabled ? 0.6 : SldsColors.disabledOpacity,
+                    ),
+            ),
           ),
         ],
       ],

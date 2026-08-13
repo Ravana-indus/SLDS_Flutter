@@ -4,35 +4,30 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget widget) => tester.pumpWidget(
-        MaterialApp(
-          theme: SldsTheme.light(),
-          home: Scaffold(body: Center(child: widget)),
-        ),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: Center(child: widget)),
+    ),
+  );
 
-  testWidgets('renders month navigator, year picker, weekdays, and action buttons', (tester) async {
-    await pump(
-      tester,
-      SldsDatePicker(
-        initialDate: DateTime(2026, 1, 15),
-      ),
-    );
+  testWidgets(
+    'renders month navigator, year picker, weekdays, and action buttons',
+    (tester) async {
+      await pump(tester, SldsDatePicker(initialDate: DateTime(2026, 1, 15)));
 
-    expect(find.text('January'), findsOneWidget);
-    expect(find.text('2026'), findsOneWidget);
-    expect(find.text('Mo'), findsOneWidget);
-    expect(find.text('Tu'), findsOneWidget);
-    expect(find.text('Cancel'), findsOneWidget);
-    expect(find.text('Apply'), findsOneWidget);
-  });
+      expect(find.text('January'), findsOneWidget);
+      expect(find.text('2026'), findsOneWidget);
+      expect(find.text('Mo'), findsOneWidget);
+      expect(find.text('Tu'), findsOneWidget);
+      expect(find.text('Cancel'), findsOneWidget);
+      expect(find.text('Apply'), findsOneWidget);
+    },
+  );
 
-  testWidgets('month navigator chevrons update displayed month', (tester) async {
-    await pump(
-      tester,
-      SldsDatePicker(
-        initialDate: DateTime(2026, 1, 15),
-      ),
-    );
+  testWidgets('month navigator chevrons update displayed month', (
+    tester,
+  ) async {
+    await pump(tester, SldsDatePicker(initialDate: DateTime(2026, 1, 15)));
 
     expect(find.text('January'), findsOneWidget);
 
@@ -49,7 +44,9 @@ void main() {
     expect(find.text('January'), findsOneWidget);
   });
 
-  testWidgets('range mode allows selecting start date and end date', (tester) async {
+  testWidgets('range mode allows selecting start date and end date', (
+    tester,
+  ) async {
     DateTimeRange? selectedRange;
     await pump(
       tester,

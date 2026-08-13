@@ -50,7 +50,12 @@ class SldsErrorSummary extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(title, style: tokens.typography.heading4.copyWith(color: colors.textPrimary)),
+            Text(
+              title,
+              style: tokens.typography.heading4.copyWith(
+                color: colors.textPrimary,
+              ),
+            ),
             SizedBox(height: dimensions.space12),
             for (final error in errors)
               Padding(

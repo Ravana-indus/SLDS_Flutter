@@ -4,7 +4,11 @@ import '../theme/slds_tokens.dart';
 
 /// One tab in an [SldsTabStrip].
 class SldsTabStripItem {
-  const SldsTabStripItem({required this.label, this.count, this.indicatorLeading = true});
+  const SldsTabStripItem({
+    required this.label,
+    this.count,
+    this.indicatorLeading = true,
+  });
 
   final String label;
 
@@ -54,12 +58,17 @@ class SldsTabStrip extends StatelessWidget {
     final dimensions = tokens.dimensions;
     final dark = style == SldsTabStripStyle.dark;
     final track = color ?? (dark ? Colors.black : colors.surfaceCard);
-    final pill = dark ? colors.surfaceHover.withValues(alpha: 0.16) : colors.surfaceHover;
+    final pill = dark
+        ? colors.surfaceHover.withValues(alpha: 0.16)
+        : colors.surfaceHover;
     final unselectedText = dark ? Colors.white : colors.textPrimary;
 
     return Container(
       padding: EdgeInsets.all(dimensions.space4),
-      decoration: BoxDecoration(color: track, borderRadius: BorderRadius.circular(dimensions.radiusFull)),
+      decoration: BoxDecoration(
+        color: track,
+        borderRadius: BorderRadius.circular(dimensions.radiusFull),
+      ),
       child: Row(
         children: [
           for (var i = 0; i < items.length; i++)
@@ -109,7 +118,10 @@ class _Tab extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(dimensions.radiusFull),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: dimensions.space12, vertical: dimensions.space8),
+          padding: EdgeInsets.symmetric(
+            horizontal: dimensions.space12,
+            vertical: dimensions.space8,
+          ),
           decoration: BoxDecoration(
             color: selected ? pillColor : Colors.transparent,
             borderRadius: BorderRadius.circular(dimensions.radiusFull),
@@ -119,7 +131,11 @@ class _Tab extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (!selected && item.indicatorLeading) ...[
-                Icon(Icons.radio_button_unchecked, size: dimensions.iconSizeMedium, color: textColor),
+                Icon(
+                  Icons.radio_button_unchecked,
+                  size: dimensions.iconSizeMedium,
+                  color: textColor,
+                ),
                 SizedBox(width: dimensions.space8),
               ],
               Flexible(
@@ -134,19 +150,30 @@ class _Tab extends StatelessWidget {
               ),
               if (!selected && !item.indicatorLeading) ...[
                 SizedBox(width: dimensions.space8),
-                Icon(Icons.radio_button_unchecked, size: dimensions.iconSizeMedium, color: textColor),
+                Icon(
+                  Icons.radio_button_unchecked,
+                  size: dimensions.iconSizeMedium,
+                  color: textColor,
+                ),
               ],
               if (item.count != null) ...[
                 SizedBox(width: dimensions.space8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 1,
+                  ),
                   decoration: BoxDecoration(
                     color: colors.badgeInfoBackground,
                     borderRadius: BorderRadius.circular(dimensions.radiusFull),
                   ),
                   child: Text(
                     '${item.count}',
-                    style: TextStyle(color: colors.badgeInfoText, fontSize: 12, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: colors.badgeInfoText,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],

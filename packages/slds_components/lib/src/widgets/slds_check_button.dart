@@ -59,7 +59,10 @@ class SldsCheckButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(dimensions.radiusLg),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: dimensions.space16, vertical: dimensions.space12),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimensions.space16,
+          vertical: dimensions.space12,
+        ),
         decoration: BoxDecoration(
           color: background,
           border: Border.all(color: borderColor),

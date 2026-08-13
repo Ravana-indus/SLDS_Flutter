@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: field)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: field),
+    ),
+  );
 
   testWidgets('renders the label and a chevron, no badge without a count', (
     tester,
@@ -39,7 +42,10 @@ void main() {
 
   testWidgets('tapping invokes onTap', (tester) async {
     var tapped = false;
-    await pump(tester, SldsFilterButton(label: 'Filter one', onTap: () => tapped = true));
+    await pump(
+      tester,
+      SldsFilterButton(label: 'Filter one', onTap: () => tapped = true),
+    );
 
     await tester.tap(find.byType(SldsFilterButton));
     expect(tapped, isTrue);
@@ -49,7 +55,11 @@ void main() {
     var tapped = false;
     await pump(
       tester,
-      SldsFilterButton(label: 'Filter one', enabled: false, onTap: () => tapped = true),
+      SldsFilterButton(
+        label: 'Filter one',
+        enabled: false,
+        onTap: () => tapped = true,
+      ),
     );
 
     await tester.tap(find.byType(SldsFilterButton));

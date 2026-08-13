@@ -7,7 +7,9 @@ void main() {
       tester.pumpWidget(
         MaterialApp(
           theme: SldsTheme.light(),
-          home: Scaffold(body: SizedBox(width: width, child: field)),
+          home: Scaffold(
+            body: SizedBox(width: width, child: field),
+          ),
         ),
       );
 
@@ -16,7 +18,11 @@ void main() {
   ) async {
     await pump(
       tester,
-      const SldsInputMask(label: 'Input', prefixText: 'http://', suffixText: '.com'),
+      const SldsInputMask(
+        label: 'Input',
+        prefixText: 'http://',
+        suffixText: '.com',
+      ),
     );
 
     expect(find.textContaining('Input'), findsOneWidget);
@@ -36,27 +42,34 @@ void main() {
     expect(find.text('.com'), findsNothing);
   });
 
-  testWidgets('shows helper text by default, error text when errorText is set', (
-    tester,
-  ) async {
-    await pump(tester, const SldsInputMask(label: 'Input', helperText: 'Help Text'));
-    expect(find.text('Help Text'), findsOneWidget);
+  testWidgets(
+    'shows helper text by default, error text when errorText is set',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsInputMask(label: 'Input', helperText: 'Help Text'),
+      );
+      expect(find.text('Help Text'), findsOneWidget);
 
-    await pump(
-      tester,
-      const SldsInputMask(
-        label: 'Input',
-        helperText: 'Help Text',
-        errorText: 'Bad value',
-      ),
-    );
-    expect(find.text('Bad value'), findsOneWidget);
-    expect(find.text('Help Text'), findsNothing);
-  });
+      await pump(
+        tester,
+        const SldsInputMask(
+          label: 'Input',
+          helperText: 'Help Text',
+          errorText: 'Bad value',
+        ),
+      );
+      expect(find.text('Bad value'), findsOneWidget);
+      expect(find.text('Help Text'), findsNothing);
+    },
+  );
 
   testWidgets('typing invokes onChanged', (tester) async {
     String? value;
-    await pump(tester, SldsInputMask(label: 'Input', onChanged: (v) => value = v));
+    await pump(
+      tester,
+      SldsInputMask(label: 'Input', onChanged: (v) => value = v),
+    );
 
     await tester.enterText(find.byType(TextField), 'slds');
     expect(value, 'slds');
@@ -68,70 +81,93 @@ void main() {
     expect(field.enabled, isFalse);
   });
 
-  testWidgets('visualState=disabled disables the field even when enabled=true', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      const SldsInputMask(label: 'Input', visualState: SldsInputMaskState.disabled),
-    );
-    final field = tester.widget<TextField>(find.byType(TextField));
-    expect(field.enabled, isFalse);
-  });
+  testWidgets(
+    'visualState=disabled disables the field even when enabled=true',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsInputMask(
+          label: 'Input',
+          visualState: SldsInputMaskState.disabled,
+        ),
+      );
+      final field = tester.widget<TextField>(find.byType(TextField));
+      expect(field.enabled, isFalse);
+    },
+  );
 
-  testWidgets('errorText without a forced state resolves the error border color', (
-    tester,
-  ) async {
-    await pump(tester, const SldsInputMask(label: 'Input', errorText: 'Bad value'));
+  testWidgets(
+    'errorText without a forced state resolves the error border color',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsInputMask(label: 'Input', errorText: 'Bad value'),
+      );
 
-    final container = tester
-        .widgetList<Container>(find.byType(Container))
-        .firstWhere((c) => c.decoration is BoxDecoration && (c.decoration! as BoxDecoration).border != null);
-    final decoration = container.decoration! as BoxDecoration;
-    expect(
-      (decoration.border as Border).top.color,
-      SldsColorTokens.light().inputBorderError,
-    );
-  });
+      final container = tester
+          .widgetList<Container>(find.byType(Container))
+          .firstWhere(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                (c.decoration! as BoxDecoration).border != null,
+          );
+      final decoration = container.decoration! as BoxDecoration;
+      expect(
+        (decoration.border as Border).top.color,
+        SldsColorTokens.light().inputBorderError,
+      );
+    },
+  );
 
-  testWidgets('gaining focus resolves to the focused visual state (gold border)', (
-    tester,
-  ) async {
-    await pump(tester, const SldsInputMask(label: 'Input'));
+  testWidgets(
+    'gaining focus resolves to the focused visual state (gold border)',
+    (tester) async {
+      await pump(tester, const SldsInputMask(label: 'Input'));
 
-    await tester.tap(find.byType(TextField));
-    await tester.pump();
+      await tester.tap(find.byType(TextField));
+      await tester.pump();
 
-    final container = tester
-        .widgetList<Container>(find.byType(Container))
-        .firstWhere((c) => c.decoration is BoxDecoration && (c.decoration! as BoxDecoration).border != null);
-    final decoration = container.decoration! as BoxDecoration;
-    expect(
-      (decoration.border as Border).top.color,
-      SldsColorTokens.light().inputBorderFocused,
-    );
-  });
+      final container = tester
+          .widgetList<Container>(find.byType(Container))
+          .firstWhere(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                (c.decoration! as BoxDecoration).border != null,
+          );
+      final decoration = container.decoration! as BoxDecoration;
+      expect(
+        (decoration.border as Border).top.color,
+        SldsColorTokens.light().inputBorderFocused,
+      );
+    },
+  );
 
-  testWidgets('focusing thickens the prefix cell divider to match the outer border', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      const SldsInputMask(label: 'Input', prefixText: 'http://'),
-    );
+  testWidgets(
+    'focusing thickens the prefix cell divider to match the outer border',
+    (tester) async {
+      await pump(
+        tester,
+        const SldsInputMask(label: 'Input', prefixText: 'http://'),
+      );
 
-    await tester.tap(find.byType(TextField));
-    await tester.pump();
+      await tester.tap(find.byType(TextField));
+      await tester.pump();
 
-    final cellContainer = tester.widgetList<Container>(find.byType(Container)).firstWhere((c) {
-      final decoration = c.decoration;
-      if (decoration is! BoxDecoration || decoration.border is! Border) return false;
-      return (decoration.border! as Border).right != BorderSide.none;
-    });
-    final border = (cellContainer.decoration! as BoxDecoration).border! as Border;
-    final tokens = SldsTokenSet.light();
-    expect(border.right.width, tokens.dimensions.emphasizedBorderWidth);
-  });
+      final cellContainer = tester
+          .widgetList<Container>(find.byType(Container))
+          .firstWhere((c) {
+            final decoration = c.decoration;
+            if (decoration is! BoxDecoration || decoration.border is! Border) {
+              return false;
+            }
+            return (decoration.border! as Border).right != BorderSide.none;
+          });
+      final border =
+          (cellContainer.decoration! as BoxDecoration).border! as Border;
+      final tokens = SldsTokenSet.light();
+      expect(border.right.width, tokens.dimensions.emphasizedBorderWidth);
+    },
+  );
 
   testWidgets('a committed value survives losing focus (filled state)', (
     tester,
@@ -153,7 +189,10 @@ void main() {
   ) async {
     await pump(
       tester,
-      const SldsInputMask(label: 'Input', visualState: SldsInputMaskState.filled),
+      const SldsInputMask(
+        label: 'Input',
+        visualState: SldsInputMaskState.filled,
+      ),
     );
     expect(find.byType(SldsInputMask), findsOneWidget);
   });

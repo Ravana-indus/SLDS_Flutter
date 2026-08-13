@@ -106,7 +106,10 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       _displayedMonth = DateTime(_rangeStartDate!.year, _rangeStartDate!.month);
     } else {
       // Default to January 2026 if matching screenshot spec, or current month
-      _displayedMonth = DateTime(widget.initialDate?.year ?? 2026, widget.initialDate?.month ?? 1);
+      _displayedMonth = DateTime(
+        widget.initialDate?.year ?? 2026,
+        widget.initialDate?.month ?? 1,
+      );
       _rangeStartDate = DateTime(2026, 1, 13);
       _rangeEndDate = DateTime(2026, 1, 18);
     }
@@ -114,13 +117,19 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
 
   void _previousMonth() {
     setState(() {
-      _displayedMonth = DateTime(_displayedMonth.year, _displayedMonth.month - 1);
+      _displayedMonth = DateTime(
+        _displayedMonth.year,
+        _displayedMonth.month - 1,
+      );
     });
   }
 
   void _nextMonth() {
     setState(() {
-      _displayedMonth = DateTime(_displayedMonth.year, _displayedMonth.month + 1);
+      _displayedMonth = DateTime(
+        _displayedMonth.year,
+        _displayedMonth.month + 1,
+      );
     });
   }
 
@@ -132,7 +141,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
         _selectedSingleDate = day;
         widget.onDateSelected?.call(day);
       } else {
-        if (_rangeStartDate == null || (_rangeStartDate != null && _rangeEndDate != null)) {
+        if (_rangeStartDate == null ||
+            (_rangeStartDate != null && _rangeEndDate != null)) {
           _rangeStartDate = day;
           _rangeEndDate = null;
         } else if (_rangeStartDate != null && _rangeEndDate == null) {
@@ -140,7 +150,9 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
             _rangeStartDate = day;
           } else if (day.isAfter(_rangeStartDate!)) {
             _rangeEndDate = day;
-            widget.onRangeSelected?.call(DateTimeRange(start: _rangeStartDate!, end: _rangeEndDate!));
+            widget.onRangeSelected?.call(
+              DateTimeRange(start: _rangeStartDate!, end: _rangeEndDate!),
+            );
           } else {
             _rangeEndDate = day;
           }
@@ -153,17 +165,36 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     if (widget.mode == SldsDatePickerMode.single) {
       widget.onApply?.call(_selectedSingleDate);
     } else if (_rangeStartDate != null && _rangeEndDate != null) {
-      widget.onApply?.call(DateTimeRange(start: _rangeStartDate!, end: _rangeEndDate!));
+      widget.onApply?.call(
+        DateTimeRange(start: _rangeStartDate!, end: _rangeEndDate!),
+      );
     } else {
       widget.onApply?.call(null);
     }
   }
 
   bool _isDayDisabled(DateTime day) {
-    if (widget.minDate != null && day.isBefore(DateTime(widget.minDate!.year, widget.minDate!.month, widget.minDate!.day))) {
+    if (widget.minDate != null &&
+        day.isBefore(
+          DateTime(
+            widget.minDate!.year,
+            widget.minDate!.month,
+            widget.minDate!.day,
+          ),
+        )) {
       return true;
     }
-    if (widget.maxDate != null && day.isAfter(DateTime(widget.maxDate!.year, widget.maxDate!.month, widget.maxDate!.day, 23, 59, 59))) {
+    if (widget.maxDate != null &&
+        day.isAfter(
+          DateTime(
+            widget.maxDate!.year,
+            widget.maxDate!.month,
+            widget.maxDate!.day,
+            23,
+            59,
+            59,
+          ),
+        )) {
       return true;
     }
     return false;
@@ -180,8 +211,18 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   }
 
   static const List<String> _monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   @override
@@ -264,15 +305,17 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                 },
                 itemBuilder: (context) {
                   final currentYear = DateTime.now().year;
-                  return List.generate(20, (i) => currentYear - 10 + i).map((y) {
-                    return PopupMenuItem<int>(
-                      value: y,
-                      child: Text('$y'),
-                    );
+                  return List.generate(20, (i) => currentYear - 10 + i).map((
+                    y,
+                  ) {
+                    return PopupMenuItem<int>(value: y, child: Text('$y'));
                   }).toList();
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     border: Border.all(color: colors.borderDefault),
                     borderRadius: BorderRadius.circular(24),
@@ -326,7 +369,10 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           const SizedBox(height: 16),
 
           // Horizontal Divider
-          Divider(color: colors.borderDefault.withValues(alpha: 0.6), height: 1),
+          Divider(
+            color: colors.borderDefault.withValues(alpha: 0.6),
+            height: 1,
+          ),
 
           const SizedBox(height: 16),
 
@@ -372,15 +418,31 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     );
   }
 
-  Widget _buildDaysGrid(Color primaryAccent, Color rangeHighlight, SldsColorTokens colors) {
-    final firstOfMonth = DateTime(_displayedMonth.year, _displayedMonth.month, 1);
-    final daysInMonth = DateTime(_displayedMonth.year, _displayedMonth.month + 1, 0).day;
-    
+  Widget _buildDaysGrid(
+    Color primaryAccent,
+    Color rangeHighlight,
+    SldsColorTokens colors,
+  ) {
+    final firstOfMonth = DateTime(
+      _displayedMonth.year,
+      _displayedMonth.month,
+      1,
+    );
+    final daysInMonth = DateTime(
+      _displayedMonth.year,
+      _displayedMonth.month + 1,
+      0,
+    ).day;
+
     // Calculate weekday offset (Monday = 1)
     int firstWeekdayOffset = firstOfMonth.weekday - 1; // 0 for Mon, 6 for Sun
     if (firstWeekdayOffset < 0) firstWeekdayOffset += 7;
 
-    final daysInPrevMonth = DateTime(_displayedMonth.year, _displayedMonth.month, 0).day;
+    final daysInPrevMonth = DateTime(
+      _displayedMonth.year,
+      _displayedMonth.month,
+      0,
+    ).day;
 
     final List<Widget> dayWidgets = [];
 
@@ -411,7 +473,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
         isRangeStart = _isSameDay(date, _rangeStartDate);
         isRangeEnd = _isSameDay(date, _rangeEndDate);
         if (_rangeStartDate != null && _rangeEndDate != null) {
-          isInRange = date.isAfter(_rangeStartDate!) && date.isBefore(_rangeEndDate!);
+          isInRange =
+              date.isAfter(_rangeStartDate!) && date.isBefore(_rangeEndDate!);
         }
         isSelected = isRangeStart || isRangeEnd;
       }
@@ -439,12 +502,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     final remainingCells = (7 - (totalCells % 7)) % 7;
     for (int day = 1; day <= remainingCells; day++) {
       final dayText = day < 10 ? '0$day' : '$day';
-      dayWidgets.add(
-        _SldsBaseDateCell(
-          dayText: dayText,
-          isOverflow: true,
-        ),
-      );
+      dayWidgets.add(_SldsBaseDateCell(dayText: dayText, isOverflow: true));
     }
 
     // Render in 7-column Grid

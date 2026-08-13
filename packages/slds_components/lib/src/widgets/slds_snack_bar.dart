@@ -88,13 +88,17 @@ class SldsSnackBar extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: tokens.typography.body1.copyWith(color: colors.textPrimary),
+                  style: tokens.typography.body1.copyWith(
+                    color: colors.textPrimary,
+                  ),
                 ),
                 if (message != null) ...[
                   SizedBox(height: dimensions.space4),
                   Text(
                     message!,
-                    style: tokens.typography.body2.copyWith(color: colors.textSecondary),
+                    style: tokens.typography.body2.copyWith(
+                      color: colors.textSecondary,
+                    ),
                   ),
                 ],
               ],

@@ -71,9 +71,9 @@ class SldsTextField extends StatelessWidget {
     final accent = color ?? scheme.primary;
 
     OutlineInputBorder border(Color borderColor) => OutlineInputBorder(
-          borderRadius: BorderRadius.circular(SldsSpacing.sm),
-          borderSide: BorderSide(color: borderColor),
-        );
+      borderRadius: BorderRadius.circular(SldsSpacing.sm),
+      borderSide: BorderSide(color: borderColor),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,10 +81,16 @@ class SldsTextField extends StatelessWidget {
       children: [
         Text.rich(
           TextSpan(
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(color: scheme.onSurface),
+            style: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(color: scheme.onSurface),
             children: [
               TextSpan(text: label),
-              if (isRequired) TextSpan(text: ' *', style: TextStyle(color: scheme.error)),
+              if (isRequired)
+                TextSpan(
+                  text: ' *',
+                  style: TextStyle(color: scheme.error),
+                ),
             ],
           ),
           maxLines: 1,
@@ -110,16 +116,23 @@ class SldsTextField extends StatelessWidget {
             prefixIcon: leadingWidget != null
                 ? Center(widthFactor: 1, child: leadingWidget)
                 : (leadingIcon != null ? Icon(leadingIcon, size: 20) : null),
-            prefixIconConstraints:
-                leadingWidget != null ? const BoxConstraints(minWidth: 0) : null,
+            prefixIconConstraints: leadingWidget != null
+                ? const BoxConstraints(minWidth: 0)
+                : null,
             suffixIcon: trailingIcon != null
                 ? IconButton(
-                    icon: Icon(trailingIcon, size: 20, color: trailingIconColor),
+                    icon: Icon(
+                      trailingIcon,
+                      size: 20,
+                      color: trailingIconColor,
+                    ),
                     onPressed: onTrailingIconPressed,
                   )
                 : null,
             filled: true,
-            fillColor: enabled ? scheme.surface : scheme.onSurface.withValues(alpha: 0.04),
+            fillColor: enabled
+                ? scheme.surface
+                : scheme.onSurface.withValues(alpha: 0.04),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: SldsSpacing.md,
               vertical: SldsSpacing.md,
@@ -129,7 +142,9 @@ class SldsTextField extends StatelessWidget {
             focusedBorder: border(_hasError ? scheme.error : accent),
             errorBorder: border(scheme.error),
             focusedErrorBorder: border(scheme.error),
-            disabledBorder: border(scheme.outline.withValues(alpha: SldsColors.disabledOpacity)),
+            disabledBorder: border(
+              scheme.outline.withValues(alpha: SldsColors.disabledOpacity),
+            ),
           ),
         ),
         if (_hasError || (helpText != null && helpText!.isNotEmpty)) ...[
@@ -137,10 +152,12 @@ class SldsTextField extends StatelessWidget {
           Text(
             _hasError ? errorText! : helpText!,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: _hasError
-                      ? scheme.error
-                      : scheme.onSurface.withValues(alpha: enabled ? 0.6 : SldsColors.disabledOpacity),
-                ),
+              color: _hasError
+                  ? scheme.error
+                  : scheme.onSurface.withValues(
+                      alpha: enabled ? 0.6 : SldsColors.disabledOpacity,
+                    ),
+            ),
           ),
         ],
       ],

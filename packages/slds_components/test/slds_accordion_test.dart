@@ -9,8 +9,11 @@ void main() {
   ];
 
   Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: SingleChildScrollView(child: child))),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: SingleChildScrollView(child: child)),
+    ),
+  );
 
   testWidgets('all items collapsed by default', (tester) async {
     await pump(tester, const SldsAccordion(items: items));
@@ -21,28 +24,34 @@ void main() {
   });
 
   testWidgets('initiallyExpanded opens the given indices', (tester) async {
-    await pump(tester, const SldsAccordion(items: items, initiallyExpanded: {1}));
+    await pump(
+      tester,
+      const SldsAccordion(items: items, initiallyExpanded: {1}),
+    );
 
     expect(find.text('Body A'), findsNothing);
     expect(find.text('Body B'), findsOneWidget);
   });
 
-  testWidgets('tapping a header toggles just that item, others stay independent', (tester) async {
-    await pump(tester, const SldsAccordion(items: items));
+  testWidgets(
+    'tapping a header toggles just that item, others stay independent',
+    (tester) async {
+      await pump(tester, const SldsAccordion(items: items));
 
-    await tester.tap(find.text('Section A'));
-    await tester.pumpAndSettle();
-    expect(find.text('Body A'), findsOneWidget);
-    expect(find.text('Body B'), findsNothing);
+      await tester.tap(find.text('Section A'));
+      await tester.pumpAndSettle();
+      expect(find.text('Body A'), findsOneWidget);
+      expect(find.text('Body B'), findsNothing);
 
-    await tester.tap(find.text('Section B'));
-    await tester.pumpAndSettle();
-    expect(find.text('Body A'), findsOneWidget);
-    expect(find.text('Body B'), findsOneWidget);
+      await tester.tap(find.text('Section B'));
+      await tester.pumpAndSettle();
+      expect(find.text('Body A'), findsOneWidget);
+      expect(find.text('Body B'), findsOneWidget);
 
-    await tester.tap(find.text('Section A'));
-    await tester.pumpAndSettle();
-    expect(find.text('Body A'), findsNothing);
-    expect(find.text('Body B'), findsOneWidget);
-  });
+      await tester.tap(find.text('Section A'));
+      await tester.pumpAndSettle();
+      expect(find.text('Body A'), findsNothing);
+      expect(find.text('Body B'), findsOneWidget);
+    },
+  );
 }

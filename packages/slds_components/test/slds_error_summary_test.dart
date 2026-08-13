@@ -4,8 +4,11 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
-        MaterialApp(theme: SldsTheme.light(), home: Scaffold(body: child)),
-      );
+    MaterialApp(
+      theme: SldsTheme.light(),
+      home: Scaffold(body: child),
+    ),
+  );
 
   testWidgets('renders title and every error message', (tester) async {
     await pump(
@@ -34,7 +37,12 @@ void main() {
     await pump(
       tester,
       SldsErrorSummary(
-        errors: [SldsErrorSummaryItem('Enter your NIC Number correctly', onTap: () => tapped = true)],
+        errors: [
+          SldsErrorSummaryItem(
+            'Enter your NIC Number correctly',
+            onTap: () => tapped = true,
+          ),
+        ],
       ),
     );
 

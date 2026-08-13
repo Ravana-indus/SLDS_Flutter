@@ -103,6 +103,7 @@ class SldsButton extends StatelessWidget {
     BuildContext context, {
     required EdgeInsets padding,
     required OutlinedBorder shape,
+    required double minWidth,
   }) {
     return ButtonStyle(
       padding: WidgetStatePropertyAll(padding),
@@ -113,24 +114,45 @@ class SldsButton extends StatelessWidget {
       ),
       side: WidgetStateProperty.resolveWith((states) => _border(context, states)),
       overlayColor: WidgetStateProperty.resolveWith((states) => _overlay(context, states)),
+      minimumSize: WidgetStatePropertyAll(Size(minWidth, SldsBreakpoints.isMobile(context) ? 52.0 : 44.0)),
+      // Without this, Material pads the tap target to its own 48px a11y
+      // minimum regardless of minimumSize, overriding the 44px SLDS spec.
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
   }
 
   Widget _styledButton(BuildContext context, Widget content) {
     final isMobile = SldsBreakpoints.isMobile(context);
-    final height = isMobile ? 52.0 : 44.0;
+    if (!isMobile) {
+      return _buttonForVariant(context, content, minWidth: 0);
+    }
+    // Full-width-on-mobile is only valid when the parent actually bounds our
+    // width (e.g. a form field's Column) — inside a Row (like a Cancel/Apply
+    // footer), children get unconstrained width, so both the minimumSize and
+    // the outer SizedBox must fall back to content-sized instead of
+    // `double.infinity`, which crashes layout there.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.hasBoundedWidth) {
+          return _buttonForVariant(context, content, minWidth: 0);
+        }
+        return SizedBox(
+          width: double.infinity,
+          child: _buttonForVariant(context, content, minWidth: double.infinity),
+        );
+      },
+    );
+  }
+
+  Widget _buttonForVariant(BuildContext context, Widget content, {required double minWidth}) {
     final style = _buildStyle(
       context,
       padding: const EdgeInsets.symmetric(horizontal: SldsSpacing.lg, vertical: SldsSpacing.md),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SldsSpacing.sm)),
-    ).copyWith(
-      minimumSize: WidgetStatePropertyAll(Size(isMobile ? double.infinity : 0, height)),
-      // Without this, Material pads the tap target to its own 48px a11y
-      // minimum regardless of minimumSize, overriding the 44px SLDS spec.
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      minWidth: minWidth,
     );
 
-    final Widget button = switch (variant) {
+    return switch (variant) {
       SldsButtonVariant.primary ||
       SldsButtonVariant.destructive =>
         FilledButton(onPressed: _enabled ? onPressed : null, style: style, child: content),
@@ -140,8 +162,6 @@ class SldsButton extends StatelessWidget {
       SldsButtonVariant.text =>
         TextButton(onPressed: _enabled ? onPressed : null, style: style, child: content),
     };
-
-    return isMobile ? SizedBox(width: double.infinity, child: button) : button;
   }
 
   /// The resolved accent color: [color] override, else the token driven by

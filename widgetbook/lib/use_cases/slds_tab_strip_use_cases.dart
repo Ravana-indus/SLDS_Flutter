@@ -27,7 +27,7 @@ Widget buildSldsTabStripUseCase(BuildContext context) {
       items: const [
         SldsTabStripItem(label: 'Label', count: 2),
         SldsTabStripItem(label: 'Label'),
-        SldsTabStripItem(label: 'Label'),
+        SldsTabStripItem(label: 'Label', indicatorLeading: false),
         SldsTabStripItem(label: 'Label', count: 2),
       ],
     ),

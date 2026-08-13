@@ -13,32 +13,37 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('SLDS App')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(SldsSpacing.lg),
-          child: SldsCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'SLDS component library is wired up.',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: SldsSpacing.md),
-                BlocBuilder<ThemeModeCubit, ThemeMode>(
-                  builder: (context, mode) {
-                    return SldsButton(
-                      label: mode == ThemeMode.light
-                          ? 'Switch to dark'
-                          : 'Switch to light',
-                      onPressed: () => context.read<ThemeModeCubit>().toggle(),
-                      variant: SldsButtonVariant.primary,
-                      
-                    );
-                  },
-                ),
-              ],
+      // SldsPullToRefresh lays child out in a sliver, so it doesn't need to
+      // be scrollable-height itself. Real features wire onRefresh to a use
+      // case re-fetch; this demo has no data to fetch, so it just waits.
+      body: SldsPullToRefresh(
+        onRefresh: () => Future<void>.delayed(const Duration(milliseconds: 600)),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(SldsSpacing.lg),
+            child: SldsCard(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'SLDS component library is wired up.',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: SldsSpacing.md),
+                  BlocBuilder<ThemeModeCubit, ThemeMode>(
+                    builder: (context, mode) {
+                      return SldsButton(
+                        label: mode == ThemeMode.light
+                            ? 'Switch to dark'
+                            : 'Switch to light',
+                        onPressed: () => context.read<ThemeModeCubit>().toggle(),
+                        variant: SldsButtonVariant.primary,
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

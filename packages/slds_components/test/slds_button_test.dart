@@ -153,4 +153,25 @@ void main() {
     final text = tester.widget<Text>(find.text('Continue to the next step of the application process'));
     expect(text.overflow, TextOverflow.ellipsis);
   });
+
+  testWidgets('does not crash inside a Row on mobile (unbounded width)', (tester) async {
+    // Regression: the mobile full-width minimumSize/SizedBox used to force
+    // `double.infinity` unconditionally, which crashes when the parent
+    // gives unbounded width — e.g. a Cancel/Apply footer Row.
+    await setViewSize(tester, const Size(360, 800));
+
+    await pump(
+      tester,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          SldsButton(label: 'Cancel', onPressed: () {}, variant: SldsButtonVariant.text),
+          const SizedBox(width: 8),
+          SldsButton(label: 'Apply', onPressed: () {}),
+        ],
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+  });
 }

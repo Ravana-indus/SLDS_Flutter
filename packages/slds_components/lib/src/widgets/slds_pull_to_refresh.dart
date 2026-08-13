@@ -43,6 +43,12 @@ class SldsPullToRefresh extends StatelessWidget {
     final dark = style == SldsPullToRefreshStyle.dark;
 
     return CustomScrollView(
+      // Pull-to-refresh needs overscroll past the top to register at all —
+      // the platform-default physics (ClampingScrollPhysics on Android)
+      // refuses that, so the gesture would silently do nothing there
+      // without this override. AlwaysScrollableScrollPhysics on top so it
+      // still works when child content is shorter than the viewport.
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       slivers: [
         CupertinoSliverRefreshControl(
           onRefresh: onRefresh,

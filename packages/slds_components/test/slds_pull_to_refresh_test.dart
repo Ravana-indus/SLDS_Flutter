@@ -81,11 +81,14 @@ void main() {
       ),
     );
 
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, 150));
+    final gesture = await tester.startGesture(tester.getCenter(find.byType(CustomScrollView)));
+    await gesture.moveBy(const Offset(0, 150));
     await tester.pump();
 
     expect(find.text('Refreshing…'), findsOneWidget);
     expect(find.text('Loading…'), findsNothing);
+    await gesture.up();
+    await tester.pumpAndSettle();
   });
 
   testWidgets('dark style renders without throwing while pulling', (
@@ -100,9 +103,12 @@ void main() {
       ),
     );
 
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, 150));
+    final gesture = await tester.startGesture(tester.getCenter(find.byType(CustomScrollView)));
+    await gesture.moveBy(const Offset(0, 150));
     await tester.pump();
 
     expect(find.text('Loading…'), findsOneWidget);
+    await gesture.up();
+    await tester.pumpAndSettle();
   });
 }

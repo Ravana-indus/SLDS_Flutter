@@ -4,13 +4,19 @@ import '../theme/slds_tokens.dart';
 
 /// One tab in an [SldsTabStrip].
 class SldsTabStripItem {
-  const SldsTabStripItem({required this.label, this.count});
+  const SldsTabStripItem({required this.label, this.count, this.indicatorLeading = true});
 
   final String label;
 
-  /// Shown as a small numeric badge beside the label (e.g. an item count
+  /// Shown as a small numeric badge trailing the label (e.g. an item count
   /// for that tab). Null hides the badge.
   final int? count;
+
+  /// While unselected, an empty radio-outline indicator is shown beside the
+  /// label — before it when true, after it when false. Purely a layout
+  /// choice (the Figma spec alternates it per tab); it carries no
+  /// selection state itself, [SldsTabStrip.currentIndex] does.
+  final bool indicatorLeading;
 }
 
 /// Visual container styles for [SldsTabStrip] — mirrors [SldsBottomNav]'s
@@ -112,6 +118,10 @@ class _Tab extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (!selected && item.indicatorLeading) ...[
+                Icon(Icons.radio_button_unchecked, size: dimensions.iconSizeMedium, color: textColor),
+                SizedBox(width: dimensions.space8),
+              ],
               Flexible(
                 child: Text(
                   item.label,
@@ -122,6 +132,10 @@ class _Tab extends StatelessWidget {
                   ),
                 ),
               ),
+              if (!selected && !item.indicatorLeading) ...[
+                SizedBox(width: dimensions.space8),
+                Icon(Icons.radio_button_unchecked, size: dimensions.iconSizeMedium, color: textColor),
+              ],
               if (item.count != null) ...[
                 SizedBox(width: dimensions.space8),
                 Container(

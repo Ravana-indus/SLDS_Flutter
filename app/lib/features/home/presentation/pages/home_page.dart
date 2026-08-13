@@ -34,6 +34,7 @@ class HomePage extends StatelessWidget {
                           : 'Switch to light',
                       onPressed: () => context.read<ThemeModeCubit>().toggle(),
                       variant: SldsButtonVariant.primary,
+                      
                     );
                   },
                 ),

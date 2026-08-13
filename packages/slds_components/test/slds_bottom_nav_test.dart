@@ -80,7 +80,14 @@ void main() {
     );
     expect(
       tester.getSemantics(navItemSemantics),
-      matchesSemantics(isButton: true, isSelected: true, hasSelectedState: true, label: 'Search'),
+      matchesSemantics(
+        isButton: true,
+        isSelected: true,
+        hasSelectedState: true,
+        isEnabled: true,
+        hasEnabledState: true,
+        label: 'Search',
+      ),
     );
   });
 
@@ -128,5 +135,81 @@ void main() {
     final container = tester.widget<Container>(find.byType(Container).first);
     final decoration = container.decoration! as BoxDecoration;
     expect(decoration.color, SldsColorTokens.light().surfaceCard);
+  });
+
+  testWidgets('light style: the selected item gets a solid gold pill, not a soft tint', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsBottomNav(items: items, currentIndex: 0, onTap: (_) {}),
+    );
+
+    final colors = tester
+        .widgetList<Container>(find.byType(Container))
+        .map((c) => c.decoration)
+        .whereType<BoxDecoration>()
+        .map((d) => d.color)
+        .whereType<Color>();
+    expect(colors, contains(SldsColorTokens.light().buttonPrimaryBackground));
+  });
+
+  testWidgets('a disabled item renders a white pill and a muted label', (
+    tester,
+  ) async {
+    const withDisabled = [
+      SldsBottomNavItem(icon: Icons.home, label: 'Home'),
+      SldsBottomNavItem(icon: Icons.search, label: 'Search'),
+      SldsBottomNavItem(icon: Icons.person, label: 'Profile', enabled: false),
+    ];
+    await pump(
+      tester,
+      SldsBottomNav(items: withDisabled, currentIndex: 0, onTap: (_) {}),
+    );
+
+    final label = tester.widget<Text>(find.text('Profile'));
+    expect(label.style?.color, SldsColorTokens.light().disabledForeground);
+  });
+
+  testWidgets('a disabled item does not respond to taps', (tester) async {
+    const withDisabled = [
+      SldsBottomNavItem(icon: Icons.home, label: 'Home'),
+      SldsBottomNavItem(icon: Icons.person, label: 'Profile', enabled: false),
+    ];
+    int? tapped;
+    await pump(
+      tester,
+      SldsBottomNav(items: withDisabled, currentIndex: 0, onTap: (i) => tapped = i),
+    );
+
+    await tester.tap(find.byIcon(Icons.person));
+    expect(tapped, isNull);
+  });
+
+  testWidgets('a disabled item is exposed as disabled for accessibility', (
+    tester,
+  ) async {
+    const withDisabled = [
+      SldsBottomNavItem(icon: Icons.home, label: 'Home'),
+      SldsBottomNavItem(icon: Icons.person, label: 'Profile', enabled: false),
+    ];
+    await pump(
+      tester,
+      SldsBottomNav(items: withDisabled, currentIndex: 0, onTap: (_) {}),
+    );
+
+    final navItemSemantics = find.byWidgetPredicate(
+      (w) => w is Semantics && w.properties.label == 'Profile',
+    );
+    expect(
+      tester.getSemantics(navItemSemantics),
+      matchesSemantics(
+        isButton: true,
+        isEnabled: false,
+        hasEnabledState: true,
+        hasSelectedState: true,
+        label: 'Profile',
+      ),
+    );
   });
 }

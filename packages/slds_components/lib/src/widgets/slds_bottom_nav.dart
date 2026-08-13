@@ -4,14 +4,24 @@ import '../theme/slds_tokens.dart';
 
 /// One destination in an [SldsBottomNav].
 class SldsBottomNavItem {
-  const SldsBottomNavItem({required this.icon, required this.label, this.badgeCount});
+  const SldsBottomNavItem({
+    required this.icon,
+    required this.label,
+    this.badgeCount,
+    this.enabled = true,
+  });
 
   final IconData icon;
   final String label;
 
   /// Shown as a small red count badge over the icon; values over 99 render
-  /// as "99+". Null/0 hides the badge.
+  /// as "99+". Null/0 hides the badge — a disabled item can still show one
+  /// (e.g. a pending count on a destination the user can't open yet).
   final int? badgeCount;
+
+  /// A disabled item renders a neutral (white/near-black) pill with a muted
+  /// label and does not respond to taps, regardless of [SldsBottomNav.onTap].
+  final bool enabled;
 }
 
 /// Visual container styles for [SldsBottomNav].
@@ -106,33 +116,41 @@ class _NavItem extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
 
-    // Dark bar: selected pill is solid gold with a dark icon *inside* it for
-    // contrast — but the label sits below the pill on the black background,
-    // so it stays white regardless of selection (dark-on-black would be
-    // invisible). Unselected items are plain white throughout. Light bar:
-    // selected is a soft gold tint with a gold icon/label; unselected is
-    // plain gray — no pill background at all, matching the flatter tab-bar look.
+    // Disabled: a neutral (white on light, near-black on dark) pill with a
+    // dark/light-but-muted icon and a gray label — never selected-looking,
+    // never interactive, regardless of style. Dark bar: selected pill is
+    // solid gold with a dark icon *inside* it for contrast — but the label
+    // sits below the pill on the black background, so it stays white
+    // regardless of selection (dark-on-black would be invisible). Light
+    // bar: selected pill is solid gold too (matches the Figma "Bottom
+    // Navigation element" spec, not a soft tint); unselected is plain gray
+    // with no pill.
     final Color iconColor;
     final Color labelColor;
-    final Color? pillColor;
-    if (dark) {
+    final Color pillColor;
+    if (!item.enabled) {
+      iconColor = colors.disabledForeground;
+      labelColor = colors.disabledForeground;
+      pillColor = dark ? colors.disabledBackground : Colors.white;
+    } else if (dark) {
       iconColor = selected ? colors.textStaticBlack : Colors.white;
       labelColor = Colors.white;
-      pillColor = selected ? accent : null;
+      pillColor = selected ? accent : Colors.transparent;
     } else {
-      iconColor = selected ? accent : colors.textTertiary;
+      iconColor = selected ? colors.textStaticBlack : colors.textTertiary;
       labelColor = selected ? colors.textPrimary : colors.textTertiary;
-      pillColor = selected ? accent.withValues(alpha: 0.16) : null;
+      pillColor = selected ? accent : Colors.transparent;
     }
 
     return Semantics(
       container: true,
       explicitChildNodes: true,
       button: true,
+      enabled: item.enabled,
       selected: selected,
       label: item.label,
       child: InkWell(
-        onTap: onTap,
+        onTap: item.enabled ? onTap : null,
         borderRadius: BorderRadius.circular(dimensions.radiusFull),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: dimensions.space4),

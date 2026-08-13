@@ -8,7 +8,7 @@ const _items = [
   SldsBottomNavItem(icon: Icons.home, label: 'Label'),
   SldsBottomNavItem(icon: Icons.home, label: 'Label'),
   SldsBottomNavItem(icon: Icons.home, label: 'Label', badgeCount: 2),
-  SldsBottomNavItem(icon: Icons.home, label: 'Label'),
+  SldsBottomNavItem(icon: Icons.home, label: 'Label', enabled: false),
 ];
 
 @widgetbook.UseCase(name: 'Playground', type: SldsBottomNav, path: '[Navigation]')

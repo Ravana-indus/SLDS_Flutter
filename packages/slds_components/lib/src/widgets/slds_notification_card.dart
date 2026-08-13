@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/slds_tokens.dart';
+import 'slds_button.dart';
 
 /// Icon-tone for [SldsNotificationCard.type] — drives the leading circle's
 /// color pairing. [document] is a neutral file icon on a plain white
@@ -100,7 +101,20 @@ class SldsNotificationCard extends StatelessWidget {
                     ],
                     if (actionLabel != null) ...[
                       SizedBox(height: dimensions.space12),
-                      SldsButtonInline(label: actionLabel!, onPressed: onAction),
+                      // SldsButton is deliberately full-width below the
+                      // mobile breakpoint (its own spec) when its parent
+                      // gives it bounded width — Wrap hands it unbounded
+                      // width instead (like a Row would), so it falls back
+                      // to content-sized. IntrinsicWidth doesn't work here:
+                      // SldsButton has its own LayoutBuilder inside, and
+                      // LayoutBuilder can't answer intrinsic-size queries.
+                      Wrap(children: [
+                        SldsButton(
+                          label: actionLabel!,
+                          onPressed: onAction,
+                          variant: SldsButtonVariant.primary,
+                        ),
+                      ]),
                     ],
                   ],
                 ),
@@ -166,43 +180,6 @@ class _TypeIcon extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Icon(icon, size: 20, color: foreground),
-    );
-  }
-}
-
-/// Minimal gold pill button matching the reference's inline "Download"
-/// action — kept private/inline rather than reusing [SldsButton] because
-/// this needs a compact, non-full-width footprint regardless of mobile
-/// breakpoint, which [SldsButton] doesn't offer.
-class SldsButtonInline extends StatelessWidget {
-  const SldsButtonInline({super.key, required this.label, this.onPressed});
-
-  final String label;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.slds;
-    final colors = tokens.colors;
-    final dimensions = tokens.dimensions;
-
-    return Material(
-      color: colors.buttonPrimaryBackground,
-      borderRadius: BorderRadius.circular(dimensions.radiusMd),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(dimensions.radiusMd),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: dimensions.space16, vertical: dimensions.space8),
-          child: Text(
-            label,
-            style: tokens.typography.body2.copyWith(
-              color: colors.textStaticBlack,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

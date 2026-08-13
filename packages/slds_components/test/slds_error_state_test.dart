@@ -71,4 +71,31 @@ void main() {
     expect(find.text('500'), findsOneWidget);
     expect(find.text('Custom title'), findsOneWidget);
   });
+
+  testWidgets('forKind renders a built-in illustration when none is passed', (tester) async {
+    await pump(tester, SldsErrorState.forKind(SldsErrorKind.notFound));
+
+    expect(find.text('404'), findsOneWidget);
+    expect(find.byIcon(Icons.error_outline), findsNothing); // no leftover placeholder
+    expect(find.byIcon(Icons.description_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.search), findsOneWidget);
+  });
+
+  testWidgets('each kind gets a distinct built-in illustration', (tester) async {
+    for (final (kind, badgeIcon) in [
+      (SldsErrorKind.notFound, Icons.search),
+      (SldsErrorKind.serverError, Icons.dns_outlined),
+      (SldsErrorKind.unauthorized, Icons.lock_outline),
+    ]) {
+      await pump(tester, SldsErrorState.forKind(kind));
+      expect(find.byIcon(badgeIcon), findsOneWidget, reason: 'kind: $kind');
+    }
+  });
+
+  testWidgets('an explicit illustration still overrides the built-in one', (tester) async {
+    await pump(tester, SldsErrorState.forKind(SldsErrorKind.notFound, illustration: illustration));
+
+    expect(find.byIcon(Icons.error_outline), findsOneWidget);
+    expect(find.byIcon(Icons.search), findsNothing);
+  });
 }

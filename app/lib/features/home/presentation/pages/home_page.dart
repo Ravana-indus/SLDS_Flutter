@@ -17,7 +17,8 @@ class HomePage extends StatelessWidget {
       // be scrollable-height itself. Real features wire onRefresh to a use
       // case re-fetch; this demo has no data to fetch, so it just waits.
       body: SldsPullToRefresh(
-        onRefresh: () => Future<void>.delayed(const Duration(milliseconds: 600)),
+        onRefresh: () =>
+            Future<void>.delayed(const Duration(milliseconds: 600)),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(SldsSpacing.lg),
@@ -37,7 +38,8 @@ class HomePage extends StatelessWidget {
                         label: mode == ThemeMode.light
                             ? 'Switch to dark'
                             : 'Switch to light',
-                        onPressed: () => context.read<ThemeModeCubit>().toggle(),
+                        onPressed: () =>
+                            context.read<ThemeModeCubit>().toggle(),
                         variant: SldsButtonVariant.primary,
                       );
                     },

@@ -14,8 +14,10 @@ enum SldsErrorKind { notFound, serverError, unauthorized }
 /// button. Same shape as [SldsEmptyState] — use this one for failures
 /// (page crashed, request rejected), that one for "nothing here yet".
 ///
-/// This package ships no illustration assets — pass your own [illustration]
-/// widget; there's no default.
+/// The base constructor ships no illustration assets — pass your own
+/// [illustration] widget. [SldsErrorState.forKind] fills in a built-in
+/// icon-based illustration per [SldsErrorKind] (still overridable via
+/// [illustration]) since this package bundles no custom artwork.
 class SldsErrorState extends StatelessWidget {
   const SldsErrorState({
     super.key,
@@ -27,13 +29,14 @@ class SldsErrorState extends StatelessWidget {
     this.onAction,
   });
 
-  /// Preset copy for the common HTTP failure kinds — pass your own
-  /// [illustration] (this package ships none) and override any of
+  /// Preset copy and a built-in icon-composition illustration for the
+  /// common HTTP failure kinds. Pass [illustration] to override the
+  /// built-in one (e.g. with your own artwork); override any of
   /// [title]/[description]/[code] to customize just that field.
   factory SldsErrorState.forKind(
     SldsErrorKind kind, {
     Key? key,
-    required Widget illustration,
+    Widget? illustration,
     String? title,
     String? code,
     String? description,
@@ -51,7 +54,7 @@ class SldsErrorState extends StatelessWidget {
     };
     return SldsErrorState(
       key: key,
-      illustration: illustration,
+      illustration: illustration ?? _ErrorIllustration(kind: kind),
       code: code ?? defaultCode,
       title: title ?? defaultTitle,
       description: description ?? defaultDescription,
@@ -117,6 +120,60 @@ class SldsErrorState extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Built-in illustration for [SldsErrorState.forKind] — a soft circular
+/// backdrop with a base icon and a small badge icon layered on top (e.g.
+/// a document with a magnifying-glass badge for [SldsErrorKind.notFound]),
+/// standing in for the Figma reference's custom flat-style artwork until
+/// this package bundles real illustration assets.
+class _ErrorIllustration extends StatelessWidget {
+  const _ErrorIllustration({required this.kind});
+
+  final SldsErrorKind kind;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.slds;
+    final colors = tokens.colors;
+
+    final (IconData baseIcon, IconData badgeIcon) = switch (kind) {
+      SldsErrorKind.notFound => (Icons.description_outlined, Icons.search),
+      SldsErrorKind.serverError => (Icons.cloud_outlined, Icons.dns_outlined),
+      SldsErrorKind.unauthorized => (Icons.description_outlined, Icons.lock_outline),
+    };
+
+    return SizedBox(
+      width: 96,
+      height: 96,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(color: colors.surfaceHover, shape: BoxShape.circle),
+          ),
+          Icon(baseIcon, size: 48, color: colors.textTertiary),
+          Positioned(
+            right: 12,
+            bottom: 12,
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: colors.surfaceCard,
+                shape: BoxShape.circle,
+                border: Border.all(color: colors.borderDecorative),
+              ),
+              alignment: Alignment.center,
+              child: Icon(badgeIcon, size: 18, color: colors.textPrimary),
+            ),
+          ),
+        ],
       ),
     );
   }

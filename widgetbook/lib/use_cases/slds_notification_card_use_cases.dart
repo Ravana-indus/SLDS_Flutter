@@ -3,7 +3,7 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsNotificationCard, path: '[Notification]')
+@widgetbook.UseCase(name: 'Playground', type: SldsNotificationCard, path: '[Feedback & Status]')
 Widget buildSldsNotificationCardUseCase(BuildContext context) {
   final type = context.knobs.object.dropdown(
     label: 'Type',

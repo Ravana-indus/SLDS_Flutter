@@ -126,11 +126,22 @@ class SldsButton extends StatelessWidget {
     if (!isMobile) {
       return _buttonForVariant(context, content, minWidth: 0);
     }
-    // Full-width-on-mobile is only valid when the parent actually bounds our
-    // width (e.g. a form field's Column) — inside a Row (like a Cancel/Apply
-    // footer), children get unconstrained width, so both the minimumSize and
-    // the outer SizedBox must fall back to content-sized instead of
-    // `double.infinity`, which crashes layout there.
+    // Full-width-on-mobile is only valid when the parent actually bounds
+    // our width (e.g. a form field's Column) — inside a Row (like a
+    // Cancel/Apply footer), children get unconstrained width, so both the
+    // minimumSize and the outer SizedBox must fall back to content-sized
+    // instead of `double.infinity`, which crashes layout there.
+    //
+    // LayoutBuilder itself can't sit inside a subtree an ancestor queries
+    // for intrinsic dimensions (IntrinsicWidth, an OverflowBar like
+    // AlertDialog.actions uses, ...) — it refuses to answer regardless of
+    // which branch would run. There's no way to make this widget safe
+    // under both an unconstrained-width Row *and* an intrinsic-querying
+    // ancestor at the same time, so callers that need SldsButton doing
+    // something other than "one button alone in a bounded column" (e.g.
+    // dialog footers) should lay their own Row out — see SldsDialog, which
+    // builds a plain Row instead of AlertDialog's OverflowBar-based
+    // actions for exactly this reason.
     return LayoutBuilder(
       builder: (context, constraints) {
         if (!constraints.hasBoundedWidth) {

@@ -43,9 +43,68 @@ void main() {
     expect(tapped, isTrue);
   });
 
-  testWidgets('is a fixed 150x158 tile', (tester) async {
+  testWidgets('is a fixed 150x158 tile at the small size', (tester) async {
     await pump(tester, const SldsIconCard(title: 'Fuel Pass', icon: icon));
     final size = tester.getSize(find.byType(SldsIconCard));
     expect(size, const Size(150, 158));
+  });
+
+  testWidgets('large size is 220 tall and fills a bounded parent width', (tester) async {
+    await pump(
+      tester,
+      const SizedBox(
+        width: 300,
+        child: SldsIconCard(title: 'Apply for Passport', icon: icon, size: SldsIconCardSize.large),
+      ),
+    );
+    final size = tester.getSize(find.byType(SldsIconCard));
+    expect(size, const Size(300, 220));
+  });
+
+  testWidgets('large size does not crash with an unbounded parent width', (tester) async {
+    await pump(
+      tester,
+      Row(
+        children: [
+          const SldsIconCard(title: 'Apply for Passport', icon: icon, size: SldsIconCardSize.large),
+        ],
+      ),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('disabled when onTap is null: dims content and blocks taps', (tester) async {
+    var tapped = false;
+    await pump(tester, const SldsIconCard(title: 'Fuel Pass', icon: icon));
+
+    await tester.tap(find.text('Fuel Pass'));
+    expect(tapped, isFalse);
+
+    expect(
+      tester.getSemantics(find.byWidgetPredicate((w) => w is Semantics && w.properties.label == 'Fuel Pass')),
+      matchesSemantics(label: 'Fuel Pass', isButton: false, hasEnabledState: true, isEnabled: false),
+    );
+  });
+
+  testWidgets('forced hover state paints the hover background', (tester) async {
+    await pump(
+      tester,
+      const SldsIconCard(title: 'Fuel Pass', icon: icon, state: SldsIconCardState.hover),
+    );
+
+    final colors = SldsColorTokens.light();
+    final material = tester.widget<Material>(
+      find.descendant(of: find.byType(SldsIconCard), matching: find.byType(Material)),
+    );
+    expect(material.color, colors.surfaceHover);
+  });
+
+  testWidgets('exposes button semantics when interactive', (tester) async {
+    await pump(tester, SldsIconCard(title: 'Fuel Pass', icon: icon, onTap: () {}));
+
+    expect(
+      tester.getSemantics(find.byWidgetPredicate((w) => w is Semantics && w.properties.label == 'Fuel Pass')),
+      matchesSemantics(label: 'Fuel Pass', isButton: true, hasEnabledState: true, isEnabled: true),
+    );
   });
 }

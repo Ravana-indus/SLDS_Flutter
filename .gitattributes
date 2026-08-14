@@ -1,0 +1,16 @@
+# Golden test images (§8).
+#
+# The matrix multiplies quickly — variant x theme x text scale, plus si/ta at
+# 200% and an RTL image for text-bearing components — so these are tracked in
+# Git LFS rather than committed directly, with a retention policy that prunes
+# goldens for removed variants at release time.
+#
+# NOTE: `git lfs install` has not been run in this working copy, so the PNGs
+# currently committed here are stored as ordinary blobs. Install Git LFS and
+# run `git lfs migrate import --include="packages/slds_components/test/goldens/*.png"`
+# to convert the existing history before the matrix grows further.
+packages/slds_components/test/goldens/*.png filter=lfs diff=lfs merge=lfs -text
+
+# Generated localization delegates — diff noise, not review material.
+packages/slds_components/lib/src/l10n/gen/*.dart linguist-generated=true
+widgetbook/lib/main.directories.g.dart linguist-generated=true

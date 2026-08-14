@@ -66,9 +66,51 @@ jobs:
         run: dart run tool/check_literals.dart
         working-directory: packages/slds_components
 
+      # Behaviour, semantics and accessibility-guideline tests. Goldens are
+      # excluded here — see the note on the `goldens` job below.
       - name: Tests
-        run: flutter test
+        run: flutter test --exclude-tags golden
         working-directory: packages/slds_components
+
+      - name: Translation completeness (§6)
+        run: flutter test test/slds_translation_completeness_test.dart
+        working-directory: packages/slds_components
+
+  goldens:
+    name: Goldens
+    # DEVIATION FROM §8: the guideline makes Linux the sole reference
+    # platform, because font rasterisation differs across operating systems
+    # even with identical font files. The committed images in this repository
+    # were generated on macOS by explicit decision, so they cannot be compared
+    # byte-for-byte on ubuntu-latest — this job runs on macOS to match them.
+    #
+    # To adopt the §8 rule: regenerate the matrix once on Linux
+    # (`flutter test --update-goldens` in a Linux container), commit the
+    # result, and change `runs-on` to ubuntu-latest.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+      - run: flutter pub get
+
+      - name: Golden comparison (§8)
+        run: flutter test test/slds_goldens_test.dart
+        working-directory: packages/slds_components
+
+      # A failed comparison writes the actual/diff images beside the goldens;
+      # uploading them is what makes a red golden job reviewable.
+      - name: Upload failure images
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-failures
+          path: packages/slds_components/test/goldens/failures/
+          if-no-files-found: ignore
 
   catalog:
     name: Widgetbook builds

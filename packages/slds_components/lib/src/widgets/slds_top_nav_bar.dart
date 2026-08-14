@@ -129,16 +129,26 @@ class _IconSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (onTap == null) return const SizedBox(width: 24, height: 24);
+    final dimensions = context.slds.dimensions;
+    // Both branches reserve the same box, so enabling or disabling an action
+    // does not shift the rest of the row sideways.
+    final box = BoxConstraints(
+      minWidth: dimensions.tapTargetMin,
+      minHeight: dimensions.tapTargetMin,
+    );
+
+    if (onTap == null) {
+      return ConstrainedBox(constraints: box, child: const SizedBox.shrink());
+    }
     return Semantics(
       button: true,
       label: semanticLabel,
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Icon(icon, size: 24, color: color),
+        child: ConstrainedBox(
+          constraints: box,
+          child: Icon(icon, size: dimensions.avatarSize24, color: color),
         ),
       ),
     );

@@ -40,6 +40,12 @@ class SldsDialog extends StatelessWidget {
   /// [onCancel]/[onConfirm] should pop the navigator themselves (e.g.
   /// `Navigator.of(context).pop()`) if the dialog should close on tap —
   /// this helper doesn't pop for you, so callers can run async work first.
+  ///
+  /// [useRootNavigator] defaults to false (Flutter's own default is true) so
+  /// the dialog stays inside the nearest enclosing [Navigator] — otherwise it
+  /// escapes any ancestor that sizes or frames it, e.g. rendering across the
+  /// whole browser window instead of Widgetbook's device viewport. Pass true
+  /// if the dialog must cover a nested navigator's own chrome.
   static Future<void> show(
     BuildContext context, {
     required String title,
@@ -49,10 +55,12 @@ class SldsDialog extends StatelessWidget {
     String? confirmLabel,
     VoidCallback? onConfirm,
     bool barrierDismissible = true,
+    bool useRootNavigator = false,
   }) {
     return showDialog<void>(
       context: context,
       barrierDismissible: barrierDismissible,
+      useRootNavigator: useRootNavigator,
       builder: (context) => SldsDialog(
         title: title,
         message: message,
@@ -86,6 +94,10 @@ class SldsDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(dimensions.radius2xl),
       ),
+      // Dialog's own default is `minWidth: 280` with no maximum, so the
+      // dialog stretches to the full window on a desktop-width viewport.
+      // 560 is the Material 3 spec width.
+      constraints: const BoxConstraints(minWidth: 280, maxWidth: 560),
       child: Padding(
         padding: EdgeInsets.all(dimensions.space24),
         child: Column(

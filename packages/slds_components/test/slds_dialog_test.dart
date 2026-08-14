@@ -133,6 +133,38 @@ void main() {
     expect(find.text('Continue'), findsOneWidget);
   });
 
+  testWidgets('does not stretch to full width on a wide viewport', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1600, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      host(
+        (context) => ElevatedButton(
+          onPressed: () => SldsDialog.show(
+            context,
+            title: 'Basic dialog title',
+            message: 'A dialog is a modal window',
+          ),
+          child: const Text('open'),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    // Measure the card's Material surface — SldsDialog and Dialog both span
+    // the full barrier area, so measuring either always reports the viewport.
+    final card = find.descendant(
+      of: find.byType(SldsDialog),
+      matching: find.byType(Material),
+    );
+    expect(tester.getSize(card.first).width, lessThanOrEqualTo(560));
+  });
+
   testWidgets('barrierDismissible false blocks tapping outside', (
     tester,
   ) async {

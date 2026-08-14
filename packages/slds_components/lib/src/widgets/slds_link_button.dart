@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_colors.dart';
+import '../theme/slds_tokens.dart';
 
 /// SLDS inline text link — underlined, no button chrome/tap-target padding.
 /// Use inside body copy or wherever an [SldsButton] would be visually too
@@ -35,9 +35,7 @@ class SldsLinkButton extends StatelessWidget {
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
-            return Theme.of(context).colorScheme.onSurface.withValues(
-              alpha: SldsColors.disabledOpacity,
-            );
+            return context.slds.colors.disabledForeground;
           }
           if (states.contains(WidgetState.hovered) ||
               states.contains(WidgetState.pressed)) {

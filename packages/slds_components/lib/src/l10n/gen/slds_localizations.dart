@@ -100,11 +100,41 @@ abstract class SldsLocalizations {
     Locale('ta'),
   ];
 
-  /// Screen-reader label announced while an SldsButton/SldsIconButton is in its loading state.
+  /// Screen-reader label announced while a component is in its loading state.
   ///
   /// In en, this message translates to:
   /// **'Loading'**
   String get loading;
+
+  /// Label for the control that dismisses a dialog, sheet or banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// Label for the control that re-attempts a failed action.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Screen-reader label announced when a component enters its error state.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// Label for the control that dismisses a transient message such as a snackbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
+
+  /// Screen-reader label giving a badge count its meaning, rather than announcing a bare number.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No unread notifications} =1{1 unread notification} other{{count} unread notifications}}'**
+  String unreadCount(int count);
 }
 
 class _SldsLocalizationsDelegate

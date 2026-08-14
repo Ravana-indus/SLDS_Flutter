@@ -3,10 +3,6 @@
 library;
 
 export 'src/l10n/gen/slds_localizations.dart';
-export 'src/tokens/slds_breakpoints.dart';
-export 'src/tokens/slds_colors.dart';
-export 'src/tokens/slds_spacing.dart';
-export 'src/tokens/slds_typography.dart';
 export 'src/theme/slds_theme.dart';
 export 'src/theme/slds_tokens.dart';
 export 'src/widgets/slds_accordion.dart';

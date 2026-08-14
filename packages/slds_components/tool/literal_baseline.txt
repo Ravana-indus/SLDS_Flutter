@@ -19,7 +19,6 @@ slds_icon_button.dart 4
 slds_pull_to_refresh.dart 3
 slds_tab_strip.dart 3
 slds_top_nav_bar.dart 3
-slds_fab.dart 2
 slds_link_button.dart 2
 slds_otp_input.dart 2
 slds_snack_bar.dart 2

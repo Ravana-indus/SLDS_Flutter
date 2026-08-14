@@ -100,10 +100,17 @@ void main() {
     final resolvedBackground = style.backgroundColor!.resolve({});
 
     expect(resolvedBackground, scheme.primary);
+    // The gold accent is deliberately the same in every palette; what the
+    // dark theme changes is the label that sits on it.
+    expect(resolvedBackground, SldsColorTokens.dark().buttonPrimaryBackground);
     expect(
-      resolvedBackground,
-      isNot(SldsColors.primary),
-    ); // dark seed differs from the light token
+      style.foregroundColor!.resolve({}),
+      SldsColorTokens.dark().buttonPrimaryLabel,
+    );
+    expect(
+      SldsColorTokens.dark().buttonPrimaryLabel,
+      isNot(SldsColorTokens.light().buttonPrimaryLabel),
+    );
   });
 
   for (final variant in [

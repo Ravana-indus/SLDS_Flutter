@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/gen/slds_localizations.dart';
-import '../tokens/slds_breakpoints.dart';
-import '../tokens/slds_colors.dart';
+import '../theme/slds_tokens.dart';
 import 'slds_button.dart';
 
 /// SLDS icon-only button — same variant palette as [SldsButton]. Colors
@@ -62,7 +61,7 @@ class SldsIconButton extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final base = _baseColor(context);
     final onBase = _onBaseColor(context);
-    final size = SldsBreakpoints.isMobile(context) ? 52.0 : 44.0;
+    final size = context.sldsIsMobile ? 52.0 : 44.0;
 
     return IconButton(
       onPressed: _enabled ? onPressed : null,
@@ -81,10 +80,10 @@ class SldsIconButton extends StatelessWidget {
         backgroundColor: _isFilled ? base : Colors.transparent,
         foregroundColor: _isFilled ? onBase : base,
         disabledBackgroundColor: _isFilled
-            ? base.withValues(alpha: SldsColors.disabledOpacity)
+            ? base.withValues(alpha: context.slds.opacities.disabled)
             : Colors.transparent,
         disabledForegroundColor: scheme.onSurface.withValues(
-          alpha: SldsColors.disabledOpacity,
+          alpha: context.slds.opacities.disabled,
         ),
         side: !_isFilled && variant != SldsButtonVariant.text
             ? BorderSide(

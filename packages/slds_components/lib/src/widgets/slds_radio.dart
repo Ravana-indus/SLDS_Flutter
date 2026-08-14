@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_colors.dart';
+import '../theme/slds_tokens.dart';
 
 /// SLDS radio sizes.
 enum SldsRadioSize {
@@ -79,8 +79,12 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
     final Color ringColor;
     final Color dotColor;
     if (!_enabled) {
-      ringColor = scheme.outline.withValues(alpha: SldsColors.disabledOpacity);
-      dotColor = scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
+      ringColor = scheme.outline.withValues(
+        alpha: context.slds.opacities.disabled,
+      );
+      dotColor = scheme.onSurface.withValues(
+        alpha: context.slds.opacities.disabled,
+      );
     } else if (_selected) {
       ringColor = accent;
       dotColor = accent;

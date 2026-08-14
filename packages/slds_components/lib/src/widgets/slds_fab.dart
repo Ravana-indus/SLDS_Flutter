@@ -2,18 +2,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/gen/slds_localizations.dart';
-import '../tokens/slds_breakpoints.dart';
-import '../tokens/slds_colors.dart';
+import '../theme/slds_tokens.dart';
 import 'slds_button.dart';
 
-/// SLDS floating action button — primary (gold), secondary (outlined
-/// white), and destructive (red) variants, matching [SldsButtonVariant].
-/// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
-/// aware); pass [color] to override for one instance.
+/// SLDS floating action button.
 ///
-/// Pass [badgeCount] to overlay a numeric badge (e.g. an unread count);
-/// values over 99 display as "99+".
+/// Variant colours resolve from the ambient SLDS token set, so the button
+/// follows light, dark and high-contrast themes automatically.
+///
+/// Only the filled variants ([SldsButtonVariant.primary],
+/// [SldsButtonVariant.destructive]) and the outlined
+/// [SldsButtonVariant.secondary] are supported: a FAB is a high-emphasis
+/// control, and the low-emphasis `tertiary`/`text` variants have no
+/// meaningful FAB rendering. Passing either asserts in debug.
+///
+/// Pass [badgeCount] to overlay a numeric badge (for example an unread
+/// count). The badge announces its meaning through [SldsLocalizations], not
+/// as a bare number, so a screen reader says "3 unread notifications" rather
+/// than "3".
 class SldsFab extends StatelessWidget {
+  /// Creates a floating action button.
   const SldsFab({
     super.key,
     required this.icon,
@@ -21,110 +29,131 @@ class SldsFab extends StatelessWidget {
     this.variant = SldsButtonVariant.primary,
     this.isLoading = false,
     this.tooltip,
-    this.color,
     this.badgeCount,
-  });
+    this.heroTag,
+  }) : assert(
+         variant == SldsButtonVariant.primary ||
+             variant == SldsButtonVariant.secondary ||
+             variant == SldsButtonVariant.destructive,
+         'SldsFab supports the primary, secondary and destructive variants; '
+         'tertiary and text have no FAB rendering.',
+       );
 
+  /// The glyph shown in the button.
   final IconData icon;
+
+  /// Called when the button is tapped. Null disables the button.
   final VoidCallback? onPressed;
+
+  /// Which SLDS action variant to render.
   final SldsButtonVariant variant;
+
+  /// Whether to replace the icon with a loading indicator.
   final bool isLoading;
+
+  /// Optional tooltip. Omitted entirely when null, so the semantics tree
+  /// stays free of empty labels.
   final String? tooltip;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
-
-  /// Numeric badge shown in the top-right corner; null hides it.
+  /// Numeric badge shown in the corner; null hides it.
   final int? badgeCount;
+
+  /// Hero tag for the underlying [FloatingActionButton].
+  ///
+  /// Flutter gives every FAB the same default tag, so two SldsFabs on one
+  /// route throw a duplicate-hero exception. Pass a unique tag when a route
+  /// shows more than one, or `null` here leaves the hero animation disabled
+  /// rather than colliding.
+  final Object? heroTag;
 
   bool get _enabled => onPressed != null && !isLoading;
   bool get _isFilled => variant != SldsButtonVariant.secondary;
 
-  Color _baseColor(BuildContext context) {
-    if (color != null) return color!;
-    final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive
-        ? scheme.error
-        : scheme.primary;
+  Color _background(SldsColorTokens colors) {
+    if (!_enabled) return colors.disabledBackground;
+    return switch (variant) {
+      SldsButtonVariant.destructive => colors.buttonDestructiveBackground,
+      SldsButtonVariant.secondary => colors.buttonSecondaryBackground,
+      _ => colors.buttonPrimaryBackground,
+    };
   }
 
-  Color _onBaseColor(BuildContext context) {
-    if (color != null) {
-      return ThemeData.estimateBrightnessForColor(color!) == Brightness.dark
-          ? Colors.white
-          : Colors.black;
-    }
-    final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive
-        ? scheme.onError
-        : scheme.onPrimary;
+  Color _foreground(SldsColorTokens colors) {
+    if (!_enabled) return colors.disabledForeground;
+    return switch (variant) {
+      SldsButtonVariant.destructive => colors.buttonDestructiveLabel,
+      SldsButtonVariant.secondary => colors.buttonSecondaryLabel,
+      _ => colors.buttonPrimaryLabel,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final base = _baseColor(context);
-    final onBase = _onBaseColor(context);
-    final size = SldsBreakpoints.isMobile(context) ? 64.0 : 56.0;
+    final tokens = context.slds;
+    final colors = tokens.colors;
+    final dimensions = tokens.dimensions;
+    final l10n = SldsLocalizations.of(context);
 
-    final icon = this.icon;
+    final size = context.sldsIsMobile
+        ? dimensions.avatarSize56
+        : dimensions.buttonHeightExtraLarge;
+    final foreground = _foreground(colors);
+
     Widget child = isLoading
         ? Semantics(
-            label: SldsLocalizations.of(context).loading,
+            liveRegion: true,
+            label: l10n.loading,
             child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CupertinoActivityIndicator(
-                color: _isFilled ? onBase : base,
-              ),
+              width: dimensions.iconSizeMedium,
+              height: dimensions.iconSizeMedium,
+              child: CupertinoActivityIndicator(color: foreground),
             ),
           )
-        : Icon(icon, color: _isFilled ? onBase : base);
+        : Icon(icon, color: foreground);
 
     if (badgeCount != null) {
-      child = Badge.count(
-        count: badgeCount!,
-        backgroundColor: scheme.error,
-        textColor: scheme.onError,
-        child: child,
+      // The count alone means nothing spoken aloud, so the badge carries a
+      // localized label and its own digits are hidden from the tree.
+      child = Semantics(
+        label: l10n.unreadCount(badgeCount!),
+        container: true,
+        child: Badge.count(
+          count: badgeCount!,
+          backgroundColor: colors.notificationBadgeBackground,
+          textColor: colors.buttonDestructiveLabel,
+          child: ExcludeSemantics(child: child),
+        ),
       );
     }
 
-    return Tooltip(
-      message: isLoading
-          ? SldsLocalizations.of(context).loading
-          : (tooltip ?? ''),
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: _isFilled
-            ? FloatingActionButton(
-                onPressed: _enabled ? onPressed : null,
-                backgroundColor: _enabled
-                    ? base
-                    : base.withValues(alpha: SldsColors.disabledOpacity),
-                disabledElevation: 0,
-                elevation: 4,
-                child: child,
-              )
-            : FloatingActionButton(
-                onPressed: _enabled ? onPressed : null,
-                backgroundColor: scheme.surface,
-                foregroundColor: base,
-                disabledElevation: 0,
-                elevation: 4,
-                shape: CircleBorder(
-                  side: BorderSide(
-                    color: _enabled
-                        ? base
-                        : scheme.outline.withValues(
-                            alpha: SldsColors.disabledOpacity,
-                          ),
-                  ),
+    final button = SizedBox(
+      width: size,
+      height: size,
+      child: FloatingActionButton(
+        onPressed: _enabled ? onPressed : null,
+        heroTag: heroTag,
+        backgroundColor: _background(colors),
+        foregroundColor: foreground,
+        disabledElevation: 0,
+        elevation: dimensions.cardShadowBlur,
+        shape: _isFilled
+            ? const CircleBorder()
+            : CircleBorder(
+                side: BorderSide(
+                  color: _enabled
+                      ? colors.buttonSecondaryBorder
+                      : colors.disabledBorder,
+                  width: dimensions.controlBorderWidth,
                 ),
-                child: child,
               ),
+        child: child,
       ),
     );
+
+    // No Tooltip wrapper when there is nothing to say — an empty message
+    // would otherwise add a blank node to the semantics tree.
+    final message = isLoading ? l10n.loading : tooltip;
+    if (message == null) return button;
+    return Tooltip(message: message, child: button);
   }
 }

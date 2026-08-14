@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_colors.dart';
+import '../theme/slds_tokens.dart';
 
 /// SLDS toggle sizes.
 enum SldsToggleSize {
@@ -81,11 +81,11 @@ class _SldsToggleState extends State<SldsToggle> {
     final Color thumbColor;
     if (!_enabled) {
       trackColor = widget.value
-          ? accent.withValues(alpha: SldsColors.disabledOpacity)
+          ? accent.withValues(alpha: context.slds.opacities.disabled)
           : scheme.onSurface.withValues(alpha: 0.12);
       thumbColor = widget.value
           ? scheme.surface
-          : scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
+          : scheme.onSurface.withValues(alpha: context.slds.opacities.disabled);
     } else if (widget.value) {
       trackColor = accent;
       thumbColor = scheme.surface;

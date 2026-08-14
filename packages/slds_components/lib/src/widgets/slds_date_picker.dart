@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../theme/slds_tokens.dart';
-import '../tokens/slds_breakpoints.dart';
 import 'slds_button.dart';
 
 /// Selection mode for [SldsDatePicker].
@@ -380,7 +379,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           // SldsBreakpoints.mobile screen width, so the row would overflow;
           // stack Cancel/Apply instead on mobile, matching the button's own
           // responsive behavior rather than fighting it.
-          if (SldsBreakpoints.isMobile(context))
+          if (context.sldsIsMobile)
             Column(
               children: [
                 SldsButton(label: widget.applyText, onPressed: _handleApply),

@@ -2,7 +2,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/slds_tokens.dart';
-import '../tokens/slds_breakpoints.dart';
 import 'slds_button.dart';
 import 'slds_text_field.dart';
 
@@ -328,7 +327,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
           // SldsBreakpoints.mobile screen width, so the row would overflow;
           // stack Cancel/Apply instead on mobile, matching the button's own
           // responsive behavior rather than fighting it.
-          if (SldsBreakpoints.isMobile(context))
+          if (context.sldsIsMobile)
             Column(
               children: [
                 SldsButton(

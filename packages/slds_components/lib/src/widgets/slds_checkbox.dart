@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_colors.dart';
+import '../theme/slds_tokens.dart';
 
 /// SLDS checkbox sizes.
 enum SldsCheckboxSize {
@@ -84,12 +84,10 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
     final Color iconColor;
     if (!_enabled) {
       boxColor = filled
-          ? scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity)
+          ? context.slds.colors.disabledBackground
           : Colors.transparent;
-      borderColor = scheme.outline.withValues(
-        alpha: SldsColors.disabledOpacity,
-      );
-      iconColor = scheme.surface;
+      borderColor = context.slds.colors.disabledBorder;
+      iconColor = context.slds.colors.disabledForeground;
     } else if (filled) {
       boxColor = accent;
       borderColor = accent;

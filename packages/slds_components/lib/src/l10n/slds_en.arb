@@ -2,6 +2,31 @@
   "@@locale": "en",
   "loading": "Loading",
   "@loading": {
-    "description": "Screen-reader label announced while an SldsButton/SldsIconButton is in its loading state."
+    "description": "Screen-reader label announced while a component is in its loading state."
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Label for the control that dismisses a dialog, sheet or banner."
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Label for the control that re-attempts a failed action."
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Screen-reader label announced when a component enters its error state."
+  },
+  "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Label for the control that dismisses a transient message such as a snackbar."
+  },
+  "unreadCount": "{count, plural, =0{No unread notifications} =1{1 unread notification} other{{count} unread notifications}}",
+  "@unreadCount": {
+    "description": "Screen-reader label giving a badge count its meaning, rather than announcing a bare number.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

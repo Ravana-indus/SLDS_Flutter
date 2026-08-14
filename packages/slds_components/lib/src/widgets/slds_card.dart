@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_breakpoints.dart';
-import '../tokens/slds_spacing.dart';
+import '../theme/slds_tokens.dart';
 
 /// SLDS content card. Thin themed wrapper over [Card] with token padding —
-/// shape/color come from [SldsTheme.light]/[SldsTheme.dark] via the
-/// ambient [Theme] (so it follows light/dark mode). Pass [color] to
-/// override the surface color for one instance.
+/// shape and surface colour resolve from the ambient [Theme], so the card
+/// follows light, dark and high-contrast modes automatically.
 ///
-/// Padding is [SldsSpacing.md] below [SldsBreakpoints.mobile], [SldsSpacing.lg]
-/// at/above it.
+/// Padding tightens below the mobile breakpoint and relaxes at or above it.
 class SldsCard extends StatelessWidget {
-  const SldsCard({super.key, required this.child, this.color});
+  /// Creates a content card around [child].
+  const SldsCard({super.key, required this.child});
 
+  /// The card's contents.
   final Widget child;
-  final Color? color;
 
   @override
   Widget build(BuildContext context) {
-    final padding = SldsBreakpoints.isMobile(context)
-        ? SldsSpacing.md
-        : SldsSpacing.lg;
+    final dimensions = context.slds.dimensions;
+    final padding = context.sldsIsMobile
+        ? dimensions.space12
+        : dimensions.space16;
     return Card(
-      color: color,
       child: Padding(padding: EdgeInsets.all(padding), child: child),
     );
   }

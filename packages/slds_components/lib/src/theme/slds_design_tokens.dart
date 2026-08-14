@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:slds_tokens/slds_tokens.dart';
 
 export 'package:slds_tokens/slds_tokens.dart'
-    show SldsDimensionTokens, SldsMotionTokens, SldsTextStyleToken;
+    show
+        SldsDimensionTokens,
+        SldsMotionTokens,
+        SldsOpacityTokens,
+        SldsTextStyleToken;
 
 /// The package that ships the font assets.
 ///
@@ -452,6 +456,7 @@ class SldsTokenSet {
     required this.motion,
     this.dimensions = SldsDimensionTokens.standard,
     this.typography = SldsTypographyTokens.standard,
+    this.opacities = SldsOpacityTokens.standard,
   });
 
   /// The light theme.
@@ -490,18 +495,23 @@ class SldsTokenSet {
   /// Animation durations.
   final SldsMotionTokens motion;
 
+  /// Composition factors such as the disabled dim. Theme-independent.
+  final SldsOpacityTokens opacities;
+
   /// Returns a copy with the given token groups replaced.
   SldsTokenSet copyWith({
     SldsColorTokens? colors,
     SldsDimensionTokens? dimensions,
     SldsTypographyTokens? typography,
     SldsMotionTokens? motion,
+    SldsOpacityTokens? opacities,
   }) {
     return SldsTokenSet(
       colors: colors ?? this.colors,
       dimensions: dimensions ?? this.dimensions,
       typography: typography ?? this.typography,
       motion: motion ?? this.motion,
+      opacities: opacities ?? this.opacities,
     );
   }
 
@@ -512,9 +522,11 @@ class SldsTokenSet {
         other.colors == colors &&
         other.dimensions == dimensions &&
         other.typography == typography &&
-        other.motion == motion;
+        other.motion == motion &&
+        other.opacities == opacities;
   }
 
   @override
-  int get hashCode => Object.hash(colors, dimensions, typography, motion);
+  int get hashCode =>
+      Object.hash(colors, dimensions, typography, motion, opacities);
 }

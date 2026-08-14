@@ -65,6 +65,48 @@ void main() {
     },
   );
 
+  testWidgets('tail sits above the card by default, below when asked', (
+    tester,
+  ) async {
+    await pump(tester, const SldsTooltip(title: 'Title'));
+    expect(
+      tester.getCenter(find.byType(CustomPaint).last).dy,
+      lessThan(tester.getCenter(find.text('Title')).dy),
+    );
+
+    await pump(
+      tester,
+      const SldsTooltip(title: 'Title', tailSide: SldsTooltipTailSide.bottom),
+    );
+    expect(
+      tester.getCenter(find.byType(CustomPaint).last).dy,
+      greaterThan(tester.getCenter(find.text('Title')).dy),
+    );
+  });
+
+  testWidgets('compact pill tail stays over the pill, not the parent', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const SizedBox(
+        width: 400,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: SldsTooltip(
+            title: 'Title',
+            tailAlignment: SldsTooltipTailAlignment.center,
+          ),
+        ),
+      ),
+    );
+
+    final pill = tester.getRect(find.byType(SldsTooltip));
+    final tailX = tester.getCenter(find.byType(CustomPaint).last).dx;
+    expect(tailX, greaterThan(pill.left));
+    expect(tailX, lessThan(pill.right));
+  });
+
   testWidgets('full card fills the available width', (tester) async {
     await pump(
       tester,

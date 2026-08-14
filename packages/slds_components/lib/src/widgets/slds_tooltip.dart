@@ -6,6 +6,9 @@ import '../theme/slds_tokens.dart';
 /// whatever the tooltip is anchored to.
 enum SldsTooltipTailAlignment { start, center, end }
 
+/// Which edge the pointer tail sticks out of.
+enum SldsTooltipTailSide { top, bottom }
+
 /// SLDS tooltip — a dark card with a triangular pointer tail. Scales from a
 /// single-line label (just [title]) up to a full walkthrough step (title +
 /// [description] + [stepLabel] + an [actionLabel] button + a close
@@ -24,6 +27,7 @@ class SldsTooltip extends StatelessWidget {
     this.onAction,
     this.onClose,
     this.tailAlignment = SldsTooltipTailAlignment.start,
+    this.tailSide = SldsTooltipTailSide.top,
     this.width,
   });
 
@@ -46,6 +50,7 @@ class SldsTooltip extends StatelessWidget {
   final VoidCallback? onClose;
 
   final SldsTooltipTailAlignment tailAlignment;
+  final SldsTooltipTailSide tailSide;
 
   /// Preferred width, clamped to the available parent width. Defaults to
   /// the Figma reference width (360) when the parent is unbounded and
@@ -87,35 +92,78 @@ class SldsTooltip extends StatelessWidget {
             },
           );
 
-    final tailAlignmentX = switch (tailAlignment) {
-      SldsTooltipTailAlignment.start => -0.8,
-      SldsTooltipTailAlignment.center => 0.0,
-      SldsTooltipTailAlignment.end => 0.8,
-    };
+    final pointsUp = tailSide == SldsTooltipTailSide.top;
+    // Fixed inset from the card edge, not a fraction of its width — a
+    // fractional inset drifts as the card grows.
+    final tailInset = EdgeInsets.only(
+      left: tailAlignment == SldsTooltipTailAlignment.start
+          ? dimensions.space16
+          : 0,
+      right: tailAlignment == SldsTooltipTailAlignment.end
+          ? dimensions.space16
+          : 0,
+    );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        card,
-        Align(
-          alignment: Alignment(tailAlignmentX, 0),
-          child: Transform.translate(
-            offset: const Offset(0, -1),
-            child: Transform.rotate(
-              angle:
-                  0.785398, // 45deg — a square clipped to its top-left corner reads as a triangle.
-              child: Container(
-                width: dimensions.space12,
-                height: dimensions.space12,
-                color: colors.tooltipBackground,
-              ),
+    final tail = Padding(
+      padding: tailInset,
+      child: Align(
+        alignment: switch (tailAlignment) {
+          SldsTooltipTailAlignment.start => Alignment.centerLeft,
+          SldsTooltipTailAlignment.center => Alignment.center,
+          SldsTooltipTailAlignment.end => Alignment.centerRight,
+        },
+        // Overlap the card by 1px so no hairline seam shows between them.
+        child: Transform.translate(
+          offset: Offset(0, pointsUp ? 1 : -1),
+          child: CustomPaint(
+            size: Size(dimensions.space16, dimensions.space8),
+            painter: _TailPainter(
+              color: colors.tooltipBackground,
+              pointsUp: pointsUp,
             ),
           ),
         ),
-      ],
+      ),
     );
+
+    final stack = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: pointsUp ? [tail, card] : [card, tail],
+    );
+
+    // The compact pill sizes to its text, so the Column needs IntrinsicWidth to
+    // hug it — otherwise the tail's Align spans the full parent width and the
+    // tail drifts off the pill. The full card resolves its own explicit width,
+    // and its LayoutBuilder can't be measured intrinsically anyway.
+    return _compact ? IntrinsicWidth(child: stack) : stack;
   }
+}
+
+class _TailPainter extends CustomPainter {
+  const _TailPainter({required this.color, required this.pointsUp});
+
+  final Color color;
+  final bool pointsUp;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path();
+    if (pointsUp) {
+      path.moveTo(size.width / 2, 0);
+      path.lineTo(size.width, size.height);
+      path.lineTo(0, size.height);
+    } else {
+      path.moveTo(0, 0);
+      path.lineTo(size.width, 0);
+      path.lineTo(size.width / 2, size.height);
+    }
+    canvas.drawPath(path..close(), Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(_TailPainter old) =>
+      old.color != color || old.pointsUp != pointsUp;
 }
 
 class _CompactCard extends StatelessWidget {

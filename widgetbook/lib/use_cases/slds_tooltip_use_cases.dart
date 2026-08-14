@@ -43,14 +43,19 @@ Widget buildSldsTooltipUseCase(BuildContext context) {
           actionLabel: actionLabel.isEmpty ? null : actionLabel,
           onAction: () {},
           onClose: showClose ? () {} : null,
+          tailAlignment: SldsTooltipTailAlignment.end,
         ),
         const SizedBox(height: 32),
         const SldsTooltip(
           title: 'Tooltip Title',
           description: 'Enter the description text',
+          tailAlignment: SldsTooltipTailAlignment.end,
         ),
         const SizedBox(height: 32),
-        const SldsTooltip(title: 'Title'),
+        const SldsTooltip(
+          title: 'Title',
+          tailAlignment: SldsTooltipTailAlignment.center,
+        ),
       ],
     ),
   );

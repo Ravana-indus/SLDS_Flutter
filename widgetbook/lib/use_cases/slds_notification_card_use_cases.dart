@@ -3,7 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsNotificationCard, path: '[Feedback & Status]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsNotificationCard,
+  path: '[Feedback & Status]',
+)
 Widget buildSldsNotificationCardUseCase(BuildContext context) {
   final type = context.knobs.object.dropdown(
     label: 'Type',
@@ -12,8 +16,14 @@ Widget buildSldsNotificationCardUseCase(BuildContext context) {
     initialOption: SldsNotificationType.document,
   );
   final unread = context.knobs.boolean(label: 'Unread', initialValue: true);
-  final showAction = context.knobs.boolean(label: 'Show action button', initialValue: true);
-  final swipeToDismiss = context.knobs.boolean(label: 'Swipe to dismiss', initialValue: true);
+  final showAction = context.knobs.boolean(
+    label: 'Show action button',
+    initialValue: true,
+  );
+  final swipeToDismiss = context.knobs.boolean(
+    label: 'Swipe to dismiss',
+    initialValue: true,
+  );
 
   return Padding(
     padding: const EdgeInsets.all(16),

@@ -10,11 +10,20 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 )
 Widget buildSldsTimePickerUseCase(BuildContext context) {
   final label = context.knobs.string(label: 'Label', initialValue: 'Time');
-  final title = context.knobs.string(label: 'Dialog Title', initialValue: 'Set Your Time');
-  final hintText = context.knobs.string(label: 'Hint Text', initialValue: 'HH:MM');
+  final title = context.knobs.string(
+    label: 'Dialog Title',
+    initialValue: 'Set Your Time',
+  );
+  final hintText = context.knobs.string(
+    label: 'Hint Text',
+    initialValue: 'HH:MM',
+  );
   final helpText = context.knobs.string(label: 'Help Text', initialValue: '');
   final errorText = context.knobs.string(label: 'Error Text', initialValue: '');
-  final isRequired = context.knobs.boolean(label: 'Is Required', initialValue: false);
+  final isRequired = context.knobs.boolean(
+    label: 'Is Required',
+    initialValue: false,
+  );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
 
   return SingleChildScrollView(

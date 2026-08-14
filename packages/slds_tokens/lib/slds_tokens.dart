@@ -9,6 +9,7 @@
 library;
 
 export 'src/colors.dart';
+export 'src/contrast.dart';
 export 'src/dimensions.dart';
 export 'src/motion.dart';
 export 'src/token_set.dart';

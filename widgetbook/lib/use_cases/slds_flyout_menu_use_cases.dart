@@ -9,17 +9,35 @@ const _items = [
       SldsFlyoutMenuGroup(
         header: 'Powerful and Simple Analytics',
         entries: [
-          SldsFlyoutMenuEntry(icon: Icons.person_outline, label: 'Interactive Reports'),
-          SldsFlyoutMenuEntry(icon: Icons.home_outlined, label: 'Team Dashboard & Alerts'),
-          SldsFlyoutMenuEntry(icon: Icons.description_outlined, label: 'Group Analytics'),
+          SldsFlyoutMenuEntry(
+            icon: Icons.person_outline,
+            label: 'Interactive Reports',
+          ),
+          SldsFlyoutMenuEntry(
+            icon: Icons.home_outlined,
+            label: 'Team Dashboard & Alerts',
+          ),
+          SldsFlyoutMenuEntry(
+            icon: Icons.description_outlined,
+            label: 'Group Analytics',
+          ),
         ],
       ),
       SldsFlyoutMenuGroup(
         header: 'Tools for Trusted Data',
         entries: [
-          SldsFlyoutMenuEntry(icon: Icons.security_outlined, label: 'Data Integrations'),
-          SldsFlyoutMenuEntry(icon: Icons.storage_outlined, label: 'Data Management'),
-          SldsFlyoutMenuEntry(icon: Icons.shield_outlined, label: 'Security & Privacy'),
+          SldsFlyoutMenuEntry(
+            icon: Icons.security_outlined,
+            label: 'Data Integrations',
+          ),
+          SldsFlyoutMenuEntry(
+            icon: Icons.storage_outlined,
+            label: 'Data Management',
+          ),
+          SldsFlyoutMenuEntry(
+            icon: Icons.shield_outlined,
+            label: 'Security & Privacy',
+          ),
         ],
       ),
     ],
@@ -30,7 +48,11 @@ const _items = [
   SldsFlyoutMenuItem(label: 'Navigation 05'),
 ];
 
-@widgetbook.UseCase(name: 'Playground', type: SldsFlyoutMenu, path: '[Navigation]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsFlyoutMenu,
+  path: '[Navigation]',
+)
 Widget buildSldsFlyoutMenuUseCase(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(24),

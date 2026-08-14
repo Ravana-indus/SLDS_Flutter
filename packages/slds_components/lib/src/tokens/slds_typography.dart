@@ -5,14 +5,11 @@ import 'slds_breakpoints.dart';
 /// SLDS type scale — Desktop and Mobile variants, per the Foundation
 /// Documentation spec (Google Sans, exact px/line-height/letter-spacing).
 ///
-/// Sinhala/Tamil render via `fontFamilyFallback`; the Google Sans and Noto
-/// Sans Sinhala/Tamil font asset files are NOT bundled yet — add them under
-/// `packages/slds_components/fonts/` and register them in `pubspec.yaml`'s
-/// `flutter.fonts` section, or these family names are inert and the OS's
-/// own font substitution takes over.
+/// Google Sans is bundled with this package and covers Latin, Sinhala and
+/// Tamil, so all three supported locales render from these metrics without
+/// font substitution.
 abstract final class SldsTypography {
   static const _fontFamily = 'Google Sans';
-  static const _fontFamilyFallback = ['Noto Sans Sinhala', 'Noto Sans Tamil'];
 
   static TextStyle _style({
     required double fontSize,
@@ -22,7 +19,8 @@ abstract final class SldsTypography {
   }) {
     return TextStyle(
       fontFamily: _fontFamily,
-      fontFamilyFallback: _fontFamilyFallback,
+      // Required for a package-provided font to resolve in consuming apps.
+      package: 'slds_components',
       fontSize: fontSize,
       height: lineHeight / fontSize,
       letterSpacing: letterSpacing,

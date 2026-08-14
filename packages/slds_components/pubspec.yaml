@@ -4,6 +4,12 @@ version: 0.0.1
 homepage: "https://github.com/Ravana-indus/SLDS_Flutter"
 repository: "https://github.com/Ravana-indus/SLDS_Flutter"
 
+# Not yet published. §3 requires distribution via the private pub registry;
+# until slds_tokens is hosted there, this package depends on it by path, which
+# a publishable package may not do. Remove this line and switch the dependency
+# to a version constraint as part of the first release.
+publish_to: none
+
 environment:
   sdk: ^3.11.0
   flutter: ">=1.17.0"
@@ -34,28 +40,16 @@ dev_dependencies:
 flutter:
   generate: true
 
-  # For details regarding assets in packages, see
-  # https://flutter.dev/to/asset-from-package
-  #
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-
-  # To add custom fonts to your package, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts in packages, see
-  # https://flutter.dev/to/font-from-package
+  # Google Sans covers Latin, Sinhala and Tamil in a single family, so the
+  # type scale renders correctly in all three of the platform's supported
+  # locales with no fallback chain. Licensed under the SIL Open Font License
+  # (see fonts/OFL.txt), which permits redistribution.
+  fonts:
+    - family: Google Sans
+      fonts:
+        - asset: fonts/GoogleSans-Regular.ttf
+          weight: 400
+        - asset: fonts/GoogleSans-Medium.ttf
+          weight: 500
+        - asset: fonts/GoogleSans-Bold.ttf
+          weight: 700

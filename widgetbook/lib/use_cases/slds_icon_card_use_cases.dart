@@ -8,14 +8,21 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 /// `initialOption`, so `auto` stands in for "no forced state".
 enum _ForcedState { auto, defaultState, hover, disabled }
 
-@widgetbook.UseCase(name: 'Playground', type: SldsIconCard, path: '[Display & Data]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsIconCard,
+  path: '[Display & Data]',
+)
 Widget buildSldsIconCardUseCase(BuildContext context) {
   final title = context.knobs.string(label: 'Title', initialValue: 'Fuel Pass');
   final description = context.knobs.string(
     label: 'Description',
     initialValue: 'Apply for a fuel quota pass',
   );
-  final badgeLabel = context.knobs.string(label: 'Badge label', initialValue: 'NEW');
+  final badgeLabel = context.knobs.string(
+    label: 'Badge label',
+    initialValue: 'NEW',
+  );
   final size = context.knobs.object.dropdown(
     label: 'Size',
     options: SldsIconCardSize.values,

@@ -9,22 +9,32 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 enum _ForcedState { auto, defaultState, filled, focused, error, disabled }
 
 SldsInputState? _toVisualState(_ForcedState state) => switch (state) {
-      _ForcedState.auto => null,
-      _ForcedState.defaultState => SldsInputState.defaultState,
-      _ForcedState.filled => SldsInputState.filled,
-      _ForcedState.focused => SldsInputState.focused,
-      _ForcedState.error => SldsInputState.error,
-      _ForcedState.disabled => SldsInputState.disabled,
-    };
+  _ForcedState.auto => null,
+  _ForcedState.defaultState => SldsInputState.defaultState,
+  _ForcedState.filled => SldsInputState.filled,
+  _ForcedState.focused => SldsInputState.focused,
+  _ForcedState.error => SldsInputState.error,
+  _ForcedState.disabled => SldsInputState.disabled,
+};
 
-@widgetbook.UseCase(name: 'Playground', type: SldsInput, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsInput,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsInputUseCase(BuildContext context) {
   final label = context.knobs.string(label: 'Label', initialValue: 'Input');
   final prefixText = context.knobs.string(label: 'Prefix', initialValue: 'LKR');
   final suffixText = context.knobs.string(label: 'Suffix', initialValue: 'KG');
   final hintText = context.knobs.string(label: 'Hint', initialValue: '0000');
-  final helperText = context.knobs.string(label: 'Help text', initialValue: 'Help Text');
-  final isRequired = context.knobs.boolean(label: 'Required', initialValue: true);
+  final helperText = context.knobs.string(
+    label: 'Help text',
+    initialValue: 'Help Text',
+  );
+  final isRequired = context.knobs.boolean(
+    label: 'Required',
+    initialValue: true,
+  );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
   final forcedState = context.knobs.object.dropdown(
     label: 'Forced visual state',

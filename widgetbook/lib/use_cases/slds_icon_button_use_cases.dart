@@ -10,7 +10,10 @@ Widget buildSldsIconButtonUseCase(BuildContext context) {
     options: SldsButtonVariant.values,
     labelBuilder: (v) => v.name,
   );
-  final isLoading = context.knobs.boolean(label: 'Loading', initialValue: false);
+  final isLoading = context.knobs.boolean(
+    label: 'Loading',
+    initialValue: false,
+  );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
 
   return SldsIconButton(

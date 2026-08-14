@@ -5,7 +5,11 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 enum _Content { initials, icon }
 
-@widgetbook.UseCase(name: 'Playground', type: SldsAvatar, path: '[Display & Data]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsAvatar,
+  path: '[Display & Data]',
+)
 Widget buildSldsAvatarUseCase(BuildContext context) {
   final initials = context.knobs.string(label: 'Initials', initialValue: 'LK');
   final content = context.knobs.object.dropdown(

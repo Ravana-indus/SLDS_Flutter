@@ -11,7 +11,11 @@ const _items = [
   SldsBottomNavItem(icon: Icons.home, label: 'Label', enabled: false),
 ];
 
-@widgetbook.UseCase(name: 'Playground', type: SldsBottomNav, path: '[Navigation]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsBottomNav,
+  path: '[Navigation]',
+)
 Widget buildSldsBottomNavUseCase(BuildContext context) {
   final style = context.knobs.object.dropdown(
     label: 'Style',

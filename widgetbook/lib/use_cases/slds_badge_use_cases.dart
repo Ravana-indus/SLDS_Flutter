@@ -3,7 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsBadge, path: '[Feedback & Status]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsBadge,
+  path: '[Feedback & Status]',
+)
 Widget buildSldsBadgeUseCase(BuildContext context) {
   final status = context.knobs.object.dropdown(
     label: 'Status',
@@ -11,7 +15,10 @@ Widget buildSldsBadgeUseCase(BuildContext context) {
     labelBuilder: (s) => s.name,
     initialOption: SldsBadgeStatus.inReview,
   );
-  final label = context.knobs.string(label: 'Label (blank = status default)', initialValue: '');
+  final label = context.knobs.string(
+    label: 'Label (blank = status default)',
+    initialValue: '',
+  );
 
   return Center(
     child: label.isEmpty
@@ -20,7 +27,11 @@ Widget buildSldsBadgeUseCase(BuildContext context) {
   );
 }
 
-@widgetbook.UseCase(name: 'All statuses', type: SldsBadge, path: '[Feedback & Status]')
+@widgetbook.UseCase(
+  name: 'All statuses',
+  type: SldsBadge,
+  path: '[Feedback & Status]',
+)
 Widget buildSldsBadgeAllUseCase(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(24),

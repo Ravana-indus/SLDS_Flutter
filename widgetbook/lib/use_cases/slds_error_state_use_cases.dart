@@ -3,7 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsErrorState, path: '[Feedback & Status]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsErrorState,
+  path: '[Feedback & Status]',
+)
 Widget buildSldsErrorStateUseCase(BuildContext context) {
   final kind = context.knobs.object.dropdown(
     label: 'Kind',
@@ -17,7 +21,11 @@ Widget buildSldsErrorStateUseCase(BuildContext context) {
   return SldsErrorState.forKind(kind, onAction: () {});
 }
 
-@widgetbook.UseCase(name: 'Maintenance (no code)', type: SldsErrorState, path: '[Feedback & Status]')
+@widgetbook.UseCase(
+  name: 'Maintenance (no code)',
+  type: SldsErrorState,
+  path: '[Feedback & Status]',
+)
 Widget buildSldsErrorStateMaintenanceUseCase(BuildContext context) {
   return const SldsErrorState(
     illustration: Stack(
@@ -27,7 +35,11 @@ Widget buildSldsErrorStateMaintenanceUseCase(BuildContext context) {
         Positioned(
           right: 4,
           top: 0,
-          child: Icon(Icons.warning_amber_rounded, size: 28, color: Colors.amber),
+          child: Icon(
+            Icons.warning_amber_rounded,
+            size: 28,
+            color: Colors.amber,
+          ),
         ),
       ],
     ),

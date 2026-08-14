@@ -3,9 +3,16 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsCheckbox, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsCheckbox,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsCheckboxUseCase(BuildContext context) {
-  final isIndeterminate = context.knobs.boolean(label: 'Indeterminate', initialValue: false);
+  final isIndeterminate = context.knobs.boolean(
+    label: 'Indeterminate',
+    initialValue: false,
+  );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
   final size = context.knobs.object.dropdown(
     label: 'Size',
@@ -27,7 +34,11 @@ Widget buildSldsCheckboxUseCase(BuildContext context) {
 /// Holds the checked state in real [State] (not a closure-local var) so it
 /// survives rebuilds instead of resetting to [initialValue] on every tap.
 class _CheckboxDemo extends StatefulWidget {
-  const _CheckboxDemo({required this.initialValue, required this.enabled, required this.size});
+  const _CheckboxDemo({
+    required this.initialValue,
+    required this.enabled,
+    required this.size,
+  });
 
   final bool? initialValue;
   final bool enabled;

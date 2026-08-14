@@ -3,10 +3,22 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsProgressBar, path: '[Feedback & Status]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsProgressBar,
+  path: '[Feedback & Status]',
+)
 Widget buildSldsProgressBarUseCase(BuildContext context) {
-  final value = context.knobs.double.slider(label: 'Value', initialValue: 0.4, min: 0, max: 1);
-  final showLabel = context.knobs.boolean(label: 'Show label', initialValue: true);
+  final value = context.knobs.double.slider(
+    label: 'Value',
+    initialValue: 0.4,
+    min: 0,
+    max: 1,
+  );
+  final showLabel = context.knobs.boolean(
+    label: 'Show label',
+    initialValue: true,
+  );
 
   return Padding(
     padding: const EdgeInsets.all(24),
@@ -14,7 +26,11 @@ Widget buildSldsProgressBarUseCase(BuildContext context) {
   );
 }
 
-@widgetbook.UseCase(name: 'Every 10%', type: SldsProgressBar, path: '[Feedback & Status]')
+@widgetbook.UseCase(
+  name: 'Every 10%',
+  type: SldsProgressBar,
+  path: '[Feedback & Status]',
+)
 Widget buildSldsProgressBarStepsUseCase(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(24),

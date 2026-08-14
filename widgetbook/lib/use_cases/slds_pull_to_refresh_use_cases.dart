@@ -3,9 +3,16 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsPullToRefresh, path: '[Navigation]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsPullToRefresh,
+  path: '[Navigation]',
+)
 Widget buildSldsPullToRefreshUseCase(BuildContext context) {
-  final loadingText = context.knobs.string(label: 'Loading text', initialValue: 'Loading…');
+  final loadingText = context.knobs.string(
+    label: 'Loading text',
+    initialValue: 'Loading…',
+  );
   final style = context.knobs.object.dropdown(
     label: 'Style',
     options: SldsPullToRefreshStyle.values,

@@ -9,22 +9,38 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 enum _ForcedState { auto, defaultState, filled, focused, error, disabled }
 
 SldsInputMaskState? _toVisualState(_ForcedState state) => switch (state) {
-      _ForcedState.auto => null,
-      _ForcedState.defaultState => SldsInputMaskState.defaultState,
-      _ForcedState.filled => SldsInputMaskState.filled,
-      _ForcedState.focused => SldsInputMaskState.focused,
-      _ForcedState.error => SldsInputMaskState.error,
-      _ForcedState.disabled => SldsInputMaskState.disabled,
-    };
+  _ForcedState.auto => null,
+  _ForcedState.defaultState => SldsInputMaskState.defaultState,
+  _ForcedState.filled => SldsInputMaskState.filled,
+  _ForcedState.focused => SldsInputMaskState.focused,
+  _ForcedState.error => SldsInputMaskState.error,
+  _ForcedState.disabled => SldsInputMaskState.disabled,
+};
 
-@widgetbook.UseCase(name: 'Playground', type: SldsInputMask, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsInputMask,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsInputMaskUseCase(BuildContext context) {
   final label = context.knobs.string(label: 'Label', initialValue: 'Input');
-  final prefixText = context.knobs.string(label: 'Prefix', initialValue: 'http://');
-  final suffixText = context.knobs.string(label: 'Suffix', initialValue: '.com');
+  final prefixText = context.knobs.string(
+    label: 'Prefix',
+    initialValue: 'http://',
+  );
+  final suffixText = context.knobs.string(
+    label: 'Suffix',
+    initialValue: '.com',
+  );
   final hintText = context.knobs.string(label: 'Hint', initialValue: 'slds');
-  final helperText = context.knobs.string(label: 'Help text', initialValue: 'Help Text');
-  final isRequired = context.knobs.boolean(label: 'Required', initialValue: true);
+  final helperText = context.knobs.string(
+    label: 'Help text',
+    initialValue: 'Help Text',
+  );
+  final isRequired = context.knobs.boolean(
+    label: 'Required',
+    initialValue: true,
+  );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
   final forcedState = context.knobs.object.dropdown(
     label: 'Forced visual state',

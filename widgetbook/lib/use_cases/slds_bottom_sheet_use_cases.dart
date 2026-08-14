@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsBottomSheet, path: '[Navigation]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsBottomSheet,
+  path: '[Navigation]',
+)
 Widget buildSldsBottomSheetUseCase(BuildContext context) {
   return Center(
     child: ElevatedButton(

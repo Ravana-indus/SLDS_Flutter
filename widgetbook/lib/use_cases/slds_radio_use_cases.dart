@@ -3,7 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsRadio, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsRadio,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsRadioUseCase(BuildContext context) {
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
   final size = context.knobs.object.dropdown(

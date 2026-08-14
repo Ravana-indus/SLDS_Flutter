@@ -3,7 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsRangeSlider, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsRangeSlider,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsRangeSliderUseCase(BuildContext context) {
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
   final min = context.knobs.double.input(label: 'Min', initialValue: 0);
@@ -18,7 +22,11 @@ Widget buildSldsRangeSliderUseCase(BuildContext context) {
 /// Real [State] (not a closure-local var) so the value survives rebuilds —
 /// see the SldsCheckbox playground bug this pattern avoids.
 class _RangeSliderDemo extends StatefulWidget {
-  const _RangeSliderDemo({required this.enabled, required this.min, required this.max});
+  const _RangeSliderDemo({
+    required this.enabled,
+    required this.min,
+    required this.max,
+  });
 
   final bool enabled;
   final double min;

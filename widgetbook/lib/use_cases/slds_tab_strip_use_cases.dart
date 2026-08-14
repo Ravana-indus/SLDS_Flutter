@@ -3,7 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsTabStrip, path: '[Navigation]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsTabStrip,
+  path: '[Navigation]',
+)
 Widget buildSldsTabStripUseCase(BuildContext context) {
   final style = context.knobs.object.dropdown(
     label: 'Style',

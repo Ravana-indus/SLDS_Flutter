@@ -4,24 +4,24 @@ import 'package:slds_tokens/slds_tokens.dart';
 export 'package:slds_tokens/slds_tokens.dart'
     show SldsDimensionTokens, SldsMotionTokens, SldsTextStyleToken;
 
-/// Font families tried, in order, when a glyph is missing from the primary
-/// family.
+/// The package that ships the font assets.
 ///
-/// Sinhala and Tamil text falls back here. The font assets themselves are
-/// not bundled yet, so these names are inert until they are added to
-/// `pubspec.yaml`'s `flutter.fonts` section.
-const List<String> kSldsFontFamilyFallback = <String>[
-  'Noto Sans Sinhala',
-  'Noto Sans Tamil',
-];
+/// Flutter resolves a font declared by a package only when the family is
+/// qualified this way, so a consuming app gets the bundled font without
+/// having to re-declare it in its own pubspec.
+const String _fontPackage = 'slds_components';
 
 /// Materialises a [SldsTextStyleToken] into a Flutter [TextStyle].
+///
+/// No `fontFamilyFallback` is set: the bundled Google Sans covers Latin,
+/// Sinhala and Tamil in one family, so every locale the platform supports
+/// renders from the same metrics with no substitution.
 extension SldsTextStyleTokenX on SldsTextStyleToken {
   /// Builds the [TextStyle] for this token in [fontFamily].
   TextStyle toTextStyle(String fontFamily) {
     return TextStyle(
       fontFamily: fontFamily,
-      fontFamilyFallback: kSldsFontFamilyFallback,
+      package: _fontPackage,
       fontSize: fontSize,
       height: heightFactor,
       fontWeight: FontWeight.values[(fontWeight ~/ 100) - 1],

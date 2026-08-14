@@ -8,7 +8,8 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 /// rather than passing `null` as an option itself.
 enum _ForcedState { auto, defaultState, filled, focused, error, disabled }
 
-SldsMobileNumberInputState? _toVisualState(_ForcedState state) => switch (state) {
+SldsMobileNumberInputState? _toVisualState(_ForcedState state) =>
+    switch (state) {
       _ForcedState.auto => null,
       _ForcedState.defaultState => SldsMobileNumberInputState.defaultState,
       _ForcedState.filled => SldsMobileNumberInputState.filled,
@@ -17,12 +18,28 @@ SldsMobileNumberInputState? _toVisualState(_ForcedState state) => switch (state)
       _ForcedState.disabled => SldsMobileNumberInputState.disabled,
     };
 
-@widgetbook.UseCase(name: 'Playground', type: SldsMobileNumberInput, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsMobileNumberInput,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsMobileNumberInputUseCase(BuildContext context) {
-  final label = context.knobs.string(label: 'Label', initialValue: 'Mobile Number');
-  final helperText = context.knobs.string(label: 'Helper text', initialValue: 'Help Text');
-  final errorText = context.knobs.string(label: 'Error text', initialValue: 'Enter a valid number');
-  final isRequired = context.knobs.boolean(label: 'Required', initialValue: true);
+  final label = context.knobs.string(
+    label: 'Label',
+    initialValue: 'Mobile Number',
+  );
+  final helperText = context.knobs.string(
+    label: 'Helper text',
+    initialValue: 'Help Text',
+  );
+  final errorText = context.knobs.string(
+    label: 'Error text',
+    initialValue: 'Enter a valid number',
+  );
+  final isRequired = context.knobs.boolean(
+    label: 'Required',
+    initialValue: true,
+  );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
   final forcedState = context.knobs.object.dropdown(
     label: 'Forced visual state',

@@ -14,12 +14,25 @@ const _districts = [
   'Matara',
 ];
 
-@widgetbook.UseCase(name: 'Playground', type: SldsDropdown, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsDropdown,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsDropdownUseCase(BuildContext context) {
   final label = context.knobs.string(label: 'Label', initialValue: 'District');
-  final hintText = context.knobs.string(label: 'Hint', initialValue: 'Select district');
-  final helpText = context.knobs.string(label: 'Help text', initialValue: 'Help Text');
-  final isRequired = context.knobs.boolean(label: 'Required', initialValue: true);
+  final hintText = context.knobs.string(
+    label: 'Hint',
+    initialValue: 'Select district',
+  );
+  final helpText = context.knobs.string(
+    label: 'Help text',
+    initialValue: 'Help Text',
+  );
+  final isRequired = context.knobs.boolean(
+    label: 'Required',
+    initialValue: true,
+  );
   final hasError = context.knobs.boolean(label: 'Error', initialValue: false);
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
 

@@ -3,9 +3,16 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsDivider, path: '[Display & Data]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsDivider,
+  path: '[Display & Data]',
+)
 Widget buildSldsDividerUseCase(BuildContext context) {
-  final showButton = context.knobs.boolean(label: 'Split with button', initialValue: true);
+  final showButton = context.knobs.boolean(
+    label: 'Split with button',
+    initialValue: true,
+  );
 
   return Padding(
     padding: const EdgeInsets.all(24),

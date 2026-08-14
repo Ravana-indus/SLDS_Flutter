@@ -3,9 +3,16 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsErrorSummary, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsErrorSummary,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsErrorSummaryUseCase(BuildContext context) {
-  final title = context.knobs.string(label: 'Title', initialValue: 'There is a problem');
+  final title = context.knobs.string(
+    label: 'Title',
+    initialValue: 'There is a problem',
+  );
 
   return Padding(
     padding: const EdgeInsets.all(24),

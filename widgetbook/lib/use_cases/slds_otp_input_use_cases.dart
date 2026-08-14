@@ -3,7 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsOtpInput, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsOtpInput,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsOtpInputUseCase(BuildContext context) {
   final length = context.knobs.int.slider(
     label: 'Length',

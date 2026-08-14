@@ -21,18 +21,28 @@ const _districts = [
 enum _ForcedState { auto, defaultState, filling, multiSelect, inputExpanded }
 
 SldsComboBoxState? _toVisualState(_ForcedState state) => switch (state) {
-      _ForcedState.auto => null,
-      _ForcedState.defaultState => SldsComboBoxState.defaultState,
-      _ForcedState.filling => SldsComboBoxState.filling,
-      _ForcedState.multiSelect => SldsComboBoxState.multiSelect,
-      _ForcedState.inputExpanded => SldsComboBoxState.inputExpanded,
-    };
+  _ForcedState.auto => null,
+  _ForcedState.defaultState => SldsComboBoxState.defaultState,
+  _ForcedState.filling => SldsComboBoxState.filling,
+  _ForcedState.multiSelect => SldsComboBoxState.multiSelect,
+  _ForcedState.inputExpanded => SldsComboBoxState.inputExpanded,
+};
 
-@widgetbook.UseCase(name: 'Playground', type: SldsComboBox, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsComboBox,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsComboBoxUseCase(BuildContext context) {
   final label = context.knobs.string(label: 'Label', initialValue: 'District');
-  final helperText = context.knobs.string(label: 'Helper text', initialValue: 'Help Text');
-  final isRequired = context.knobs.boolean(label: 'Required', initialValue: true);
+  final helperText = context.knobs.string(
+    label: 'Helper text',
+    initialValue: 'Help Text',
+  );
+  final isRequired = context.knobs.boolean(
+    label: 'Required',
+    initialValue: true,
+  );
   final multiple = context.knobs.boolean(label: 'Multiple', initialValue: true);
   final forcedState = context.knobs.object.dropdown(
     label: 'Forced visual state',

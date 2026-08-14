@@ -3,10 +3,22 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Playground', type: SldsFilterButton, path: '[Forms & Inputs]')
+@widgetbook.UseCase(
+  name: 'Playground',
+  type: SldsFilterButton,
+  path: '[Forms & Inputs]',
+)
 Widget buildSldsFilterButtonUseCase(BuildContext context) {
-  final label = context.knobs.string(label: 'Label', initialValue: 'Date posted');
-  final count = context.knobs.int.slider(label: 'Count', initialValue: 3, min: 0, max: 9);
+  final label = context.knobs.string(
+    label: 'Label',
+    initialValue: 'Date posted',
+  );
+  final count = context.knobs.int.slider(
+    label: 'Count',
+    initialValue: 3,
+    min: 0,
+    max: 9,
+  );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
 
   return Padding(

@@ -6,7 +6,7 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget fab) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      theme: SldsTheme.light,
       localizationsDelegates: SldsLocalizations.localizationsDelegates,
       supportedLocales: SldsLocalizations.supportedLocales,
       home: Scaffold(body: fab),
@@ -43,7 +43,7 @@ void main() {
     final fab = tester.widget<FloatingActionButton>(
       find.byType(FloatingActionButton),
     );
-    expect(fab.backgroundColor, SldsTheme.light().colorScheme.surface);
+    expect(fab.backgroundColor, SldsTheme.light.colorScheme.surface);
   });
 
   testWidgets('badgeCount shows a numeric badge', (tester) async {

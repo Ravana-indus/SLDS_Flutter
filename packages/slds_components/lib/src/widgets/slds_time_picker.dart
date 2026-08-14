@@ -334,7 +334,6 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                 SldsButton(
                   label: widget.applyText,
                   onPressed: () => widget.onApply?.call(_currentTimeOfDay),
-                  color: primaryAccent,
                 ),
                 const SizedBox(height: 12),
                 SldsButton(
@@ -357,7 +356,6 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                 SldsButton(
                   label: widget.applyText,
                   onPressed: () => widget.onApply?.call(_currentTimeOfDay),
-                  color: primaryAccent,
                 ),
               ],
             ),
@@ -610,7 +608,6 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
           enabled: widget.enabled,
           isRequired: widget.isRequired,
           trailingIcon: Icons.access_time,
-          color: widget.primaryColor,
         ),
       ),
     );

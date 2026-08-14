@@ -53,7 +53,6 @@ class _SldsPasswordFieldState extends State<SldsPasswordField> {
       enabled: widget.enabled,
       onChanged: widget.onChanged,
       validator: widget.validator,
-      color: widget.color,
       obscureText: _obscured,
       trailingIcon: _obscured
           ? Icons.visibility_outlined

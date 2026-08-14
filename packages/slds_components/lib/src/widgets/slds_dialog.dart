@@ -121,19 +121,30 @@ class SldsDialog extends StatelessWidget {
             ],
             if (_hasActions) ...[
               SizedBox(height: dimensions.space16),
+              // Flexible, not bare children: below the mobile breakpoint an
+              // SldsButton asks for the full width it is offered, so two of
+              // them in one Row overflow a phone-width dialog unless each is
+              // held to a share of the line.
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (cancelLabel != null)
-                    SldsButton(
-                      label: cancelLabel!,
-                      onPressed: onCancel,
-                      variant: SldsButtonVariant.secondary,
+                    Flexible(
+                      child: SldsButton(
+                        label: cancelLabel!,
+                        onPressed: onCancel,
+                        variant: SldsButtonVariant.secondary,
+                      ),
                     ),
                   if (cancelLabel != null && confirmLabel != null)
                     SizedBox(width: dimensions.space8),
                   if (confirmLabel != null)
-                    SldsButton(label: confirmLabel!, onPressed: onConfirm),
+                    Flexible(
+                      child: SldsButton(
+                        label: confirmLabel!,
+                        onPressed: onConfirm,
+                      ),
+                    ),
                 ],
               ),
             ],

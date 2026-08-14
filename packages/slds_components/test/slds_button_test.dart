@@ -6,7 +6,7 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget button) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      theme: SldsTheme.light,
       localizationsDelegates: SldsLocalizations.localizationsDelegates,
       supportedLocales: SldsLocalizations.supportedLocales,
       home: Scaffold(body: button),
@@ -80,12 +80,12 @@ void main() {
     expect(button.enabled, isFalse);
   });
 
-  testWidgets('picks up SldsTheme.dark() colors from the ambient Theme', (
+  testWidgets('picks up SldsTheme.dark colors from the ambient Theme', (
     tester,
   ) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: SldsTheme.dark(),
+        theme: SldsTheme.dark,
         localizationsDelegates: SldsLocalizations.localizationsDelegates,
         supportedLocales: SldsLocalizations.supportedLocales,
         home: Scaffold(
@@ -110,7 +110,9 @@ void main() {
     SldsButtonVariant.secondary,
     SldsButtonVariant.tertiary,
   ]) {
-    testWidgets('$variant is transparent in light mode', (tester) async {
+    testWidgets('$variant resting background comes from its token', (
+      tester,
+    ) async {
       await pump(
         tester,
         SldsButton(label: 'Continue', variant: variant, onPressed: () {}),
@@ -118,15 +120,22 @@ void main() {
       final style = tester
           .widget<OutlinedButton>(find.byType(OutlinedButton))
           .style!;
-      expect(style.backgroundColor!.resolve({}), isNull);
+      // Tertiary is a ghost variant — transparent at rest. Secondary carries
+      // its own designed fill rather than borrowing a surface tone.
+      expect(
+        style.backgroundColor!.resolve({}),
+        variant == SldsButtonVariant.tertiary
+            ? isNull
+            : SldsColorTokens.light().buttonSecondaryBackground,
+      );
     });
 
-    testWidgets('$variant is filled with a surface tone in dark mode', (
+    testWidgets('$variant resolves against the dark palette in dark mode', (
       tester,
     ) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: SldsTheme.dark(),
+          theme: SldsTheme.dark,
           localizationsDelegates: SldsLocalizations.localizationsDelegates,
           supportedLocales: SldsLocalizations.supportedLocales,
           home: Scaffold(
@@ -141,19 +150,44 @@ void main() {
       final style = tester
           .widget<OutlinedButton>(find.byType(OutlinedButton))
           .style!;
-      expect(style.backgroundColor!.resolve({}), isNotNull);
+      expect(
+        style.foregroundColor!.resolve({}),
+        variant == SldsButtonVariant.tertiary
+            ? SldsColorTokens.dark().buttonGhostLabel
+            : SldsColorTokens.dark().buttonSecondaryLabel,
+      );
     });
   }
 
-  testWidgets('color override wins over the variant token', (tester) async {
-    const override = Color(0xFF00FF00);
+  testWidgets('background resolves from the variant token, not a literal', (
+    tester,
+  ) async {
+    await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
+
+    final style = tester.widget<FilledButton>(find.byType(FilledButton)).style!;
+    expect(
+      style.backgroundColor!.resolve({}),
+      SldsColorTokens.light().buttonPrimaryBackground,
+    );
+  });
+
+  testWidgets('destructive variant reads the destructive token', (
+    tester,
+  ) async {
     await pump(
       tester,
-      SldsButton(label: 'Continue', color: override, onPressed: () {}),
+      SldsButton(
+        label: 'Delete',
+        onPressed: () {},
+        variant: SldsButtonVariant.destructive,
+      ),
     );
 
     final style = tester.widget<FilledButton>(find.byType(FilledButton)).style!;
-    expect(style.backgroundColor!.resolve({}), override);
+    expect(
+      style.backgroundColor!.resolve({}),
+      SldsColorTokens.light().buttonDestructiveBackground,
+    );
   });
 
   Future<void> setViewSize(WidgetTester tester, Size size) async {
@@ -162,30 +196,45 @@ void main() {
     addTearDown(tester.view.reset);
   }
 
-  testWidgets('is full-width and 52px tall below the mobile breakpoint', (
-    tester,
-  ) async {
+  testWidgets('is full-width below the mobile breakpoint', (tester) async {
     await setViewSize(tester, const Size(360, 800));
 
     await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
 
     final size = tester.getSize(find.byType(SldsButton));
     expect(size.width, 360);
-    expect(size.height, 52);
+    expect(size.height, SldsDimensionTokens.standard.buttonHeightExtraLarge);
   });
 
-  testWidgets(
-    'is intrinsic-width and 44px tall at/above the mobile breakpoint',
-    (tester) async {
-      await setViewSize(tester, const Size(1024, 800));
+  testWidgets('is intrinsic-width at/above the mobile breakpoint', (
+    tester,
+  ) async {
+    await setViewSize(tester, const Size(1024, 800));
 
+    await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
+
+    final size = tester.getSize(find.byType(SldsButton));
+    expect(size.width, lessThan(1024));
+    expect(size.height, SldsDimensionTokens.standard.buttonHeightLarge);
+  });
+
+  testWidgets('clears the 48px minimum touch target at every breakpoint', (
+    tester,
+  ) async {
+    // WCAG 2.5.5 / the SLDS 48px floor. The button previously shrink-wrapped
+    // to 44px on desktop, defeating Material's own minimum.
+    for (final viewport in [const Size(360, 800), const Size(1024, 800)]) {
+      await setViewSize(tester, viewport);
       await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
 
       final size = tester.getSize(find.byType(SldsButton));
-      expect(size.width, lessThan(1024));
-      expect(size.height, 44);
-    },
-  );
+      expect(
+        size.height,
+        greaterThanOrEqualTo(SldsDimensionTokens.standard.tapTargetMin),
+        reason: 'button too short to tap at ${viewport.width}px wide',
+      );
+    }
+  });
 
   testWidgets(
     'a long label ellipsizes instead of overflowing on a narrow phone',

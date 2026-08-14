@@ -9,8 +9,8 @@ void main() {
   runApp(const WidgetbookApp());
 }
 
-final _lightTheme = WidgetbookTheme(name: 'Light', data: SldsTheme.light());
-final _darkTheme = WidgetbookTheme(name: 'Dark', data: SldsTheme.dark());
+final _lightTheme = WidgetbookTheme(name: 'Light', data: SldsTheme.light);
+final _darkTheme = WidgetbookTheme(name: 'Dark', data: SldsTheme.dark);
 
 @widgetbook.App()
 class WidgetbookApp extends StatelessWidget {

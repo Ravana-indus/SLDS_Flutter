@@ -5,7 +5,7 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      theme: SldsTheme.light,
       home: Scaffold(body: field),
     ),
   );
@@ -81,7 +81,7 @@ void main() {
 
     final field = tester.widget<TextField>(find.byType(TextField));
     final border = field.decoration!.enabledBorder as OutlineInputBorder;
-    expect(border.borderSide.color, SldsColors.error);
+    expect(border.borderSide.color, SldsColorTokens.light().inputBorderError);
   });
 
   testWidgets('disabled field is not enabled', (tester) async {

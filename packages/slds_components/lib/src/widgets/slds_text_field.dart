@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../tokens/slds_colors.dart';
-import '../tokens/slds_spacing.dart';
+import '../theme/slds_tokens.dart';
 
 /// SLDS text input — label (with a required marker), leading/trailing
 /// icons, help/error text, and default/focused/error/disabled states.
@@ -33,7 +32,6 @@ class SldsTextField extends StatelessWidget {
     this.inputFormatters,
     this.onChanged,
     this.validator,
-    this.color,
   });
 
   final String label;
@@ -60,20 +58,22 @@ class SldsTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
 
-  /// Overrides the token-driven focus/accent color for this instance only.
-  final Color? color;
-
   bool get _hasError => errorText != null && errorText!.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final accent = color ?? scheme.primary;
+    final tokens = context.slds;
+    final colors = tokens.colors;
+    final dimensions = tokens.dimensions;
 
-    OutlineInputBorder border(Color borderColor) => OutlineInputBorder(
-      borderRadius: BorderRadius.circular(SldsSpacing.sm),
-      borderSide: BorderSide(color: borderColor),
-    );
+    OutlineInputBorder border(Color borderColor, {double? width}) =>
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(dimensions.radiusLg),
+          borderSide: BorderSide(
+            color: borderColor,
+            width: width ?? dimensions.controlBorderWidth,
+          ),
+        );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,22 +81,22 @@ class SldsTextField extends StatelessWidget {
       children: [
         Text.rich(
           TextSpan(
-            style: Theme.of(
-              context,
-            ).textTheme.labelLarge?.copyWith(color: scheme.onSurface),
+            style: tokens.typography.fieldLabel.copyWith(
+              color: enabled ? colors.inputLabel : colors.disabledForeground,
+            ),
             children: [
               TextSpan(text: label),
               if (isRequired)
                 TextSpan(
                   text: ' *',
-                  style: TextStyle(color: scheme.error),
+                  style: TextStyle(color: colors.error),
                 ),
             ],
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: SldsSpacing.xs),
+        SizedBox(height: dimensions.space8),
         TextFormField(
           controller: controller,
           enabled: enabled,
@@ -130,33 +130,38 @@ class SldsTextField extends StatelessWidget {
                   )
                 : null,
             filled: true,
-            fillColor: enabled
-                ? scheme.surface
-                : scheme.onSurface.withValues(alpha: 0.04),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: SldsSpacing.md,
-              vertical: SldsSpacing.md,
+            fillColor: enabled ? colors.surfaceCard : colors.disabledBackground,
+            contentPadding: EdgeInsetsDirectional.symmetric(
+              horizontal: dimensions.space12,
+              vertical: dimensions.space12,
             ),
-            border: border(scheme.outline),
-            enabledBorder: border(_hasError ? scheme.error : scheme.outline),
-            focusedBorder: border(_hasError ? scheme.error : accent),
-            errorBorder: border(scheme.error),
-            focusedErrorBorder: border(scheme.error),
+            border: border(colors.inputBorderDefault),
+            enabledBorder: border(
+              _hasError ? colors.inputBorderError : colors.inputBorderDefault,
+            ),
+            focusedBorder: border(
+              _hasError ? colors.inputBorderError : colors.inputBorderFocused,
+              width: dimensions.emphasizedBorderWidth,
+            ),
+            errorBorder: border(colors.inputBorderError),
+            focusedErrorBorder: border(
+              colors.inputBorderError,
+              width: dimensions.emphasizedBorderWidth,
+            ),
             disabledBorder: border(
-              scheme.outline.withValues(alpha: SldsColors.disabledOpacity),
+              colors.inputBorderDisabled,
+              width: dimensions.inputDisabledBorderWidth,
             ),
           ),
         ),
         if (_hasError || (helpText != null && helpText!.isNotEmpty)) ...[
-          const SizedBox(height: SldsSpacing.xs),
+          SizedBox(height: dimensions.space8),
           Text(
             _hasError ? errorText! : helpText!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: tokens.typography.caption1.copyWith(
               color: _hasError
-                  ? scheme.error
-                  : scheme.onSurface.withValues(
-                      alpha: enabled ? 0.6 : SldsColors.disabledOpacity,
-                    ),
+                  ? colors.error
+                  : (enabled ? colors.inputHelper : colors.disabledForeground),
             ),
           ),
         ],

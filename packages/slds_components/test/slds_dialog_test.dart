@@ -4,7 +4,7 @@ import 'package:slds_components/slds_components.dart';
 
 void main() {
   Widget host(Widget Function(BuildContext) buttonBuilder) => MaterialApp(
-    theme: SldsTheme.light(),
+    theme: SldsTheme.light,
     home: Scaffold(
       body: Center(child: Builder(builder: buttonBuilder)),
     ),

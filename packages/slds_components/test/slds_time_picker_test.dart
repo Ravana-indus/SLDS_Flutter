@@ -5,7 +5,7 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget widget) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      theme: SldsTheme.light,
       home: Scaffold(body: Center(child: widget)),
     ),
   );

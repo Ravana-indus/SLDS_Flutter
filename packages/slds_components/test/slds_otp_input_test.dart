@@ -5,7 +5,7 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      theme: SldsTheme.light,
       home: Scaffold(body: field),
     ),
   );
@@ -78,7 +78,7 @@ void main() {
     'error state colors every box border red but keeps digits black',
     (tester) async {
       await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
-      final theme = SldsTheme.light();
+      final theme = SldsTheme.light;
 
       for (final field in tester.widgetList<TextField>(
         find.byType(TextField),
@@ -120,7 +120,7 @@ void main() {
     tester,
   ) async {
     await pump(tester, const SldsOtpInput(length: 4));
-    final theme = SldsTheme.light();
+    final theme = SldsTheme.light;
 
     await tester.tap(find.byType(TextField).first);
     await tester.pump();
@@ -133,7 +133,7 @@ void main() {
 
   testWidgets('focus does not override error/success coloring', (tester) async {
     await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
-    final theme = SldsTheme.light();
+    final theme = SldsTheme.light;
 
     await tester.tap(find.byType(TextField).first);
     await tester.pump();

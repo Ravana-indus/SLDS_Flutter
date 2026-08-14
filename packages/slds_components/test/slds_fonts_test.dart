@@ -62,7 +62,7 @@ void main() {
       late TextStyle style;
       await tester.pumpWidget(
         MaterialApp(
-          theme: SldsTheme.light(),
+          theme: SldsTheme.light,
           home: Builder(
             builder: (context) {
               style = context.slds.typography.body1;
@@ -83,7 +83,7 @@ void main() {
       late TextStyle style;
       await tester.pumpWidget(
         MaterialApp(
-          theme: SldsTheme.light(),
+          theme: SldsTheme.light,
           home: Builder(
             builder: (context) {
               style = context.slds.typography.body1;

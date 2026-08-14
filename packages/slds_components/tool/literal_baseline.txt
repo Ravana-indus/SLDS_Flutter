@@ -11,7 +11,7 @@
 # Generated from the state at the start of the compliance work; every entry
 # here is a known violation awaiting cleanup, not an approved exception.
 slds_bottom_nav.dart 7
-slds_button.dart 7
+slds_button.dart 1
 slds_date_picker.dart 6
 slds_time_picker.dart 6
 slds_checkbox.dart 5

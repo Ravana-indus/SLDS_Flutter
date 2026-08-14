@@ -383,11 +383,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           if (SldsBreakpoints.isMobile(context))
             Column(
               children: [
-                SldsButton(
-                  label: widget.applyText,
-                  onPressed: _handleApply,
-                  color: primaryAccent,
-                ),
+                SldsButton(label: widget.applyText, onPressed: _handleApply),
                 const SizedBox(height: 12),
                 SldsButton(
                   label: widget.cancelText,
@@ -406,11 +402,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                   variant: SldsButtonVariant.secondary,
                 ),
                 const SizedBox(width: 12),
-                SldsButton(
-                  label: widget.applyText,
-                  onPressed: _handleApply,
-                  color: primaryAccent,
-                ),
+                SldsButton(label: widget.applyText, onPressed: _handleApply),
               ],
             ),
         ],

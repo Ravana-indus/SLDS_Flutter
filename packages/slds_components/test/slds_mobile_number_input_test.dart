@@ -6,7 +6,7 @@ void main() {
   Future<void> pump(WidgetTester tester, Widget field, {double width = 400}) =>
       tester.pumpWidget(
         MaterialApp(
-          theme: SldsTheme.light(),
+          theme: SldsTheme.light,
           home: Scaffold(
             body: SizedBox(width: width, child: field),
           ),

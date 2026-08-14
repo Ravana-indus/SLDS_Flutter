@@ -6,7 +6,7 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      theme: SldsTheme.light,
       home: Scaffold(body: field),
     ),
   );
@@ -112,7 +112,7 @@ void main() {
     );
 
     expect(find.text('File size is too big'), findsOneWidget);
-    final theme = SldsTheme.light();
+    final theme = SldsTheme.light;
     final errorLabel = tester.widget<Text>(find.text('File size is too big'));
     expect(errorLabel.style?.color, SldsColorTokens.light().error);
     expect(theme, isNotNull); // sanity: theme still resolves

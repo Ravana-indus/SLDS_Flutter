@@ -1,4 +1,7 @@
-import 'package:flutter/widgets.dart';
+// Material, not widgets: [SldsTypographyTokens.materialTextTheme] returns a
+// [TextTheme], which ThemeData needs and package:flutter/widgets.dart does
+// not export.
+import 'package:flutter/material.dart';
 import 'package:slds_tokens/slds_tokens.dart';
 
 export 'package:slds_tokens/slds_tokens.dart'
@@ -394,6 +397,40 @@ class SldsTypographyTokens {
   /// Compact component description (Figma: 14px/22px regular).
   TextStyle get compactDescription =>
       tokens.compactDescription.toTextStyle(tokens.fontFamily);
+
+  /// This type scale expressed in Material's [TextTheme] slot names.
+  ///
+  /// Widgets read SLDS names ([heading3], [body2]) directly. This mapping
+  /// exists for the one place that cannot: [ThemeData.textTheme], which is
+  /// keyed by Material slots and is what `Text` falls back to when a widget
+  /// passes no explicit style.
+  ///
+  /// The pairing is by metric, not by name — each slot takes the SLDS token
+  /// whose size, line height and tracking already match what Material puts
+  /// there. Slots with no SLDS equivalent are left unset so they inherit
+  /// Material's default rather than being filled with an approximation.
+  TextTheme get materialTextTheme => TextTheme(
+    // Display — the largest scale, used by numeric error codes and hero text.
+    displayLarge: display2,
+    displayMedium: display2,
+    displaySmall: mobileDisplay1,
+    // Headline — section headings.
+    headlineLarge: desktopHeading2,
+    headlineMedium: desktopHeading2,
+    headlineSmall: heading2,
+    // Title — card and dialog titles.
+    titleLarge: heading4,
+    titleMedium: desktopTitle1,
+    titleSmall: title1,
+    // Body — running text. body1 is 16px, body2 is 14px.
+    bodyLarge: body1,
+    bodyMedium: body2,
+    bodySmall: caption1,
+    // Label — control labels and captions.
+    labelLarge: fieldLabel,
+    labelMedium: caption1,
+    labelSmall: caption2,
+  );
 
   @override
   bool operator ==(Object other) =>

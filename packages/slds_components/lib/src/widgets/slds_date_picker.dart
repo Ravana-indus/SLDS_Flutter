@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// Selection mode for [SldsDatePicker].
 enum SldsDatePickerMode {
@@ -417,7 +417,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     final firstOfMonth = DateTime(
       _displayedMonth.year,
       _displayedMonth.month,
-      1,
     );
     final daysInMonth = DateTime(
       _displayedMonth.year,
@@ -426,7 +425,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     ).day;
 
     // Calculate weekday offset (Monday = 1)
-    int firstWeekdayOffset = firstOfMonth.weekday - 1; // 0 for Mon, 6 for Sun
+    var firstWeekdayOffset = firstOfMonth.weekday - 1; // 0 for Mon, 6 for Sun
     if (firstWeekdayOffset < 0) firstWeekdayOffset += 7;
 
     final daysInPrevMonth = DateTime(
@@ -435,10 +434,10 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       0,
     ).day;
 
-    final List<Widget> dayWidgets = [];
+    final dayWidgets = <Widget>[];
 
     // Previous month overflow days
-    for (int i = firstWeekdayOffset - 1; i >= 0; i--) {
+    for (var i = firstWeekdayOffset - 1; i >= 0; i--) {
       final dayNum = daysInPrevMonth - i;
       dayWidgets.add(
         _SldsBaseDateCell(
@@ -449,14 +448,14 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     }
 
     // Current month days
-    for (int day = 1; day <= daysInMonth; day++) {
+    for (var day = 1; day <= daysInMonth; day++) {
       final date = DateTime(_displayedMonth.year, _displayedMonth.month, day);
       final dayText = day < 10 ? '0$day' : '$day';
 
-      bool isSelected = false;
-      bool isRangeStart = false;
-      bool isRangeEnd = false;
-      bool isInRange = false;
+      var isSelected = false;
+      var isRangeStart = false;
+      var isRangeEnd = false;
+      var isInRange = false;
 
       if (widget.mode == SldsDatePickerMode.single) {
         isSelected = _isSameDay(date, _selectedSingleDate);
@@ -491,7 +490,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     // Next month overflow days to complete last row
     final totalCells = dayWidgets.length;
     final remainingCells = (7 - (totalCells % 7)) % 7;
-    for (int day = 1; day <= remainingCells; day++) {
+    for (var day = 1; day <= remainingCells; day++) {
       final dayText = day < 10 ? '0$day' : '$day';
       dayWidgets.add(_SldsBaseDateCell(dayText: dayText, isOverflow: true));
     }
@@ -502,7 +501,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 6,
-      crossAxisSpacing: 0,
       children: dayWidgets,
     );
   }

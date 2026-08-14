@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual states for [SldsUploadField].
 enum SldsUploadStatus {
@@ -42,8 +42,8 @@ enum SldsUploadStatus {
 /// ```
 class SldsUploadField extends StatelessWidget {
   const SldsUploadField({
-    super.key,
     required this.label,
+    super.key,
     this.status = SldsUploadStatus.empty,
     this.required = true,
     this.hintText = 'PDF, JPEG or PNG less than 5MB',

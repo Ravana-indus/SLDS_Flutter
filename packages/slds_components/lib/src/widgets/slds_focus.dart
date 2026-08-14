@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// The SLDS focus indicator, as a [BoxShadow] list.
 ///
@@ -18,12 +18,10 @@ List<BoxShadow> sldsFocusRing(SldsTokenSet tokens, {bool error = false}) {
   return [
     BoxShadow(
       color: error ? colors.focusRingError : colors.focusRing,
-      blurRadius: 0,
       spreadRadius: spread,
     ),
     BoxShadow(
       color: error ? colors.focusHaloError : colors.focusHalo,
-      blurRadius: 0,
       spreadRadius: spread * 2,
     ),
   ];
@@ -37,9 +35,9 @@ List<BoxShadow> sldsFocusRing(SldsTokenSet tokens, {bool error = false}) {
 class SldsFocusRing extends StatelessWidget {
   /// Creates a focus indicator around [child].
   const SldsFocusRing({
-    super.key,
     required this.focused,
     required this.child,
+    super.key,
     this.borderRadius,
     this.error = false,
   });

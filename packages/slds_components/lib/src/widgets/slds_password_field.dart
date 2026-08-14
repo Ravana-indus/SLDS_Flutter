@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'slds_text_field.dart';
+import 'package:slds_components/src/widgets/slds_text_field.dart';
 
 /// SLDS password input — an [SldsTextField] with a built-in show/hide
 /// toggle (the eye icon). Owns the obscure/reveal state itself so callers

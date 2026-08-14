@@ -15,7 +15,7 @@ void main() {
     (tester) async {
       await pump(
         tester,
-        const SldsTimePickerDialog(initialTime: TimeOfDay(hour: 7, minute: 0)),
+        const SldsTimePickerDialog(),
       );
 
       expect(find.text('Set Your Time'), findsOneWidget);
@@ -33,7 +33,6 @@ void main() {
     await pump(
       tester,
       SldsTimePickerDialog(
-        initialTime: const TimeOfDay(hour: 7, minute: 0),
         onTimeChanged: (t) => changedTime = t,
       ),
     );

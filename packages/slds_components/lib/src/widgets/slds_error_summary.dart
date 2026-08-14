@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// One row in an [SldsErrorSummary] — the field's error message, and an
 /// optional [onTap] (e.g. move focus to that field) triggered by tapping it.
@@ -17,8 +17,8 @@ class SldsErrorSummaryItem {
 /// failure; screen readers announce it as an alert as soon as it appears.
 class SldsErrorSummary extends StatelessWidget {
   const SldsErrorSummary({
-    super.key,
     required this.errors,
+    super.key,
     this.title = 'There is a problem',
   });
 

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../l10n/gen/slds_localizations.dart';
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/gen/slds_localizations.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual style of an [SldsButton], matching the SLDS action catalogue.
 enum SldsButtonVariant {
@@ -42,9 +42,9 @@ enum SldsButtonVariant {
 class SldsButton extends StatelessWidget {
   /// Creates an SLDS action button.
   const SldsButton({
-    super.key,
     required this.label,
     required this.onPressed,
+    super.key,
     this.variant = SldsButtonVariant.primary,
     this.leadingIcon,
     this.trailingIcon,

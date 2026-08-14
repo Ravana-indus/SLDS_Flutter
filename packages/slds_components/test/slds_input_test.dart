@@ -103,7 +103,7 @@ void main() {
           );
       final decoration = container.decoration! as BoxDecoration;
       expect(
-        (decoration.border as Border).top.color,
+        (decoration.border! as Border).top.color,
         SldsColorTokens.light().inputBorderError,
       );
     },
@@ -151,7 +151,7 @@ void main() {
           );
       final decoration = container.decoration! as BoxDecoration;
       expect(
-        (decoration.border as Border).top.color,
+        (decoration.border! as Border).top.color,
         SldsColorTokens.light().inputBorderFocused,
       );
     },

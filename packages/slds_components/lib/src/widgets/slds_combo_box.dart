@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_focus.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma states for [SldsComboBox], matching node `543:5821`.
 enum SldsComboBoxState { defaultState, filling, multiSelect, inputExpanded }
@@ -13,12 +13,12 @@ enum SldsComboBoxState { defaultState, filling, multiSelect, inputExpanded }
 class SldsComboBox extends StatefulWidget {
   /// Creates an SLDS combo box.
   const SldsComboBox({
-    super.key,
     required this.label,
     required this.placeholder,
     required this.options,
     required this.selectedValues,
     required this.onSelectionChanged,
+    super.key,
     this.helperText,
     this.required = true,
     this.multiple = false,
@@ -146,7 +146,7 @@ class _SldsComboBoxState extends State<SldsComboBox> {
         const referenceWidth = 361.0;
         final desired = widget.width ?? referenceWidth;
         final width = constraints.hasBoundedWidth
-            ? desired.clamp(0.0, constraints.maxWidth).toDouble()
+            ? desired.clamp(0.0, constraints.maxWidth)
             : desired;
         return SizedBox(
           width: width,
@@ -193,7 +193,6 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                   boxShadow: focused ? sldsFocusRing(tokens) : null,
                 ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: displayChips

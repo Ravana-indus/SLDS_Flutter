@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
+import 'package:slds_components/slds_components.dart' show SldsErrorState;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_error_state.dart'
+    show SldsErrorState;
 
 /// SLDS empty state — a centered illustration, title, optional description,
 /// and an optional call-to-action button. Use wherever a list/collection
@@ -12,9 +14,9 @@ import 'slds_button.dart';
 /// widget (an [Image] or [Icon]); there's no default.
 class SldsEmptyState extends StatelessWidget {
   const SldsEmptyState({
-    super.key,
     required this.illustration,
     required this.title,
+    super.key,
     this.description,
     this.actionLabel,
     this.onAction,

@@ -47,7 +47,7 @@ void main() {
           .first,
     );
     expect(
-      (badgeContainer.decoration as BoxDecoration).color,
+      (badgeContainer.decoration! as BoxDecoration).color,
       colors.badgeInReviewBackground,
     );
   });

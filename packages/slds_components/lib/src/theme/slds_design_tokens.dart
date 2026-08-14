@@ -42,6 +42,7 @@ extension SldsTextStyleTokenX on SldsTextStyleToken {
 /// Wraps the raw [SldsColorTokens] from `slds_tokens`; equality delegates to
 /// that object, so comparing two palettes is one integer-field comparison
 /// per role rather than a deep [Color] walk.
+@immutable
 class SldsColorTokens {
   /// Wraps [tokens] for use in a widget tree.
   const SldsColorTokens(this.tokens);
@@ -322,6 +323,7 @@ class SldsColorTokens {
 }
 
 /// The SLDS type scale as Flutter [TextStyle]s.
+@immutable
 class SldsTypographyTokens {
   /// Wraps [tokens] for use in a widget tree.
   const SldsTypographyTokens(this.tokens);
@@ -449,6 +451,7 @@ class SldsTypographyTokens {
 ///
 /// Read this from a [BuildContext] via the `slds` extension rather than
 /// constructing it.
+@immutable
 class SldsTokenSet {
   /// Creates a token set.
   const SldsTokenSet({

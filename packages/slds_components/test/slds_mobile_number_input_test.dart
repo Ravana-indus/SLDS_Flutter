@@ -129,7 +129,7 @@ void main() {
       );
       final decoration = animatedContainer.decoration! as BoxDecoration;
       expect(
-        (decoration.border as Border).top.color,
+        (decoration.border! as Border).top.color,
         SldsColorTokens.light().inputBorderFocused,
       );
     },

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Circular footprint for [SldsAvatar], keyed to [SldsDimensionTokens]'s
 /// `avatarSize*` scale (24/32/40/48/56, plus a 64px `extraLarge` matching

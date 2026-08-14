@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS check button — a full-width, filled-pill toggle (not a checkbox
 /// glyph): selected renders as a solid accent-color block, unselected as a
@@ -9,9 +9,9 @@ import '../theme/slds_tokens.dart';
 /// checkboxes.
 class SldsCheckButton extends StatelessWidget {
   const SldsCheckButton({
-    super.key,
     required this.label,
     required this.selected,
+    super.key,
     this.onChanged,
     this.enabled = true,
     this.color,

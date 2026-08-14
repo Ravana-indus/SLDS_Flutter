@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS text input — label (with a required marker), leading/trailing
 /// icons, help/error text, and default/focused/error/disabled states.
@@ -14,8 +14,8 @@ import '../theme/slds_tokens.dart';
 /// instance.
 class SldsTextField extends StatelessWidget {
   const SldsTextField({
-    super.key,
     required this.label,
+    super.key,
     this.controller,
     this.isRequired = false,
     this.helpText,
@@ -117,7 +117,7 @@ class SldsTextField extends StatelessWidget {
                 ? Center(widthFactor: 1, child: leadingWidget)
                 : (leadingIcon != null ? Icon(leadingIcon, size: 20) : null),
             prefixIconConstraints: leadingWidget != null
-                ? const BoxConstraints(minWidth: 0)
+                ? const BoxConstraints()
                 : null,
             suffixIcon: trailingIcon != null
                 ? IconButton(

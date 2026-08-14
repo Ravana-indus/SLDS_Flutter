@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart'
+    show SldsCard, SldsServiceCard;
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Fixed footprint for [SldsIconCard]. [small] is the compact grid tile
 /// (150x158, 40x40 icon — Figma "Fuel Pass"); [large] is the wider variant
@@ -25,9 +26,9 @@ enum SldsIconCardState { defaultState, hover, disabled }
 /// tile, not a content card ([SldsCard] for anything larger).
 class SldsIconCard extends StatefulWidget {
   const SldsIconCard({
-    super.key,
     required this.title,
     required this.icon,
+    super.key,
     this.description,
     this.badgeLabel,
     this.size = SldsIconCardSize.small,
@@ -78,14 +79,14 @@ class _SldsIconCardState extends State<SldsIconCard> {
     final state = _resolvedState;
     final disabled = state == SldsIconCardState.disabled;
 
-    final Color background = switch (state) {
+    final background = switch (state) {
       SldsIconCardState.hover => colors.surfaceHover,
       _ => colors.surfaceCard,
     };
-    final Color titleColor = disabled
+    final titleColor = disabled
         ? colors.disabledForeground
         : colors.textPrimary;
-    final Color descriptionColor = disabled
+    final descriptionColor = disabled
         ? colors.disabledForeground
         : colors.textSecondary;
     final (double height, double iconSize) = switch (widget.size) {

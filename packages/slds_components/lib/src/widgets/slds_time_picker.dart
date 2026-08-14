@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
-import 'slds_text_field.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_text_field.dart';
 
 /// Which unit is currently being edited in [SldsTimePickerDialog].
 enum SldsTimePickerUnit { hour, minute }
@@ -371,7 +371,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
       children: List.generate(totalItems, (i) {
         final val = isHour ? (i == 0 ? 12 : i) : (i * 5);
         final angle = (i * 30 - 90) * (math.pi / 180);
-        final radius = 82.0;
+        const radius = 82.0;
 
         final cx = 105.0 + radius * math.cos(angle);
         final cy = 105.0 + radius * math.sin(angle);
@@ -479,7 +479,7 @@ class _RadialClockDialPainter extends CustomPainter {
 
     // Pivot dot at center
     final pivotPaint = Paint()..color = primaryColor;
-    canvas.drawCircle(center, 5.0, pivotPaint);
+    canvas.drawCircle(center, 5, pivotPaint);
   }
 
   @override
@@ -494,8 +494,8 @@ class _RadialClockDialPainter extends CustomPainter {
 /// and opens the [SldsTimePickerDialog] when tapped.
 class SldsTimePicker extends StatefulWidget {
   const SldsTimePicker({
-    super.key,
     required this.label,
+    super.key,
     this.initialTime,
     this.onTimeChanged,
     this.hintText = 'HH:MM',
@@ -561,7 +561,7 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
   }
 
   Future<void> _showTimePicker(BuildContext context) async {
-    final TimeOfDay? picked = await showDialog<TimeOfDay>(
+    final picked = await showDialog<TimeOfDay>(
       context: context,
       builder: (BuildContext context) {
         return Dialog(

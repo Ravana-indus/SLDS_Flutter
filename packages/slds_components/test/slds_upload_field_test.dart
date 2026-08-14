@@ -18,7 +18,6 @@ void main() {
       tester,
       const SldsUploadField(
         label: 'Upload',
-        hintText: 'PDF, JPEG or PNG less than 5MB',
       ),
     );
 

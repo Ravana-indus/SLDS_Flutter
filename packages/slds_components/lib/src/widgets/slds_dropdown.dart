@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsTextField;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_text_field.dart'
+    show SldsTextField;
 
 /// SLDS searchable dropdown/select — label (with required marker), a
 /// closed-state field showing the current selection or a placeholder, and
@@ -12,10 +14,10 @@ import '../theme/slds_tokens.dart';
 /// aware); pass [color] to override the focus/accent color for one instance.
 class SldsDropdown<T> extends StatefulWidget {
   const SldsDropdown({
-    super.key,
     required this.label,
     required this.items,
     required this.itemLabel,
+    super.key,
     this.value,
     this.onChanged,
     this.isRequired = false,

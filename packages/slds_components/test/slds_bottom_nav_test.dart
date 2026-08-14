@@ -221,7 +221,6 @@ void main() {
       tester.getSemantics(navItemSemantics),
       matchesSemantics(
         isButton: true,
-        isEnabled: false,
         hasEnabledState: true,
         hasSelectedState: true,
         label: 'Profile',

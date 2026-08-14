@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
-import 'slds_checkbox.dart';
-import 'slds_radio.dart';
+import 'package:slds_components/slds_components.dart' show SldsFilterButton;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_checkbox.dart';
+import 'package:slds_components/src/widgets/slds_filter_button.dart'
+    show SldsFilterButton;
+import 'package:slds_components/src/widgets/slds_radio.dart';
 
 /// SLDS filter dropdown panel — a standalone option list (checkboxes for
 /// [multiple], radios otherwise) in a bordered card with a Cancel/Apply
@@ -16,10 +18,10 @@ import 'slds_radio.dart';
 /// when Apply is tapped. [onCancel] discards without calling [onApply].
 class SldsFilterDropdown extends StatelessWidget {
   const SldsFilterDropdown({
-    super.key,
     required this.options,
     required this.selectedValues,
     required this.onSelectionChanged,
+    super.key,
     this.onApply,
     this.onCancel,
     this.multiple = true,
@@ -84,7 +86,7 @@ class SldsFilterDropdown extends StatelessWidget {
                 ? constraints.maxWidth
                 : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
-            ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
+            ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
 
         return Container(

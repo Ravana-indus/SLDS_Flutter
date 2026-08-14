@@ -58,12 +58,20 @@ jobs:
       - name: Format
         run: dart format --set-exit-if-changed packages widgetbook app
 
-      - name: Analyze
-        run: flutter analyze
+      # very_good_analysis per §8, failing on any warning or error.
+      # `--no-fatal-infos` covers the documented backlog downgraded to `info`
+      # in analysis_options.yaml; check_public_docs.dart below is what stops
+      # that backlog growing.
+      - name: Analyze (very_good_analysis)
+        run: flutter analyze --no-fatal-infos
         working-directory: packages/slds_components
 
       - name: Colour literals (§2)
         run: dart run tool/check_literals.dart
+        working-directory: packages/slds_components
+
+      - name: Public member docs (§7)
+        run: dart run tool/check_public_docs.dart
         working-directory: packages/slds_components
 
       # Behaviour, semantics and accessibility-guideline tests. Goldens are

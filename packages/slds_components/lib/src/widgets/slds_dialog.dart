@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// SLDS alert dialog — a blocking modal window with a [title], [message],
 /// and up to two actions (a [cancelLabel]/[onCancel] outlined button and a
@@ -13,8 +13,8 @@ import 'slds_button.dart';
 /// not a hand-rolled modal.
 class SldsDialog extends StatelessWidget {
   const SldsDialog({
-    super.key,
     required this.title,
+    super.key,
     this.message,
     this.cancelLabel,
     this.onCancel,

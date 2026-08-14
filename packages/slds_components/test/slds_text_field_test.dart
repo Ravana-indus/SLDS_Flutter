@@ -49,7 +49,7 @@ void main() {
     expect(find.text('Help Text'), findsNothing);
 
     final field = tester.widget<TextField>(find.byType(TextField));
-    final border = field.decoration!.enabledBorder as OutlineInputBorder;
+    final border = field.decoration!.enabledBorder! as OutlineInputBorder;
     expect(border.borderSide.color, SldsColorTokens.light().inputBorderError);
   });
 

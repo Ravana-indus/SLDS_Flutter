@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// One destination in an [SldsBottomNav].
 class SldsBottomNavItem {
@@ -43,10 +43,10 @@ enum SldsBottomNavStyle {
 /// fixed per-item size.
 class SldsBottomNav extends StatelessWidget {
   const SldsBottomNav({
-    super.key,
     required this.items,
     required this.currentIndex,
     required this.onTap,
+    super.key,
     this.style = SldsBottomNavStyle.light,
     this.color,
   });

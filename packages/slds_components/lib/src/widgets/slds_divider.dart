@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsButton;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart' show SldsButton;
 
 /// SLDS divider — a thin horizontal rule, or (with [child]) a rule split
 /// around a centered label/button (e.g. "or" between two sign-in options,

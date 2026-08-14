@@ -37,7 +37,7 @@ Future<void> _loadMaterialIcons() async {
   if (!font.existsSync()) return;
 
   final loader = FontLoader('MaterialIcons')
-    ..addFont(font.readAsBytes().then((bytes) => ByteData.sublistView(bytes)));
+    ..addFont(font.readAsBytes().then(ByteData.sublistView));
   await loader.load();
 }
 
@@ -61,7 +61,7 @@ Future<void> _loadBundledFonts() async {
     final file = File(path);
     if (!file.existsSync()) continue;
     loader.addFont(
-      file.readAsBytes().then((bytes) => ByteData.sublistView(bytes)),
+      file.readAsBytes().then(ByteData.sublistView),
     );
     loaded++;
   }

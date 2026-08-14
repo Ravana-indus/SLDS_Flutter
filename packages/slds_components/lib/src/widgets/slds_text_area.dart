@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsTextField;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_text_field.dart'
+    show SldsTextField;
 
 /// SLDS multiline text input — label (with required marker), placeholder,
 /// a live `n/max` character counter, and default/focused/error/disabled
@@ -12,8 +14,8 @@ import '../theme/slds_tokens.dart';
 /// aware); pass [color] to override the focus/accent color for one instance.
 class SldsTextArea extends StatefulWidget {
   const SldsTextArea({
-    super.key,
     required this.label,
+    super.key,
     this.controller,
     this.isRequired = false,
     this.helpText,

@@ -96,7 +96,7 @@ void main() {
             pinned[entry.key],
             reason:
                 'ColorScheme.${entry.key} must resolve to its SLDS token even '
-                'though that token equals Material\'s default',
+                "though that token equals Material's default",
           );
           continue;
         }
@@ -104,7 +104,7 @@ void main() {
           entry.value,
           isNot(fallback[entry.key]),
           reason:
-              'ColorScheme.${entry.key} is Material\'s default, not an SLDS '
+              "ColorScheme.${entry.key} is Material's default, not an SLDS "
               'token — set it in SldsTheme._colorScheme',
         );
       }
@@ -122,7 +122,7 @@ void main() {
             pinned[entry.key],
             reason:
                 'ColorScheme.${entry.key} must resolve to its SLDS token even '
-                'though that token equals Material\'s default',
+                "though that token equals Material's default",
           );
           continue;
         }
@@ -130,7 +130,7 @@ void main() {
           entry.value,
           isNot(fallback[entry.key]),
           reason:
-              'ColorScheme.${entry.key} is Material\'s default, not an SLDS '
+              "ColorScheme.${entry.key} is Material's default, not an SLDS "
               'token — set it in SldsTheme._colorScheme',
         );
       }
@@ -157,7 +157,7 @@ void main() {
 
   group('typography', () {
     test('ThemeData.textTheme comes from the SLDS type scale', () {
-      final scale = SldsTypographyTokens.standard;
+      const scale = SldsTypographyTokens.standard;
 
       expect(
         SldsTheme.light.textTheme.bodyLarge?.fontSize,

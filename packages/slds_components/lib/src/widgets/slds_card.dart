@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS content card. Thin themed wrapper over [Card] with token padding —
 /// shape and surface colour resolve from the ambient [Theme], so the card
@@ -9,7 +9,7 @@ import '../theme/slds_tokens.dart';
 /// Padding tightens below the mobile breakpoint and relaxes at or above it.
 class SldsCard extends StatelessWidget {
   /// Creates a content card around [child].
-  const SldsCard({super.key, required this.child});
+  const SldsCard({required this.child, super.key});
 
   /// The card's contents.
   final Widget child;

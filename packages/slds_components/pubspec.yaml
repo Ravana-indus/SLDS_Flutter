@@ -1,6 +1,6 @@
 name: slds_components
 description: "Design tokens, themed widgets, and en/si/ta localization for Sri Lanka's government digital services (SLDS), by GovTech Sri Lanka."
-version: 0.0.1
+version: 0.1.0
 homepage: "https://github.com/Ravana-indus/SLDS_Flutter"
 repository: "https://github.com/Ravana-indus/SLDS_Flutter"
 
@@ -31,7 +31,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  very_good_analysis: ^9.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

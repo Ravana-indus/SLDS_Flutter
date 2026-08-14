@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS fieldset — logical grouping for a multi-field section: a legend
 /// (with optional required marker), a vertically-spaced column of
@@ -13,9 +13,9 @@ import '../theme/slds_tokens.dart';
 /// pair equivalent via [Semantics.container].
 class SldsFieldset extends StatelessWidget {
   const SldsFieldset({
-    super.key,
     required this.legend,
     required this.children,
+    super.key,
     this.description,
     this.required = false,
     this.helperText,

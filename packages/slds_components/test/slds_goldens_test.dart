@@ -25,7 +25,7 @@ import 'support/slds_test_harness.dart';
 const _themes = <String>['light', 'dark', 'hc'];
 
 /// Text scales every component is captured at (100% and 200%, per §8).
-const _scales = <double>[1.0, 2.0];
+const _scales = <double>[1, 2];
 
 /// Locales added for text-bearing components at 200%.
 const _localeAxis = <String>['si', 'ta'];
@@ -66,7 +66,7 @@ void main() {
           wrap(
             SldsButton(label: _label, onPressed: () {}),
             locale: Locale(locale),
-            textScale: 2.0,
+            textScale: 2,
           ),
         );
         await expectGolden(
@@ -178,7 +178,7 @@ void main() {
               child: SldsTextField(label: 'Licence number'),
             ),
             locale: Locale(locale),
-            textScale: 2.0,
+            textScale: 2,
           ),
         );
         await expectGolden(

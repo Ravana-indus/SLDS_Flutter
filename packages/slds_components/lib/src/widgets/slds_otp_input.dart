@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Fixed box dimensions for [SldsOtpInput], per the SLDS spec's size scale.
 enum SldsOtpInputSize {
   large(width: 56, height: 80),
   medium(width: 48, height: 68),
-  small(width: 44, height: 60);
+  small(width: 44, height: 60)
+  ;
 
   const SldsOtpInputSize({required this.width, required this.height});
 
@@ -64,11 +65,14 @@ class SldsOtpInput extends StatefulWidget {
 }
 
 class _SldsOtpInputState extends State<SldsOtpInput> {
-  late final controllers = List.generate(
+  late final List<TextEditingController> controllers = List.generate(
     widget.length,
     (_) => TextEditingController(),
   );
-  late final focusNodes = List.generate(widget.length, (_) => FocusNode());
+  late final List<FocusNode> focusNodes = List.generate(
+    widget.length,
+    (_) => FocusNode(),
+  );
 
   @override
   void initState() {

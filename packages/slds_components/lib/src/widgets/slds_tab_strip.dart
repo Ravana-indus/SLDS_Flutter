@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsBottomNav;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
+    show SldsBottomNav;
 
 /// One tab in an [SldsTabStrip].
 class SldsTabStripItem {
@@ -35,10 +37,10 @@ enum SldsTabStripStyle { light, dark }
 /// narrow screens instead.
 class SldsTabStrip extends StatelessWidget {
   const SldsTabStrip({
-    super.key,
     required this.items,
     required this.currentIndex,
     required this.onTap,
+    super.key,
     this.style = SldsTabStripStyle.light,
     this.color,
   });

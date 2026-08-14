@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS radio sizes.
 enum SldsRadioSize {
   large(circle: 24, dot: 10),
-  small(circle: 20, dot: 8);
+  small(circle: 20, dot: 8)
+  ;
 
   const SldsRadioSize({required this.circle, required this.dot});
 
@@ -23,10 +24,10 @@ enum SldsRadioSize {
 /// aware); pass [color] to override the accent for one instance.
 class SldsRadio<T> extends StatefulWidget {
   const SldsRadio({
-    super.key,
     required this.value,
     required this.groupValue,
     required this.onChanged,
+    super.key,
     this.size = SldsRadioSize.large,
     this.enabled = true,
     this.color,

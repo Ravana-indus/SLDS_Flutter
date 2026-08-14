@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS checkbox sizes.
 enum SldsCheckboxSize {
   large(box: 24, icon: 16),
-  small(box: 20, icon: 14);
+  small(box: 20, icon: 14)
+  ;
 
   const SldsCheckboxSize({required this.box, required this.icon});
 
@@ -24,9 +25,9 @@ enum SldsCheckboxSize {
 /// pass [color] to override the accent for one instance.
 class SldsCheckbox extends StatefulWidget {
   const SldsCheckbox({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
     this.size = SldsCheckboxSize.large,
     this.enabled = true,
     this.color,
@@ -78,7 +79,7 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
     final dimensions = context.slds.dimensions;
     final scheme = Theme.of(context).colorScheme;
     final accent = widget.color ?? scheme.primary;
-    final filled = widget.value == true || widget.value == null;
+    final filled = (widget.value ?? false) || widget.value == null;
 
     final Color boxColor;
     final Color borderColor;
@@ -142,7 +143,7 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
                       color: iconColor,
                     ),
                   )
-                : (widget.value == true
+                : (widget.value ?? false
                       ? Icon(
                           Icons.check,
                           size: widget.size.icon,

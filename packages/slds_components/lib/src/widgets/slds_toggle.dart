@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS toggle sizes.
 enum SldsToggleSize {
   large(width: 48, height: 28, thumb: 22),
-  small(width: 40, height: 24, thumb: 18);
+  small(width: 40, height: 24, thumb: 18)
+  ;
 
   const SldsToggleSize({
     required this.width,
@@ -27,9 +28,9 @@ enum SldsToggleSize {
 /// aware); pass [color] to override the accent for one instance.
 class SldsToggle extends StatefulWidget {
   const SldsToggle({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
     this.size = SldsToggleSize.large,
     this.enabled = true,
     this.color,

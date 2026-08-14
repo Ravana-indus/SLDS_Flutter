@@ -45,7 +45,7 @@ void main() {
   });
 
   testWidgets('disabled checkbox does not respond to taps', (tester) async {
-    bool called = false;
+    var called = false;
     await pump(
       tester,
       SldsCheckbox(

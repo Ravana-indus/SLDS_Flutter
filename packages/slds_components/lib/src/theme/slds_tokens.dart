@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'slds_design_tokens.dart';
+import 'package:slds_components/src/theme/slds_design_tokens.dart';
 
 export 'slds_design_tokens.dart';
 

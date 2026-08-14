@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
+    show SldsBottomNav;
 
 /// Visual container styles for [SldsTopNavBar] — mirrors [SldsBottomNav]'s
 /// light/dark choice; independent of the app's own light/dark theme.
@@ -14,8 +15,8 @@ enum SldsTopNavBarStyle { light, dark }
 class SldsTopNavBar extends StatelessWidget {
   /// A bar showing a plain [title] between the back and menu icons.
   const SldsTopNavBar({
-    super.key,
     required this.title,
+    super.key,
     this.onBack,
     this.onMenu,
     this.style = SldsTopNavBarStyle.light,
@@ -28,9 +29,9 @@ class SldsTopNavBar extends StatelessWidget {
   /// [currentStep] (0-based) segments render filled with the accent color,
   /// the rest render as plain pills.
   const SldsTopNavBar.progress({
-    super.key,
     required int this.totalSteps,
     required int this.currentStep,
+    super.key,
     this.onBack,
     this.onMenu,
     this.style = SldsTopNavBarStyle.light,

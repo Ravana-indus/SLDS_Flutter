@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../l10n/gen/slds_localizations.dart';
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
+import 'package:slds_components/src/l10n/gen/slds_localizations.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// SLDS icon-only button — same variant palette as [SldsButton]. Colors
 /// resolve from the ambient [Theme]'s [ColorScheme] (light/dark aware);
@@ -13,9 +13,9 @@ import 'slds_button.dart';
 /// (matching [SldsButton]'s mobile height).
 class SldsIconButton extends StatelessWidget {
   const SldsIconButton({
-    super.key,
     required this.icon,
     required this.onPressed,
+    super.key,
     this.variant = SldsButtonVariant.primary,
     this.isLoading = false,
     this.tooltip,

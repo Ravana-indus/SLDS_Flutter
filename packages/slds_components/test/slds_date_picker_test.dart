@@ -51,7 +51,6 @@ void main() {
     await pump(
       tester,
       SldsDatePicker(
-        mode: SldsDatePickerMode.range,
         initialRange: DateTimeRange(
           start: DateTime(2026, 1, 10),
           end: DateTime(2026, 1, 20),

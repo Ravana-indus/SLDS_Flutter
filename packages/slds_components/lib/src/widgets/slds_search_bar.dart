@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS search bar — a pill-shaped field with a leading search icon and a
 /// clear (×) trailing icon once text is entered, a gold focus ring, and an
@@ -245,9 +245,9 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
 class _SuggestionRow extends StatelessWidget {
   const _SuggestionRow({
     required this.label,
+    required this.onTap,
     this.icon,
     this.highlighted = false,
-    required this.onTap,
   });
 
   final String label;

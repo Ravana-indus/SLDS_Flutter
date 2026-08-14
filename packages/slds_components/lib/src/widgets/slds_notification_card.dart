@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// Icon-tone for [SldsNotificationCard.type] — drives the leading circle's
 /// color pairing. [document] is a neutral file icon on a plain white
@@ -15,9 +15,9 @@ enum SldsNotificationType { document, warning, success, error }
 /// otherwise the card is static.
 class SldsNotificationCard extends StatelessWidget {
   const SldsNotificationCard({
-    super.key,
     required this.title,
     required this.body,
+    super.key,
     this.timestamp,
     this.type = SldsNotificationType.document,
     this.unread = false,
@@ -65,7 +65,7 @@ class SldsNotificationCard extends StatelessWidget {
                 ? constraints.maxWidth
                 : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
-            ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
+            ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
 
         return Container(
@@ -123,7 +123,6 @@ class SldsNotificationCard extends StatelessWidget {
                           SldsButton(
                             label: actionLabel!,
                             onPressed: onAction,
-                            variant: SldsButtonVariant.primary,
                           ),
                         ],
                       ),

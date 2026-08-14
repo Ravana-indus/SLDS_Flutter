@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsFilterDropdown;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_filter_dropdown.dart'
+    show SldsFilterDropdown;
 
 /// SLDS filter button — a pill-shaped trigger for opening a filter panel
 /// (typically an [SldsFilterDropdown]), with a trailing chevron and an
@@ -12,8 +14,8 @@ import '../theme/slds_tokens.dart';
 /// [SldsFilterDropdown]); no popover behavior is baked in.
 class SldsFilterButton extends StatelessWidget {
   const SldsFilterButton({
-    super.key,
     required this.label,
+    super.key,
     this.count,
     this.onTap,
     this.enabled = true,

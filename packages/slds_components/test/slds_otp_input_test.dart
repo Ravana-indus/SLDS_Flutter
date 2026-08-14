@@ -83,7 +83,7 @@ void main() {
       for (final field in tester.widgetList<TextField>(
         find.byType(TextField),
       )) {
-        final border = field.decoration!.enabledBorder as OutlineInputBorder;
+        final border = field.decoration!.enabledBorder! as OutlineInputBorder;
         expect(border.borderSide.color, theme.colorScheme.error);
         expect(field.style?.color, theme.colorScheme.onSurface);
       }
@@ -111,7 +111,7 @@ void main() {
     await pump(tester, const SldsOtpInput(length: 4, success: true));
 
     for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
-      final border = field.decoration!.enabledBorder as OutlineInputBorder;
+      final border = field.decoration!.enabledBorder! as OutlineInputBorder;
       expect(border.borderSide.color, Colors.green);
     }
   });
@@ -126,7 +126,7 @@ void main() {
     await tester.pump();
 
     final field = tester.widget<TextField>(find.byType(TextField).first);
-    final border = field.decoration!.enabledBorder as OutlineInputBorder;
+    final border = field.decoration!.enabledBorder! as OutlineInputBorder;
     expect(border.borderSide.color, theme.colorScheme.primary);
     expect(field.cursorColor, theme.colorScheme.primary);
   });
@@ -139,7 +139,7 @@ void main() {
     await tester.pump();
 
     final field = tester.widget<TextField>(find.byType(TextField).first);
-    final border = field.decoration!.enabledBorder as OutlineInputBorder;
+    final border = field.decoration!.enabledBorder! as OutlineInputBorder;
     expect(border.borderSide.color, theme.colorScheme.error);
   });
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Which edge of [SldsTooltip] the pointer tail sticks out of — point it at
 /// whatever the tooltip is anchored to.
@@ -19,8 +19,8 @@ enum SldsTooltipTailSide { top, bottom }
 /// point [tailAlignment] at it.
 class SldsTooltip extends StatelessWidget {
   const SldsTooltip({
-    super.key,
     required this.title,
+    super.key,
     this.description,
     this.stepLabel,
     this.actionLabel,
@@ -77,7 +77,7 @@ class SldsTooltip extends StatelessWidget {
                       ? constraints.maxWidth
                       : figmaReferenceWidth);
               final resolvedWidth = constraints.hasBoundedWidth
-                  ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
+                  ? requestedWidth.clamp(0.0, constraints.maxWidth)
                   : requestedWidth;
 
               return _FullCard(

@@ -29,7 +29,7 @@ void main() {
   const template = 'en';
   const translations = ['si', 'ta'];
 
-  test('every locale defines exactly the template\'s keys', () {
+  test("every locale defines exactly the template's keys", () {
     final expected = _messages(template).keys.toSet();
     expect(expected, isNotEmpty, reason: 'template ARB is empty');
 

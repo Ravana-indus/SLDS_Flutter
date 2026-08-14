@@ -85,7 +85,7 @@ void main() {
             builder: (context) => Scaffold(
               body: Center(
                 child: ElevatedButton(
-                  onPressed: () => SldsBottomSheet.show(
+                  onPressed: () => SldsBottomSheet.show<void>(
                     context,
                     title: 'Sheet Title',
                     child: const Text('Content'),

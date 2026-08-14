@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsButton;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart' show SldsButton;
 
 /// SLDS inline text link — underlined, without button chrome.
 ///
@@ -17,9 +18,9 @@ import '../theme/slds_tokens.dart';
 class SldsLinkButton extends StatelessWidget {
   /// Creates an inline text link.
   const SldsLinkButton({
-    super.key,
     required this.label,
     required this.onPressed,
+    super.key,
   });
 
   /// The link text.

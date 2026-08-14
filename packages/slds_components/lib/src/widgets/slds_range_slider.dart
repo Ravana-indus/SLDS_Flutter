@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS range slider — a single-thumb slider (drag, tap-to-jump, and
 /// keyboard-adjustable, courtesy of Flutter's own [Slider]) reskinned with
@@ -12,9 +12,9 @@ import '../theme/slds_tokens.dart';
 /// is just the reskinned control.
 class SldsRangeSlider extends StatelessWidget {
   const SldsRangeSlider({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
     this.min = 0,
     this.max = 100,
     this.divisions,
@@ -58,7 +58,7 @@ class SldsRangeSlider extends StatelessWidget {
         inactiveTrackColor: inactiveColor,
         thumbColor: thumbColor,
         overlayColor: accent.withValues(alpha: 0.12),
-        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
+        thumbShape: const RoundSliderThumbShape(),
         disabledActiveTrackColor: colors.disabledForeground,
         disabledInactiveTrackColor: colors.disabledBackground,
         disabledThumbColor: colors.disabledForeground,

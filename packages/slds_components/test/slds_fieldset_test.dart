@@ -39,7 +39,6 @@ void main() {
       tester,
       const SldsFieldset(
         legend: 'Group',
-        required: false,
         children: [Text('Field')],
       ),
     );

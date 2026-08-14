@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'slds_design_tokens.dart';
+import 'package:slds_components/src/theme/slds_design_tokens.dart';
 
 /// Builds the [ThemeData] SLDS apps install as `MaterialApp.theme`,
 /// `.darkTheme` and `.highContrastTheme`.
@@ -131,7 +131,7 @@ abstract final class SldsTheme {
 /// ```
 class SldsResponsiveText extends StatelessWidget {
   /// Wraps [child].
-  const SldsResponsiveText({super.key, required this.child});
+  const SldsResponsiveText({required this.child, super.key});
 
   /// The subtree to wrap.
   final Widget child;

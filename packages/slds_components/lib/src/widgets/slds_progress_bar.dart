@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS progress bar — a continuous, value-based indicator (file uploads,
 /// loading tasks, profile completion): a rounded track filled to [value]
@@ -15,8 +15,8 @@ import '../theme/slds_tokens.dart';
 /// [CircularProgressIndicator] for unknown-duration work.
 class SldsProgressBar extends StatelessWidget {
   const SldsProgressBar({
-    super.key,
     required this.value,
+    super.key,
     this.showLabel = true,
     this.color,
   });

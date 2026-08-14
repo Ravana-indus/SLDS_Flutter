@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/gen/slds_localizations.dart';
@@ -33,12 +34,15 @@ class SldsIconButton extends StatelessWidget {
 
   bool get _enabled => onPressed != null && !isLoading;
   bool get _isFilled =>
-      variant == SldsButtonVariant.primary || variant == SldsButtonVariant.destructive;
+      variant == SldsButtonVariant.primary ||
+      variant == SldsButtonVariant.destructive;
 
   Color _baseColor(BuildContext context) {
     if (color != null) return color!;
     final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive ? scheme.error : scheme.primary;
+    return variant == SldsButtonVariant.destructive
+        ? scheme.error
+        : scheme.primary;
   }
 
   Color _onBaseColor(BuildContext context) {
@@ -48,7 +52,9 @@ class SldsIconButton extends StatelessWidget {
           : Colors.black;
     }
     final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive ? scheme.onError : scheme.onPrimary;
+    return variant == SldsButtonVariant.destructive
+        ? scheme.onError
+        : scheme.onPrimary;
   }
 
   @override
@@ -65,9 +71,8 @@ class SldsIconButton extends StatelessWidget {
           ? SizedBox(
               width: 18,
               height: 18,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation(_isFilled ? onBase : base),
+              child: CupertinoActivityIndicator(
+                color: _isFilled ? onBase : base,
               ),
             )
           : Icon(icon),
@@ -75,13 +80,22 @@ class SldsIconButton extends StatelessWidget {
       style: IconButton.styleFrom(
         backgroundColor: _isFilled ? base : Colors.transparent,
         foregroundColor: _isFilled ? onBase : base,
-        disabledBackgroundColor:
-            _isFilled ? base.withValues(alpha: SldsColors.disabledOpacity) : Colors.transparent,
-        disabledForegroundColor: scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity),
+        disabledBackgroundColor: _isFilled
+            ? base.withValues(alpha: SldsColors.disabledOpacity)
+            : Colors.transparent,
+        disabledForegroundColor: scheme.onSurface.withValues(
+          alpha: SldsColors.disabledOpacity,
+        ),
         side: !_isFilled && variant != SldsButtonVariant.text
-            ? BorderSide(color: variant == SldsButtonVariant.tertiary ? scheme.outline : base)
+            ? BorderSide(
+                color: variant == SldsButtonVariant.tertiary
+                    ? scheme.outline
+                    : base,
+              )
             : null,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
       ),
     );
   }

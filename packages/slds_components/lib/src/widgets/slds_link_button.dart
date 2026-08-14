@@ -35,15 +35,22 @@ class SldsLinkButton extends StatelessWidget {
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
-            return Theme.of(context).colorScheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
+            return Theme.of(context).colorScheme.onSurface.withValues(
+              alpha: SldsColors.disabledOpacity,
+            );
           }
-          if (states.contains(WidgetState.hovered) || states.contains(WidgetState.pressed)) {
+          if (states.contains(WidgetState.hovered) ||
+              states.contains(WidgetState.pressed)) {
             return Color.lerp(base, Colors.black, 0.16);
           }
           return base;
         }),
       ),
-      child: Text(label, style: const TextStyle(decoration: TextDecoration.underline)),
+      child: Text(
+        label,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(decoration: TextDecoration.underline),
+      ),
     );
   }
 }

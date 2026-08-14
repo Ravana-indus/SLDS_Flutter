@@ -23,7 +23,8 @@ class WidgetbookApp extends StatelessWidget {
       addons: [
         MaterialThemeAddon(
           themes: [_lightTheme, _darkTheme],
-          initialTheme: _lightTheme, // Widgetbook defaults to light, not dark
+          initialTheme:
+              _lightTheme, // Widgetbook still opens in Light by default
         ),
         LocalizationAddon(
           locales: SldsLocalizations.supportedLocales,
@@ -34,7 +35,6 @@ class WidgetbookApp extends StatelessWidget {
         ViewportAddon(Viewports.all),
         AlignmentAddon(),
         TextScaleAddon(),
-        GridAddon(),
         InspectorAddon(),
         ZoomAddon(),
       ],

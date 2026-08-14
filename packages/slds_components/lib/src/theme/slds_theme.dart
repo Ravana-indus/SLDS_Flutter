@@ -19,24 +19,24 @@ abstract final class SldsTheme {
   static ThemeData dark() => _theme(_darkColorScheme, SldsTypography.desktop);
 
   static ColorScheme get _lightColorScheme => ColorScheme.fromSeed(
-        seedColor: SldsColors.primary,
-        brightness: Brightness.light,
-        primary: SldsColors.primary,
-        onPrimary: SldsColors.onPrimary,
-        secondary: SldsColors.secondary,
-        onSecondary: SldsColors.onSecondary,
-        surface: SldsColors.surface,
-        onSurface: SldsColors.onSurface,
-        error: SldsColors.error,
-        onError: SldsColors.onError,
-      );
+    seedColor: SldsColors.primary,
+    brightness: Brightness.light,
+    primary: SldsColors.primary,
+    onPrimary: SldsColors.onPrimary,
+    secondary: SldsColors.secondary,
+    onSecondary: SldsColors.onSecondary,
+    surface: SldsColors.surface,
+    onSurface: SldsColors.onSurface,
+    error: SldsColors.error,
+    onError: SldsColors.onError,
+  );
 
   static ColorScheme get _darkColorScheme => ColorScheme.fromSeed(
-        seedColor: SldsColors.primary,
-        brightness: Brightness.dark,
-        secondary: SldsColors.secondary,
-        error: SldsColors.error,
-      );
+    seedColor: SldsColors.primary,
+    brightness: Brightness.dark,
+    secondary: SldsColors.secondary,
+    error: SldsColors.error,
+  );
 
   static ThemeData _theme(ColorScheme colorScheme, TextTheme textTheme) {
     return ThemeData(

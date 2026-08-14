@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/gen/slds_localizations.dart';
@@ -42,7 +43,9 @@ class SldsFab extends StatelessWidget {
   Color _baseColor(BuildContext context) {
     if (color != null) return color!;
     final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive ? scheme.error : scheme.primary;
+    return variant == SldsButtonVariant.destructive
+        ? scheme.error
+        : scheme.primary;
   }
 
   Color _onBaseColor(BuildContext context) {
@@ -52,7 +55,9 @@ class SldsFab extends StatelessWidget {
           : Colors.black;
     }
     final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive ? scheme.onError : scheme.onPrimary;
+    return variant == SldsButtonVariant.destructive
+        ? scheme.onError
+        : scheme.onPrimary;
   }
 
   @override
@@ -69,9 +74,8 @@ class SldsFab extends StatelessWidget {
             child: SizedBox(
               width: 20,
               height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation(_isFilled ? onBase : base),
+              child: CupertinoActivityIndicator(
+                color: _isFilled ? onBase : base,
               ),
             ),
           )
@@ -87,7 +91,9 @@ class SldsFab extends StatelessWidget {
     }
 
     return Tooltip(
-      message: isLoading ? SldsLocalizations.of(context).loading : (tooltip ?? ''),
+      message: isLoading
+          ? SldsLocalizations.of(context).loading
+          : (tooltip ?? ''),
       child: SizedBox(
         width: size,
         height: size,
@@ -109,7 +115,11 @@ class SldsFab extends StatelessWidget {
                 elevation: 4,
                 shape: CircleBorder(
                   side: BorderSide(
-                    color: _enabled ? base : scheme.outline.withValues(alpha: SldsColors.disabledOpacity),
+                    color: _enabled
+                        ? base
+                        : scheme.outline.withValues(
+                            alpha: SldsColors.disabledOpacity,
+                          ),
                   ),
                 ),
                 child: child,

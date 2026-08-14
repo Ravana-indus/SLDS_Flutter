@@ -18,13 +18,12 @@ class SldsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padding = SldsBreakpoints.isMobile(context) ? SldsSpacing.md : SldsSpacing.lg;
+    final padding = SldsBreakpoints.isMobile(context)
+        ? SldsSpacing.md
+        : SldsSpacing.lg;
     return Card(
       color: color,
-      child: Padding(
-        padding: EdgeInsets.all(padding),
-        child: child,
-      ),
+      child: Padding(padding: EdgeInsets.all(padding), child: child),
     );
   }
 }

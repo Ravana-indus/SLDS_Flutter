@@ -8,6 +8,7 @@ dev_dependencies:
   melos: ^7.3.0
 
 workspace:
+  - packages/slds_tokens
   - packages/slds_components
   - widgetbook
   - app

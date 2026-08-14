@@ -1,0 +1,19 @@
+name: slds_tokens
+description: "Raw design tokens for SLDS, Sri Lanka's government design system. Pure Dart with no Flutter dependency."
+version: 0.0.1
+homepage: "https://github.com/Ravana-indus/SLDS_Flutter"
+repository: "https://github.com/Ravana-indus/SLDS_Flutter"
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+# No dependencies by design. This package must stay free of Flutter and
+# dart:ui so tokens remain consumable by codegen and design tooling, and so
+# the WCAG contrast check can run as a plain Dart test. Enforced by
+# test/dependency_direction_test.dart.
+
+dev_dependencies:
+  test: ^1.25.0

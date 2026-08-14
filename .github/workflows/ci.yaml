@@ -32,16 +32,14 @@ jobs:
       - name: Dependency direction (§2)
         run: dart test test/dependency_direction_test.dart
         working-directory: packages/slds_tokens
-      # Reports 19 known token-palette failures (16 light, 3 dark). Fixing
-      # them means changing token *values*, which is a design decision the
-      # design team owns, not an engineering one — so this reports without
-      # blocking until those values land. Flip to a blocking step (drop the
-      # `continue-on-error`) the moment the palette is corrected; leaving it
-      # advisory once it can pass is how this control stops meaning anything.
-      - name: WCAG contrast (§5, §8) — advisory pending palette fixes
+      # Blocking as of the palette correction: every declared pair now clears
+      # WCAG 2.2 AA, so a regression here is a real accessibility defect and
+      # must fail the build. The corrected values are marked pending design
+      # sign-off in slds_tokens/lib/src/colors.dart; if design replaces them,
+      # this step is what proves the replacements still pass.
+      - name: WCAG contrast (§5, §8)
         run: dart test test/contrast_test.dart
         working-directory: packages/slds_tokens
-        continue-on-error: true
       - name: Unit tests
         run: dart test
         working-directory: packages/slds_tokens

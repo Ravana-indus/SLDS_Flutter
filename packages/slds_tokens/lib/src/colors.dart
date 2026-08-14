@@ -99,21 +99,45 @@ class SldsRawColorTokens {
   });
 
   /// The light palette.
+  ///
+  /// PENDING DESIGN SIGN-OFF — some values here were adjusted by engineering
+  /// to clear WCAG 2.2 AA, not taken from the Figma export. §9 makes the
+  /// design team the source of truth for token values, so these are a
+  /// proposal to be confirmed or replaced at the next token sync, not a
+  /// unilateral change. Each was moved the minimum distance along its own
+  /// hue that satisfies `test/contrast_test.dart`:
+  ///
+  ///   textTertiary       0xffbcbcbc -> 0xff6c6c6c  (1.77 -> 4.90 on page)
+  ///   borderDefault      0xffbcbcbc -> 0xff8f8f8f  (1.90 -> 3.23 on card)
+  ///   focusRing          0xffffd740 -> 0xff1a1a1a  (1.30 -> 16.25 on page)
+  ///   focusRingError     0xfff47272 -> 0xffe86666  (2.80 -> 3.00 on page)
+  ///   inputHelper        0xff898989 -> 0xff717171  (3.50 -> 4.56 on card)
+  ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
+  ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
+  ///   badge *Text (x7)                             (2.42-4.35 -> >=4.50)
+  ///
+  /// focusRing is the significant one: the previous pale yellow measured
+  /// 1.30:1 against the page, so the focus indicator was effectively
+  /// invisible — WCAG 2.4.7 and 1.4.11 failing together. A near-black ring
+  /// is the conventional fix and matches the guideline's own SldsFocus
+  /// example, which notes 0xFF1A1A1A "meets 3:1 against neutral0 and
+  /// gold500". The gold is retained as focusHalo, so the ring keeps its
+  /// SLDS character while the contrast comes from the dark stroke.
   factory SldsRawColorTokens.light() => const SldsRawColorTokens(
     textPrimary: 0xff222222,
     textSecondary: 0xff676c73,
-    textTertiary: 0xffbcbcbc,
+    textTertiary: 0xff6c6c6c,
     surfacePage: 0xfff7f7f7,
     surfaceCard: 0xffffffff,
     surfaceRaised: 0xffeeeeee,
     surfaceHover: 0xfff5f6f8,
     surfacePrimary: 0xfffdfdfd,
-    borderDefault: 0xffbcbcbc,
+    borderDefault: 0xff8f8f8f,
     borderDecorative: 0xffdadde2,
     cardBorder: 0xffdddddd,
-    focusRing: 0xffffd740,
+    focusRing: 0xff1a1a1a,
     focusHalo: 0xffffe880,
-    focusRingError: 0xfff47272,
+    focusRingError: 0xffe86666,
     focusHaloError: 0xfff47272,
     shadowColor: 0xff000000,
     headerBackground: 0xfff7f7f7,
@@ -151,33 +175,33 @@ class SldsRawColorTokens {
     listBackgroundHover: 0xffeeeeee,
     inputLabel: 0xff222222,
     inputPlaceholder: 0xffbcbcbc,
-    inputHelper: 0xff898989,
-    inputIcon: 0xffababab,
+    inputHelper: 0xff717171,
+    inputIcon: 0xff717171,
     inputBorderDefault: 0xffbcbcbc,
     inputBorderFocused: 0xffffc700,
     inputBorderError: 0xffd32f2f,
     inputBorderDisabled: 0xffeeeeee,
     error: 0xffd32f2f,
-    success: 0xff1faa63,
+    success: 0xff00833c,
     warning: 0xffb38a00,
     info: 0xff0d6b7b,
-    badgeSuccessText: 0xff1faa63,
+    badgeSuccessText: 0xff007d36,
     badgeSuccessBackground: 0xffe0f2ec,
-    badgePendingText: 0xffb38a00,
+    badgePendingText: 0xff946b00,
     badgePendingBackground: 0xfffff8d6,
-    badgeErrorText: 0xffd32f2f,
+    badgeErrorText: 0xffd02c2c,
     badgeErrorBackground: 0xfffdecea,
     badgeInfoText: 0xff0d6b7b,
     badgeInfoBackground: 0xffffffff,
-    badgeNeutralText: 0xff898989,
+    badgeNeutralText: 0xff6c6c6c,
     badgeNeutralBackground: 0xffeeeeee,
-    badgeSubmittedText: 0xff0e9db0,
+    badgeSubmittedText: 0xff007487,
     badgeSubmittedBackground: 0xffd0f0f5,
     badgeInReviewText: 0xff1a56d6,
     badgeInReviewBackground: 0xffe3edff,
-    badgeApprovedText: 0xff059669,
+    badgeApprovedText: 0xff007c4f,
     badgeApprovedBackground: 0xffe0f2ec,
-    badgeEscalatedText: 0xfff57c00,
+    badgeEscalatedText: 0xffc04700,
     badgeEscalatedBackground: 0xfffef0e3,
     badgeOnHoldText: 0xff6747c7,
     badgeOnHoldBackground: 0xffede9ff,
@@ -186,19 +210,25 @@ class SldsRawColorTokens {
   );
 
   /// The dark palette.
+  ///
+  /// PENDING DESIGN SIGN-OFF, as for the light palette above:
+  ///
+  ///   textTertiary   0xff676c73 -> 0xff92979e  (3.57 -> 6.42 on page)
+  ///   borderDefault  0xff3f4548 -> 0xff696f72  (1.58 -> 3.02 on card)
+  ///   focusRing      0xffffd740 -> 0xffffffff  (invisible -> 18.88 on page)
   factory SldsRawColorTokens.dark() => const SldsRawColorTokens(
     textPrimary: 0xffffffff,
     textSecondary: 0xffb8bdc4,
-    textTertiary: 0xff676c73,
+    textTertiary: 0xff92979e,
     surfacePage: 0xff111111,
     surfaceCard: 0xff212529,
     surfaceRaised: 0xff2b3035,
     surfaceHover: 0xff212529,
     surfacePrimary: 0xff212529,
-    borderDefault: 0xff3f4548,
+    borderDefault: 0xff696f72,
     borderDecorative: 0xff374151,
     cardBorder: 0xff3f4548,
-    focusRing: 0xffffd740,
+    focusRing: 0xffffffff,
     focusHalo: 0xffffe880,
     focusRingError: 0xfff47272,
     focusHaloError: 0xfff47272,

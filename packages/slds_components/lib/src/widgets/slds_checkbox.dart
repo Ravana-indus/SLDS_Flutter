@@ -75,6 +75,7 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = context.slds.dimensions;
     final scheme = Theme.of(context).colorScheme;
     final accent = widget.color ?? scheme.primary;
     final filled = widget.value == true || widget.value == null;
@@ -110,11 +111,20 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
         child: Container(
           width: widget.size.box,
           height: widget.size.box,
-          padding: _focused ? const EdgeInsets.all(2) : EdgeInsets.zero,
+          padding: _focused
+              ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+              : EdgeInsets.zero,
+          // focusRing, not the accent: only the former is contrast-checked
+          // against every surface the control can sit on (WCAG 1.4.11).
           decoration: _focused
               ? BoxDecoration(
-                  border: Border.all(color: accent, width: 1.5),
-                  borderRadius: BorderRadius.circular(radius + 2),
+                  border: Border.all(
+                    color: context.slds.colors.focusRing,
+                    width: dimensions.emphasizedBorderWidth,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    radius + dimensions.controlBorderWidth * 2,
+                  ),
                 )
               : null,
           child: AnimatedContainer(

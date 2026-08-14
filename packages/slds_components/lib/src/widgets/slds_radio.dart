@@ -73,6 +73,7 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = context.slds.dimensions;
     final scheme = Theme.of(context).colorScheme;
     final accent = widget.color ?? scheme.primary;
 
@@ -100,11 +101,18 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
         child: Container(
           width: widget.size.circle,
           height: widget.size.circle,
-          padding: _focused ? const EdgeInsets.all(2) : EdgeInsets.zero,
+          padding: _focused
+              ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+              : EdgeInsets.zero,
+          // The focus stroke reads from focusRing, which is contrast-checked
+          // against every surface; the accent gold is not (1.4.11).
           decoration: _focused
               ? BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: accent, width: 1.5),
+                  border: Border.all(
+                    color: context.slds.colors.focusRing,
+                    width: dimensions.emphasizedBorderWidth,
+                  ),
                 )
               : null,
           child: Container(

@@ -2,46 +2,66 @@ import 'package:flutter/material.dart';
 
 import '../theme/slds_tokens.dart';
 
-/// SLDS inline text link — underlined, no button chrome/tap-target padding.
+/// SLDS inline text link — underlined, without button chrome.
+///
 /// Use inside body copy or wherever an [SldsButton] would be visually too
-/// heavy. Thin wrapper over [TextButton] so hover/focus/pressed/disabled
-/// resolve natively via [WidgetStateProperty]. Colors resolve from the
-/// ambient [Theme]'s [ColorScheme] (light/dark aware); pass [color] to
-/// override for one instance.
+/// heavy. Thin wrapper over [TextButton] so hover, focus, pressed and
+/// disabled resolve natively via [WidgetStateProperty]. Colours resolve from
+/// the ambient SLDS token set, so the link follows light, dark and
+/// high-contrast themes.
+///
+/// The link keeps the 48x48 minimum touch target: the underline stays tight
+/// to the text, but the tappable area is padded out to the floor. A link set
+/// in running text therefore stays reachable without the underline drifting
+/// away from the words it belongs to.
 class SldsLinkButton extends StatelessWidget {
+  /// Creates an inline text link.
   const SldsLinkButton({
     super.key,
     required this.label,
     required this.onPressed,
-    this.color,
   });
 
+  /// The link text.
   final String label;
-  final VoidCallback? onPressed;
 
-  /// Overrides the token-driven color for this instance only.
-  final Color? color;
+  /// Called when the link is tapped. Null disables it.
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    final base = color ?? Theme.of(context).colorScheme.primary;
+    final colors = context.slds.colors;
+    final dimensions = context.slds.dimensions;
 
     return TextButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-        minimumSize: const WidgetStatePropertyAll(Size.zero),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        foregroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.disabled)) {
-            return context.slds.colors.disabledForeground;
+        padding: WidgetStatePropertyAll(
+          EdgeInsetsDirectional.symmetric(horizontal: dimensions.space4),
+        ),
+        // Height, not width: a link is as wide as its text, but must still be
+        // tall enough to hit. Material's own tapTargetSize is left in place
+        // rather than shrink-wrapped away.
+        minimumSize: WidgetStatePropertyAll(Size(0, dimensions.tapTargetMin)),
+        // Hover and pressed feedback comes from the state layer behind the
+        // text. The label keeps its own colour throughout: the ghost
+        // background tokens are surfaces, and using one as text would put
+        // near-white on a near-white card.
+        overlayColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.pressed)) {
+            return colors.buttonGhostPressed;
           }
           if (states.contains(WidgetState.hovered) ||
-              states.contains(WidgetState.pressed)) {
-            return Color.lerp(base, Colors.black, 0.16);
+              states.contains(WidgetState.focused)) {
+            return colors.buttonGhostHover;
           }
-          return base;
+          return null;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return colors.disabledForeground;
+          }
+          return colors.buttonGhostLabel;
         }),
       ),
       child: Text(

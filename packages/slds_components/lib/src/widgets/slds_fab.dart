@@ -112,24 +112,34 @@ class SldsFab extends StatelessWidget {
         : Icon(icon, color: foreground);
 
     if (badgeCount != null) {
-      // The count alone means nothing spoken aloud, so the badge carries a
-      // localized label and its own digits are hidden from the tree.
-      child = Semantics(
-        label: l10n.unreadCount(badgeCount!),
-        container: true,
+      // ExcludeSemantics covers the whole badge, digits included: a screen
+      // reader announcing "3" says nothing useful. The meaning is carried by
+      // the button's own label instead, as "3 unread notifications".
+      child = ExcludeSemantics(
         child: Badge.count(
           count: badgeCount!,
           backgroundColor: colors.notificationBadgeBackground,
           textColor: colors.buttonDestructiveLabel,
-          child: ExcludeSemantics(child: child),
+          child: child,
         ),
       );
     }
+
+    // An icon-only control has no text for a screen reader to fall back on,
+    // so it needs an explicit name. Built from the tooltip plus any badge
+    // meaning, and applied to the tappable node itself rather than to an
+    // ancestor — a wrapping Tooltip labels its own node and leaves the
+    // button underneath nameless, which labeledTapTargetGuideline catches.
+    final label = [
+      if (isLoading) l10n.loading else ?tooltip,
+      if (badgeCount != null) l10n.unreadCount(badgeCount!),
+    ].join(', ');
 
     final button = SizedBox(
       width: size,
       height: size,
       child: FloatingActionButton(
+        tooltip: label.isEmpty ? null : label,
         onPressed: _enabled ? onPressed : null,
         heroTag: heroTag,
         backgroundColor: _background(colors),
@@ -150,10 +160,6 @@ class SldsFab extends StatelessWidget {
       ),
     );
 
-    // No Tooltip wrapper when there is nothing to say — an empty message
-    // would otherwise add a blank node to the semantics tree.
-    final message = isLoading ? l10n.loading : tooltip;
-    if (message == null) return button;
-    return Tooltip(message: message, child: button);
+    return button;
   }
 }

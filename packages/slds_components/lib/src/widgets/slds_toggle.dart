@@ -74,6 +74,7 @@ class _SldsToggleState extends State<SldsToggle> {
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = context.slds.dimensions;
     final scheme = Theme.of(context).colorScheme;
     final accent = widget.color ?? scheme.primary;
 
@@ -96,40 +97,60 @@ class _SldsToggleState extends State<SldsToggle> {
 
     final trackPadding = (widget.size.height - widget.size.thumb) / 2;
 
+    // The track keeps its designed size; the tappable area around it is
+    // expanded to the 48x48 minimum instead. Shrinking the visual switch to
+    // fit, or leaving a 28px-tall tap target, would each fail one of the two
+    // requirements — this satisfies both.
     return Focus(
       focusNode: _focusNode,
       child: GestureDetector(
         onTap: _toggle,
+        behavior: HitTestBehavior.opaque,
         child: Container(
-          width: widget.size.width,
-          height: widget.size.height,
-          padding: _focused ? const EdgeInsets.all(2) : EdgeInsets.zero,
-          decoration: _focused
-              ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    (widget.size.height + 4) / 2,
-                  ),
-                  border: Border.all(color: accent, width: 1.5),
-                )
-              : null,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            padding: EdgeInsets.symmetric(horizontal: trackPadding),
-            decoration: BoxDecoration(
-              color: trackColor,
-              borderRadius: BorderRadius.circular(widget.size.height / 2),
-            ),
-            alignment: widget.value
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
+          constraints: BoxConstraints(
+            minWidth: dimensions.tapTargetMin,
+            minHeight: dimensions.tapTargetMin,
+          ),
+          alignment: Alignment.center,
+          child: Container(
+            width: widget.size.width,
+            height: widget.size.height,
+            padding: _focused
+                ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+                : EdgeInsets.zero,
+            // focusRing, not the accent: only the former is contrast-checked
+            // against every surface the control can sit on (WCAG 1.4.11).
+            decoration: _focused
+                ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      (widget.size.height + dimensions.controlBorderWidth * 4) /
+                          2,
+                    ),
+                    border: Border.all(
+                      color: context.slds.colors.focusRing,
+                      width: dimensions.emphasizedBorderWidth,
+                    ),
+                  )
+                : null,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              curve: Curves.easeOut,
-              width: widget.size.thumb,
-              height: widget.size.thumb,
+              padding: EdgeInsets.symmetric(horizontal: trackPadding),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: thumbColor,
+                color: trackColor,
+                borderRadius: BorderRadius.circular(widget.size.height / 2),
+              ),
+              alignment: widget.value
+                  ? Alignment.centerRight
+                  : Alignment.centerLeft,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                curve: Curves.easeOut,
+                width: widget.size.thumb,
+                height: widget.size.thumb,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: thumbColor,
+                ),
               ),
             ),
           ),

@@ -24,6 +24,7 @@ export 'src/widgets/slds_error_state.dart';
 export 'src/widgets/slds_error_summary.dart';
 export 'src/widgets/slds_fab.dart';
 export 'src/widgets/slds_fieldset.dart';
+export 'src/widgets/slds_focus.dart';
 export 'src/widgets/slds_filter_button.dart';
 export 'src/widgets/slds_filter_dropdown.dart';
 export 'src/widgets/slds_flyout_menu.dart';

@@ -2,6 +2,7 @@
 /// services, maintained by GovTech Sri Lanka.
 library;
 
+export 'src/format/slds_format.dart';
 export 'src/l10n/gen/slds_localizations.dart';
 export 'src/theme/slds_theme.dart';
 export 'src/theme/slds_tokens.dart';

@@ -72,7 +72,8 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
 
   @override
   Widget build(BuildContext context) {
-    final dimensions = context.slds.dimensions;
+    final tokens = context.slds;
+    final dimensions = tokens.dimensions;
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
     final filled = (widget.value ?? false) || widget.value == null;
@@ -125,7 +126,7 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
                 )
               : null,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 120),
+            duration: tokens.motion.fast,
             decoration: BoxDecoration(
               color: boxColor,
               borderRadius: BorderRadius.circular(radius),

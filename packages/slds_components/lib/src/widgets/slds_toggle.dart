@@ -71,7 +71,8 @@ class _SldsToggleState extends State<SldsToggle> {
 
   @override
   Widget build(BuildContext context) {
-    final dimensions = context.slds.dimensions;
+    final tokens = context.slds;
+    final dimensions = tokens.dimensions;
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
 
@@ -130,7 +131,7 @@ class _SldsToggleState extends State<SldsToggle> {
                   )
                 : null,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
+              duration: tokens.motion.fast,
               padding: EdgeInsets.symmetric(horizontal: trackPadding),
               decoration: BoxDecoration(
                 color: trackColor,
@@ -140,7 +141,7 @@ class _SldsToggleState extends State<SldsToggle> {
                   ? Alignment.centerRight
                   : Alignment.centerLeft,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
+                duration: tokens.motion.fast,
                 curve: Curves.easeOut,
                 width: widget.size.thumb,
                 height: widget.size.thumb,

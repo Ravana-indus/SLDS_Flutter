@@ -10,9 +10,24 @@ repository: "https://github.com/Ravana-indus/SLDS_Flutter"
 # to a version constraint as part of the first release.
 publish_to: none
 
+# Minimum supported device floor (§1). This is a citizen-facing national
+# platform, so the low end of the device range is a large share of real users,
+# not an edge case: components must render and remain interactive here, not
+# merely compile for it.
+#
+#   Android    API 24
+#   iOS        15
+#   Width      320dp logical minimum
+#
+# The Android and iOS values are pinned in the example app's
+# android/app/build.gradle.kts and ios/Runner.xcodeproj. Consuming apps must
+# pin the same floor themselves — a package cannot enforce it downstream.
+#
+# The Flutter SDK constraint below is the support window §3 requires: the last
+# three stable releases, with CI testing against the oldest.
 environment:
   sdk: ^3.11.0
-  flutter: ">=1.17.0"
+  flutter: ">=3.35.0"
 
 resolution: workspace
 

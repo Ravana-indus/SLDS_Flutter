@@ -70,7 +70,8 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final dimensions = context.slds.dimensions;
+    final tokens = context.slds;
+    final dimensions = tokens.dimensions;
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
 
@@ -119,7 +120,7 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
             ),
             child: Center(
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 120),
+                duration: tokens.motion.fast,
                 width: _selected ? widget.size.dot : 0,
                 height: _selected ? widget.size.dot : 0,
                 decoration: BoxDecoration(

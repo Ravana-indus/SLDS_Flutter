@@ -56,7 +56,7 @@ class SldsProgressBar extends StatelessWidget {
                         ),
                       ),
                       AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
+                        duration: tokens.motion.normal,
                         curve: Curves.easeOut,
                         height: 6,
                         width: constraints.maxWidth * clamped,

@@ -116,6 +116,171 @@ void main() {
     test('retains negative letter spacing', () {
       expect(SldsRawTypographyTokens.standard.mobileDisplay1.letterSpacing, -2);
     });
+
+    // Every style pinned to the Figma text-style spec (Foundation
+    // Documentation, node 1193:10717), so a drifting metric fails here rather
+    // than shipping. Values are size / line height / weight / tracking, and
+    // the comment names the exact Figma style each token mirrors — the
+    // unprefixed Dart names do not consistently mean "desktop".
+    test('the standard scale matches the Figma text-style spec', () {
+      const t = SldsRawTypographyTokens.standard;
+      const expected = <String, (SldsTextStyleToken, String)>{
+        'bottomNavigationLabel': (
+          SldsTextStyleToken(
+            fontSize: 12,
+            lineHeight: 18,
+            fontWeight: 400,
+            letterSpacing: 0.2,
+          ),
+          'Desktop/Caption 1',
+        ),
+        'snackbarCaption': (
+          SldsTextStyleToken(
+            fontSize: 12,
+            lineHeight: 18,
+            fontWeight: 400,
+            letterSpacing: 0.2,
+          ),
+          'Desktop/Caption 1',
+        ),
+        'body1': (
+          SldsTextStyleToken(fontSize: 16, lineHeight: 20, fontWeight: 400),
+          'Mobile/Body 1',
+        ),
+        'body2': (
+          SldsTextStyleToken(fontSize: 14, lineHeight: 22, fontWeight: 400),
+          'Desktop/Body 2',
+        ),
+        'caption1': (
+          SldsTextStyleToken(fontSize: 12, lineHeight: 16, fontWeight: 400),
+          'Mobile/Caption 1',
+        ),
+        'caption2': (
+          SldsTextStyleToken(
+            fontSize: 11,
+            lineHeight: 16,
+            fontWeight: 400,
+            letterSpacing: 0.3,
+          ),
+          'Desktop/Caption 2',
+        ),
+        'mobileCaption2': (
+          SldsTextStyleToken(fontSize: 11, lineHeight: 20, fontWeight: 400),
+          'Mobile/Caption 2',
+        ),
+        'mobileDisplay1': (
+          SldsTextStyleToken(
+            fontSize: 36,
+            lineHeight: 44,
+            fontWeight: 500,
+            letterSpacing: -2,
+          ),
+          'Mobile/Display 1',
+        ),
+        'display2': (
+          SldsTextStyleToken(
+            fontSize: 44,
+            lineHeight: 56,
+            fontWeight: 700,
+            letterSpacing: -0.3,
+          ),
+          'Desktop/Display 2',
+        ),
+        'heading4': (
+          SldsTextStyleToken(
+            fontSize: 24,
+            lineHeight: 32,
+            fontWeight: 500,
+            letterSpacing: -0.1,
+          ),
+          'Desktop/Heading 4',
+        ),
+        'title1': (
+          SldsTextStyleToken(fontSize: 18, lineHeight: 24, fontWeight: 500),
+          'Mobile/Title 1',
+        ),
+        'heading1': (
+          SldsTextStyleToken(fontSize: 26, lineHeight: 28, fontWeight: 500),
+          'Mobile/Heading 1',
+        ),
+        'heading2': (
+          SldsTextStyleToken(fontSize: 24, lineHeight: 32, fontWeight: 500),
+          'Mobile/Heading 2',
+        ),
+        'desktopHeading2': (
+          SldsTextStyleToken(
+            fontSize: 28,
+            lineHeight: 40,
+            fontWeight: 700,
+            letterSpacing: -0.2,
+          ),
+          'Desktop/Heading 2',
+        ),
+        'heading3': (
+          SldsTextStyleToken(
+            fontSize: 22,
+            lineHeight: 36,
+            fontWeight: 700,
+            letterSpacing: -0.5,
+          ),
+          'Mobile/Heading 3',
+        ),
+        'desktopTitle1': (
+          SldsTextStyleToken(fontSize: 18, lineHeight: 28, fontWeight: 500),
+          'Desktop/Title 1',
+        ),
+      };
+
+      final actual = <String, SldsTextStyleToken>{
+        'bottomNavigationLabel': t.bottomNavigationLabel,
+        'snackbarCaption': t.snackbarCaption,
+        'body1': t.body1,
+        'body2': t.body2,
+        'caption1': t.caption1,
+        'caption2': t.caption2,
+        'mobileCaption2': t.mobileCaption2,
+        'mobileDisplay1': t.mobileDisplay1,
+        'display2': t.display2,
+        'heading4': t.heading4,
+        'title1': t.title1,
+        'heading1': t.heading1,
+        'heading2': t.heading2,
+        'desktopHeading2': t.desktopHeading2,
+        'heading3': t.heading3,
+        'desktopTitle1': t.desktopTitle1,
+      };
+
+      for (final entry in expected.entries) {
+        final (style, figmaName) = entry.value;
+        expect(
+          actual[entry.key],
+          style,
+          reason:
+              '${entry.key} no longer matches Figma $figmaName. Update the '
+              'token to the spec, or update this expectation if design '
+              'changed the style.',
+        );
+      }
+    });
+
+    // fieldLabel/compactLabel/compactDescription have no Figma text style of
+    // their own — they are component-level aliases that reuse an existing
+    // scale entry. Pinned so a change to them stays a deliberate act.
+    test('component-level styles alias the scale they were derived from', () {
+      const t = SldsRawTypographyTokens.standard;
+
+      expect(t.fieldLabel, t.body1, reason: 'fieldLabel mirrors Mobile/Body 1');
+      expect(
+        t.compactLabel,
+        t.body1,
+        reason: 'compactLabel mirrors Mobile/Body 1',
+      );
+      expect(
+        t.compactDescription,
+        t.body2,
+        reason: 'compactDescription mirrors Desktop/Body 2',
+      );
+    });
   });
 
   group('SldsMotionTokens', () {

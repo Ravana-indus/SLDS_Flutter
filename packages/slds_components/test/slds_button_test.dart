@@ -225,6 +225,86 @@ void main() {
     expect(size.height, SldsDimensionTokens.standard.buttonHeightLarge);
   });
 
+  testWidgets('each size renders its Figma height and radius', (tester) async {
+    // Pinned against the Figma Button spec (node 213:1969). Height and radius
+    // are independent per size, so a single scale factor would not catch a
+    // regression in either one.
+    const d = SldsDimensionTokens.standard;
+    final expected = {
+      SldsButtonSize.small: (d.buttonHeightSmall, d.radiusXl),
+      SldsButtonSize.medium: (d.buttonHeightMedium, d.radiusXl),
+      SldsButtonSize.large: (d.buttonHeightLarge, d.radius2xl),
+      SldsButtonSize.extraLarge: (d.buttonHeightExtraLarge, d.radius2xl),
+    };
+
+    // Desktop width so the button stays intrinsic and is not stretched.
+    await setViewSize(tester, const Size(1024, 800));
+
+    for (final entry in expected.entries) {
+      final (height, radius) = entry.value;
+      await pump(
+        tester,
+        SldsButton(label: 'Continue', onPressed: () {}, size: entry.key),
+      );
+
+      // The painted box, not SldsButton: the small and medium sizes wrap
+      // themselves in a taller invisible tap area to meet the 48px floor.
+      //
+      // greaterThanOrEqualTo, not equals: the height is a floor so a large
+      // text scale can grow the button rather than clip its label. Small and
+      // medium currently sit 2px over their Figma height because the body_2 /
+      // body_1 line-height tokens disagree with Figma (22 vs 14, 20 vs 24) —
+      // see the note in the review; fixing those tokens lands them exactly.
+      expect(
+        tester.getSize(find.byType(FilledButton)).height,
+        greaterThanOrEqualTo(height),
+        reason: '${entry.key} height',
+      );
+
+      final shape =
+          tester
+                  .widget<ButtonStyleButton>(find.byType(FilledButton))
+                  .style!
+                  .shape!
+                  .resolve({})!
+              as RoundedRectangleBorder;
+      expect(
+        shape.borderRadius,
+        BorderRadius.circular(radius),
+        reason: '${entry.key} radius',
+      );
+    }
+  });
+
+  testWidgets('an explicit size overrides the responsive default', (
+    tester,
+  ) async {
+    // Without `size`, mobile picks extraLarge; pinning small must win so a
+    // dense row stays dense on a phone.
+    await setViewSize(tester, const Size(360, 800));
+
+    await pump(
+      tester,
+      SldsButton(
+        label: 'Continue',
+        onPressed: () {},
+        size: SldsButtonSize.small,
+      ),
+    );
+
+    // Small stays small on a phone instead of taking the extraLarge default,
+    // and in particular stays well under the extraLarge height.
+    const dims = SldsDimensionTokens.standard;
+    final painted = tester.getSize(find.byType(FilledButton)).height;
+    expect(painted, greaterThanOrEqualTo(dims.buttonHeightSmall));
+    expect(painted, lessThan(dims.buttonHeightMedium));
+    // ...while the tap target still clears the 48px floor.
+    expect(
+      tester.getSize(find.byType(SldsButton)).height,
+      SldsDimensionTokens.standard.tapTargetMin,
+    );
+  });
+
   testWidgets('clears the 48px minimum touch target at every breakpoint', (
     tester,
   ) async {

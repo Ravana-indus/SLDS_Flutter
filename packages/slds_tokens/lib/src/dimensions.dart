@@ -95,7 +95,9 @@ class SldsDimensionTokens {
     required this.cardShadowOffsetY,
     required this.dropdownMenuWidth,
     required this.iconButtonMedium,
+    required this.iconSizeSmall,
     required this.iconSizeMedium,
+    required this.iconSizeLarge,
     required this.snackbarShadowBlur,
   });
 
@@ -184,7 +186,9 @@ class SldsDimensionTokens {
     cardShadowOffsetY: 2,
     dropdownMenuWidth: 362,
     iconButtonMedium: 36,
+    iconSizeSmall: 16,
     iconSizeMedium: 20,
+    iconSizeLarge: 24,
     snackbarShadowBlur: 7.5,
   );
 
@@ -446,8 +450,14 @@ class SldsDimensionTokens {
   /// Medium icon button frame.
   final double iconButtonMedium;
 
+  /// Small icon size, used by the small Button.
+  final double iconSizeSmall;
+
   /// Medium icon size.
   final double iconSizeMedium;
+
+  /// Large icon size, used by the extra-large Button.
+  final double iconSizeLarge;
 
   /// Snackbar shadow blur radius.
   final double snackbarShadowBlur;
@@ -537,7 +547,9 @@ class SldsDimensionTokens {
     double? cardShadowOffsetY,
     double? dropdownMenuWidth,
     double? iconButtonMedium,
+    double? iconSizeSmall,
     double? iconSizeMedium,
+    double? iconSizeLarge,
     double? snackbarShadowBlur,
   }) {
     return SldsDimensionTokens(
@@ -629,7 +641,9 @@ class SldsDimensionTokens {
       cardShadowOffsetY: cardShadowOffsetY ?? this.cardShadowOffsetY,
       dropdownMenuWidth: dropdownMenuWidth ?? this.dropdownMenuWidth,
       iconButtonMedium: iconButtonMedium ?? this.iconButtonMedium,
+      iconSizeSmall: iconSizeSmall ?? this.iconSizeSmall,
       iconSizeMedium: iconSizeMedium ?? this.iconSizeMedium,
+      iconSizeLarge: iconSizeLarge ?? this.iconSizeLarge,
       snackbarShadowBlur: snackbarShadowBlur ?? this.snackbarShadowBlur,
     );
   }
@@ -721,7 +735,9 @@ class SldsDimensionTokens {
         other.cardShadowOffsetY == cardShadowOffsetY &&
         other.dropdownMenuWidth == dropdownMenuWidth &&
         other.iconButtonMedium == iconButtonMedium &&
+        other.iconSizeSmall == iconSizeSmall &&
         other.iconSizeMedium == iconSizeMedium &&
+        other.iconSizeLarge == iconSizeLarge &&
         other.snackbarShadowBlur == snackbarShadowBlur;
   }
 
@@ -810,7 +826,9 @@ class SldsDimensionTokens {
     cardShadowOffsetY,
     dropdownMenuWidth,
     iconButtonMedium,
+    iconSizeSmall,
     iconSizeMedium,
+    iconSizeLarge,
     snackbarShadowBlur,
   ]);
 }

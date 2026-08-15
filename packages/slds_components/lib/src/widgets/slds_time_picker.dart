@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
+
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 import 'package:slds_components/src/widgets/slds_text_field.dart';
@@ -17,9 +19,9 @@ class SldsTimePickerDialog extends StatefulWidget {
     this.onTimeChanged,
     this.onCancel,
     this.onApply,
-    this.titleText = 'Set Your Time',
-    this.cancelText = 'Cancel',
-    this.applyText = 'Apply',
+    this.titleText,
+    this.cancelText,
+    this.applyText,
     this.width,
   });
 
@@ -36,13 +38,13 @@ class SldsTimePickerDialog extends StatefulWidget {
   final ValueChanged<TimeOfDay>? onApply;
 
   /// Header title text.
-  final String titleText;
+  final String? titleText;
 
   /// Cancel button label.
-  final String cancelText;
+  final String? cancelText;
 
   /// Apply button label.
-  final String applyText;
+  final String? applyText;
 
   /// Custom width constraint for responsiveness.
   final double? width;
@@ -148,7 +150,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  widget.titleText,
+                  widget.titleText ?? context.sldsStrings.setYourTime,
                   style: tokens.typography.title1.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colors.textPrimary,
@@ -326,12 +328,12 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
             Column(
               children: [
                 SldsButton(
-                  label: widget.applyText,
+                  label: widget.applyText ?? context.sldsStrings.apply,
                   onPressed: () => widget.onApply?.call(_currentTimeOfDay),
                 ),
                 const SizedBox(height: 12),
                 SldsButton(
-                  label: widget.cancelText,
+                  label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
                 ),
@@ -342,13 +344,13 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SldsButton(
-                  label: widget.cancelText,
+                  label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
                 ),
                 const SizedBox(width: 12),
                 SldsButton(
-                  label: widget.applyText,
+                  label: widget.applyText ?? context.sldsStrings.apply,
                   onPressed: () => widget.onApply?.call(_currentTimeOfDay),
                 ),
               ],
@@ -498,9 +500,9 @@ class SldsTimePicker extends StatefulWidget {
     this.errorText,
     this.enabled = true,
     this.isRequired = false,
-    this.titleText = 'Set Your Time',
-    this.cancelText = 'Cancel',
-    this.applyText = 'Apply',
+    this.titleText,
+    this.cancelText,
+    this.applyText,
   });
 
   final String label;
@@ -511,9 +513,9 @@ class SldsTimePicker extends StatefulWidget {
   final String? errorText;
   final bool enabled;
   final bool isRequired;
-  final String titleText;
-  final String cancelText;
-  final String applyText;
+  final String? titleText;
+  final String? cancelText;
+  final String? applyText;
 
   @override
   State<SldsTimePicker> createState() => _SldsTimePickerState();
@@ -563,8 +565,8 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
           child: SldsTimePickerDialog(
             initialTime: _selectedTime ?? const TimeOfDay(hour: 7, minute: 0),
             titleText: widget.titleText,
-            cancelText: widget.cancelText,
-            applyText: widget.applyText,
+            cancelText: widget.cancelText ?? context.sldsStrings.cancel,
+            applyText: widget.applyText ?? context.sldsStrings.apply,
             onApply: (TimeOfDay time) {
               Navigator.of(context).pop(time);
             },

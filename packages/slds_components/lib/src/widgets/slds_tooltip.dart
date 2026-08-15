@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Which edge of [SldsTooltip] the pointer tail sticks out of — point it at
@@ -246,7 +247,7 @@ class _FullCard extends StatelessWidget {
               if (onClose != null)
                 Semantics(
                   button: true,
-                  label: 'Close',
+                  label: context.sldsStrings.close,
                   child: InkWell(
                     onTap: onClose,
                     borderRadius: BorderRadius.circular(dimensions.radiusFull),

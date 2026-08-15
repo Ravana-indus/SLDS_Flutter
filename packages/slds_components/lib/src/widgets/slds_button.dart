@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/gen/slds_localizations.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual style of an [SldsButton], matching the SLDS action catalogue.
@@ -79,7 +79,7 @@ class SldsButton extends StatelessWidget {
             // liveRegion so the switch into the loading state is announced
             // as it happens, rather than only when focus next lands here.
             liveRegion: true,
-            label: SldsLocalizations.of(context).loading,
+            label: context.sldsStrings.loading,
             child: SizedBox(
               width: dimensions.iconSizeMedium,
               height: dimensions.iconSizeMedium,

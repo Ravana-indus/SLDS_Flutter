@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS progress bar — a continuous, value-based indicator (file uploads,
@@ -36,7 +37,7 @@ class SldsProgressBar extends StatelessWidget {
     final percent = (clamped * 100).round();
 
     return Semantics(
-      label: 'Progress',
+      label: context.sldsStrings.progress,
       value: '$percent%',
       child: ExcludeSemantics(
         child: Row(

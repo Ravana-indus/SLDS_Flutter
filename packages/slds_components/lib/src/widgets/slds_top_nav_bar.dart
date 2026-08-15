@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
     show SldsBottomNav;
@@ -76,7 +78,7 @@ class SldsTopNavBar extends StatelessWidget {
               icon: Icons.chevron_left,
               onTap: onBack,
               color: foreground,
-              semanticLabel: 'Back',
+              semanticLabel: context.sldsStrings.back,
             ),
             SizedBox(width: dimensions.space12),
             Expanded(
@@ -101,7 +103,7 @@ class SldsTopNavBar extends StatelessWidget {
               icon: Icons.menu,
               onTap: onMenu,
               color: foreground,
-              semanticLabel: 'Menu',
+              semanticLabel: context.sldsStrings.menu,
             ),
           ],
         ),

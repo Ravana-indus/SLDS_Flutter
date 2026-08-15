@@ -4,6 +4,7 @@ library;
 
 export 'src/format/slds_format.dart';
 export 'src/l10n/gen/slds_localizations.dart';
+export 'src/l10n/slds_strings.dart';
 export 'src/theme/slds_theme.dart';
 export 'src/theme/slds_tokens.dart';
 export 'src/widgets/slds_accordion.dart';

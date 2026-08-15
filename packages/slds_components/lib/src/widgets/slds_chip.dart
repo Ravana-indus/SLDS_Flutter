@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart' show SldsAvatar;
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_avatar.dart' show SldsAvatar;
@@ -81,7 +83,7 @@ class SldsChip extends StatelessWidget {
                   SizedBox(width: dimensions.space8),
                   Semantics(
                     button: true,
-                    label: 'Remove $label',
+                    label: context.sldsStrings.removeItem(label),
                     child: InkWell(
                       onTap: onDeleted,
                       borderRadius: BorderRadius.circular(

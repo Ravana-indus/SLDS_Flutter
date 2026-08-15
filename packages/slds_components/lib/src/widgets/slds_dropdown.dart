@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart' show SldsTextField;
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_text_field.dart'
@@ -23,8 +25,8 @@ class SldsDropdown<T> extends StatefulWidget {
     this.isRequired = false,
     this.helpText,
     this.errorText,
-    this.hintText = 'Select an option',
-    this.searchHintText = 'Search',
+    this.hintText,
+    this.searchHintText,
     this.enabled = true,
   });
 
@@ -39,8 +41,8 @@ class SldsDropdown<T> extends StatefulWidget {
   final bool isRequired;
   final String? helpText;
   final String? errorText;
-  final String hintText;
-  final String searchHintText;
+  final String? hintText;
+  final String? searchHintText;
   final bool enabled;
 
   @override
@@ -148,7 +150,7 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                   child: Text(
                     widget.value != null
                         ? widget.itemLabel(widget.value as T)
-                        : widget.hintText,
+                        : widget.hintText ?? context.sldsStrings.selectAnOption,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: widget.value != null
                           ? (widget.enabled
@@ -193,7 +195,8 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                     onChanged: (v) => setState(() => _query = v),
                     style: Theme.of(context).textTheme.bodyMedium,
                     decoration: InputDecoration(
-                      hintText: widget.searchHintText,
+                      hintText:
+                          widget.searchHintText ?? context.sldsStrings.search,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 20,

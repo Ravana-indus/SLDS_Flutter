@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual states for [SldsUploadField].
@@ -46,7 +47,7 @@ class SldsUploadField extends StatelessWidget {
     super.key,
     this.status = SldsUploadStatus.empty,
     this.required = true,
-    this.hintText = 'PDF, JPEG or PNG less than 5MB',
+    this.hintText,
     this.fileName,
     this.progress,
     this.errorText,
@@ -74,7 +75,7 @@ class SldsUploadField extends StatelessWidget {
 
   /// Constraint hint shown under the "Upload" affordance while [status] is
   /// [SldsUploadStatus.empty] (e.g. accepted types/size limit).
-  final String hintText;
+  final String? hintText;
 
   /// The selected file's display name — required for every status except
   /// [SldsUploadStatus.empty].
@@ -223,7 +224,7 @@ class _EmptyRow extends StatelessWidget {
     this.customWidget,
   });
 
-  final String hintText;
+  final String? hintText;
   final bool enabled;
   final IconData? icon;
   final Widget? customWidget;
@@ -266,7 +267,7 @@ class _EmptyRow extends StatelessWidget {
               ),
             ),
             Text(
-              hintText,
+              hintText ?? context.sldsStrings.uploadHint,
               style: tokens.typography.caption1.copyWith(
                 color: colors.inputHelper,
               ),

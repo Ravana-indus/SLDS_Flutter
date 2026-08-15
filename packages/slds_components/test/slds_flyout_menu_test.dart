@@ -23,6 +23,8 @@ void main() {
 
   Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
     MaterialApp(
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
       theme: SldsTheme.light,
       home: Scaffold(body: SingleChildScrollView(child: child)),
     ),
@@ -151,6 +153,8 @@ void main() {
       // the widget must bring its own.
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
           theme: SldsTheme.light,
           home: Builder(
             builder: (context) => Scaffold(

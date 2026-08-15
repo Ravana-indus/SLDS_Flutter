@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
+
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 
@@ -27,8 +29,8 @@ class SldsDatePicker extends StatefulWidget {
     this.onRangeSelected,
     this.onCancel,
     this.onApply,
-    this.cancelText = 'Cancel',
-    this.applyText = 'Apply',
+    this.cancelText,
+    this.applyText,
     this.rangeColor,
     this.firstDayOfWeek = DateTime.monday,
     this.width,
@@ -62,10 +64,10 @@ class SldsDatePicker extends StatefulWidget {
   final ValueChanged<dynamic>? onApply;
 
   /// Cancel button label.
-  final String cancelText;
+  final String? cancelText;
 
   /// Apply button label.
-  final String applyText;
+  final String? applyText;
 
   /// Highlight color for range selection in-between cells.
   final Color? rangeColor;
@@ -377,10 +379,13 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           if (context.sldsIsMobile)
             Column(
               children: [
-                SldsButton(label: widget.applyText, onPressed: _handleApply),
+                SldsButton(
+                  label: widget.applyText ?? context.sldsStrings.apply,
+                  onPressed: _handleApply,
+                ),
                 const SizedBox(height: 12),
                 SldsButton(
-                  label: widget.cancelText,
+                  label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
                 ),
@@ -391,12 +396,15 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SldsButton(
-                  label: widget.cancelText,
+                  label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
                 ),
                 const SizedBox(width: 12),
-                SldsButton(label: widget.applyText, onPressed: _handleApply),
+                SldsButton(
+                  label: widget.applyText ?? context.sldsStrings.apply,
+                  onPressed: _handleApply,
+                ),
               ],
             ),
         ],

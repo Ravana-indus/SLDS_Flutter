@@ -1,9 +1,24 @@
 {
   "@@locale": "ta",
   "loading": "ஏற்றுகிறது",
+  "loadingEllipsis": "ஏற்றுகிறது…",
   "close": "மூடு",
   "retry": "மீண்டும் முயற்சிக்கவும்",
   "error": "பிழை",
   "dismiss": "நிராகரி",
-  "unreadCount": "{count, plural, =0{படிக்காத அறிவிப்புகள் இல்லை} =1{படிக்காத 1 அறிவிப்பு} other{படிக்காத {count} அறிவிப்புகள்}}"
+  "back": "பின்செல்",
+  "menu": "பட்டி",
+  "progress": "முன்னேற்றம்",
+  "upload": "பதிவேற்று",
+  "search": "தேடு",
+  "cancel": "ரத்துசெய்",
+  "apply": "பயன்படுத்து",
+  "selectAnOption": "ஒரு விருப்பத்தைத் தேர்ந்தெடுக்கவும்",
+  "recentSearches": "சமீபத்திய தேடல்கள்",
+  "unreadCount": "{count, plural, =0{படிக்காத அறிவிப்புகள் இல்லை} =1{படிக்காத 1 அறிவிப்பு} other{படிக்காத {count} அறிவிப்புகள்}}",
+  "removeItem": "{label} அகற்று",
+  "stepOf": "படி {number}: {title}. {description}",
+  "labelledValue": "{label}: {value}",
+  "setYourTime": "உங்கள் நேரத்தை அமைக்கவும்",
+  "uploadHint": "PDF, JPEG அல்லது PNG, 5MB க்கும் குறைவாக"
 }

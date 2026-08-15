@@ -5,6 +5,8 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget card) => tester.pumpWidget(
     MaterialApp(
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
       theme: SldsTheme.light,
       home: Scaffold(body: card),
     ),

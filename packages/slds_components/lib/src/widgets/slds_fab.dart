@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/gen/slds_localizations.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 
@@ -92,7 +92,7 @@ class SldsFab extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final l10n = SldsLocalizations.of(context);
+    final l10n = context.sldsStrings;
 
     final size = context.sldsIsMobile
         ? dimensions.avatarSize56

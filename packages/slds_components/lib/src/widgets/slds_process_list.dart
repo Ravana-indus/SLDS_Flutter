@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart'
     show SldsSummaryBadgeStatus, SldsSummaryList;
 import 'package:slds_components/src/theme/slds_tokens.dart';
@@ -107,7 +109,7 @@ class _ProcessStepTile extends StatelessWidget {
     return Semantics(
       container: true,
       explicitChildNodes: true,
-      label: 'Step $index: ${step.title}. ${step.description}',
+      label: context.sldsStrings.stepOf(index, step.title, step.description),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: dimensions.space16,

@@ -62,6 +62,8 @@ void main() {
       late TextStyle style;
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
           theme: SldsTheme.light,
           home: Builder(
             builder: (context) {
@@ -83,6 +85,8 @@ void main() {
       late TextStyle style;
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
           theme: SldsTheme.light,
           home: Builder(
             builder: (context) {

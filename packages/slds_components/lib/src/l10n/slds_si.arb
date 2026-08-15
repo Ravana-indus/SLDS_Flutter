@@ -1,9 +1,24 @@
 {
   "@@locale": "si",
   "loading": "පූරණය වෙමින්",
+  "loadingEllipsis": "පූරණය වෙමින්…",
   "close": "වසන්න",
   "retry": "නැවත උත්සාහ කරන්න",
   "error": "දෝෂයකි",
   "dismiss": "ඉවත් කරන්න",
-  "unreadCount": "{count, plural, =0{නොකියවූ දැනුම්දීම් නැත} =1{නොකියවූ දැනුම්දීම් 1ක්} other{නොකියවූ දැනුම්දීම් {count}ක්}}"
+  "back": "ආපසු",
+  "menu": "මෙනුව",
+  "progress": "ප්‍රගතිය",
+  "upload": "උඩුගත කරන්න",
+  "search": "සොයන්න",
+  "cancel": "අවලංගු කරන්න",
+  "apply": "යොදන්න",
+  "selectAnOption": "විකල්පයක් තෝරන්න",
+  "recentSearches": "මෑත සෙවීම්",
+  "unreadCount": "{count, plural, =0{නොකියවූ දැනුම්දීම් නැත} =1{නොකියවූ දැනුම්දීම් 1ක්} other{නොකියවූ දැනුම්දීම් {count}ක්}}",
+  "removeItem": "{label} ඉවත් කරන්න",
+  "stepOf": "පියවර {number}: {title}. {description}",
+  "labelledValue": "{label}: {value}",
+  "setYourTime": "ඔබේ වේලාව සකසන්න",
+  "uploadHint": "PDF, JPEG හෝ PNG, 5MB ට අඩු"
 }

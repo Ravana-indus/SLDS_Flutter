@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart' show SldsFilterButton;
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
@@ -25,8 +27,8 @@ class SldsFilterDropdown extends StatelessWidget {
     this.onApply,
     this.onCancel,
     this.multiple = true,
-    this.cancelText = 'Cancel',
-    this.applyText = 'Apply',
+    this.cancelText,
+    this.applyText,
     this.width,
   });
 
@@ -49,8 +51,8 @@ class SldsFilterDropdown extends StatelessWidget {
   /// Checkboxes (multi-select) when true, radios (single-select) when false.
   final bool multiple;
 
-  final String cancelText;
-  final String applyText;
+  final String? cancelText;
+  final String? applyText;
 
   /// Preferred width, clamped to the available parent width.
   final double? width;
@@ -153,13 +155,13 @@ class SldsFilterDropdown extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     SldsButton(
-                      label: cancelText,
+                      label: cancelText ?? context.sldsStrings.cancel,
                       onPressed: onCancel,
                       variant: SldsButtonVariant.text,
                     ),
                     SizedBox(width: dimensions.space8),
                     SldsButton(
-                      label: applyText,
+                      label: applyText ?? context.sldsStrings.apply,
                       onPressed: () => onApply?.call(selectedValues),
                     ),
                   ],

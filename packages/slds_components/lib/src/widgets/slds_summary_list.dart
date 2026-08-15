@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual tone for [SldsSummaryRow.badgeStatus] — maps 1:1 onto
@@ -101,7 +102,7 @@ class _SummaryRowTile extends StatelessWidget {
     return Semantics(
       container: true,
       explicitChildNodes: true,
-      label: '${row.label}: ${row.value}',
+      label: context.sldsStrings.labelledValue(row.label, row.value),
       child: Container(
         width: double.infinity,
         color: colors.surfacePage,

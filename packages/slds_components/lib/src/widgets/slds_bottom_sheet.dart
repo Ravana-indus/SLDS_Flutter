@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart' show SldsFlyoutMenu;
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_flyout_menu.dart'
@@ -80,7 +82,7 @@ class SldsBottomSheet extends StatelessWidget {
                   _IconSquare(
                     icon: Icons.arrow_back,
                     onTap: onBack,
-                    semanticLabel: 'Back',
+                    semanticLabel: context.sldsStrings.back,
                   ),
                   Expanded(
                     child: Text(
@@ -95,7 +97,7 @@ class SldsBottomSheet extends StatelessWidget {
                   _IconSquare(
                     icon: Icons.close,
                     onTap: onClose,
-                    semanticLabel: 'Close',
+                    semanticLabel: context.sldsStrings.close,
                   ),
                 ],
               ),

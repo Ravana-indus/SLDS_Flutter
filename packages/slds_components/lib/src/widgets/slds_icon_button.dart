@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/gen/slds_localizations.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 
@@ -76,7 +76,7 @@ class SldsIconButton extends StatelessWidget {
 
     return IconButton(
       onPressed: _enabled ? onPressed : null,
-      tooltip: isLoading ? SldsLocalizations.of(context).loading : tooltip,
+      tooltip: isLoading ? context.sldsStrings.loading : tooltip,
       icon: isLoading
           ? SizedBox(
               width: dimensions.iconSizeMedium,

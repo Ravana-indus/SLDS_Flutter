@@ -24,7 +24,7 @@ review's own scorecard:
 | 3 | Versioning and distribution | Fail | Partial — real CHANGELOG at 0.1.0; registry still an open §12 decision |
 | 4 | Theming | Fail | **Pass** — explicit `ColorScheme`, cached statics, high contrast reachable |
 | 5 | Accessibility | Fail | Partial — focus, contrast, touch targets and reduced motion fixed; semantics coverage incomplete |
-| 6 | Localization | Partial | Partial — string set expanded, intl formatting layer added; si/ta still unreviewed |
+| 6 | Localization | Partial | Partial — all strings through the delegate, intl layer added; si/ta review is the only gap |
 | 7 | API design | Partial | Partial — `color` removed everywhere, `heroTag` and badge semantics fixed; dartdoc incomplete |
 | 8 | Testing | Fail | **Pass with a disclosed deviation** — goldens, contrast and guideline matchers all in CI |
 | 9 | Documentation and catalog | Partial | Partial |
@@ -82,8 +82,7 @@ Ordered by what a re-audit is most likely to reject.
 | Item | Section | State |
 |------|---------|-------|
 | Semantics missing on ~29 widgets | §5 | The form controls (checkbox, radio, toggle) are done; dropdown, search bar, OTP input and the pickers are not |
-| Hardcoded English semantic labels | §5, §6 | Existing labels are not routed through the delegate, so a si/ta screen reader hears English |
-| si/ta translations unreviewed | §6 (M6) | Machine-drafted. §6: a component with an unverified translation does not ship |
+| si/ta translations unreviewed | §6 (M6) | **The one localization blocker left.** All 21 strings are machine-drafted; §6 treats unverified as missing. Needs a Sinhala and a Tamil speaker |
 | Golden coverage is partial | §8 | 61 images across 5 components; the remaining 46 need the same matrix |
 | `EdgeInsetsDirectional` not used widely | §5 | One RTL golden proves the button mirrors; the rest is unverified |
 | Credential/PII marker convention | §1 (M7) | No credential component exists yet; the contract should exist before the first one |
@@ -168,5 +167,5 @@ dart format --set-exit-if-changed packages widgetbook app
 (cd packages/slds_components && flutter test)
 ```
 
-Current: 478 component tests, 118 token tests, all passing. Contrast is
+Current: 485 component tests, 118 token tests, all passing. Contrast is
 94 pass / 0 fail, from 75 / 19 at the reviewed commit.

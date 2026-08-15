@@ -48,6 +48,27 @@ final _pairs = <_Pair>[
   _Pair('tertiary text on page', (c) => c.textTertiary, (c) => c.surfacePage),
   _Pair('tertiary text on card', (c) => c.textTertiary, (c) => c.surfaceCard),
 
+  // Inline text links. Body-sized interactive text, so the 4.5:1 floor
+  // applies at rest as well as on hover.
+  _Pair('link on page', (c) => c.linkLabel, (c) => c.surfacePage),
+  _Pair('link on card', (c) => c.linkLabel, (c) => c.surfaceCard),
+  _Pair('link hover on page', (c) => c.linkLabelHover, (c) => c.surfacePage),
+  _Pair(
+    'destructive link on page',
+    (c) => c.linkDestructiveLabel,
+    (c) => c.surfacePage,
+  ),
+  _Pair(
+    'destructive link on card',
+    (c) => c.linkDestructiveLabel,
+    (c) => c.surfaceCard,
+  ),
+  _Pair(
+    'destructive link hover on page',
+    (c) => c.linkDestructiveLabelHover,
+    (c) => c.surfacePage,
+  ),
+
   // Buttons.
   // Display and heading styles are large text (>=18pt), so 3:1 applies.
   _Pair(

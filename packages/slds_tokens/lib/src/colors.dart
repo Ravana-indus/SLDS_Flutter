@@ -49,6 +49,10 @@ class SldsRawColorTokens {
     required this.buttonGhostLabel,
     required this.buttonGhostHover,
     required this.buttonGhostPressed,
+    required this.linkLabel,
+    required this.linkLabelHover,
+    required this.linkDestructiveLabel,
+    required this.linkDestructiveLabelHover,
     required this.buttonDestructiveBackground,
     required this.buttonDestructiveLabel,
     required this.buttonDestructiveHover,
@@ -111,7 +115,9 @@ class SldsRawColorTokens {
   ///   borderDefault      0xffbcbcbc -> 0xff8f8f8f  (1.90 -> 3.23 on card)
   ///   focusRing          0xffffd740 -> 0xff1a1a1a  (1.30 -> 16.25 on page)
   ///   focusRingError     0xfff47272 -> 0xffe86666  (2.80 -> 3.00 on page)
+  ///   textSecondary      0xff898989 -> 0xff717171  (3.27 -> 4.56 on page)
   ///   inputHelper        0xff898989 -> 0xff717171  (3.50 -> 4.56 on card)
+  ///   linkLabel          0xff898989 -> 0xff717171  (3.27 -> 4.56 on page)
   ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
   ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
   ///   badge *Text (x7)                             (2.42-4.35 -> >=4.50)
@@ -123,17 +129,30 @@ class SldsRawColorTokens {
   /// example, which notes 0xFF1A1A1A "meets 3:1 against neutral0 and
   /// gold500". The gold is retained as focusHalo, so the ring keeps its
   /// SLDS character while the contrast comes from the dark stroke.
+  ///
+  /// Two further intentional departures from Figma, kept deliberately:
+  ///
+  ///   surfaceCard         Figma Surface/Card is #EEEEEE, which is 1.08:1
+  ///                       against Surface/Page #F7F7F7 — a card edge that
+  ///                       is effectively invisible. Held at #FFFFFF. This
+  ///                       is the background in 13 contrast pairings, so
+  ///                       changing it moves most of the palette.
+  ///   mastheadBackground  Figma Surface/Masthead is #222222; this uses the
+  ///                       Sri Lanka flag maroon #8D153A. Not in the token
+  ///                       spec at any tier (nearest is Maroon/700 #7A1240),
+  ///                       so it is a brand decision that needs design to
+  ///                       either ratify it or replace it.
   factory SldsRawColorTokens.light() => const SldsRawColorTokens(
     textPrimary: 0xff222222,
-    textSecondary: 0xff676c73,
+    textSecondary: 0xff717171,
     textTertiary: 0xff6c6c6c,
     surfacePage: 0xfff7f7f7,
     surfaceCard: 0xffffffff,
     surfaceRaised: 0xffeeeeee,
-    surfaceHover: 0xfff5f6f8,
+    surfaceHover: 0xffeeeeee,
     surfacePrimary: 0xfffdfdfd,
     borderDefault: 0xff8f8f8f,
-    borderDecorative: 0xffdadde2,
+    borderDecorative: 0xffdddddd,
     cardBorder: 0xffdddddd,
     focusRing: 0xff1a1a1a,
     focusHalo: 0xffffe880,
@@ -156,10 +175,14 @@ class SldsRawColorTokens {
     buttonSecondaryLabel: 0xff222222,
     buttonSecondaryBorder: 0xffcdcdcd,
     buttonSecondaryHover: 0xffeeeeee,
-    buttonSecondaryPressed: 0xffffffff,
+    buttonSecondaryPressed: 0xffdddddd,
     buttonGhostLabel: 0xff222222,
     buttonGhostHover: 0xffeeeeee,
     buttonGhostPressed: 0xffffffff,
+    linkLabel: 0xff717171,
+    linkLabelHover: 0xff222222,
+    linkDestructiveLabel: 0xffd32f2f,
+    linkDestructiveLabelHover: 0xffb91c1c,
     buttonDestructiveBackground: 0xffd32f2f,
     buttonDestructiveLabel: 0xffffffff,
     buttonDestructiveHover: 0xffb91c1c,
@@ -192,7 +215,7 @@ class SldsRawColorTokens {
     badgeErrorText: 0xffd02c2c,
     badgeErrorBackground: 0xfffdecea,
     badgeInfoText: 0xff0d6b7b,
-    badgeInfoBackground: 0xffffffff,
+    badgeInfoBackground: 0xffe3edff,
     badgeNeutralText: 0xff6c6c6c,
     badgeNeutralBackground: 0xffeeeeee,
     badgeSubmittedText: 0xff007487,
@@ -211,69 +234,90 @@ class SldsRawColorTokens {
 
   /// The dark palette.
   ///
-  /// PENDING DESIGN SIGN-OFF, as for the light palette above:
+  /// The dark ramp now follows Figma's pure neutrals (Neutral/800 #444444 as
+  /// the card, #565656 raised, #676767/#ABABAB borders) rather than the
+  /// blue-grey ramp this previously used, which was never in the spec.
   ///
-  ///   textTertiary   0xff676c73 -> 0xff92979e  (3.57 -> 6.42 on page)
-  ///   borderDefault  0xff3f4548 -> 0xff696f72  (1.58 -> 3.02 on card)
-  ///   focusRing      0xffffd740 -> 0xffffffff  (invisible -> 18.88 on page)
+  /// PENDING DESIGN SIGN-OFF, as for the light palette above. Two Figma dark
+  /// values are NOT adopted because they fail WCAG AA against Figma's own
+  /// dark surfaces — do not "correct" these back to the spec without also
+  /// changing the surface they sit on:
+  ///
+  ///   textTertiary  Figma Text/Tertiary #898989 is 2.78:1 on the #444444
+  ///                 card. Held at #BCBCBC (5.13:1), the same value Figma
+  ///                 gives Text/Secondary.
+  ///   error         Figma Feedback/Error #D32F2F is 3.79:1 on the #111111
+  ///                 page, short of the 4.5:1 floor for body text. Held at
+  ///                 #F47272 (6.74:1), which is Figma's own Red/300 and the
+  ///                 value its Border/Error dark already uses.
+  ///   focusRing     0xffffd740 -> 0xffffffff  (invisible -> 18.88 on page)
   factory SldsRawColorTokens.dark() => const SldsRawColorTokens(
     textPrimary: 0xffffffff,
-    textSecondary: 0xffb8bdc4,
-    textTertiary: 0xff92979e,
+    textSecondary: 0xffbcbcbc,
+    textTertiary: 0xffbcbcbc,
     surfacePage: 0xff111111,
-    surfaceCard: 0xff212529,
-    surfaceRaised: 0xff2b3035,
-    surfaceHover: 0xff212529,
-    surfacePrimary: 0xff212529,
-    borderDefault: 0xff696f72,
-    borderDecorative: 0xff374151,
-    cardBorder: 0xff3f4548,
+    surfaceCard: 0xff444444,
+    surfaceRaised: 0xff565656,
+    surfaceHover: 0xff444444,
+    surfacePrimary: 0xff444444,
+    borderDefault: 0xffababab,
+    borderDecorative: 0xff676767,
+    cardBorder: 0xff565656,
     focusRing: 0xffffffff,
     focusHalo: 0xffffe880,
     focusRingError: 0xfff47272,
     focusHaloError: 0xfff47272,
     shadowColor: 0xff000000,
-    headerBackground: 0xff212529,
+    headerBackground: 0xff444444,
     mastheadBackground: 0xff8d153a,
     serviceCardIcon: 0xffa78bfa,
     summaryBoxAccent: 0xff7dd8e8,
     tagApproved: 0xff5dc896,
     tagNotice: 0xffffe880,
-    headerBorder: 0xff3f4548,
+    headerBorder: 0xff565656,
     headerProgressTrack: 0xff111111,
     buttonPrimaryBackground: 0xffffc700,
-    buttonPrimaryLabel: 0xff111111,
+    buttonPrimaryLabel: 0xff222222,
     buttonPrimaryHover: 0xffffd740,
     buttonPrimaryPressed: 0xffffd740,
-    buttonSecondaryBackground: 0xff212529,
+    buttonSecondaryBackground: 0xff444444,
     buttonSecondaryLabel: 0xffffffff,
-    buttonSecondaryBorder: 0xff374151,
-    buttonSecondaryHover: 0xff212529,
-    buttonSecondaryPressed: 0xff1f2937,
+    buttonSecondaryBorder: 0xff565656,
+    buttonSecondaryHover: 0xff676767,
+    buttonSecondaryPressed: 0xff898989,
     buttonGhostLabel: 0xffffffff,
-    buttonGhostHover: 0xff212529,
-    buttonGhostPressed: 0xff1f2937,
+    buttonGhostHover: 0xff676767,
+    buttonGhostPressed: 0xff898989,
+    linkLabel: 0xffbcbcbc,
+    linkLabelHover: 0xffffffff,
+    // Brighter, not darker: Figma's #b91c1c hover is a light-theme value and
+    // drops to 3.10:1 on the dark card. On a dark surface the hover state has
+    // to move away from the background, not toward it. Both are lifted a step
+    // beyond Figma's Red/300 resting colour, which is only 3.48:1 once the
+    // card follows Figma's own Neutral/800 (#444444).
+    linkDestructiveLabel: 0xfffca5a5,
+    linkDestructiveLabelHover: 0xffffc9c9,
     buttonDestructiveBackground: 0xffd32f2f,
     buttonDestructiveLabel: 0xffffffff,
     buttonDestructiveHover: 0xffb91c1c,
     buttonDestructivePressed: 0xffb91c1c,
-    disabledBackground: 0xff212529,
-    disabledForeground: 0xff676c73,
-    disabledBorder: 0xff2e3338,
+    disabledBackground: 0xff444444,
+    disabledForeground: 0xff898989,
+    disabledBorder: 0xff565656,
     textStaticBlack: 0xff000000,
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xffffe880,
-    badgeArchivedText: 0xff676c73,
+    badgeArchivedText: 0xff898989,
     listBackground: 0xff111111,
-    listBackgroundHover: 0xff212529,
+    listBackgroundHover: 0xff444444,
     inputLabel: 0xffffffff,
-    inputPlaceholder: 0xff676c73,
-    inputHelper: 0xffb8bdc4,
-    inputIcon: 0xffb8bdc4,
-    inputBorderDefault: 0xff3f4548,
-    inputBorderFocused: 0xffffc700,
+    inputPlaceholder: 0xff898989,
+    inputHelper: 0xffbcbcbc,
+    inputIcon: 0xffbcbcbc,
+    inputBorderDefault: 0xffababab,
+    inputBorderFocused: 0xffe0ae00,
     inputBorderError: 0xfff47272,
-    inputBorderDisabled: 0xff3f4548,
+    inputBorderDisabled: 0xff898989,
     error: 0xfff47272,
     success: 0xff5dc896,
     warning: 0xffffe880,
@@ -284,17 +328,17 @@ class SldsRawColorTokens {
     badgePendingBackground: 0xff2e2200,
     badgeErrorText: 0xfff47272,
     badgeErrorBackground: 0xff330d0d,
-    badgeInfoText: 0xff7dd8e8,
-    badgeInfoBackground: 0xff061f24,
-    badgeNeutralText: 0xffb8bdc4,
-    badgeNeutralBackground: 0xff212529,
+    badgeInfoText: 0xff93c5fd,
+    badgeInfoBackground: 0xff0a1733,
+    badgeNeutralText: 0xffbcbcbc,
+    badgeNeutralBackground: 0xff2e1800,
     badgeSubmittedText: 0xff67d2e1,
     badgeSubmittedBackground: 0xff0a1733,
     badgeInReviewText: 0xff93c5fd,
     badgeInReviewBackground: 0xff0a1733,
     badgeApprovedText: 0xff34d399,
     badgeApprovedBackground: 0xff064e3b,
-    badgeEscalatedText: 0xfffb923c,
+    badgeEscalatedText: 0xffffd01a,
     badgeEscalatedBackground: 0xff2e1800,
     badgeOnHoldText: 0xffa78bfa,
     badgeOnHoldBackground: 0xff1a0f38,
@@ -310,7 +354,7 @@ class SldsRawColorTokens {
     surfacePage: 0xffffffff,
     surfaceCard: 0xffffffff,
     surfaceRaised: 0xffe8e8e8,
-    surfaceHover: 0xffe8e8e8,
+    surfaceHover: 0xffe2e2e2,
     surfacePrimary: 0xffffffff,
     borderDefault: 0xff000000,
     borderDecorative: 0xff000000,
@@ -335,32 +379,36 @@ class SldsRawColorTokens {
     buttonSecondaryBackground: 0xffffffff,
     buttonSecondaryLabel: 0xff000000,
     buttonSecondaryBorder: 0xff000000,
-    buttonSecondaryHover: 0xffe8e8e8,
-    buttonSecondaryPressed: 0xffd0d0d0,
+    buttonSecondaryHover: 0xffe2e2e2,
+    buttonSecondaryPressed: 0xffd5d5d5,
     buttonGhostLabel: 0xff000000,
-    buttonGhostHover: 0xffe8e8e8,
-    buttonGhostPressed: 0xffd0d0d0,
+    buttonGhostHover: 0xffe2e2e2,
+    buttonGhostPressed: 0xffd5d5d5,
+    linkLabel: 0xff000000,
+    linkLabelHover: 0xff000000,
+    linkDestructiveLabel: 0xffb91c1c,
+    linkDestructiveLabelHover: 0xff7f1d1d,
     buttonDestructiveBackground: 0xffb91c1c,
     buttonDestructiveLabel: 0xffffffff,
     buttonDestructiveHover: 0xff991b1b,
     buttonDestructivePressed: 0xff7f1d1d,
-    disabledBackground: 0xfff0f0f0,
-    disabledForeground: 0xff595959,
-    disabledBorder: 0xff595959,
+    disabledBackground: 0xffe6e6e6,
+    disabledForeground: 0xff787878,
+    disabledBorder: 0xff787878,
     textStaticBlack: 0xff000000,
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xff503d00,
-    badgeArchivedText: 0xff595959,
+    badgeArchivedText: 0xff565656,
     listBackground: 0xffffffff,
     listBackgroundHover: 0xffe8e8e8,
     inputLabel: 0xff000000,
-    inputPlaceholder: 0xff595959,
+    inputPlaceholder: 0xff787878,
     inputHelper: 0xff000000,
     inputIcon: 0xff000000,
     inputBorderDefault: 0xff000000,
     inputBorderFocused: 0xff000000,
     inputBorderError: 0xff000000,
-    inputBorderDisabled: 0xff595959,
+    inputBorderDisabled: 0xff787878,
     error: 0xffb91c1c,
     success: 0xff065f46,
     warning: 0xff503d00,
@@ -373,7 +421,7 @@ class SldsRawColorTokens {
     badgeErrorBackground: 0xffffffff,
     badgeInfoText: 0xff0f4855,
     badgeInfoBackground: 0xffffffff,
-    badgeNeutralText: 0xff000000,
+    badgeNeutralText: 0xff565656,
     badgeNeutralBackground: 0xffffffff,
     badgeSubmittedText: 0xff0f4855,
     badgeSubmittedBackground: 0xffffffff,
@@ -496,6 +544,18 @@ class SldsRawColorTokens {
 
   /// Ghost button pressed background.
   final int buttonGhostPressed;
+
+  /// Figma Text/Secondary — the resting colour of an inline text link.
+  final int linkLabel;
+
+  /// Figma Text/Primary — an inline link darkens on hover.
+  final int linkLabelHover;
+
+  /// Figma Feedback/Error Text — resting colour of a destructive link.
+  final int linkDestructiveLabel;
+
+  /// Figma Feedback/Error Hover — a destructive link darkens on hover.
+  final int linkDestructiveLabelHover;
 
   /// Destructive button background.
   final int buttonDestructiveBackground;
@@ -676,6 +736,10 @@ class SldsRawColorTokens {
     int? buttonGhostLabel,
     int? buttonGhostHover,
     int? buttonGhostPressed,
+    int? linkLabel,
+    int? linkLabelHover,
+    int? linkDestructiveLabel,
+    int? linkDestructiveLabelHover,
     int? buttonDestructiveBackground,
     int? buttonDestructiveLabel,
     int? buttonDestructiveHover,
@@ -765,6 +829,11 @@ class SldsRawColorTokens {
       buttonGhostLabel: buttonGhostLabel ?? this.buttonGhostLabel,
       buttonGhostHover: buttonGhostHover ?? this.buttonGhostHover,
       buttonGhostPressed: buttonGhostPressed ?? this.buttonGhostPressed,
+      linkLabel: linkLabel ?? this.linkLabel,
+      linkLabelHover: linkLabelHover ?? this.linkLabelHover,
+      linkDestructiveLabel: linkDestructiveLabel ?? this.linkDestructiveLabel,
+      linkDestructiveLabelHover:
+          linkDestructiveLabelHover ?? this.linkDestructiveLabelHover,
       buttonDestructiveBackground:
           buttonDestructiveBackground ?? this.buttonDestructiveBackground,
       buttonDestructiveLabel:
@@ -916,6 +985,18 @@ class SldsRawColorTokens {
       ),
       buttonGhostLabel: lerpArgb(a.buttonGhostLabel, b.buttonGhostLabel, t),
       buttonGhostHover: lerpArgb(a.buttonGhostHover, b.buttonGhostHover, t),
+      linkLabel: lerpArgb(a.linkLabel, b.linkLabel, t),
+      linkLabelHover: lerpArgb(a.linkLabelHover, b.linkLabelHover, t),
+      linkDestructiveLabel: lerpArgb(
+        a.linkDestructiveLabel,
+        b.linkDestructiveLabel,
+        t,
+      ),
+      linkDestructiveLabelHover: lerpArgb(
+        a.linkDestructiveLabelHover,
+        b.linkDestructiveLabelHover,
+        t,
+      ),
       buttonGhostPressed: lerpArgb(
         a.buttonGhostPressed,
         b.buttonGhostPressed,
@@ -1107,6 +1188,10 @@ class SldsRawColorTokens {
         other.buttonGhostLabel == buttonGhostLabel &&
         other.buttonGhostHover == buttonGhostHover &&
         other.buttonGhostPressed == buttonGhostPressed &&
+        other.linkLabel == linkLabel &&
+        other.linkLabelHover == linkLabelHover &&
+        other.linkDestructiveLabel == linkDestructiveLabel &&
+        other.linkDestructiveLabelHover == linkDestructiveLabelHover &&
         other.buttonDestructiveBackground == buttonDestructiveBackground &&
         other.buttonDestructiveLabel == buttonDestructiveLabel &&
         other.buttonDestructiveHover == buttonDestructiveHover &&
@@ -1196,6 +1281,10 @@ class SldsRawColorTokens {
     buttonGhostLabel,
     buttonGhostHover,
     buttonGhostPressed,
+    linkLabel,
+    linkLabelHover,
+    linkDestructiveLabel,
+    linkDestructiveLabelHover,
     buttonDestructiveBackground,
     buttonDestructiveLabel,
     buttonDestructiveHover,

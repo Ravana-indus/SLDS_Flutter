@@ -170,6 +170,19 @@ class SldsColorTokens {
   /// Ghost button pressed background.
   Color get buttonGhostPressed => Color(tokens.buttonGhostPressed);
 
+  /// Inline text link label.
+  Color get linkLabel => Color(tokens.linkLabel);
+
+  /// Inline text link label on hover.
+  Color get linkLabelHover => Color(tokens.linkLabelHover);
+
+  /// Destructive inline text link label.
+  Color get linkDestructiveLabel => Color(tokens.linkDestructiveLabel);
+
+  /// Destructive inline text link label on hover.
+  Color get linkDestructiveLabelHover =>
+      Color(tokens.linkDestructiveLabelHover);
+
   /// Destructive button background.
   Color get buttonDestructiveBackground =>
       Color(tokens.buttonDestructiveBackground);

@@ -33,16 +33,12 @@ class SldsToggle extends StatefulWidget {
     super.key,
     this.size = SldsToggleSize.large,
     this.enabled = true,
-    this.color,
   });
 
   final bool value;
   final ValueChanged<bool>? onChanged;
   final SldsToggleSize size;
   final bool enabled;
-
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
 
   @override
   State<SldsToggle> createState() => _SldsToggleState();
@@ -77,7 +73,7 @@ class _SldsToggleState extends State<SldsToggle> {
   Widget build(BuildContext context) {
     final dimensions = context.slds.dimensions;
     final scheme = Theme.of(context).colorScheme;
-    final accent = widget.color ?? scheme.primary;
+    final accent = scheme.primary;
 
     final Color trackColor;
     final Color thumbColor;

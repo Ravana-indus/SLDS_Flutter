@@ -20,7 +20,6 @@ class SldsTopNavBar extends StatelessWidget {
     this.onBack,
     this.onMenu,
     this.style = SldsTopNavBarStyle.light,
-    this.color,
   }) : totalSteps = null,
        currentStep = null;
 
@@ -35,7 +34,6 @@ class SldsTopNavBar extends StatelessWidget {
     this.onBack,
     this.onMenu,
     this.style = SldsTopNavBarStyle.light,
-    this.color,
   }) : title = null;
 
   final String? title;
@@ -50,16 +48,13 @@ class SldsTopNavBar extends StatelessWidget {
 
   final SldsTopNavBarStyle style;
 
-  /// Overrides the token-driven accent color for filled progress segments.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final dark = style == SldsTopNavBarStyle.dark;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
     final foreground = dark ? Colors.white : colors.textPrimary;
 
     return Container(

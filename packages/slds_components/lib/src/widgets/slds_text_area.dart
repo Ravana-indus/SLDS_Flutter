@@ -27,7 +27,6 @@ class SldsTextArea extends StatefulWidget {
     this.enabled = true,
     this.onChanged,
     this.validator,
-    this.color,
   });
 
   final String label;
@@ -45,9 +44,6 @@ class SldsTextArea extends StatefulWidget {
   final bool enabled;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
-
-  /// Overrides the token-driven focus/accent color for this instance only.
-  final Color? color;
 
   @override
   State<SldsTextArea> createState() => _SldsTextAreaState();
@@ -81,7 +77,7 @@ class _SldsTextAreaState extends State<SldsTextArea> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final dimensions = context.slds.dimensions;
-    final accent = widget.color ?? scheme.primary;
+    final accent = scheme.primary;
 
     OutlineInputBorder border(Color borderColor) => OutlineInputBorder(
       borderRadius: BorderRadius.circular(dimensions.space8),

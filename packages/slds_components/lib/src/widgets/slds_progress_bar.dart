@@ -18,7 +18,6 @@ class SldsProgressBar extends StatelessWidget {
     required this.value,
     super.key,
     this.showLabel = true,
-    this.color,
   });
 
   /// Progress fraction, 0.0-1.0. Values outside that range are clamped.
@@ -27,16 +26,13 @@ class SldsProgressBar extends StatelessWidget {
   /// Shows the rounded percentage (e.g. "40%") right-aligned after the bar.
   final bool showLabel;
 
-  /// Overrides the token-driven fill color for this instance only.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final clamped = value.clamp(0.0, 1.0);
-    final fill = color ?? colors.success;
+    final fill = colors.success;
     final percent = (clamped * 100).round();
 
     return Semantics(

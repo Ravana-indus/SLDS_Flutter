@@ -20,7 +20,6 @@ class SldsTimePickerDialog extends StatefulWidget {
     this.titleText = 'Set Your Time',
     this.cancelText = 'Cancel',
     this.applyText = 'Apply',
-    this.primaryColor,
     this.width,
   });
 
@@ -45,9 +44,6 @@ class SldsTimePickerDialog extends StatefulWidget {
   /// Apply button label.
   final String applyText;
 
-  /// Primary accent color (defaults to SLDS yellow `#FFC700`).
-  final Color? primaryColor;
-
   /// Custom width constraint for responsiveness.
   final double? width;
 
@@ -61,7 +57,6 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
   late DayPeriod _period;
   SldsTimePickerUnit _activeUnit = SldsTimePickerUnit.hour;
 
-  static const Color _defaultPrimaryYellow = Color(0xFFFFC700);
   static const Color _defaultLightYellow = Color(0xFFFFF7D6);
 
   @override
@@ -114,7 +109,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final primaryAccent = widget.primaryColor ?? _defaultPrimaryYellow;
+    final primaryAccent = context.slds.colors.buttonPrimaryBackground;
 
     return Container(
       width: widget.width ?? 320,
@@ -503,7 +498,6 @@ class SldsTimePicker extends StatefulWidget {
     this.errorText,
     this.enabled = true,
     this.isRequired = false,
-    this.primaryColor,
     this.titleText = 'Set Your Time',
     this.cancelText = 'Cancel',
     this.applyText = 'Apply',
@@ -517,7 +511,6 @@ class SldsTimePicker extends StatefulWidget {
   final String? errorText;
   final bool enabled;
   final bool isRequired;
-  final Color? primaryColor;
   final String titleText;
   final String cancelText;
   final String applyText;
@@ -572,7 +565,6 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
             titleText: widget.titleText,
             cancelText: widget.cancelText,
             applyText: widget.applyText,
-            primaryColor: widget.primaryColor,
             onApply: (TimeOfDay time) {
               Navigator.of(context).pop(time);
             },

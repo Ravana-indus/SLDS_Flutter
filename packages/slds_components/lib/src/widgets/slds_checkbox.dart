@@ -30,7 +30,6 @@ class SldsCheckbox extends StatefulWidget {
     super.key,
     this.size = SldsCheckboxSize.large,
     this.enabled = true,
-    this.color,
   });
 
   /// `true` checked, `false` unchecked, `null` indeterminate.
@@ -38,9 +37,6 @@ class SldsCheckbox extends StatefulWidget {
   final ValueChanged<bool?>? onChanged;
   final SldsCheckboxSize size;
   final bool enabled;
-
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
 
   @override
   State<SldsCheckbox> createState() => _SldsCheckboxState();
@@ -78,7 +74,7 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
   Widget build(BuildContext context) {
     final dimensions = context.slds.dimensions;
     final scheme = Theme.of(context).colorScheme;
-    final accent = widget.color ?? scheme.primary;
+    final accent = scheme.primary;
     final filled = (widget.value ?? false) || widget.value == null;
 
     final Color boxColor;

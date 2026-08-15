@@ -19,7 +19,6 @@ class SldsFilterButton extends StatelessWidget {
     this.count,
     this.onTap,
     this.enabled = true,
-    this.color,
   });
 
   final String label;
@@ -32,9 +31,6 @@ class SldsFilterButton extends StatelessWidget {
   final VoidCallback? onTap;
   final bool enabled;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
-
   bool get _active => count != null && count! > 0;
 
   @override
@@ -42,7 +38,7 @@ class SldsFilterButton extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
     final interactive = enabled && onTap != null;
 
     final Color background;

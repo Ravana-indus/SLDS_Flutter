@@ -15,7 +15,7 @@ import 'dart:io';
 ///
 /// Lower this whenever documentation lands. When it reaches zero, delete this
 /// tool and restore the rule to its default severity.
-const _allowed = 329;
+const _allowed = 322;
 
 Future<int> main() async {
   if (!File('pubspec.yaml').existsSync()) {

@@ -42,7 +42,6 @@ class SldsTabStrip extends StatelessWidget {
     required this.onTap,
     super.key,
     this.style = SldsTabStripStyle.light,
-    this.color,
   });
 
   final List<SldsTabStripItem> items;
@@ -50,16 +49,13 @@ class SldsTabStrip extends StatelessWidget {
   final ValueChanged<int>? onTap;
   final SldsTabStripStyle style;
 
-  /// Overrides the token-driven track background for this instance only.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final dark = style == SldsTabStripStyle.dark;
-    final track = color ?? (dark ? Colors.black : colors.surfaceCard);
+    final track = (dark ? Colors.black : colors.surfaceCard);
     final pill = dark
         ? colors.surfaceHover.withValues(alpha: 0.16)
         : colors.surfaceHover;

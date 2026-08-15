@@ -18,7 +18,6 @@ class SldsPasswordField extends StatefulWidget {
     this.enabled = true,
     this.onChanged,
     this.validator,
-    this.color,
   });
 
   final String label;
@@ -30,9 +29,6 @@ class SldsPasswordField extends StatefulWidget {
   final bool enabled;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
-
-  /// Overrides the token-driven focus/accent color for this instance only.
-  final Color? color;
 
   @override
   State<SldsPasswordField> createState() => _SldsPasswordFieldState();

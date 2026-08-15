@@ -15,7 +15,6 @@ class SldsChip extends StatelessWidget {
     this.icon,
     this.onDeleted,
     this.onTap,
-    this.color,
   });
 
   final String label;
@@ -35,15 +34,12 @@ class SldsChip extends StatelessWidget {
   /// the label non-interactive.
   final VoidCallback? onTap;
 
-  /// Overrides the token-driven background for this instance only.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final background = color ?? colors.surfaceHover;
+    final background = colors.surfaceHover;
 
     return Semantics(
       container: true,

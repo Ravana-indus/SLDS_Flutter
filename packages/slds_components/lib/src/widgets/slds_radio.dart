@@ -30,7 +30,6 @@ class SldsRadio<T> extends StatefulWidget {
     super.key,
     this.size = SldsRadioSize.large,
     this.enabled = true,
-    this.color,
   });
 
   final T value;
@@ -38,9 +37,6 @@ class SldsRadio<T> extends StatefulWidget {
   final ValueChanged<T>? onChanged;
   final SldsRadioSize size;
   final bool enabled;
-
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
 
   @override
   State<SldsRadio<T>> createState() => _SldsRadioState<T>();
@@ -76,7 +72,7 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
   Widget build(BuildContext context) {
     final dimensions = context.slds.dimensions;
     final scheme = Theme.of(context).colorScheme;
-    final accent = widget.color ?? scheme.primary;
+    final accent = scheme.primary;
 
     final Color ringColor;
     final Color dotColor;

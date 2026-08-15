@@ -25,13 +25,13 @@ review's own scorecard:
 | 4 | Theming | Fail | **Pass** — explicit `ColorScheme`, cached statics, high contrast reachable |
 | 5 | Accessibility | Fail | Partial — focus, contrast and touch targets fixed; semantics coverage incomplete |
 | 6 | Localization | Partial | Partial — string set expanded; si/ta still unreviewed, no intl layer |
-| 7 | API design | Partial | Partial — `heroTag`, variant constraints, badge semantics fixed; `color` remains on 18 widgets |
+| 7 | API design | Partial | Partial — `color` removed everywhere, `heroTag` and badge semantics fixed; dartdoc incomplete |
 | 8 | Testing | Fail | **Pass with a disclosed deviation** — goldens, contrast and guideline matchers all in CI |
 | 9 | Documentation and catalog | Partial | Partial |
 | 10 | Contribution and governance | Not evidenced | Not evidenced — CODEOWNERS/templates still absent |
 | 11 | Definition of Done | 0 of 5 components pass | Improved, not yet met — see §4 below |
 
-Findings the audit raised that are now **closed**: C1 (package architecture),
+Findings the audit raised that are now **closed**: C1 (package architecture), C2 (`color` override),
 C3 (no CI), C4 (no goldens), C5 (no high contrast), C6 (no component theming
 layer — addressed differently, see §5), M1 (theme methods), M2 (ColorScheme
 role coverage), M3 (badge semantics), M4 (heroTag), M8 (lint set), M9
@@ -81,7 +81,6 @@ Ordered by what a re-audit is most likely to reject.
 
 | Item | Section | State |
 |------|---------|-------|
-| `color` parameter on 18 widgets | §4 (C2) | Removed from the button, card, text field and checkbox families; the rest still carry it |
 | Semantics missing on 32 widgets | §5 | Includes interactive controls: dropdown, search bar, OTP input, date/time pickers |
 | Hardcoded English semantic labels | §5, §6 | Present labels are not routed through the delegate, so a si/ta screen reader hears English |
 | si/ta translations unreviewed | §6 (M6) | Machine-drafted. §6: a component with an unverified translation does not ship |
@@ -92,7 +91,7 @@ Ordered by what a re-audit is most likely to reject.
 | Device floor undeclared | §1 (M7) | No minSdk pin to API 24, no documented 320dp floor |
 | Credential/PII marker convention | §1 (M7) | No credential component exists yet; the contract should exist before the first one |
 | Governance scaffolding | §10 | No CODEOWNERS, issue or PR templates, named owners |
-| 329 undocumented public members | §7 | Ratcheted in CI so the count can only fall |
+| 322 undocumented public members | §7 | Ratcheted in CI so the count can only fall |
 
 ---
 

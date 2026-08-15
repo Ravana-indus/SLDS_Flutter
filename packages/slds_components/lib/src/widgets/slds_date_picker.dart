@@ -29,7 +29,6 @@ class SldsDatePicker extends StatefulWidget {
     this.onApply,
     this.cancelText = 'Cancel',
     this.applyText = 'Apply',
-    this.primaryColor,
     this.rangeColor,
     this.firstDayOfWeek = DateTime.monday,
     this.width,
@@ -68,9 +67,6 @@ class SldsDatePicker extends StatefulWidget {
   /// Apply button label.
   final String applyText;
 
-  /// Primary accent color for selected badge and apply button (defaults to SLDS yellow `#FFC700`).
-  final Color? primaryColor;
-
   /// Highlight color for range selection in-between cells.
   final Color? rangeColor;
 
@@ -90,7 +86,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   DateTime? _rangeStartDate;
   DateTime? _rangeEndDate;
 
-  static const Color _defaultPrimaryYellow = Color(0xFFFFC700);
   static const Color _defaultRangeLightYellow = Color(0xFFFFF7D6);
 
   @override
@@ -228,7 +223,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final primaryAccent = widget.primaryColor ?? _defaultPrimaryYellow;
+    final primaryAccent = context.slds.colors.buttonPrimaryBackground;
     final rangeHighlight = widget.rangeColor ?? _defaultRangeLightYellow;
 
     return Container(

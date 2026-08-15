@@ -5,13 +5,18 @@ import 'package:slds_components/src/l10n/gen/slds_localizations.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 
-/// SLDS icon-only button — same variant palette as [SldsButton]. Colors
-/// resolve from the ambient [Theme]'s [ColorScheme] (light/dark aware);
-/// pass [color] to override the accent for one instance.
+/// SLDS icon-only button, sharing the [SldsButtonVariant] palette with
+/// [SldsButton].
 ///
-/// Touch target is 44×44 at/above [SldsBreakpoints.mobile], 52×52 below it
-/// (matching [SldsButton]'s mobile height).
+/// Every colour resolves from the ambient SLDS token set, so the button
+/// follows light, dark and high-contrast themes automatically.
+///
+/// The touch target clears the 48x48 minimum at both breakpoints, and grows
+/// on mobile to match [SldsButton]'s height there. An icon-only control has
+/// no visible text, so [tooltip] doubles as its accessible name — pass one
+/// unless the surrounding content already names the action.
 class SldsIconButton extends StatelessWidget {
+  /// Creates an icon-only button.
   const SldsIconButton({
     required this.icon,
     required this.onPressed,
@@ -19,81 +24,82 @@ class SldsIconButton extends StatelessWidget {
     this.variant = SldsButtonVariant.primary,
     this.isLoading = false,
     this.tooltip,
-    this.color,
   });
 
+  /// The glyph shown in the button.
   final IconData icon;
-  final VoidCallback? onPressed;
-  final SldsButtonVariant variant;
-  final bool isLoading;
-  final String? tooltip;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
+  /// Called when the button is tapped. Null disables it.
+  final VoidCallback? onPressed;
+
+  /// Which SLDS action variant to render.
+  final SldsButtonVariant variant;
+
+  /// Whether to replace the icon with a loading indicator.
+  final bool isLoading;
+
+  /// Accessible name and hover label for the action.
+  final String? tooltip;
 
   bool get _enabled => onPressed != null && !isLoading;
   bool get _isFilled =>
       variant == SldsButtonVariant.primary ||
       variant == SldsButtonVariant.destructive;
 
-  Color _baseColor(BuildContext context) {
-    if (color != null) return color!;
-    final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive
-        ? scheme.error
-        : scheme.primary;
-  }
+  Color _background(SldsColorTokens colors) => switch (variant) {
+    SldsButtonVariant.destructive => colors.buttonDestructiveBackground,
+    SldsButtonVariant.secondary => colors.buttonSecondaryBackground,
+    _ => colors.buttonPrimaryBackground,
+  };
 
-  Color _onBaseColor(BuildContext context) {
-    if (color != null) {
-      return ThemeData.estimateBrightnessForColor(color!) == Brightness.dark
-          ? Colors.white
-          : Colors.black;
-    }
-    final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive
-        ? scheme.onError
-        : scheme.onPrimary;
-  }
+  Color _foreground(SldsColorTokens colors) => switch (variant) {
+    SldsButtonVariant.destructive => colors.buttonDestructiveLabel,
+    SldsButtonVariant.secondary => colors.buttonSecondaryLabel,
+    SldsButtonVariant.tertiary ||
+    SldsButtonVariant.text => colors.buttonGhostLabel,
+    _ => colors.buttonPrimaryLabel,
+  };
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final base = _baseColor(context);
-    final onBase = _onBaseColor(context);
-    final size = context.sldsIsMobile ? 52.0 : 44.0;
+    final tokens = context.slds;
+    final colors = tokens.colors;
+    final dimensions = tokens.dimensions;
+
+    // Both clear the 48px floor; the larger mobile target matches
+    // SldsButton's height at that breakpoint.
+    final size = context.sldsIsMobile
+        ? dimensions.buttonHeightExtraLarge
+        : dimensions.buttonHeightLarge;
+
+    final foreground = _foreground(colors);
 
     return IconButton(
       onPressed: _enabled ? onPressed : null,
       tooltip: isLoading ? SldsLocalizations.of(context).loading : tooltip,
       icon: isLoading
           ? SizedBox(
-              width: 18,
-              height: 18,
-              child: CupertinoActivityIndicator(
-                color: _isFilled ? onBase : base,
-              ),
+              width: dimensions.iconSizeMedium,
+              height: dimensions.iconSizeMedium,
+              child: CupertinoActivityIndicator(color: foreground),
             )
           : Icon(icon),
       constraints: BoxConstraints(minWidth: size, minHeight: size),
       style: IconButton.styleFrom(
-        backgroundColor: _isFilled ? base : Colors.transparent,
-        foregroundColor: _isFilled ? onBase : base,
-        disabledBackgroundColor: _isFilled
-            ? base.withValues(alpha: context.slds.opacities.disabled)
-            : Colors.transparent,
-        disabledForegroundColor: scheme.onSurface.withValues(
-          alpha: context.slds.opacities.disabled,
-        ),
+        backgroundColor: _isFilled ? _background(colors) : null,
+        foregroundColor: foreground,
+        disabledBackgroundColor: _isFilled ? colors.disabledBackground : null,
+        disabledForegroundColor: colors.disabledForeground,
         side: !_isFilled && variant != SldsButtonVariant.text
             ? BorderSide(
                 color: variant == SldsButtonVariant.tertiary
-                    ? scheme.outline
-                    : base,
+                    ? colors.borderDefault
+                    : colors.buttonSecondaryBorder,
+                width: dimensions.controlBorderWidth,
               )
             : null,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(dimensions.radiusLg),
         ),
       ),
     );

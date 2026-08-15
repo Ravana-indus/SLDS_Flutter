@@ -26,7 +26,6 @@ class SldsDropdown<T> extends StatefulWidget {
     this.hintText = 'Select an option',
     this.searchHintText = 'Search',
     this.enabled = true,
-    this.color,
   });
 
   final String label;
@@ -43,9 +42,6 @@ class SldsDropdown<T> extends StatefulWidget {
   final String hintText;
   final String searchHintText;
   final bool enabled;
-
-  /// Overrides the token-driven focus/accent color for this instance only.
-  final Color? color;
 
   @override
   State<SldsDropdown<T>> createState() => _SldsDropdownState<T>();
@@ -97,7 +93,7 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final dimensions = context.slds.dimensions;
-    final accent = widget.color ?? scheme.primary;
+    final accent = scheme.primary;
 
     final borderColor = !widget.enabled
         ? scheme.outline.withValues(alpha: context.slds.opacities.disabled)

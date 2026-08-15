@@ -15,7 +15,6 @@ class SldsStepIndicator extends StatelessWidget {
     required this.totalSteps,
     required this.currentStep,
     super.key,
-    this.color,
   });
 
   final int totalSteps;
@@ -24,15 +23,12 @@ class SldsStepIndicator extends StatelessWidget {
   /// 3 of [totalSteps]).
   final int currentStep;
 
-  /// Overrides the token-driven accent color for filled segments.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
 
     return Row(
       children: [

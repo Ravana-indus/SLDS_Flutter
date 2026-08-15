@@ -80,59 +80,90 @@ MaterialApp(
 )
 ```
 
-Sinhala/Tamil text uses `Noto Sans Sinhala`/`Noto Sans Tamil` as a font
-fallback (see `SldsTypography`) — the font asset files are not bundled yet,
-add them under `packages/slds_components/fonts/` when available.
+Google Sans is bundled with the package and covers Latin, Sinhala and Tamil
+in one family, so all three supported locales render from the same metrics
+with no font substitution.
 
 **The si/ta translations in the `.arb` files were machine-drafted, not
-reviewed by a Sinhala/Tamil speaker — verify before shipping.**
+reviewed by a Sinhala/Tamil speaker — verify before shipping.** The
+guidelines (§6) treat an unverified translation the same as a missing one.
 
 ## Design tokens
 
-`packages/slds_components/lib/src/tokens/` currently holds **placeholder**
-color values (`SldsColors`) — GovTech's official published token spec was not
-available when this was scaffolded. `SldsTypography`'s Desktop/Mobile type
-scale (Google Sans, exact px/line-height/letter-spacing) matches the
-Foundation Documentation spec. Replace `SldsColors` once the real spec is
-available; the shape is what's meant to stay stable for consumers.
+Raw values live in `packages/slds_tokens` as pure Dart — colours as ARGB
+ints, plus dimensions, typography metrics, motion durations and opacities.
+No Flutter import, so the tokens stay consumable by codegen, web exports and
+design tooling, and the WCAG contrast check can run as a plain unit test.
 
-## Dark mode
-
-`SldsTheme.light()` and `SldsTheme.dark()` are both seeded from the same
-`SldsColors` tokens via `ColorScheme.fromSeed` — install both:
+`slds_components` materialises them into `Color` and `TextStyle` once, and
+widgets read the result through `context.slds`:
 
 ```dart
-MaterialApp(
-  theme: SldsTheme.light(),
-  darkTheme: SldsTheme.dark(),
-  themeMode: ThemeMode.system, // or let the user toggle it
-  // ...
+final tokens = context.slds;
+Container(
+  padding: EdgeInsets.all(tokens.dimensions.space16),
+  decoration: BoxDecoration(
+    color: tokens.colors.surfaceCard,
+    borderRadius: BorderRadius.circular(tokens.dimensions.radiusLg),
+  ),
+  child: Text('...', style: tokens.typography.body1),
 )
 ```
 
-Widgetbook itself defaults to its **Light** theme in the toolbar (Dark is
+`context.slds` tracks the ambient theme, the OS high-contrast setting and
+`MediaQuery.disableAnimations`, so a widget reading it gets the right
+palette and motion without checking for them itself.
+
+Some colour values were adjusted by engineering to clear WCAG 2.2 AA and are
+marked `PENDING DESIGN SIGN-OFF` in `slds_tokens/lib/src/colors.dart` — see
+[COMPLIANCE.md](COMPLIANCE.md).
+
+## Themes
+
+`SldsTheme.light`, `.dark` and `.highContrast` are cached statics, not
+methods — assigning `SldsTheme.light()` inside a `build` would rebuild the
+entire theme every frame. Install all three:
+
+```dart
+MaterialApp(
+  theme: SldsTheme.light,
+  darkTheme: SldsTheme.dark,
+  highContrastTheme: SldsTheme.highContrast,
+  highContrastDarkTheme: SldsTheme.highContrast,
+  themeMode: ThemeMode.system, // or let the user toggle it
+  localizationsDelegates: SldsLocalizations.localizationsDelegates,
+  supportedLocales: SldsLocalizations.supportedLocales,
+)
+```
+
+That is the entire integration. Every `ColorScheme` role is set explicitly
+from tokens, so nothing falls back to Material's default palette.
+
+Widgetbook defaults to its **Light** theme in the toolbar (Dark is
 selectable) — see `widgetbook/lib/main.dart`'s `MaterialThemeAddon`.
 
-## Responsive type
+## Colors come from tokens, not parameters
 
-`SldsTypography.desktop`/`.mobile` swap at `SldsBreakpoints.mobile` (600px
-width). Wrap `MaterialApp.builder` with `SldsResponsiveText` to have the
-active `TextTheme` follow window/screen width automatically:
+Every component resolves colour from the ambient SLDS token set, so it
+follows light, dark and high-contrast themes with no work from the caller.
+
+There is deliberately **no per-instance `color` override**. The engineering
+guidelines prohibit them (§4) because escape hatches are how design systems
+fragment — five apps each nudging the accent is exactly what the system
+exists to prevent. Use a variant to change emphasis:
 
 ```dart
-MaterialApp(
-  theme: SldsTheme.light(),
-  builder: (context, child) => SldsResponsiveText(child: child!),
-  // ...
+SldsButton(
+  label: 'Delete',
+  variant: SldsButtonVariant.destructive,
+  onPressed: _delete,
 )
 ```
 
-## Per-instance color override
-
-Components resolve color from the ambient `Theme`'s `ColorScheme` by
-default (so they follow light/dark mode), but accept an optional `color`
-param to override the accent for one instance without forking the widget —
-e.g. `SldsButton(color: Colors.purple, ...)`.
+If a design genuinely needs a colour the tokens do not carry, raise a token
+request against the Figma source of truth rather than overriding locally —
+a value added in one app is invisible to the design team and gets
+overwritten by the next sync.
 
 ## Widgetbook toolbar
 

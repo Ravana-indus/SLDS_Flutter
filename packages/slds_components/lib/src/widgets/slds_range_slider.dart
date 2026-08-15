@@ -19,7 +19,6 @@ class SldsRangeSlider extends StatelessWidget {
     this.max = 100,
     this.divisions,
     this.enabled = true,
-    this.color,
     this.semanticLabel,
   });
 
@@ -32,9 +31,6 @@ class SldsRangeSlider extends StatelessWidget {
   final int? divisions;
   final bool enabled;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
-
   /// Accessible name announced alongside the current value.
   final String? semanticLabel;
 
@@ -42,7 +38,7 @@ class SldsRangeSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
     final interactive = enabled && onChanged != null;
 
     final activeColor = interactive ? accent : colors.disabledForeground;

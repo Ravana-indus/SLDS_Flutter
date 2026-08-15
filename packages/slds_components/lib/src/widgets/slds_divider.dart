@@ -9,20 +9,17 @@ import 'package:slds_components/src/widgets/slds_button.dart' show SldsButton;
 /// segments are `Expanded`, so it always fills whatever width its parent
 /// gives it.
 class SldsDivider extends StatelessWidget {
-  const SldsDivider({super.key, this.child, this.color});
+  const SldsDivider({super.key, this.child});
 
   /// Centered content splitting the rule (e.g. a [Text] or [SldsButton]).
   /// Null renders a single unbroken line.
   final Widget? child;
 
-  /// Overrides the token-driven line color for this instance only.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final dimensions = tokens.dimensions;
-    final lineColor = color ?? tokens.colors.borderDefault;
+    final lineColor = tokens.colors.borderDefault;
 
     if (child == null) {
       return Divider(height: 1, thickness: 1, color: lineColor);

@@ -6,7 +6,7 @@
 
 This is the response to the compliance review. It records what has changed
 since the reviewed commit, what is fixed, and what is still open — including
-two defects the review did not find, and two places where this repository
+two defects the review did not find, and three places where this repository
 knowingly diverges from the guidelines.
 
 ---
@@ -19,23 +19,23 @@ review's own scorecard:
 
 | # | Section | Audit verdict | Now |
 |---|---------|---------------|-----|
-| 1 | Purpose, scope, device floor | Fail | Partial — device floor still undeclared |
+| 1 | Purpose, scope, device floor | Fail | Partial — floor declared and tested; credential/PII contract still absent |
 | 2 | Package architecture | Fail | **Pass** — `slds_tokens` is pure Dart, one-way dependency enforced in CI |
 | 3 | Versioning and distribution | Fail | Partial — real CHANGELOG at 0.1.0; registry still an open §12 decision |
 | 4 | Theming | Fail | **Pass** — explicit `ColorScheme`, cached statics, high contrast reachable |
-| 5 | Accessibility | Fail | Partial — focus, contrast and touch targets fixed; semantics coverage incomplete |
-| 6 | Localization | Partial | Partial — string set expanded; si/ta still unreviewed, no intl layer |
+| 5 | Accessibility | Fail | Partial — focus, contrast, touch targets and reduced motion fixed; semantics coverage incomplete |
+| 6 | Localization | Partial | Partial — string set expanded, intl formatting layer added; si/ta still unreviewed |
 | 7 | API design | Partial | Partial — `color` removed everywhere, `heroTag` and badge semantics fixed; dartdoc incomplete |
 | 8 | Testing | Fail | **Pass with a disclosed deviation** — goldens, contrast and guideline matchers all in CI |
 | 9 | Documentation and catalog | Partial | Partial |
-| 10 | Contribution and governance | Not evidenced | Not evidenced — CODEOWNERS/templates still absent |
+| 10 | Contribution and governance | Not evidenced | Partial — CODEOWNERS and PR/issue templates added; owner handles are placeholders |
 | 11 | Definition of Done | 0 of 5 components pass | Improved, not yet met — see §4 below |
 
 Findings the audit raised that are now **closed**: C1 (package architecture), C2 (`color` override),
 C3 (no CI), C4 (no goldens), C5 (no high contrast), C6 (no component theming
 layer — addressed differently, see §5), M1 (theme methods), M2 (ColorScheme
-role coverage), M3 (badge semantics), M4 (heroTag), M8 (lint set), M9
-(versioning hygiene), and minors 1, 3, 4, 5, 6, 7, 9.
+role coverage), M3 (badge semantics), M4 (heroTag), M7 (device floor), M8
+(lint set), M9 (versioning hygiene), and minors 1, 3, 4, 5, 6, 7, 9.
 
 Several were already closed before the review was written — `slds_tokens`,
 the CI workflow, the bundled fonts and the pubspec metadata all predate it.
@@ -81,17 +81,14 @@ Ordered by what a re-audit is most likely to reject.
 
 | Item | Section | State |
 |------|---------|-------|
-| Semantics missing on 32 widgets | §5 | Includes interactive controls: dropdown, search bar, OTP input, date/time pickers |
-| Hardcoded English semantic labels | §5, §6 | Present labels are not routed through the delegate, so a si/ta screen reader hears English |
+| Semantics missing on ~29 widgets | §5 | The form controls (checkbox, radio, toggle) are done; dropdown, search bar, OTP input and the pickers are not |
+| Hardcoded English semantic labels | §5, §6 | Existing labels are not routed through the delegate, so a si/ta screen reader hears English |
 | si/ta translations unreviewed | §6 (M6) | Machine-drafted. §6: a component with an unverified translation does not ship |
-| No intl formatting layer | §6 (M6) | Dates, numbers and LKR currency still formatted ad hoc |
 | Golden coverage is partial | §8 | 61 images across 5 components; the remaining 46 need the same matrix |
-| `EdgeInsetsDirectional` not used | §5 | One RTL golden now proves the button mirrors; the rest is unverified |
-| Reduced motion not honoured in widgets | §5 | The token layer reads `disableAnimations`; widgets do not yet act on it |
-| Device floor undeclared | §1 (M7) | No minSdk pin to API 24, no documented 320dp floor |
+| `EdgeInsetsDirectional` not used widely | §5 | One RTL golden proves the button mirrors; the rest is unverified |
 | Credential/PII marker convention | §1 (M7) | No credential component exists yet; the contract should exist before the first one |
-| Governance scaffolding | §10 | No CODEOWNERS, issue or PR templates, named owners |
-| 322 undocumented public members | §7 | Ratcheted in CI so the count can only fall |
+| 309 undocumented public members | §7 | Ratcheted in CI so the count can only fall |
+| Private pub registry | §3, §12 | Open GovTech decision; the package is `publish_to: none` until it is made |
 
 ---
 
@@ -100,9 +97,9 @@ Ordered by what a re-audit is most likely to reject.
 The audit's headline was "0 of 5 components pass". That is no longer the right
 measure — there are 51 components — but the honest answer is that **no
 component fully meets all 13 criteria yet**. The blocking gaps are DoD 3
-(semantics), DoD 5 (localized strings and intl formatting), DoD 7 (goldens for
-every component), DoD 9 (dartdoc) and DoD 13 (manual TalkBack/VoiceOver pass,
-which has not been performed).
+(semantics on most components), DoD 5 (si/ta translations still unreviewed),
+DoD 7 (goldens for every component), DoD 9 (dartdoc) and DoD 13 (manual
+TalkBack/VoiceOver pass, which has not been performed).
 
 `SldsButton` is closest: tokens, three themes, 48px targets, live-region
 loading announcement, full golden matrix including RTL and si/ta, guideline
@@ -113,8 +110,8 @@ manual assistive-technology pass.
 
 ## 5. Deliberate divergences
 
-Both are engineering decisions taken knowingly. They are recorded here rather
-than left to be discovered.
+All three are decisions taken knowingly. They are recorded here rather than
+left to be discovered at re-audit.
 
 **Component theming does not use `ThemeExtension` (§4, C6).** The guideline
 prescribes one `ThemeExtension` subclass per component. This library instead
@@ -171,5 +168,5 @@ dart format --set-exit-if-changed packages widgetbook app
 (cd packages/slds_components && flutter test)
 ```
 
-Current: 440 component tests, 118 token tests, all passing. Contrast is
+Current: 478 component tests, 118 token tests, all passing. Contrast is
 94 pass / 0 fail, from 75 / 19 at the reviewed commit.

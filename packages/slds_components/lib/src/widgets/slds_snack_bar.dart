@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// SLDS snack bar / toast — a floating card at the bottom of the screen
 /// with a [title], optional [message], and an optional trailing action
@@ -14,8 +14,8 @@ import 'slds_button.dart';
 /// Requires a [Scaffold]/[ScaffoldMessenger] ancestor like any snack bar.
 class SldsSnackBar extends StatelessWidget {
   const SldsSnackBar({
-    super.key,
     required this.title,
+    super.key,
     this.message,
     this.actionLabel,
     this.onAction,

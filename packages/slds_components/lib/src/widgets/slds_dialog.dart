@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// SLDS alert dialog — a blocking modal window with a [title], [message],
 /// and up to two actions (a [cancelLabel]/[onCancel] outlined button and a
@@ -13,8 +13,8 @@ import 'slds_button.dart';
 /// not a hand-rolled modal.
 class SldsDialog extends StatelessWidget {
   const SldsDialog({
-    super.key,
     required this.title,
+    super.key,
     this.message,
     this.cancelLabel,
     this.onCancel,
@@ -40,6 +40,12 @@ class SldsDialog extends StatelessWidget {
   /// [onCancel]/[onConfirm] should pop the navigator themselves (e.g.
   /// `Navigator.of(context).pop()`) if the dialog should close on tap —
   /// this helper doesn't pop for you, so callers can run async work first.
+  ///
+  /// [useRootNavigator] defaults to false (Flutter's own default is true) so
+  /// the dialog stays inside the nearest enclosing [Navigator] — otherwise it
+  /// escapes any ancestor that sizes or frames it, e.g. rendering across the
+  /// whole browser window instead of Widgetbook's device viewport. Pass true
+  /// if the dialog must cover a nested navigator's own chrome.
   static Future<void> show(
     BuildContext context, {
     required String title,
@@ -49,10 +55,12 @@ class SldsDialog extends StatelessWidget {
     String? confirmLabel,
     VoidCallback? onConfirm,
     bool barrierDismissible = true,
+    bool useRootNavigator = false,
   }) {
     return showDialog<void>(
       context: context,
       barrierDismissible: barrierDismissible,
+      useRootNavigator: useRootNavigator,
       builder: (context) => SldsDialog(
         title: title,
         message: message,
@@ -86,6 +94,10 @@ class SldsDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(dimensions.radius2xl),
       ),
+      // Dialog's own default is `minWidth: 280` with no maximum, so the
+      // dialog stretches to the full window on a desktop-width viewport.
+      // 560 is the Material 3 spec width.
+      constraints: const BoxConstraints(minWidth: 280, maxWidth: 560),
       child: Padding(
         padding: EdgeInsets.all(dimensions.space24),
         child: Column(
@@ -109,19 +121,30 @@ class SldsDialog extends StatelessWidget {
             ],
             if (_hasActions) ...[
               SizedBox(height: dimensions.space16),
+              // Flexible, not bare children: below the mobile breakpoint an
+              // SldsButton asks for the full width it is offered, so two of
+              // them in one Row overflow a phone-width dialog unless each is
+              // held to a share of the line.
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (cancelLabel != null)
-                    SldsButton(
-                      label: cancelLabel!,
-                      onPressed: onCancel,
-                      variant: SldsButtonVariant.secondary,
+                    Flexible(
+                      child: SldsButton(
+                        label: cancelLabel!,
+                        onPressed: onCancel,
+                        variant: SldsButtonVariant.secondary,
+                      ),
                     ),
                   if (cancelLabel != null && confirmLabel != null)
                     SizedBox(width: dimensions.space8),
                   if (confirmLabel != null)
-                    SldsButton(label: confirmLabel!, onPressed: onConfirm),
+                    Flexible(
+                      child: SldsButton(
+                        label: confirmLabel!,
+                        onPressed: onConfirm,
+                      ),
+                    ),
                 ],
               ),
             ],

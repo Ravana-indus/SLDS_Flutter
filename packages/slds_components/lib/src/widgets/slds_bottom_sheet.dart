@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/slds_components.dart' show SldsFlyoutMenu;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_flyout_menu.dart'
+    show SldsFlyoutMenu;
 
 /// SLDS bottom sheet — a full-height sheet with a back chevron, centered
 /// [title], a close button, and [child] content below. Use for a
@@ -13,9 +17,9 @@ import '../theme/slds_tokens.dart';
 /// different framing.
 class SldsBottomSheet extends StatelessWidget {
   const SldsBottomSheet({
-    super.key,
     required this.title,
     required this.child,
+    super.key,
     this.onBack,
     this.onClose,
   });
@@ -78,7 +82,7 @@ class SldsBottomSheet extends StatelessWidget {
                   _IconSquare(
                     icon: Icons.arrow_back,
                     onTap: onBack,
-                    semanticLabel: 'Back',
+                    semanticLabel: context.sldsStrings.back,
                   ),
                   Expanded(
                     child: Text(
@@ -93,7 +97,7 @@ class SldsBottomSheet extends StatelessWidget {
                   _IconSquare(
                     icon: Icons.close,
                     onTap: onClose,
-                    semanticLabel: 'Close',
+                    semanticLabel: context.sldsStrings.close,
                   ),
                 ],
               ),

@@ -9,8 +9,14 @@ void main() {
   runApp(const WidgetbookApp());
 }
 
-final _lightTheme = WidgetbookTheme(name: 'Light', data: SldsTheme.light());
-final _darkTheme = WidgetbookTheme(name: 'Dark', data: SldsTheme.dark());
+final _lightTheme = WidgetbookTheme(name: 'Light', data: SldsTheme.light);
+final _darkTheme = WidgetbookTheme(name: 'Dark', data: SldsTheme.dark);
+// SLDS ships a third palette that the golden tests already cover but that had
+// no way to be previewed here.
+final _highContrastTheme = WidgetbookTheme(
+  name: 'High Contrast',
+  data: SldsTheme.highContrast,
+);
 
 @widgetbook.App()
 class WidgetbookApp extends StatelessWidget {
@@ -22,7 +28,7 @@ class WidgetbookApp extends StatelessWidget {
       directories: directories,
       addons: [
         MaterialThemeAddon(
-          themes: [_lightTheme, _darkTheme],
+          themes: [_lightTheme, _darkTheme, _highContrastTheme],
           initialTheme:
               _lightTheme, // Widgetbook still opens in Light by default
         ),

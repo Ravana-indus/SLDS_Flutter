@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_colors.dart';
-import '../tokens/slds_spacing.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/slds_components.dart' show SldsTextField;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_text_field.dart'
+    show SldsTextField;
 
 /// SLDS searchable dropdown/select — label (with required marker), a
 /// closed-state field showing the current selection or a placeholder, and
@@ -13,19 +16,18 @@ import '../tokens/slds_spacing.dart';
 /// aware); pass [color] to override the focus/accent color for one instance.
 class SldsDropdown<T> extends StatefulWidget {
   const SldsDropdown({
-    super.key,
     required this.label,
     required this.items,
     required this.itemLabel,
+    super.key,
     this.value,
     this.onChanged,
     this.isRequired = false,
     this.helpText,
     this.errorText,
-    this.hintText = 'Select an option',
-    this.searchHintText = 'Search',
+    this.hintText,
+    this.searchHintText,
     this.enabled = true,
-    this.color,
   });
 
   final String label;
@@ -39,12 +41,9 @@ class SldsDropdown<T> extends StatefulWidget {
   final bool isRequired;
   final String? helpText;
   final String? errorText;
-  final String hintText;
-  final String searchHintText;
+  final String? hintText;
+  final String? searchHintText;
   final bool enabled;
-
-  /// Overrides the token-driven focus/accent color for this instance only.
-  final Color? color;
 
   @override
   State<SldsDropdown<T>> createState() => _SldsDropdownState<T>();
@@ -95,10 +94,11 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final accent = widget.color ?? scheme.primary;
+    final dimensions = context.slds.dimensions;
+    final accent = scheme.primary;
 
     final borderColor = !widget.enabled
-        ? scheme.outline.withValues(alpha: SldsColors.disabledOpacity)
+        ? scheme.outline.withValues(alpha: context.slds.opacities.disabled)
         : _hasError
         ? scheme.error
         : (_open ? accent : scheme.outline);
@@ -124,20 +124,20 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: SldsSpacing.xs),
+        SizedBox(height: dimensions.space4),
         InkWell(
           onTap: _toggle,
-          borderRadius: BorderRadius.circular(SldsSpacing.sm),
+          borderRadius: BorderRadius.circular(dimensions.space8),
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: SldsSpacing.md,
-              vertical: SldsSpacing.md,
+            padding: EdgeInsets.symmetric(
+              horizontal: dimensions.space12,
+              vertical: dimensions.space12,
             ),
             decoration: BoxDecoration(
               color: widget.enabled
                   ? scheme.surface
                   : scheme.onSurface.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(SldsSpacing.sm),
+              borderRadius: BorderRadius.circular(dimensions.space8),
               // 1.5 matches every other field's focused-border weight
               // (SldsInput/SldsMobileNumberInput/SldsSearchBar's
               // emphasizedBorderWidth token) — this widget predates that
@@ -150,13 +150,13 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                   child: Text(
                     widget.value != null
                         ? widget.itemLabel(widget.value as T)
-                        : widget.hintText,
+                        : widget.hintText ?? context.sldsStrings.selectAnOption,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: widget.value != null
                           ? (widget.enabled
                                 ? scheme.onSurface
                                 : scheme.onSurface.withValues(
-                                    alpha: SldsColors.disabledOpacity,
+                                    alpha: context.slds.opacities.disabled,
                                   ))
                           : scheme.onSurface.withValues(alpha: 0.5),
                     ),
@@ -169,7 +169,7 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                   color: widget.enabled
                       ? scheme.onSurface
                       : scheme.onSurface.withValues(
-                          alpha: SldsColors.disabledOpacity,
+                          alpha: context.slds.opacities.disabled,
                         ),
                 ),
               ],
@@ -177,25 +177,26 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
           ),
         ),
         if (_open) ...[
-          const SizedBox(height: SldsSpacing.sm),
+          SizedBox(height: dimensions.space8),
           Container(
             decoration: BoxDecoration(
               color: scheme.surface,
-              borderRadius: BorderRadius.circular(SldsSpacing.sm),
+              borderRadius: BorderRadius.circular(dimensions.space8),
               border: Border.all(color: scheme.outline),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(SldsSpacing.sm),
+                  padding: EdgeInsets.all(dimensions.space8),
                   child: TextField(
                     controller: _searchController,
                     autofocus: true,
                     onChanged: (v) => setState(() => _query = v),
                     style: Theme.of(context).textTheme.bodyMedium,
                     decoration: InputDecoration(
-                      hintText: widget.searchHintText,
+                      hintText:
+                          widget.searchHintText ?? context.sldsStrings.search,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 20,
@@ -204,20 +205,20 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                       isDense: true,
                       filled: true,
                       fillColor: scheme.surface,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: SldsSpacing.md,
-                        vertical: SldsSpacing.sm,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: dimensions.space12,
+                        vertical: dimensions.space8,
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(SldsSpacing.sm),
+                        borderRadius: BorderRadius.circular(dimensions.space8),
                         borderSide: BorderSide(color: scheme.outline),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(SldsSpacing.sm),
+                        borderRadius: BorderRadius.circular(dimensions.space8),
                         borderSide: BorderSide(color: scheme.outline),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(SldsSpacing.sm),
+                        borderRadius: BorderRadius.circular(dimensions.space8),
                         borderSide: BorderSide(color: accent),
                       ),
                     ),
@@ -227,7 +228,7 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                   constraints: const BoxConstraints(maxHeight: 240),
                   child: _filtered.isEmpty
                       ? Padding(
-                          padding: const EdgeInsets.all(SldsSpacing.lg),
+                          padding: EdgeInsets.all(dimensions.space16),
                           child: Text(
                             'No results',
                             style: Theme.of(context).textTheme.bodyMedium
@@ -249,9 +250,9 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                               onTap: () => _select(item),
                               child: Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: SldsSpacing.md,
-                                  vertical: SldsSpacing.md,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: dimensions.space12,
+                                  vertical: dimensions.space12,
                                 ),
                                 color: selected
                                     ? scheme.onSurface.withValues(alpha: 0.06)
@@ -272,14 +273,16 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
         ],
         if (_hasError ||
             (widget.helpText != null && widget.helpText!.isNotEmpty)) ...[
-          const SizedBox(height: SldsSpacing.xs),
+          SizedBox(height: dimensions.space4),
           Text(
             _hasError ? widget.errorText! : widget.helpText!,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: _hasError
                   ? scheme.error
                   : scheme.onSurface.withValues(
-                      alpha: widget.enabled ? 0.6 : SldsColors.disabledOpacity,
+                      alpha: widget.enabled
+                          ? 0.6
+                          : context.slds.opacities.disabled,
                     ),
             ),
           ),

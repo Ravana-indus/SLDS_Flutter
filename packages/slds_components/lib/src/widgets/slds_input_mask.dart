@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsInput;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_input.dart' show SldsInput;
 
 /// Figma visual states for [SldsInputMask].
 enum SldsInputMaskState {
@@ -30,8 +31,8 @@ enum SldsInputMaskState {
 /// composited field if either side needs to be interactive.
 class SldsInputMask extends StatefulWidget {
   const SldsInputMask({
-    super.key,
     required this.label,
+    super.key,
     this.controller,
     this.prefixText,
     this.suffixText,
@@ -210,7 +211,7 @@ class _SldsInputMaskState extends State<SldsInputMask> {
                 ? constraints.maxWidth
                 : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
-            ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
+            ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
 
         return SizedBox(

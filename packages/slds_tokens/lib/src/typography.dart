@@ -61,6 +61,14 @@ class SldsTextStyleToken {
 }
 
 /// The SLDS type scale.
+///
+/// Naming caveat: an unprefixed token is NOT reliably the desktop style. The
+/// scale grew per-component, so some unprefixed names took the Figma Mobile
+/// value ([body1], [title1], [heading1], [heading2], [heading3], [caption1])
+/// and others took the Desktop value ([body2], [caption2], [heading4],
+/// [display2]). The `desktop`/`mobile` prefixes were added only where both
+/// platforms were needed at once. Each token's doc comment names the exact
+/// Figma style it mirrors — trust that, not the prefix.
 class SldsRawTypographyTokens {
   /// Creates a type scale with every style specified.
   const SldsRawTypographyTokens({
@@ -172,52 +180,65 @@ class SldsRawTypographyTokens {
   /// Primary font family name.
   final String fontFamily;
 
-  /// Bottom Navigation label (Figma: 12px/18px regular, +0.2 tracking).
+  /// Bottom Navigation label (Figma Desktop/Caption 1: 12px/18px regular,
+  /// +0.2 tracking).
   final SldsTextStyleToken bottomNavigationLabel;
 
-  /// Mobile body 1 style.
+  /// Mobile body 1 style (Figma Mobile/Body 1: 16px/20px regular).
   final SldsTextStyleToken body1;
 
-  /// Desktop body 2 style.
+  /// Desktop body 2 style (Figma Desktop/Body 2: 14px/22px regular).
   final SldsTextStyleToken body2;
 
-  /// Caption style.
+  /// Mobile caption 1 style (Figma Mobile/Caption 1: 12px/16px regular, no
+  /// tracking).
+  ///
+  /// Not Desktop/Caption 1, which is 12px/18px with +0.2 tracking — that one
+  /// is [bottomNavigationLabel]/[snackbarCaption]. This is the shared helper,
+  /// error and supporting-text style across the widget set.
   final SldsTextStyleToken caption1;
 
-  /// Desktop caption 2 style.
+  /// Desktop caption 2 style (Figma Desktop/Caption 2: 11px/16px regular,
+  /// +0.3 tracking).
   final SldsTextStyleToken caption2;
 
-  /// Mobile caption 2 style.
+  /// Mobile caption 2 style (Figma Mobile/Caption 2: 11px/20px regular).
   final SldsTextStyleToken mobileCaption2;
 
-  /// Mobile display 1 style used by numeric error-state codes.
+  /// Mobile display 1 style used by numeric error-state codes
+  /// (Figma Mobile/Display 1: 36px/44px medium, -2.0 tracking).
   final SldsTextStyleToken mobileDisplay1;
 
-  /// Desktop display 2 style.
+  /// Desktop display 2 style (Figma Desktop/Display 2: 44px/56px bold,
+  /// -0.3 tracking).
   final SldsTextStyleToken display2;
 
-  /// Desktop heading 4 style.
+  /// Desktop heading 4 style (Figma Desktop/Heading 4: 24px/32px medium,
+  /// -0.1 tracking).
   final SldsTextStyleToken heading4;
 
-  /// Snackbar caption style.
+  /// Snackbar caption style (Figma Desktop/Caption 1: 12px/18px regular,
+  /// +0.2 tracking).
   final SldsTextStyleToken snackbarCaption;
 
-  /// Mobile title style.
+  /// Mobile title style (Figma Mobile/Title 1: 18px/24px medium).
   final SldsTextStyleToken title1;
 
-  /// Mobile heading 1 style.
+  /// Mobile heading 1 style (Figma Mobile/Heading 1: 26px/28px medium).
   final SldsTextStyleToken heading1;
 
-  /// Mobile heading 2 style.
+  /// Mobile heading 2 style (Figma Mobile/Heading 2: 24px/32px medium).
   final SldsTextStyleToken heading2;
 
-  /// Desktop heading 2 style.
+  /// Desktop heading 2 style (Figma Desktop/Heading 2: 28px/40px bold,
+  /// -0.2 tracking).
   final SldsTextStyleToken desktopHeading2;
 
-  /// Mobile heading 3 style.
+  /// Mobile heading 3 style (Figma Mobile/Heading 3: 22px/36px bold,
+  /// -0.5 tracking).
   final SldsTextStyleToken heading3;
 
-  /// Desktop title style.
+  /// Desktop title style (Figma Desktop/Title 1: 18px/28px medium).
   final SldsTextStyleToken desktopTitle1;
 
   /// Input and selection-field label (Figma: 16px/20px regular).

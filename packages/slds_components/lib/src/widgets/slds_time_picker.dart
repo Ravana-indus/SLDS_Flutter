@@ -1,10 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import '../tokens/slds_breakpoints.dart';
-import 'slds_button.dart';
-import 'slds_text_field.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_text_field.dart';
 
 /// Which unit is currently being edited in [SldsTimePickerDialog].
 enum SldsTimePickerUnit { hour, minute }
@@ -18,10 +19,9 @@ class SldsTimePickerDialog extends StatefulWidget {
     this.onTimeChanged,
     this.onCancel,
     this.onApply,
-    this.titleText = 'Set Your Time',
-    this.cancelText = 'Cancel',
-    this.applyText = 'Apply',
-    this.primaryColor,
+    this.titleText,
+    this.cancelText,
+    this.applyText,
     this.width,
   });
 
@@ -38,16 +38,13 @@ class SldsTimePickerDialog extends StatefulWidget {
   final ValueChanged<TimeOfDay>? onApply;
 
   /// Header title text.
-  final String titleText;
+  final String? titleText;
 
   /// Cancel button label.
-  final String cancelText;
+  final String? cancelText;
 
   /// Apply button label.
-  final String applyText;
-
-  /// Primary accent color (defaults to SLDS yellow `#FFC700`).
-  final Color? primaryColor;
+  final String? applyText;
 
   /// Custom width constraint for responsiveness.
   final double? width;
@@ -62,7 +59,6 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
   late DayPeriod _period;
   SldsTimePickerUnit _activeUnit = SldsTimePickerUnit.hour;
 
-  static const Color _defaultPrimaryYellow = Color(0xFFFFC700);
   static const Color _defaultLightYellow = Color(0xFFFFF7D6);
 
   @override
@@ -115,7 +111,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final primaryAccent = widget.primaryColor ?? _defaultPrimaryYellow;
+    final primaryAccent = context.slds.colors.buttonPrimaryBackground;
 
     return Container(
       width: widget.width ?? 320,
@@ -154,7 +150,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  widget.titleText,
+                  widget.titleText ?? context.sldsStrings.setYourTime,
                   style: tokens.typography.title1.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colors.textPrimary,
@@ -328,17 +324,16 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
           // SldsBreakpoints.mobile screen width, so the row would overflow;
           // stack Cancel/Apply instead on mobile, matching the button's own
           // responsive behavior rather than fighting it.
-          if (SldsBreakpoints.isMobile(context))
+          if (context.sldsIsMobile)
             Column(
               children: [
                 SldsButton(
-                  label: widget.applyText,
+                  label: widget.applyText ?? context.sldsStrings.apply,
                   onPressed: () => widget.onApply?.call(_currentTimeOfDay),
-                  color: primaryAccent,
                 ),
                 const SizedBox(height: 12),
                 SldsButton(
-                  label: widget.cancelText,
+                  label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
                 ),
@@ -349,15 +344,14 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SldsButton(
-                  label: widget.cancelText,
+                  label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
                 ),
                 const SizedBox(width: 12),
                 SldsButton(
-                  label: widget.applyText,
+                  label: widget.applyText ?? context.sldsStrings.apply,
                   onPressed: () => widget.onApply?.call(_currentTimeOfDay),
-                  color: primaryAccent,
                 ),
               ],
             ),
@@ -374,7 +368,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
       children: List.generate(totalItems, (i) {
         final val = isHour ? (i == 0 ? 12 : i) : (i * 5);
         final angle = (i * 30 - 90) * (math.pi / 180);
-        final radius = 82.0;
+        const radius = 82.0;
 
         final cx = 105.0 + radius * math.cos(angle);
         final cy = 105.0 + radius * math.sin(angle);
@@ -482,7 +476,7 @@ class _RadialClockDialPainter extends CustomPainter {
 
     // Pivot dot at center
     final pivotPaint = Paint()..color = primaryColor;
-    canvas.drawCircle(center, 5.0, pivotPaint);
+    canvas.drawCircle(center, 5, pivotPaint);
   }
 
   @override
@@ -497,8 +491,8 @@ class _RadialClockDialPainter extends CustomPainter {
 /// and opens the [SldsTimePickerDialog] when tapped.
 class SldsTimePicker extends StatefulWidget {
   const SldsTimePicker({
-    super.key,
     required this.label,
+    super.key,
     this.initialTime,
     this.onTimeChanged,
     this.hintText = 'HH:MM',
@@ -506,10 +500,9 @@ class SldsTimePicker extends StatefulWidget {
     this.errorText,
     this.enabled = true,
     this.isRequired = false,
-    this.primaryColor,
-    this.titleText = 'Set Your Time',
-    this.cancelText = 'Cancel',
-    this.applyText = 'Apply',
+    this.titleText,
+    this.cancelText,
+    this.applyText,
   });
 
   final String label;
@@ -520,10 +513,9 @@ class SldsTimePicker extends StatefulWidget {
   final String? errorText;
   final bool enabled;
   final bool isRequired;
-  final Color? primaryColor;
-  final String titleText;
-  final String cancelText;
-  final String applyText;
+  final String? titleText;
+  final String? cancelText;
+  final String? applyText;
 
   @override
   State<SldsTimePicker> createState() => _SldsTimePickerState();
@@ -564,7 +556,7 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
   }
 
   Future<void> _showTimePicker(BuildContext context) async {
-    final TimeOfDay? picked = await showDialog<TimeOfDay>(
+    final picked = await showDialog<TimeOfDay>(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
@@ -573,9 +565,8 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
           child: SldsTimePickerDialog(
             initialTime: _selectedTime ?? const TimeOfDay(hour: 7, minute: 0),
             titleText: widget.titleText,
-            cancelText: widget.cancelText,
-            applyText: widget.applyText,
-            primaryColor: widget.primaryColor,
+            cancelText: widget.cancelText ?? context.sldsStrings.cancel,
+            applyText: widget.applyText ?? context.sldsStrings.apply,
             onApply: (TimeOfDay time) {
               Navigator.of(context).pop(time);
             },
@@ -610,7 +601,6 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
           enabled: widget.enabled,
           isRequired: widget.isRequired,
           trailingIcon: Icons.access_time,
-          color: widget.primaryColor,
         ),
       ),
     );

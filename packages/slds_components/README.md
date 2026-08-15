@@ -20,7 +20,20 @@ dependencies:
 import 'package:slds_components/slds_components.dart';
 
 MaterialApp(
-  theme: SldsTheme.light(),
+  theme: SldsTheme.light,
+  darkTheme: SldsTheme.dark,
+  highContrastTheme: SldsTheme.highContrast,
+  highContrastDarkTheme: SldsTheme.highContrast,
+  localizationsDelegates: SldsLocalizations.localizationsDelegates,
+  supportedLocales: SldsLocalizations.supportedLocales,
   home: SldsButton(label: 'Continue', onPressed: () {}),
 );
 ```
+
+The themes are cached statics rather than methods: `SldsTheme.light()`
+called inside a `build` would allocate a new `ThemeData`, re-running every
+token lookup, on every frame.
+
+Components take no `color` parameter — variants carry emphasis, and colour
+resolves from the ambient token set. See the root
+[README](../../README.md#colors-come-from-tokens-not-parameters).

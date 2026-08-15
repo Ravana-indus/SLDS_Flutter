@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget widget) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: Center(child: widget)),
     ),
   );
@@ -15,7 +17,7 @@ void main() {
     (tester) async {
       await pump(
         tester,
-        const SldsTimePickerDialog(initialTime: TimeOfDay(hour: 7, minute: 0)),
+        const SldsTimePickerDialog(),
       );
 
       expect(find.text('Set Your Time'), findsOneWidget);
@@ -33,7 +35,6 @@ void main() {
     await pump(
       tester,
       SldsTimePickerDialog(
-        initialTime: const TimeOfDay(hour: 7, minute: 0),
         onTimeChanged: (t) => changedTime = t,
       ),
     );

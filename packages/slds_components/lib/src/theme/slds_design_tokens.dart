@@ -1,8 +1,15 @@
-import 'package:flutter/widgets.dart';
+// Material, not widgets: [SldsTypographyTokens.materialTextTheme] returns a
+// [TextTheme], which ThemeData needs and package:flutter/widgets.dart does
+// not export.
+import 'package:flutter/material.dart';
 import 'package:slds_tokens/slds_tokens.dart';
 
 export 'package:slds_tokens/slds_tokens.dart'
-    show SldsDimensionTokens, SldsMotionTokens, SldsTextStyleToken;
+    show
+        SldsDimensionTokens,
+        SldsMotionTokens,
+        SldsOpacityTokens,
+        SldsTextStyleToken;
 
 /// The package that ships the font assets.
 ///
@@ -35,6 +42,7 @@ extension SldsTextStyleTokenX on SldsTextStyleToken {
 /// Wraps the raw [SldsColorTokens] from `slds_tokens`; equality delegates to
 /// that object, so comparing two palettes is one integer-field comparison
 /// per role rather than a deep [Color] walk.
+@immutable
 class SldsColorTokens {
   /// Wraps [tokens] for use in a widget tree.
   const SldsColorTokens(this.tokens);
@@ -161,6 +169,19 @@ class SldsColorTokens {
 
   /// Ghost button pressed background.
   Color get buttonGhostPressed => Color(tokens.buttonGhostPressed);
+
+  /// Inline text link label.
+  Color get linkLabel => Color(tokens.linkLabel);
+
+  /// Inline text link label on hover.
+  Color get linkLabelHover => Color(tokens.linkLabelHover);
+
+  /// Destructive inline text link label.
+  Color get linkDestructiveLabel => Color(tokens.linkDestructiveLabel);
+
+  /// Destructive inline text link label on hover.
+  Color get linkDestructiveLabelHover =>
+      Color(tokens.linkDestructiveLabelHover);
 
   /// Destructive button background.
   Color get buttonDestructiveBackground =>
@@ -315,6 +336,7 @@ class SldsColorTokens {
 }
 
 /// The SLDS type scale as Flutter [TextStyle]s.
+@immutable
 class SldsTypographyTokens {
   /// Wraps [tokens] for use in a widget tree.
   const SldsTypographyTokens(this.tokens);
@@ -395,6 +417,40 @@ class SldsTypographyTokens {
   TextStyle get compactDescription =>
       tokens.compactDescription.toTextStyle(tokens.fontFamily);
 
+  /// This type scale expressed in Material's [TextTheme] slot names.
+  ///
+  /// Widgets read SLDS names ([heading3], [body2]) directly. This mapping
+  /// exists for the one place that cannot: [ThemeData.textTheme], which is
+  /// keyed by Material slots and is what `Text` falls back to when a widget
+  /// passes no explicit style.
+  ///
+  /// The pairing is by metric, not by name — each slot takes the SLDS token
+  /// whose size, line height and tracking already match what Material puts
+  /// there. Slots with no SLDS equivalent are left unset so they inherit
+  /// Material's default rather than being filled with an approximation.
+  TextTheme get materialTextTheme => TextTheme(
+    // Display — the largest scale, used by numeric error codes and hero text.
+    displayLarge: display2,
+    displayMedium: display2,
+    displaySmall: mobileDisplay1,
+    // Headline — section headings.
+    headlineLarge: desktopHeading2,
+    headlineMedium: desktopHeading2,
+    headlineSmall: heading2,
+    // Title — card and dialog titles.
+    titleLarge: heading4,
+    titleMedium: desktopTitle1,
+    titleSmall: title1,
+    // Body — running text. body1 is 16px, body2 is 14px.
+    bodyLarge: body1,
+    bodyMedium: body2,
+    bodySmall: caption1,
+    // Label — control labels and captions.
+    labelLarge: fieldLabel,
+    labelMedium: caption1,
+    labelSmall: caption2,
+  );
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -408,6 +464,7 @@ class SldsTypographyTokens {
 ///
 /// Read this from a [BuildContext] via the `slds` extension rather than
 /// constructing it.
+@immutable
 class SldsTokenSet {
   /// Creates a token set.
   const SldsTokenSet({
@@ -415,6 +472,7 @@ class SldsTokenSet {
     required this.motion,
     this.dimensions = SldsDimensionTokens.standard,
     this.typography = SldsTypographyTokens.standard,
+    this.opacities = SldsOpacityTokens.standard,
   });
 
   /// The light theme.
@@ -453,18 +511,23 @@ class SldsTokenSet {
   /// Animation durations.
   final SldsMotionTokens motion;
 
+  /// Composition factors such as the disabled dim. Theme-independent.
+  final SldsOpacityTokens opacities;
+
   /// Returns a copy with the given token groups replaced.
   SldsTokenSet copyWith({
     SldsColorTokens? colors,
     SldsDimensionTokens? dimensions,
     SldsTypographyTokens? typography,
     SldsMotionTokens? motion,
+    SldsOpacityTokens? opacities,
   }) {
     return SldsTokenSet(
       colors: colors ?? this.colors,
       dimensions: dimensions ?? this.dimensions,
       typography: typography ?? this.typography,
       motion: motion ?? this.motion,
+      opacities: opacities ?? this.opacities,
     );
   }
 
@@ -475,9 +538,11 @@ class SldsTokenSet {
         other.colors == colors &&
         other.dimensions == dimensions &&
         other.typography == typography &&
-        other.motion == motion;
+        other.motion == motion &&
+        other.opacities == opacities;
   }
 
   @override
-  int get hashCode => Object.hash(colors, dimensions, typography, motion);
+  int get hashCode =>
+      Object.hash(colors, dimensions, typography, motion, opacities);
 }

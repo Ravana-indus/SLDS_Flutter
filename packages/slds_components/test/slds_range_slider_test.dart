@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: field),
     ),
   );
@@ -13,7 +15,7 @@ void main() {
   testWidgets('renders a Slider with the given value/min/max', (tester) async {
     await pump(
       tester,
-      SldsRangeSlider(value: 40, min: 0, max: 100, onChanged: (_) {}),
+      SldsRangeSlider(value: 40, onChanged: (_) {}),
     );
 
     final slider = tester.widget<Slider>(find.byType(Slider));
@@ -26,7 +28,7 @@ void main() {
     double? result;
     await pump(
       tester,
-      SldsRangeSlider(value: 0, min: 0, max: 100, onChanged: (v) => result = v),
+      SldsRangeSlider(value: 0, onChanged: (v) => result = v),
     );
 
     await tester.tap(find.byType(Slider));
@@ -86,7 +88,7 @@ void main() {
   testWidgets('value is clamped into [min, max]', (tester) async {
     await pump(
       tester,
-      SldsRangeSlider(value: 150, min: 0, max: 100, onChanged: (_) {}),
+      SldsRangeSlider(value: 150, onChanged: (_) {}),
     );
 
     final slider = tester.widget<Slider>(find.byType(Slider));

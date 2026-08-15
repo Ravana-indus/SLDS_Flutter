@@ -32,16 +32,14 @@ jobs:
       - name: Dependency direction (§2)
         run: dart test test/dependency_direction_test.dart
         working-directory: packages/slds_tokens
-      # Reports 19 known token-palette failures (16 light, 3 dark). Fixing
-      # them means changing token *values*, which is a design decision the
-      # design team owns, not an engineering one — so this reports without
-      # blocking until those values land. Flip to a blocking step (drop the
-      # `continue-on-error`) the moment the palette is corrected; leaving it
-      # advisory once it can pass is how this control stops meaning anything.
-      - name: WCAG contrast (§5, §8) — advisory pending palette fixes
+      # Blocking as of the palette correction: every declared pair now clears
+      # WCAG 2.2 AA, so a regression here is a real accessibility defect and
+      # must fail the build. The corrected values are marked pending design
+      # sign-off in slds_tokens/lib/src/colors.dart; if design replaces them,
+      # this step is what proves the replacements still pass.
+      - name: WCAG contrast (§5, §8)
         run: dart test test/contrast_test.dart
         working-directory: packages/slds_tokens
-        continue-on-error: true
       - name: Unit tests
         run: dart test
         working-directory: packages/slds_tokens
@@ -60,17 +58,67 @@ jobs:
       - name: Format
         run: dart format --set-exit-if-changed packages widgetbook app
 
-      - name: Analyze
-        run: flutter analyze
+      # very_good_analysis per §8, failing on any warning or error.
+      # `--no-fatal-infos` covers the documented backlog downgraded to `info`
+      # in analysis_options.yaml; check_public_docs.dart below is what stops
+      # that backlog growing.
+      - name: Analyze (very_good_analysis)
+        run: flutter analyze --no-fatal-infos
         working-directory: packages/slds_components
 
       - name: Colour literals (§2)
         run: dart run tool/check_literals.dart
         working-directory: packages/slds_components
 
-      - name: Tests
-        run: flutter test
+      - name: Public member docs (§7)
+        run: dart run tool/check_public_docs.dart
         working-directory: packages/slds_components
+
+      # Behaviour, semantics and accessibility-guideline tests. Goldens are
+      # excluded here — see the note on the `goldens` job below.
+      - name: Tests
+        run: flutter test --exclude-tags golden
+        working-directory: packages/slds_components
+
+      - name: Translation completeness (§6)
+        run: flutter test test/slds_translation_completeness_test.dart
+        working-directory: packages/slds_components
+
+  goldens:
+    name: Goldens
+    # DEVIATION FROM §8: the guideline makes Linux the sole reference
+    # platform, because font rasterisation differs across operating systems
+    # even with identical font files. The committed images in this repository
+    # were generated on macOS by explicit decision, so they cannot be compared
+    # byte-for-byte on ubuntu-latest — this job runs on macOS to match them.
+    #
+    # To adopt the §8 rule: regenerate the matrix once on Linux
+    # (`flutter test --update-goldens` in a Linux container), commit the
+    # result, and change `runs-on` to ubuntu-latest.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+      - run: flutter pub get
+
+      - name: Golden comparison (§8)
+        run: flutter test test/slds_goldens_test.dart
+        working-directory: packages/slds_components
+
+      # A failed comparison writes the actual/diff images beside the goldens;
+      # uploading them is what makes a red golden job reviewable.
+      - name: Upload failure images
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-failures
+          path: packages/slds_components/test/goldens/failures/
+          if-no-files-found: ignore
 
   catalog:
     name: Widgetbook builds

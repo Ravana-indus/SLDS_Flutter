@@ -6,7 +6,7 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget button) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      theme: SldsTheme.light,
       localizationsDelegates: SldsLocalizations.localizationsDelegates,
       supportedLocales: SldsLocalizations.supportedLocales,
       home: Scaffold(body: button),
@@ -80,12 +80,12 @@ void main() {
     expect(button.enabled, isFalse);
   });
 
-  testWidgets('picks up SldsTheme.dark() colors from the ambient Theme', (
+  testWidgets('picks up SldsTheme.dark colors from the ambient Theme', (
     tester,
   ) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: SldsTheme.dark(),
+        theme: SldsTheme.dark,
         localizationsDelegates: SldsLocalizations.localizationsDelegates,
         supportedLocales: SldsLocalizations.supportedLocales,
         home: Scaffold(
@@ -100,17 +100,32 @@ void main() {
     final resolvedBackground = style.backgroundColor!.resolve({});
 
     expect(resolvedBackground, scheme.primary);
+    // The gold accent is the same in every palette, and because the fill does
+    // not change, Figma keeps the label on it identical too (Action/Primary
+    // Foreground is #222222 in both light and dark; only the high-contrast
+    // palette darkens it to #000000).
+    expect(resolvedBackground, SldsColorTokens.dark().buttonPrimaryBackground);
     expect(
-      resolvedBackground,
-      isNot(SldsColors.primary),
-    ); // dark seed differs from the light token
+      style.foregroundColor!.resolve({}),
+      SldsColorTokens.dark().buttonPrimaryLabel,
+    );
+    expect(
+      SldsColorTokens.dark().buttonPrimaryLabel,
+      SldsColorTokens.light().buttonPrimaryLabel,
+    );
+    expect(
+      SldsColorTokens.highContrast().buttonPrimaryLabel,
+      isNot(SldsColorTokens.dark().buttonPrimaryLabel),
+    );
   });
 
   for (final variant in [
     SldsButtonVariant.secondary,
     SldsButtonVariant.tertiary,
   ]) {
-    testWidgets('$variant is transparent in light mode', (tester) async {
+    testWidgets('$variant resting background comes from its token', (
+      tester,
+    ) async {
       await pump(
         tester,
         SldsButton(label: 'Continue', variant: variant, onPressed: () {}),
@@ -118,15 +133,22 @@ void main() {
       final style = tester
           .widget<OutlinedButton>(find.byType(OutlinedButton))
           .style!;
-      expect(style.backgroundColor!.resolve({}), isNull);
+      // Tertiary is a ghost variant — transparent at rest. Secondary carries
+      // its own designed fill rather than borrowing a surface tone.
+      expect(
+        style.backgroundColor!.resolve({}),
+        variant == SldsButtonVariant.tertiary
+            ? isNull
+            : SldsColorTokens.light().buttonSecondaryBackground,
+      );
     });
 
-    testWidgets('$variant is filled with a surface tone in dark mode', (
+    testWidgets('$variant resolves against the dark palette in dark mode', (
       tester,
     ) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: SldsTheme.dark(),
+          theme: SldsTheme.dark,
           localizationsDelegates: SldsLocalizations.localizationsDelegates,
           supportedLocales: SldsLocalizations.supportedLocales,
           home: Scaffold(
@@ -141,19 +163,44 @@ void main() {
       final style = tester
           .widget<OutlinedButton>(find.byType(OutlinedButton))
           .style!;
-      expect(style.backgroundColor!.resolve({}), isNotNull);
+      expect(
+        style.foregroundColor!.resolve({}),
+        variant == SldsButtonVariant.tertiary
+            ? SldsColorTokens.dark().buttonGhostLabel
+            : SldsColorTokens.dark().buttonSecondaryLabel,
+      );
     });
   }
 
-  testWidgets('color override wins over the variant token', (tester) async {
-    const override = Color(0xFF00FF00);
+  testWidgets('background resolves from the variant token, not a literal', (
+    tester,
+  ) async {
+    await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
+
+    final style = tester.widget<FilledButton>(find.byType(FilledButton)).style!;
+    expect(
+      style.backgroundColor!.resolve({}),
+      SldsColorTokens.light().buttonPrimaryBackground,
+    );
+  });
+
+  testWidgets('destructive variant reads the destructive token', (
+    tester,
+  ) async {
     await pump(
       tester,
-      SldsButton(label: 'Continue', color: override, onPressed: () {}),
+      SldsButton(
+        label: 'Delete',
+        onPressed: () {},
+        variant: SldsButtonVariant.destructive,
+      ),
     );
 
     final style = tester.widget<FilledButton>(find.byType(FilledButton)).style!;
-    expect(style.backgroundColor!.resolve({}), override);
+    expect(
+      style.backgroundColor!.resolve({}),
+      SldsColorTokens.light().buttonDestructiveBackground,
+    );
   });
 
   Future<void> setViewSize(WidgetTester tester, Size size) async {
@@ -162,30 +209,125 @@ void main() {
     addTearDown(tester.view.reset);
   }
 
-  testWidgets('is full-width and 52px tall below the mobile breakpoint', (
-    tester,
-  ) async {
+  testWidgets('is full-width below the mobile breakpoint', (tester) async {
     await setViewSize(tester, const Size(360, 800));
 
     await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
 
     final size = tester.getSize(find.byType(SldsButton));
     expect(size.width, 360);
-    expect(size.height, 52);
+    expect(size.height, SldsDimensionTokens.standard.buttonHeightExtraLarge);
   });
 
-  testWidgets(
-    'is intrinsic-width and 44px tall at/above the mobile breakpoint',
-    (tester) async {
-      await setViewSize(tester, const Size(1024, 800));
+  testWidgets('is intrinsic-width at/above the mobile breakpoint', (
+    tester,
+  ) async {
+    await setViewSize(tester, const Size(1024, 800));
 
+    await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
+
+    final size = tester.getSize(find.byType(SldsButton));
+    expect(size.width, lessThan(1024));
+    expect(size.height, SldsDimensionTokens.standard.buttonHeightLarge);
+  });
+
+  testWidgets('each size renders its Figma height and radius', (tester) async {
+    // Pinned against the Figma Button spec (node 213:1969). Height and radius
+    // are independent per size, so a single scale factor would not catch a
+    // regression in either one.
+    const d = SldsDimensionTokens.standard;
+    final expected = {
+      SldsButtonSize.small: (d.buttonHeightSmall, d.radiusXl),
+      SldsButtonSize.medium: (d.buttonHeightMedium, d.radiusXl),
+      SldsButtonSize.large: (d.buttonHeightLarge, d.radius2xl),
+      SldsButtonSize.extraLarge: (d.buttonHeightExtraLarge, d.radius2xl),
+    };
+
+    // Desktop width so the button stays intrinsic and is not stretched.
+    await setViewSize(tester, const Size(1024, 800));
+
+    for (final entry in expected.entries) {
+      final (height, radius) = entry.value;
+      await pump(
+        tester,
+        SldsButton(label: 'Continue', onPressed: () {}, size: entry.key),
+      );
+
+      // The painted box, not SldsButton: the small and medium sizes wrap
+      // themselves in a taller invisible tap area to meet the 48px floor.
+      //
+      // greaterThanOrEqualTo, not equals: the height is a floor so a large
+      // text scale can grow the button rather than clip its label. Small and
+      // medium currently sit 2px over their Figma height because the body_2 /
+      // body_1 line-height tokens disagree with Figma (22 vs 14, 20 vs 24) —
+      // see the note in the review; fixing those tokens lands them exactly.
+      expect(
+        tester.getSize(find.byType(FilledButton)).height,
+        greaterThanOrEqualTo(height),
+        reason: '${entry.key} height',
+      );
+
+      final shape =
+          tester
+                  .widget<ButtonStyleButton>(find.byType(FilledButton))
+                  .style!
+                  .shape!
+                  .resolve({})!
+              as RoundedRectangleBorder;
+      expect(
+        shape.borderRadius,
+        BorderRadius.circular(radius),
+        reason: '${entry.key} radius',
+      );
+    }
+  });
+
+  testWidgets('an explicit size overrides the responsive default', (
+    tester,
+  ) async {
+    // Without `size`, mobile picks extraLarge; pinning small must win so a
+    // dense row stays dense on a phone.
+    await setViewSize(tester, const Size(360, 800));
+
+    await pump(
+      tester,
+      SldsButton(
+        label: 'Continue',
+        onPressed: () {},
+        size: SldsButtonSize.small,
+      ),
+    );
+
+    // Small stays small on a phone instead of taking the extraLarge default,
+    // and in particular stays well under the extraLarge height.
+    const dims = SldsDimensionTokens.standard;
+    final painted = tester.getSize(find.byType(FilledButton)).height;
+    expect(painted, greaterThanOrEqualTo(dims.buttonHeightSmall));
+    expect(painted, lessThan(dims.buttonHeightMedium));
+    // ...while the tap target still clears the 48px floor.
+    expect(
+      tester.getSize(find.byType(SldsButton)).height,
+      SldsDimensionTokens.standard.tapTargetMin,
+    );
+  });
+
+  testWidgets('clears the 48px minimum touch target at every breakpoint', (
+    tester,
+  ) async {
+    // WCAG 2.5.5 / the SLDS 48px floor. The button previously shrink-wrapped
+    // to 44px on desktop, defeating Material's own minimum.
+    for (final viewport in [const Size(360, 800), const Size(1024, 800)]) {
+      await setViewSize(tester, viewport);
       await pump(tester, SldsButton(label: 'Continue', onPressed: () {}));
 
       final size = tester.getSize(find.byType(SldsButton));
-      expect(size.width, lessThan(1024));
-      expect(size.height, 44);
-    },
-  );
+      expect(
+        size.height,
+        greaterThanOrEqualTo(SldsDimensionTokens.standard.tapTargetMin),
+        reason: 'button too short to tap at ${viewport.width}px wide',
+      );
+    }
+  });
 
   testWidgets(
     'a long label ellipsizes instead of overflowing on a narrow phone',

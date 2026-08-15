@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsFlyoutMenu;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_flyout_menu.dart'
+    show SldsFlyoutMenu;
 
 /// One expandable section in an [SldsAccordion].
 class SldsAccordionItem {
@@ -19,8 +21,8 @@ class SldsAccordionItem {
 /// pass [initiallyExpanded] to control which start open.
 class SldsAccordion extends StatefulWidget {
   const SldsAccordion({
-    super.key,
     required this.items,
+    super.key,
     this.initiallyExpanded = const {},
   });
 

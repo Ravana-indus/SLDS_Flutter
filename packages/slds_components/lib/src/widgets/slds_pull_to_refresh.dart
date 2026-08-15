@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart' hide RefreshCallback;
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/slds_components.dart'
+    show SldsBottomNav, SldsTopNavBar;
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual container styles for [SldsPullToRefresh] — mirrors
 /// [SldsBottomNav]/[SldsTopNavBar]'s light/dark choice for the loading bar;
@@ -20,10 +23,10 @@ enum SldsPullToRefreshStyle { light, dark }
 /// using [CustomScrollView] directly if you need more control.
 class SldsPullToRefresh extends StatelessWidget {
   const SldsPullToRefresh({
-    super.key,
     required this.onRefresh,
     required this.child,
-    this.loadingText = 'Loading…',
+    super.key,
+    this.loadingText,
     this.style = SldsPullToRefreshStyle.light,
   });
 
@@ -33,7 +36,7 @@ class SldsPullToRefresh extends StatelessWidget {
   final RefreshCallback onRefresh;
 
   final Widget child;
-  final String loadingText;
+  final String? loadingText;
   final SldsPullToRefreshStyle style;
 
   @override
@@ -106,7 +109,7 @@ class SldsPullToRefresh extends StatelessWidget {
                           ),
                           SizedBox(width: tokens.dimensions.space8),
                           Text(
-                            loadingText,
+                            loadingText ?? context.sldsStrings.loadingEllipsis,
                             style: tokens.typography.body2.copyWith(
                               color: dark ? Colors.white : colors.textSecondary,
                             ),

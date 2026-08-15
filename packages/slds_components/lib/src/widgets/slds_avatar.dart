@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Circular footprint for [SldsAvatar], keyed to [SldsDimensionTokens]'s
 /// `avatarSize*` scale (24/32/40/48/56, plus a 64px `extraLarge` matching
@@ -18,7 +18,6 @@ class SldsAvatar extends StatelessWidget {
     this.imageProvider,
     this.initials,
     this.size = SldsAvatarSize.medium,
-    this.color,
     this.semanticLabel,
   });
 
@@ -31,9 +30,6 @@ class SldsAvatar extends StatelessWidget {
   final String? initials;
 
   final SldsAvatarSize size;
-
-  /// Overrides the token-driven background for this instance only.
-  final Color? color;
 
   final String? semanticLabel;
 
@@ -67,7 +63,7 @@ class SldsAvatar extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final diameter = _diameter(dimensions);
-    final background = color ?? colors.buttonPrimaryBackground;
+    final background = colors.buttonPrimaryBackground;
     final trimmedInitials = initials?.trim();
 
     Widget content;

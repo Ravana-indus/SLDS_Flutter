@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget list) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: list),
     ),
   );
@@ -47,7 +49,7 @@ void main() {
           .first,
     );
     expect(
-      (badgeContainer.decoration as BoxDecoration).color,
+      (badgeContainer.decoration! as BoxDecoration).color,
       colors.badgeInReviewBackground,
     );
   });

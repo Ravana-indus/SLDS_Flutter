@@ -10,6 +10,12 @@ pubspec.lock
 # Melos
 .melos_tool/
 
+# Golden-test scratch output — flutter_test writes the *_masterImage /
+# *_testImage / *_isolatedDiff / *_maskedDiff set here when a golden fails.
+# Regenerated on every failing run; the reviewed baselines live in
+# test/goldens/, which stays tracked.
+**/test/failures/
+
 # IDE
 .idea/
 .vscode/

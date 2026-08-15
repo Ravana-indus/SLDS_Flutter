@@ -12,7 +12,6 @@
 // goes away and the rule becomes an outright ban.
 //
 // Run: dart run tool/check_literals.dart
-library;
 
 import 'dart:io';
 

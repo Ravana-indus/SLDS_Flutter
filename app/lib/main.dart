@@ -24,8 +24,8 @@ class SldsApp extends StatelessWidget {
         builder: (context, mode) {
           return MaterialApp(
             title: 'SLDS App',
-            theme: SldsTheme.light(),
-            darkTheme: SldsTheme.dark(),
+            theme: SldsTheme.light,
+            darkTheme: SldsTheme.dark,
             themeMode: mode,
             localizationsDelegates: SldsLocalizations.localizationsDelegates,
             supportedLocales: SldsLocalizations.supportedLocales,

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
-import 'slds_checkbox.dart';
-import 'slds_radio.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/slds_components.dart' show SldsFilterButton;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_checkbox.dart';
+import 'package:slds_components/src/widgets/slds_filter_button.dart'
+    show SldsFilterButton;
+import 'package:slds_components/src/widgets/slds_radio.dart';
 
 /// SLDS filter dropdown panel — a standalone option list (checkboxes for
 /// [multiple], radios otherwise) in a bordered card with a Cancel/Apply
@@ -16,15 +20,15 @@ import 'slds_radio.dart';
 /// when Apply is tapped. [onCancel] discards without calling [onApply].
 class SldsFilterDropdown extends StatelessWidget {
   const SldsFilterDropdown({
-    super.key,
     required this.options,
     required this.selectedValues,
     required this.onSelectionChanged,
+    super.key,
     this.onApply,
     this.onCancel,
     this.multiple = true,
-    this.cancelText = 'Cancel',
-    this.applyText = 'Apply',
+    this.cancelText,
+    this.applyText,
     this.width,
   });
 
@@ -47,8 +51,8 @@ class SldsFilterDropdown extends StatelessWidget {
   /// Checkboxes (multi-select) when true, radios (single-select) when false.
   final bool multiple;
 
-  final String cancelText;
-  final String applyText;
+  final String? cancelText;
+  final String? applyText;
 
   /// Preferred width, clamped to the available parent width.
   final double? width;
@@ -84,7 +88,7 @@ class SldsFilterDropdown extends StatelessWidget {
                 ? constraints.maxWidth
                 : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
-            ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
+            ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
 
         return Container(
@@ -151,13 +155,13 @@ class SldsFilterDropdown extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     SldsButton(
-                      label: cancelText,
+                      label: cancelText ?? context.sldsStrings.cancel,
                       onPressed: onCancel,
                       variant: SldsButtonVariant.text,
                     ),
                     SizedBox(width: dimensions.space8),
                     SldsButton(
-                      label: applyText,
+                      label: applyText ?? context.sldsStrings.apply,
                       onPressed: () => onApply?.call(selectedValues),
                     ),
                   ],

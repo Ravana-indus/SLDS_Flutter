@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'slds_text_field.dart';
+import 'package:slds_components/src/widgets/slds_text_field.dart';
 
 /// SLDS password input — an [SldsTextField] with a built-in show/hide
 /// toggle (the eye icon). Owns the obscure/reveal state itself so callers
@@ -18,7 +18,6 @@ class SldsPasswordField extends StatefulWidget {
     this.enabled = true,
     this.onChanged,
     this.validator,
-    this.color,
   });
 
   final String label;
@@ -30,9 +29,6 @@ class SldsPasswordField extends StatefulWidget {
   final bool enabled;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
-
-  /// Overrides the token-driven focus/accent color for this instance only.
-  final Color? color;
 
   @override
   State<SldsPasswordField> createState() => _SldsPasswordFieldState();
@@ -53,7 +49,6 @@ class _SldsPasswordFieldState extends State<SldsPasswordField> {
       enabled: widget.enabled,
       onChanged: widget.onChanged,
       validator: widget.validator,
-      color: widget.color,
       obscureText: _obscured,
       trailingIcon: _obscured
           ? Icons.visibility_outlined

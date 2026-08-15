@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS search bar — a pill-shaped field with a leading search icon and a
 /// clear (×) trailing icon once text is entered, a gold focus ring, and an
@@ -25,10 +27,10 @@ class SldsSearchBar extends StatefulWidget {
   const SldsSearchBar({
     super.key,
     this.controller,
-    this.hintText = 'Search',
+    this.hintText,
     this.suggestions = const [],
     this.recentSearches = const [],
-    this.recentSearchesLabel = 'RECENT SEARCHES',
+    this.recentSearchesLabel,
     this.onChanged,
     this.onSubmitted,
     this.onSuggestionSelected,
@@ -37,7 +39,7 @@ class SldsSearchBar extends StatefulWidget {
   });
 
   final TextEditingController? controller;
-  final String hintText;
+  final String? hintText;
 
   /// Filtered suggestion labels shown at the top of the panel while focused
   /// and non-empty; recompute this list from [onChanged] as the query types.
@@ -47,7 +49,7 @@ class SldsSearchBar extends StatefulWidget {
   final List<String> recentSearches;
 
   /// Section heading above [recentSearches].
-  final String recentSearchesLabel;
+  final String? recentSearchesLabel;
 
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
@@ -158,7 +160,7 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
                     contentPadding: EdgeInsets.symmetric(
                       vertical: dimensions.space12,
                     ),
-                    hintText: widget.hintText,
+                    hintText: widget.hintText ?? context.sldsStrings.search,
                     hintStyle: tokens.typography.body1.copyWith(
                       color: colors.inputPlaceholder,
                     ),
@@ -220,7 +222,8 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
                       vertical: dimensions.space4,
                     ),
                     child: Text(
-                      widget.recentSearchesLabel,
+                      widget.recentSearchesLabel ??
+                          context.sldsStrings.recentSearches,
                       style: tokens.typography.caption2.copyWith(
                         color: colors.textTertiary,
                       ),
@@ -245,9 +248,9 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
 class _SuggestionRow extends StatelessWidget {
   const _SuggestionRow({
     required this.label,
+    required this.onTap,
     this.icon,
     this.highlighted = false,
-    required this.onTap,
   });
 
   final String label;

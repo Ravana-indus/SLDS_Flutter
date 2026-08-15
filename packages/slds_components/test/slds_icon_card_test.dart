@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget card) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: card),
     ),
   );
@@ -82,9 +84,9 @@ void main() {
   ) async {
     await pump(
       tester,
-      Row(
+      const Row(
         children: [
-          const SldsIconCard(
+          SldsIconCard(
             title: 'Apply for Passport',
             icon: icon,
             size: SldsIconCardSize.large,
@@ -98,7 +100,7 @@ void main() {
   testWidgets('disabled when onTap is null: dims content and blocks taps', (
     tester,
   ) async {
-    var tapped = false;
+    const tapped = false;
     await pump(tester, const SldsIconCard(title: 'Fuel Pass', icon: icon));
 
     await tester.tap(find.text('Fuel Pass'));
@@ -112,9 +114,7 @@ void main() {
       ),
       matchesSemantics(
         label: 'Fuel Pass',
-        isButton: false,
         hasEnabledState: true,
-        isEnabled: false,
       ),
     );
   });

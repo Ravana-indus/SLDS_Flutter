@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
-import '../tokens/slds_breakpoints.dart';
-import 'slds_button.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// Selection mode for [SldsDatePicker].
 enum SldsDatePickerMode {
@@ -28,9 +29,8 @@ class SldsDatePicker extends StatefulWidget {
     this.onRangeSelected,
     this.onCancel,
     this.onApply,
-    this.cancelText = 'Cancel',
-    this.applyText = 'Apply',
-    this.primaryColor,
+    this.cancelText,
+    this.applyText,
     this.rangeColor,
     this.firstDayOfWeek = DateTime.monday,
     this.width,
@@ -64,13 +64,10 @@ class SldsDatePicker extends StatefulWidget {
   final ValueChanged<dynamic>? onApply;
 
   /// Cancel button label.
-  final String cancelText;
+  final String? cancelText;
 
   /// Apply button label.
-  final String applyText;
-
-  /// Primary accent color for selected badge and apply button (defaults to SLDS yellow `#FFC700`).
-  final Color? primaryColor;
+  final String? applyText;
 
   /// Highlight color for range selection in-between cells.
   final Color? rangeColor;
@@ -91,7 +88,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   DateTime? _rangeStartDate;
   DateTime? _rangeEndDate;
 
-  static const Color _defaultPrimaryYellow = Color(0xFFFFC700);
   static const Color _defaultRangeLightYellow = Color(0xFFFFF7D6);
 
   @override
@@ -229,7 +225,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final primaryAccent = widget.primaryColor ?? _defaultPrimaryYellow;
+    final primaryAccent = context.slds.colors.buttonPrimaryBackground;
     final rangeHighlight = widget.rangeColor ?? _defaultRangeLightYellow;
 
     return Container(
@@ -380,17 +376,16 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           // SldsBreakpoints.mobile screen width, so the row would overflow;
           // stack Cancel/Apply instead on mobile, matching the button's own
           // responsive behavior rather than fighting it.
-          if (SldsBreakpoints.isMobile(context))
+          if (context.sldsIsMobile)
             Column(
               children: [
                 SldsButton(
-                  label: widget.applyText,
+                  label: widget.applyText ?? context.sldsStrings.apply,
                   onPressed: _handleApply,
-                  color: primaryAccent,
                 ),
                 const SizedBox(height: 12),
                 SldsButton(
-                  label: widget.cancelText,
+                  label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
                 ),
@@ -401,15 +396,14 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SldsButton(
-                  label: widget.cancelText,
+                  label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
                 ),
                 const SizedBox(width: 12),
                 SldsButton(
-                  label: widget.applyText,
+                  label: widget.applyText ?? context.sldsStrings.apply,
                   onPressed: _handleApply,
-                  color: primaryAccent,
                 ),
               ],
             ),
@@ -426,7 +420,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     final firstOfMonth = DateTime(
       _displayedMonth.year,
       _displayedMonth.month,
-      1,
     );
     final daysInMonth = DateTime(
       _displayedMonth.year,
@@ -435,7 +428,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     ).day;
 
     // Calculate weekday offset (Monday = 1)
-    int firstWeekdayOffset = firstOfMonth.weekday - 1; // 0 for Mon, 6 for Sun
+    var firstWeekdayOffset = firstOfMonth.weekday - 1; // 0 for Mon, 6 for Sun
     if (firstWeekdayOffset < 0) firstWeekdayOffset += 7;
 
     final daysInPrevMonth = DateTime(
@@ -444,10 +437,10 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       0,
     ).day;
 
-    final List<Widget> dayWidgets = [];
+    final dayWidgets = <Widget>[];
 
     // Previous month overflow days
-    for (int i = firstWeekdayOffset - 1; i >= 0; i--) {
+    for (var i = firstWeekdayOffset - 1; i >= 0; i--) {
       final dayNum = daysInPrevMonth - i;
       dayWidgets.add(
         _SldsBaseDateCell(
@@ -458,14 +451,14 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     }
 
     // Current month days
-    for (int day = 1; day <= daysInMonth; day++) {
+    for (var day = 1; day <= daysInMonth; day++) {
       final date = DateTime(_displayedMonth.year, _displayedMonth.month, day);
       final dayText = day < 10 ? '0$day' : '$day';
 
-      bool isSelected = false;
-      bool isRangeStart = false;
-      bool isRangeEnd = false;
-      bool isInRange = false;
+      var isSelected = false;
+      var isRangeStart = false;
+      var isRangeEnd = false;
+      var isInRange = false;
 
       if (widget.mode == SldsDatePickerMode.single) {
         isSelected = _isSameDay(date, _selectedSingleDate);
@@ -500,7 +493,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     // Next month overflow days to complete last row
     final totalCells = dayWidgets.length;
     final remainingCells = (7 - (totalCells % 7)) % 7;
-    for (int day = 1; day <= remainingCells; day++) {
+    for (var day = 1; day <= remainingCells; day++) {
       final dayText = day < 10 ? '0$day' : '$day';
       dayWidgets.add(_SldsBaseDateCell(dayText: dayText, isOverflow: true));
     }
@@ -511,7 +504,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 6,
-      crossAxisSpacing: 0,
       children: dayWidgets,
     );
   }

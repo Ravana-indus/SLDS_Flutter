@@ -10,7 +10,9 @@ void main() {
 
   Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: SingleChildScrollView(child: child)),
     ),
   );

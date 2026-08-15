@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: field),
     ),
   );
@@ -78,12 +80,12 @@ void main() {
     'error state colors every box border red but keeps digits black',
     (tester) async {
       await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
-      final theme = SldsTheme.light();
+      final theme = SldsTheme.light;
 
       for (final field in tester.widgetList<TextField>(
         find.byType(TextField),
       )) {
-        final border = field.decoration!.enabledBorder as OutlineInputBorder;
+        final border = field.decoration!.enabledBorder! as OutlineInputBorder;
         expect(border.borderSide.color, theme.colorScheme.error);
         expect(field.style?.color, theme.colorScheme.onSurface);
       }
@@ -111,7 +113,7 @@ void main() {
     await pump(tester, const SldsOtpInput(length: 4, success: true));
 
     for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
-      final border = field.decoration!.enabledBorder as OutlineInputBorder;
+      final border = field.decoration!.enabledBorder! as OutlineInputBorder;
       expect(border.borderSide.color, Colors.green);
     }
   });
@@ -120,26 +122,26 @@ void main() {
     tester,
   ) async {
     await pump(tester, const SldsOtpInput(length: 4));
-    final theme = SldsTheme.light();
+    final theme = SldsTheme.light;
 
     await tester.tap(find.byType(TextField).first);
     await tester.pump();
 
     final field = tester.widget<TextField>(find.byType(TextField).first);
-    final border = field.decoration!.enabledBorder as OutlineInputBorder;
+    final border = field.decoration!.enabledBorder! as OutlineInputBorder;
     expect(border.borderSide.color, theme.colorScheme.primary);
     expect(field.cursorColor, theme.colorScheme.primary);
   });
 
   testWidgets('focus does not override error/success coloring', (tester) async {
     await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
-    final theme = SldsTheme.light();
+    final theme = SldsTheme.light;
 
     await tester.tap(find.byType(TextField).first);
     await tester.pump();
 
     final field = tester.widget<TextField>(find.byType(TextField).first);
-    final border = field.decoration!.enabledBorder as OutlineInputBorder;
+    final border = field.decoration!.enabledBorder! as OutlineInputBorder;
     expect(border.borderSide.color, theme.colorScheme.error);
   });
 

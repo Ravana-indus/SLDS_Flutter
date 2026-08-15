@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
+    show SldsBottomNav;
 
 /// Visual container styles for [SldsTopNavBar] — mirrors [SldsBottomNav]'s
 /// light/dark choice; independent of the app's own light/dark theme.
@@ -14,12 +17,11 @@ enum SldsTopNavBarStyle { light, dark }
 class SldsTopNavBar extends StatelessWidget {
   /// A bar showing a plain [title] between the back and menu icons.
   const SldsTopNavBar({
-    super.key,
     required this.title,
+    super.key,
     this.onBack,
     this.onMenu,
     this.style = SldsTopNavBarStyle.light,
-    this.color,
   }) : totalSteps = null,
        currentStep = null;
 
@@ -28,13 +30,12 @@ class SldsTopNavBar extends StatelessWidget {
   /// [currentStep] (0-based) segments render filled with the accent color,
   /// the rest render as plain pills.
   const SldsTopNavBar.progress({
-    super.key,
     required int this.totalSteps,
     required int this.currentStep,
+    super.key,
     this.onBack,
     this.onMenu,
     this.style = SldsTopNavBarStyle.light,
-    this.color,
   }) : title = null;
 
   final String? title;
@@ -49,16 +50,13 @@ class SldsTopNavBar extends StatelessWidget {
 
   final SldsTopNavBarStyle style;
 
-  /// Overrides the token-driven accent color for filled progress segments.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final dark = style == SldsTopNavBarStyle.dark;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
     final foreground = dark ? Colors.white : colors.textPrimary;
 
     return Container(
@@ -80,7 +78,7 @@ class SldsTopNavBar extends StatelessWidget {
               icon: Icons.chevron_left,
               onTap: onBack,
               color: foreground,
-              semanticLabel: 'Back',
+              semanticLabel: context.sldsStrings.back,
             ),
             SizedBox(width: dimensions.space12),
             Expanded(
@@ -105,7 +103,7 @@ class SldsTopNavBar extends StatelessWidget {
               icon: Icons.menu,
               onTap: onMenu,
               color: foreground,
-              semanticLabel: 'Menu',
+              semanticLabel: context.sldsStrings.menu,
             ),
           ],
         ),
@@ -129,16 +127,26 @@ class _IconSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (onTap == null) return const SizedBox(width: 24, height: 24);
+    final dimensions = context.slds.dimensions;
+    // Both branches reserve the same box, so enabling or disabling an action
+    // does not shift the rest of the row sideways.
+    final box = BoxConstraints(
+      minWidth: dimensions.tapTargetMin,
+      minHeight: dimensions.tapTargetMin,
+    );
+
+    if (onTap == null) {
+      return ConstrainedBox(constraints: box, child: const SizedBox.shrink());
+    }
     return Semantics(
       button: true,
       label: semanticLabel,
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Icon(icon, size: 24, color: color),
+        child: ConstrainedBox(
+          constraints: box,
+          child: Icon(icon, size: dimensions.avatarSize24, color: color),
         ),
       ),
     );

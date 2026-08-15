@@ -8,7 +8,9 @@ void main() {
     void Function(BuildContext) onPressed,
   ) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(
         body: Center(
           child: Builder(

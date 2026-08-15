@@ -100,11 +100,131 @@ abstract class SldsLocalizations {
     Locale('ta'),
   ];
 
-  /// Screen-reader label announced while an SldsButton/SldsIconButton is in its loading state.
+  /// Screen-reader label announced while a component is in its loading state.
   ///
   /// In en, this message translates to:
   /// **'Loading'**
   String get loading;
+
+  /// Visible label beside a progress indicator. Distinct from "loading": the trailing ellipsis signals ongoing work to a sighted reader, and is noise when spoken aloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get loadingEllipsis;
+
+  /// Label for the control that dismisses a dialog, sheet or banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// Label for the control that re-attempts a failed action.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Screen-reader label announced when a component enters its error state.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// Label for the control that dismisses a transient message such as a snackbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
+
+  /// Screen-reader label for the control that returns to the previous screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// Screen-reader label for the control that opens the navigation menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menu;
+
+  /// Screen-reader label for a progress indicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get progress;
+
+  /// Screen-reader label for the control that starts a file upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get upload;
+
+  /// Default placeholder for a search input.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// Label for the control that abandons a dialog without applying changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// Label for the control that confirms a dialog's changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get apply;
+
+  /// Default placeholder for a dropdown with no selection.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an option'**
+  String get selectAnOption;
+
+  /// Heading above previously used search terms. Upper case in English; translators should use whatever case is idiomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'RECENT SEARCHES'**
+  String get recentSearches;
+
+  /// Screen-reader label giving a badge count its meaning, rather than announcing a bare number.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No unread notifications} =1{1 unread notification} other{{count} unread notifications}}'**
+  String unreadCount(int count);
+
+  /// Screen-reader label for the control that removes a chip or tag. {label} is the chip's own text.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {label}'**
+  String removeItem(String label);
+
+  /// Screen-reader label for one step in a process list, read as a single sentence.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {number}: {title}. {description}'**
+  String stepOf(int number, String title, String description);
+
+  /// Screen-reader label pairing a field name with its value in a summary list.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}'**
+  String labelledValue(String label, String value);
+
+  /// Title of the time picker dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Your Time'**
+  String get setYourTime;
+
+  /// Helper text under an upload field listing accepted formats and the size limit. The format names are proper nouns and stay in Latin script; the rest is translated.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF, JPEG or PNG less than 5MB'**
+  String get uploadHint;
 }
 
 class _SldsLocalizationsDelegate

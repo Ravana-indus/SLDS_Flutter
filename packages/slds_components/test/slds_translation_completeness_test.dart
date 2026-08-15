@@ -12,6 +12,17 @@ import 'package:flutter_test/flutter_test.dart';
 /// blocker, not something to record here.
 const _knownGaps = <String, Set<String>>{};
 
+/// Whether [message] is made only of `{placeholders}`, punctuation and
+/// whitespace — no words a translator could act on.
+///
+/// `"{label}: {value}"` is the same in every language; treating it as an
+/// untranslated string would be a false positive. Deliberately narrow: a
+/// single letter outside a placeholder makes this false.
+bool _isPlaceholdersAndPunctuationOnly(String message) {
+  final withoutPlaceholders = message.replaceAll(RegExp(r'\{[^}]*\}'), '');
+  return !RegExp(r'\p{L}', unicode: true).hasMatch(withoutPlaceholders);
+}
+
 Map<String, String> _messages(String locale) {
   final file = File('lib/src/l10n/slds_$locale.arb');
   expect(file.existsSync(), isTrue, reason: 'missing ARB for "$locale"');
@@ -29,7 +40,7 @@ void main() {
   const template = 'en';
   const translations = ['si', 'ta'];
 
-  test('every locale defines exactly the template\'s keys', () {
+  test("every locale defines exactly the template's keys", () {
     final expected = _messages(template).keys.toSet();
     expect(expected, isNotEmpty, reason: 'template ARB is empty');
 
@@ -64,7 +75,13 @@ void main() {
       final untranslated = <String>[];
 
       actual.forEach((key, value) {
-        if (english[key] == value) untranslated.add(key);
+        if (english[key] != value) return;
+        // A message made only of placeholders and punctuation has no words
+        // to translate, so matching English is correct rather than a miss.
+        // Anything with a letter in it outside a placeholder does not
+        // qualify — keep this narrow.
+        if (_isPlaceholdersAndPunctuationOnly(value)) return;
+        untranslated.add(key);
       });
 
       expect(

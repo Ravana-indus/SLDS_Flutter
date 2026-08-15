@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_colors.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS toggle sizes.
 enum SldsToggleSize {
   large(width: 48, height: 28, thumb: 22),
-  small(width: 40, height: 24, thumb: 18);
+  small(width: 40, height: 24, thumb: 18)
+  ;
 
   const SldsToggleSize({
     required this.width,
@@ -27,21 +28,31 @@ enum SldsToggleSize {
 /// aware); pass [color] to override the accent for one instance.
 class SldsToggle extends StatefulWidget {
   const SldsToggle({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
     this.size = SldsToggleSize.large,
     this.enabled = true,
-    this.color,
+    this.semanticLabel,
   });
 
+  /// Whether the switch is on.
   final bool value;
+
+  /// Called with the new value. Null disables the control.
   final ValueChanged<bool>? onChanged;
+
+  /// Track and thumb size.
   final SldsToggleSize size;
+
+  /// Whether the control accepts input.
   final bool enabled;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
+  /// What this switch controls, for assistive technology.
+  ///
+  /// A switch announced as "on" without naming what is on tells a
+  /// screen-reader user nothing.
+  final String? semanticLabel;
 
   @override
   State<SldsToggle> createState() => _SldsToggleState();
@@ -74,18 +85,20 @@ class _SldsToggleState extends State<SldsToggle> {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.slds;
+    final dimensions = tokens.dimensions;
     final scheme = Theme.of(context).colorScheme;
-    final accent = widget.color ?? scheme.primary;
+    final accent = scheme.primary;
 
     final Color trackColor;
     final Color thumbColor;
     if (!_enabled) {
       trackColor = widget.value
-          ? accent.withValues(alpha: SldsColors.disabledOpacity)
+          ? accent.withValues(alpha: context.slds.opacities.disabled)
           : scheme.onSurface.withValues(alpha: 0.12);
       thumbColor = widget.value
           ? scheme.surface
-          : scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
+          : scheme.onSurface.withValues(alpha: context.slds.opacities.disabled);
     } else if (widget.value) {
       trackColor = accent;
       thumbColor = scheme.surface;
@@ -96,40 +109,69 @@ class _SldsToggleState extends State<SldsToggle> {
 
     final trackPadding = (widget.size.height - widget.size.thumb) / 2;
 
-    return Focus(
-      focusNode: _focusNode,
-      child: GestureDetector(
-        onTap: _toggle,
-        child: Container(
-          width: widget.size.width,
-          height: widget.size.height,
-          padding: _focused ? const EdgeInsets.all(2) : EdgeInsets.zero,
-          decoration: _focused
-              ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    (widget.size.height + 4) / 2,
-                  ),
-                  border: Border.all(color: accent, width: 1.5),
-                )
-              : null,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            padding: EdgeInsets.symmetric(horizontal: trackPadding),
-            decoration: BoxDecoration(
-              color: trackColor,
-              borderRadius: BorderRadius.circular(widget.size.height / 2),
+    // The track keeps its designed size; the tappable area around it is
+    // expanded to the 48x48 minimum instead. Shrinking the visual switch to
+    // fit, or leaving a 28px-tall tap target, would each fail one of the two
+    // requirements — this satisfies both.
+    // `toggled`, not `checked`: that is what makes a screen reader announce
+    // this as a switch rather than a checkbox.
+    return Semantics(
+      toggled: widget.value,
+      enabled: _enabled,
+      label: widget.semanticLabel,
+      onTap: _enabled ? _toggle : null,
+      child: Focus(
+        focusNode: _focusNode,
+        child: GestureDetector(
+          onTap: _toggle,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            constraints: BoxConstraints(
+              minWidth: dimensions.tapTargetMin,
+              minHeight: dimensions.tapTargetMin,
             ),
-            alignment: widget.value
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              curve: Curves.easeOut,
-              width: widget.size.thumb,
-              height: widget.size.thumb,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: thumbColor,
+            alignment: Alignment.center,
+            child: Container(
+              width: widget.size.width,
+              height: widget.size.height,
+              padding: _focused
+                  ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+                  : EdgeInsets.zero,
+              // focusRing, not the accent: only the former is contrast-checked
+              // against every surface the control can sit on (WCAG 1.4.11).
+              decoration: _focused
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        (widget.size.height +
+                                dimensions.controlBorderWidth * 4) /
+                            2,
+                      ),
+                      border: Border.all(
+                        color: context.slds.colors.focusRing,
+                        width: dimensions.emphasizedBorderWidth,
+                      ),
+                    )
+                  : null,
+              child: AnimatedContainer(
+                duration: tokens.motion.fast,
+                padding: EdgeInsets.symmetric(horizontal: trackPadding),
+                decoration: BoxDecoration(
+                  color: trackColor,
+                  borderRadius: BorderRadius.circular(widget.size.height / 2),
+                ),
+                alignment: widget.value
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
+                child: AnimatedContainer(
+                  duration: tokens.motion.fast,
+                  curve: Curves.easeOut,
+                  width: widget.size.thumb,
+                  height: widget.size.thumb,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: thumbColor,
+                  ),
+                ),
               ),
             ),
           ),

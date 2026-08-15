@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget list) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: list),
     ),
   );
@@ -55,7 +57,7 @@ void main() {
             .ancestor(of: find.text(number), matching: find.byType(Container))
             .first,
       );
-      return (container.decoration as BoxDecoration).color!;
+      return (container.decoration! as BoxDecoration).color!;
     }
 
     expect(badgeColorFor('1'), colors.badgeApprovedBackground); // done
@@ -74,7 +76,7 @@ void main() {
   testWidgets('width clamps to the available parent width', (tester) async {
     await pump(
       tester,
-      SizedBox(
+      const SizedBox(
         width: 200,
         child: SingleChildScrollView(
           child: SldsProcessList(steps: steps, width: 480),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual state for [SldsServiceCard] — background/accent per Figma spec.
 /// [hover] only applies via [MouseRegion] on desktop/web pointer input;
@@ -16,10 +16,10 @@ enum SldsServiceCardState { defaultState, hover, selected, active }
 /// pointer-hover tracking.
 class SldsServiceCard extends StatefulWidget {
   const SldsServiceCard({
-    super.key,
     required this.icon,
     required this.title,
     required this.description,
+    super.key,
     this.badgeText,
     this.selected = false,
     this.state,
@@ -68,16 +68,16 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
     final typography = tokens.typography;
     final state = _resolvedState;
 
-    final Color background = switch (state) {
+    final background = switch (state) {
       SldsServiceCardState.defaultState => colors.surfacePage,
       SldsServiceCardState.hover => colors.surfaceHover,
       SldsServiceCardState.selected => const Color(0xffE3EDFF),
       SldsServiceCardState.active => colors.buttonPrimaryBackground,
     };
-    final Color titleColor = state == SldsServiceCardState.active
+    final titleColor = state == SldsServiceCardState.active
         ? colors.textStaticBlack
         : colors.textPrimary;
-    final Color descriptionColor = state == SldsServiceCardState.active
+    final descriptionColor = state == SldsServiceCardState.active
         ? colors.textStaticBlack
         : colors.textSecondary;
 

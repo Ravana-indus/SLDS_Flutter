@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
             Future<void>.delayed(const Duration(milliseconds: 600)),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(SldsSpacing.lg),
+            padding: EdgeInsets.all(context.slds.dimensions.space16),
             child: SldsCard(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: SldsSpacing.md),
+                  SizedBox(height: context.slds.dimensions.space12),
                   BlocBuilder<ThemeModeCubit, ThemeMode>(
                     builder: (context, mode) {
                       return SldsButton(

@@ -24,7 +24,13 @@ android {
         applicationId = "lk.gov.slds.slds_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        //
+        // Pinned to the SLDS minimum supported device floor (§1): Android
+        // API 24. This is a citizen-facing national platform, so the low end
+        // of the device range is a large share of real users rather than an
+        // edge case — components must render and stay interactive here, not
+        // merely compile for it. Do not raise without a platform decision.
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

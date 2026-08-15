@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: field),
     ),
   );
@@ -39,7 +41,6 @@ void main() {
       tester,
       const SldsFieldset(
         legend: 'Group',
-        required: false,
         children: [Text('Field')],
       ),
     );

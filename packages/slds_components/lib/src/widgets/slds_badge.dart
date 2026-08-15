@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsChip;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_chip.dart' show SldsChip;
 
 /// Status conveyed by an [SldsBadge] — each maps to a dedicated
 /// [SldsColorTokens] text/background pair.
@@ -32,8 +33,8 @@ enum SldsBadgeStatus {
 /// [SldsChip] instead; this one is read-only status, no interaction.
 class SldsBadge extends StatelessWidget {
   const SldsBadge({
-    super.key,
     required this.label,
+    super.key,
     this.status = SldsBadgeStatus.neutral,
   });
 

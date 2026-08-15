@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsTimePickerDialog;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_time_picker.dart'
+    show SldsTimePickerDialog;
 
 /// One tappable row inside an [SldsFlyoutMenuGroup].
 class SldsFlyoutMenuEntry {
@@ -43,7 +45,7 @@ class SldsFlyoutMenuItem {
 /// full-screen scrim + sheet with a close button, matching the mock) or
 /// your own [showModalBottomSheet]/[Drawer] if you need different framing.
 class SldsFlyoutMenu extends StatefulWidget {
-  const SldsFlyoutMenu({super.key, required this.items, this.onClose});
+  const SldsFlyoutMenu({required this.items, super.key, this.onClose});
 
   final List<SldsFlyoutMenuItem> items;
 

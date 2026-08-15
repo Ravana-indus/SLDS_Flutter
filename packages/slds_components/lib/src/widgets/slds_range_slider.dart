@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS range slider — a single-thumb slider (drag, tap-to-jump, and
 /// keyboard-adjustable, courtesy of Flutter's own [Slider]) reskinned with
@@ -12,14 +12,13 @@ import '../theme/slds_tokens.dart';
 /// is just the reskinned control.
 class SldsRangeSlider extends StatelessWidget {
   const SldsRangeSlider({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
     this.min = 0,
     this.max = 100,
     this.divisions,
     this.enabled = true,
-    this.color,
     this.semanticLabel,
   });
 
@@ -32,9 +31,6 @@ class SldsRangeSlider extends StatelessWidget {
   final int? divisions;
   final bool enabled;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
-
   /// Accessible name announced alongside the current value.
   final String? semanticLabel;
 
@@ -42,7 +38,7 @@ class SldsRangeSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
     final interactive = enabled && onChanged != null;
 
     final activeColor = interactive ? accent : colors.disabledForeground;
@@ -58,7 +54,7 @@ class SldsRangeSlider extends StatelessWidget {
         inactiveTrackColor: inactiveColor,
         thumbColor: thumbColor,
         overlayColor: accent.withValues(alpha: 0.12),
-        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
+        thumbShape: const RoundSliderThumbShape(),
         disabledActiveTrackColor: colors.disabledForeground,
         disabledInactiveTrackColor: colors.disabledBackground,
         disabledThumbColor: colors.disabledForeground,

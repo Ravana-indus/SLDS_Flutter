@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS progress bar — a continuous, value-based indicator (file uploads,
 /// loading tasks, profile completion): a rounded track filled to [value]
@@ -15,10 +16,9 @@ import '../theme/slds_tokens.dart';
 /// [CircularProgressIndicator] for unknown-duration work.
 class SldsProgressBar extends StatelessWidget {
   const SldsProgressBar({
-    super.key,
     required this.value,
+    super.key,
     this.showLabel = true,
-    this.color,
   });
 
   /// Progress fraction, 0.0-1.0. Values outside that range are clamped.
@@ -27,20 +27,17 @@ class SldsProgressBar extends StatelessWidget {
   /// Shows the rounded percentage (e.g. "40%") right-aligned after the bar.
   final bool showLabel;
 
-  /// Overrides the token-driven fill color for this instance only.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final clamped = value.clamp(0.0, 1.0);
-    final fill = color ?? colors.success;
+    final fill = colors.success;
     final percent = (clamped * 100).round();
 
     return Semantics(
-      label: 'Progress',
+      label: context.sldsStrings.progress,
       value: '$percent%',
       child: ExcludeSemantics(
         child: Row(
@@ -60,7 +57,7 @@ class SldsProgressBar extends StatelessWidget {
                         ),
                       ),
                       AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
+                        duration: tokens.motion.normal,
                         curve: Curves.easeOut,
                         height: 6,
                         width: constraints.maxWidth * clamped,

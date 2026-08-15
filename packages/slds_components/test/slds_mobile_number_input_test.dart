@@ -6,7 +6,9 @@ void main() {
   Future<void> pump(WidgetTester tester, Widget field, {double width = 400}) =>
       tester.pumpWidget(
         MaterialApp(
-          theme: SldsTheme.light(),
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          theme: SldsTheme.light,
           home: Scaffold(
             body: SizedBox(width: width, child: field),
           ),
@@ -129,7 +131,7 @@ void main() {
       );
       final decoration = animatedContainer.decoration! as BoxDecoration;
       expect(
-        (decoration.border as Border).top.color,
+        (decoration.border! as Border).top.color,
         SldsColorTokens.light().inputBorderFocused,
       );
     },

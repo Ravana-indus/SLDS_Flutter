@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../theme/slds_tokens.dart';
-import 'slds_focus.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma visual states for [SldsMobileNumberInput], matching node `510:3072`.
 enum SldsMobileNumberInputState {
@@ -30,8 +30,8 @@ enum SldsMobileNumberInputState {
 class SldsMobileNumberInput extends StatefulWidget {
   /// Creates an SLDS mobile-number input.
   const SldsMobileNumberInput({
-    super.key,
     required this.label,
+    super.key,
     this.controller,
     this.placeholder,
     this.helperText,
@@ -224,7 +224,7 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                 ? constraints.maxWidth
                 : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
-            ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
+            ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
         return SizedBox(
           width: resolvedWidth,

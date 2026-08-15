@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// One destination in an [SldsBottomNav].
 class SldsBottomNavItem {
@@ -43,12 +43,11 @@ enum SldsBottomNavStyle {
 /// fixed per-item size.
 class SldsBottomNav extends StatelessWidget {
   const SldsBottomNav({
-    super.key,
     required this.items,
     required this.currentIndex,
     required this.onTap,
+    super.key,
     this.style = SldsBottomNavStyle.light,
-    this.color,
   });
 
   final List<SldsBottomNavItem> items;
@@ -56,16 +55,13 @@ class SldsBottomNav extends StatelessWidget {
   final ValueChanged<int>? onTap;
   final SldsBottomNavStyle style;
 
-  /// Overrides the token-driven accent color for the selected item.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final dark = style == SldsBottomNavStyle.dark;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
 
     return Container(
       padding: EdgeInsets.symmetric(

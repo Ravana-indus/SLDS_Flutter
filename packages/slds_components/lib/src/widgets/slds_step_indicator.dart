@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/slds_components.dart' show SldsTopNavBar;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_top_nav_bar.dart'
+    show SldsTopNavBar;
 
 /// SLDS step indicator — a row of equal-width pill segments showing
 /// progress through a flow (e.g. a multi-page form), [currentStep] (0-based)
@@ -10,10 +12,9 @@ import '../theme/slds_tokens.dart';
 /// the row's width equally via [Expanded].
 class SldsStepIndicator extends StatelessWidget {
   const SldsStepIndicator({
-    super.key,
     required this.totalSteps,
     required this.currentStep,
-    this.color,
+    super.key,
   });
 
   final int totalSteps;
@@ -22,15 +23,12 @@ class SldsStepIndicator extends StatelessWidget {
   /// 3 of [totalSteps]).
   final int currentStep;
 
-  /// Overrides the token-driven accent color for filled segments.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
 
     return Row(
       children: [

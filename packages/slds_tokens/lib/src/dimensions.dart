@@ -81,6 +81,7 @@ class SldsDimensionTokens {
     required this.tooltipArrowHeight,
     required this.paginationItemSize,
     required this.navigationDrawerWidth,
+    required this.breakpointMobile,
     required this.tapTargetMin,
     required this.controlBorderWidth,
     required this.emphasizedBorderWidth,
@@ -94,7 +95,9 @@ class SldsDimensionTokens {
     required this.cardShadowOffsetY,
     required this.dropdownMenuWidth,
     required this.iconButtonMedium,
+    required this.iconSizeSmall,
     required this.iconSizeMedium,
+    required this.iconSizeLarge,
     required this.snackbarShadowBlur,
   });
 
@@ -169,6 +172,7 @@ class SldsDimensionTokens {
     tooltipArrowHeight: 6,
     paginationItemSize: 36,
     navigationDrawerWidth: 320,
+    breakpointMobile: 600,
     tapTargetMin: 48,
     controlBorderWidth: 1,
     emphasizedBorderWidth: 1.5,
@@ -182,7 +186,9 @@ class SldsDimensionTokens {
     cardShadowOffsetY: 2,
     dropdownMenuWidth: 362,
     iconButtonMedium: 36,
+    iconSizeSmall: 16,
     iconSizeMedium: 20,
+    iconSizeLarge: 24,
     snackbarShadowBlur: 7.5,
   );
 
@@ -393,7 +399,19 @@ class SldsDimensionTokens {
   /// Navigation drawer width.
   final double navigationDrawerWidth;
 
+  /// Width at or above which the desktop layout and type scale apply.
+  ///
+  /// Stored here as a raw width so the value stays consumable by codegen and
+  /// design tooling; the `BuildContext` helper that reads it lives in
+  /// `slds_components`, since `BuildContext` is Flutter.
+  final double breakpointMobile;
+
   /// Minimum accessible touch target size.
+  ///
+  /// WCAG 2.2 (2.5.8) sets the floor at 24x24 CSS pixels; this library holds
+  /// the stricter 48x48 Material and SLDS figure. Components go below it only
+  /// where the design spec says so, and that exception is documented at the
+  /// call site.
   final double tapTargetMin;
 
   /// Standard control border width.
@@ -432,8 +450,14 @@ class SldsDimensionTokens {
   /// Medium icon button frame.
   final double iconButtonMedium;
 
+  /// Small icon size, used by the small Button.
+  final double iconSizeSmall;
+
   /// Medium icon size.
   final double iconSizeMedium;
+
+  /// Large icon size, used by the extra-large Button.
+  final double iconSizeLarge;
 
   /// Snackbar shadow blur radius.
   final double snackbarShadowBlur;
@@ -509,6 +533,7 @@ class SldsDimensionTokens {
     double? tooltipArrowHeight,
     double? paginationItemSize,
     double? navigationDrawerWidth,
+    double? breakpointMobile,
     double? tapTargetMin,
     double? controlBorderWidth,
     double? emphasizedBorderWidth,
@@ -522,7 +547,9 @@ class SldsDimensionTokens {
     double? cardShadowOffsetY,
     double? dropdownMenuWidth,
     double? iconButtonMedium,
+    double? iconSizeSmall,
     double? iconSizeMedium,
+    double? iconSizeLarge,
     double? snackbarShadowBlur,
   }) {
     return SldsDimensionTokens(
@@ -598,6 +625,7 @@ class SldsDimensionTokens {
       paginationItemSize: paginationItemSize ?? this.paginationItemSize,
       navigationDrawerWidth:
           navigationDrawerWidth ?? this.navigationDrawerWidth,
+      breakpointMobile: breakpointMobile ?? this.breakpointMobile,
       tapTargetMin: tapTargetMin ?? this.tapTargetMin,
       controlBorderWidth: controlBorderWidth ?? this.controlBorderWidth,
       emphasizedBorderWidth:
@@ -613,7 +641,9 @@ class SldsDimensionTokens {
       cardShadowOffsetY: cardShadowOffsetY ?? this.cardShadowOffsetY,
       dropdownMenuWidth: dropdownMenuWidth ?? this.dropdownMenuWidth,
       iconButtonMedium: iconButtonMedium ?? this.iconButtonMedium,
+      iconSizeSmall: iconSizeSmall ?? this.iconSizeSmall,
       iconSizeMedium: iconSizeMedium ?? this.iconSizeMedium,
+      iconSizeLarge: iconSizeLarge ?? this.iconSizeLarge,
       snackbarShadowBlur: snackbarShadowBlur ?? this.snackbarShadowBlur,
     );
   }
@@ -691,6 +721,7 @@ class SldsDimensionTokens {
         other.tooltipArrowHeight == tooltipArrowHeight &&
         other.paginationItemSize == paginationItemSize &&
         other.navigationDrawerWidth == navigationDrawerWidth &&
+        other.breakpointMobile == breakpointMobile &&
         other.tapTargetMin == tapTargetMin &&
         other.controlBorderWidth == controlBorderWidth &&
         other.emphasizedBorderWidth == emphasizedBorderWidth &&
@@ -704,7 +735,9 @@ class SldsDimensionTokens {
         other.cardShadowOffsetY == cardShadowOffsetY &&
         other.dropdownMenuWidth == dropdownMenuWidth &&
         other.iconButtonMedium == iconButtonMedium &&
+        other.iconSizeSmall == iconSizeSmall &&
         other.iconSizeMedium == iconSizeMedium &&
+        other.iconSizeLarge == iconSizeLarge &&
         other.snackbarShadowBlur == snackbarShadowBlur;
   }
 
@@ -779,6 +812,7 @@ class SldsDimensionTokens {
     tooltipArrowHeight,
     paginationItemSize,
     navigationDrawerWidth,
+    breakpointMobile,
     tapTargetMin,
     controlBorderWidth,
     emphasizedBorderWidth,
@@ -792,7 +826,9 @@ class SldsDimensionTokens {
     cardShadowOffsetY,
     dropdownMenuWidth,
     iconButtonMedium,
+    iconSizeSmall,
     iconSizeMedium,
+    iconSizeLarge,
     snackbarShadowBlur,
   ]);
 }

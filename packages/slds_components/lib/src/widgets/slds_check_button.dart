@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS check button — a full-width, filled-pill toggle (not a checkbox
 /// glyph): selected renders as a solid accent-color block, unselected as a
@@ -9,12 +9,11 @@ import '../theme/slds_tokens.dart';
 /// checkboxes.
 class SldsCheckButton extends StatelessWidget {
   const SldsCheckButton({
-    super.key,
     required this.label,
     required this.selected,
+    super.key,
     this.onChanged,
     this.enabled = true,
-    this.color,
   });
 
   final String label;
@@ -25,9 +24,6 @@ class SldsCheckButton extends StatelessWidget {
   final ValueChanged<bool>? onChanged;
   final bool enabled;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
-
   bool get _interactive => enabled && onChanged != null;
 
   @override
@@ -35,7 +31,7 @@ class SldsCheckButton extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final accent = color ?? colors.buttonPrimaryBackground;
+    final accent = colors.buttonPrimaryBackground;
 
     final Color background;
     final Color foreground;

@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../l10n/gen/slds_localizations.dart';
-import '../tokens/slds_breakpoints.dart';
-import '../tokens/slds_colors.dart';
-import '../tokens/slds_spacing.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Visual style of an [SldsButton], matching the SLDS action catalogue.
 enum SldsButtonVariant {
@@ -24,56 +23,186 @@ enum SldsButtonVariant {
   destructive,
 }
 
+/// Size of an [SldsButton], matching the SLDS size ramp.
+///
+/// Each size carries its own height, radius, padding, icon size and text
+/// style — they are not a single scale factor, so they are resolved together
+/// from [_SldsButtonMetrics] rather than derived from the height.
+enum SldsButtonSize {
+  /// 28px. Dense tables and inline actions.
+  small,
+
+  /// 36px. Compact toolbars.
+  medium,
+
+  /// 48px. The desktop default.
+  large,
+
+  /// 56px. The mobile default, sized for touch.
+  extraLarge,
+}
+
+/// The resolved per-size geometry for one [SldsButtonSize].
+@immutable
+class _SldsButtonMetrics {
+  const _SldsButtonMetrics({
+    required this.height,
+    required this.radius,
+    required this.padding,
+    required this.gap,
+    required this.iconSize,
+    required this.textStyle,
+  });
+
+  /// Resolves the metrics for [size] from the ambient token set.
+  factory _SldsButtonMetrics.of(BuildContext context, SldsButtonSize size) {
+    final tokens = context.slds;
+    final d = tokens.dimensions;
+    final t = tokens.typography;
+    // The text container carries a 6px horizontal pad of its own in Figma,
+    // which is folded into the gap here rather than modelled as a second box.
+    final textPad = d.space6;
+    return switch (size) {
+      SldsButtonSize.small => _SldsButtonMetrics(
+        height: d.buttonHeightSmall,
+        radius: d.radiusXl,
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: d.space8,
+          vertical: d.space4,
+        ),
+        gap: d.space0 + textPad,
+        iconSize: d.iconSizeSmall,
+        textStyle: t.body2,
+      ),
+      SldsButtonSize.medium => _SldsButtonMetrics(
+        height: d.buttonHeightMedium,
+        radius: d.radiusXl,
+        padding: EdgeInsetsDirectional.all(d.space8),
+        gap: d.space0 + textPad,
+        iconSize: d.iconSizeMedium,
+        textStyle: t.body1,
+      ),
+      SldsButtonSize.large => _SldsButtonMetrics(
+        height: d.buttonHeightLarge,
+        radius: d.radius2xl,
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: d.space16,
+          vertical: d.space12,
+        ),
+        gap: d.space4 + textPad,
+        iconSize: d.iconSizeMedium,
+        textStyle: t.title1,
+      ),
+      SldsButtonSize.extraLarge => _SldsButtonMetrics(
+        height: d.buttonHeightExtraLarge,
+        radius: d.radius2xl,
+        padding: EdgeInsetsDirectional.all(d.space16),
+        gap: d.space4 + textPad,
+        iconSize: d.iconSizeLarge,
+        textStyle: t.title1,
+      ),
+    };
+  }
+
+  final double height;
+  final double radius;
+  final EdgeInsetsGeometry padding;
+  final double gap;
+  final double iconSize;
+  final TextStyle textStyle;
+}
+
 /// SLDS action button — covers the Primary / Secondary / Tertiary / Text /
 /// Destructive variants, with hover, focus, and pressed states handled
 /// natively via [WidgetStateProperty], plus an explicit loading state
 /// (Flutter buttons have no built-in equivalent).
 ///
-/// Colors resolve from the ambient [Theme]'s [ColorScheme] — installing
-/// [SldsTheme.light]/[SldsTheme.dark] means this button follows light/dark
-/// mode automatically. Pass [color] to override the accent for one instance
-/// without forking the widget (e.g. a one-off brand moment); leave it null
-/// to use the SLDS token.
+/// Every colour resolves from the ambient SLDS token set, so the button
+/// follows light, dark and high-contrast themes automatically. There is no
+/// per-instance colour override: variants are the supported way to change a
+/// button's emphasis.
 ///
 /// The loading state reads [SldsLocalizations], so the host app's
 /// `MaterialApp` must include `SldsLocalizations.localizationsDelegates` /
 /// `.supportedLocales` (merge them into your own lists if you have other
 /// localized packages).
 ///
-/// Sized per the SLDS action spec: 44px tall and intrinsic width at/above
-/// [SldsBreakpoints.mobile]; 52px tall and full-width below it.
-class SldsButton extends StatelessWidget {
+/// Sized per the SLDS action spec: intrinsic width at desktop widths,
+/// full-width below the mobile breakpoint.
+class SldsButton extends StatefulWidget {
+  /// Creates an SLDS action button.
   const SldsButton({
-    super.key,
     required this.label,
     required this.onPressed,
+    super.key,
     this.variant = SldsButtonVariant.primary,
+    this.size,
     this.leadingIcon,
     this.trailingIcon,
     this.isLoading = false,
-    this.color,
   });
 
+  /// The button's text label.
   final String label;
+
+  /// Called when the button is tapped. Null disables the button.
   final VoidCallback? onPressed;
+
+  /// Which SLDS action variant to render.
   final SldsButtonVariant variant;
+
+  /// Which SLDS size to render.
+  ///
+  /// Defaults to the responsive pair the SLDS action spec calls for:
+  /// [SldsButtonSize.extraLarge] below the mobile breakpoint (a touch-sized
+  /// target) and [SldsButtonSize.large] above it. Set this to pin one size
+  /// regardless of width — e.g. [SldsButtonSize.small] for a dense table row.
+  final SldsButtonSize? size;
+
+  SldsButtonSize _size(BuildContext context) =>
+      size ??
+      (context.sldsIsMobile
+          ? SldsButtonSize.extraLarge
+          : SldsButtonSize.large);
+
+  /// Optional icon shown before the label.
   final IconData? leadingIcon;
+
+  /// Optional icon shown after the label.
   final IconData? trailingIcon;
+
+  /// Whether to replace the label with a loading indicator.
   final bool isLoading;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
+  @override
+  State<SldsButton> createState() => _SldsButtonState();
+}
 
-  bool get _enabled => onPressed != null && !isLoading;
+class _SldsButtonState extends State<SldsButton> {
+  /// Whether the button currently owns focus, driving the SLDS focus ring.
+  bool _focused = false;
+
+  SldsButtonVariant get variant => widget.variant;
+
+  bool get _enabled => widget.onPressed != null && !widget.isLoading;
+
+  void _handleFocusChange(bool focused) {
+    if (focused == _focused) return;
+    setState(() => _focused = focused);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final content = isLoading
+    final metrics = _SldsButtonMetrics.of(context, widget._size(context));
+    final content = widget.isLoading
         ? Semantics(
-            label: SldsLocalizations.of(context).loading,
+            // liveRegion so the switch into the loading state is announced
+            // as it happens, rather than only when focus next lands here.
+            liveRegion: true,
+            label: context.sldsStrings.loading,
             child: SizedBox(
-              width: 18,
-              height: 18,
+              width: metrics.iconSize,
+              height: metrics.iconSize,
               child: CupertinoActivityIndicator(
                 color: _foreground(context, selected: true),
               ),
@@ -82,32 +211,38 @@ class SldsButton extends StatelessWidget {
         : Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (leadingIcon != null) ...[
-                Icon(leadingIcon, size: 18),
-                const SizedBox(width: SldsSpacing.xs),
+              if (widget.leadingIcon != null) ...[
+                Icon(widget.leadingIcon, size: metrics.iconSize),
+                SizedBox(width: metrics.gap),
               ],
               // Flexible so a long/translated label ellipsizes instead of
               // overflowing past the button on a narrow phone.
-              Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
-              if (trailingIcon != null) ...[
-                const SizedBox(width: SldsSpacing.xs),
-                Icon(trailingIcon, size: 18),
+              Flexible(
+                child: Text(widget.label, overflow: TextOverflow.ellipsis),
+              ),
+              if (widget.trailingIcon != null) ...[
+                SizedBox(width: metrics.gap),
+                Icon(widget.trailingIcon, size: metrics.iconSize),
               ],
             ],
           );
 
-    return _styledButton(context, content);
+    return _styledButton(context, content, metrics);
   }
 
   ButtonStyle _buildStyle(
     BuildContext context, {
-    required EdgeInsets padding,
-    required OutlinedBorder shape,
+    required _SldsButtonMetrics metrics,
     required double minWidth,
   }) {
     return ButtonStyle(
-      padding: WidgetStatePropertyAll(padding),
-      shape: WidgetStatePropertyAll(shape),
+      padding: WidgetStatePropertyAll(metrics.padding),
+      textStyle: WidgetStatePropertyAll(metrics.textStyle),
+      shape: WidgetStatePropertyAll(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(metrics.radius),
+        ),
+      ),
       backgroundColor: WidgetStateProperty.resolveWith(
         (states) => _background(context, states),
       ),
@@ -120,22 +255,31 @@ class SldsButton extends StatelessWidget {
       side: WidgetStateProperty.resolveWith(
         (states) => _border(context, states),
       ),
-      overlayColor: WidgetStateProperty.resolveWith(
-        (states) => _overlay(context, states),
-      ),
-      minimumSize: WidgetStatePropertyAll(
-        Size(minWidth, SldsBreakpoints.isMobile(context) ? 52.0 : 44.0),
-      ),
-      // Without this, Material pads the tap target to its own 48px a11y
-      // minimum regardless of minimumSize, overriding the 44px SLDS spec.
+      // The per-state backgrounds in [_background] already carry hover, focus
+      // and pressed feedback, so Material's own state layer is suppressed
+      // rather than tinting a colour the design system has decided.
+      overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+      // The painted box is exactly the size Figma specifies. Material's
+      // default tapTargetSize would inflate anything under 48px back up to
+      // 48px, which would silently turn the small and medium sizes into the
+      // large one — the touch target is restored separately, in
+      // [_buttonForVariant], so it does not distort the visible geometry.
+      // Height is a minimum, never a fixed size: at large text scales the
+      // label must be able to push the button taller instead of being clipped.
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      minimumSize: WidgetStatePropertyAll(Size(minWidth, metrics.height)),
     );
   }
 
-  Widget _styledButton(BuildContext context, Widget content) {
-    final isMobile = SldsBreakpoints.isMobile(context);
-    if (!isMobile) {
-      return _buttonForVariant(context, content, minWidth: 0);
+  Widget _styledButton(
+    BuildContext context,
+    Widget content,
+    _SldsButtonMetrics metrics,
+  ) {
+    // Full-width is a property of the mobile layout, not of the size ramp:
+    // a small button pinned inside a dense desktop table stays intrinsic.
+    if (!context.sldsIsMobile) {
+      return _buttonForVariant(context, content, metrics, minWidth: 0);
     }
     // Full-width-on-mobile is only valid when the parent actually bounds
     // our width (e.g. a form field's Column) — inside a Row (like a
@@ -156,11 +300,16 @@ class SldsButton extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (!constraints.hasBoundedWidth) {
-          return _buttonForVariant(context, content, minWidth: 0);
+          return _buttonForVariant(context, content, metrics, minWidth: 0);
         }
         return SizedBox(
           width: double.infinity,
-          child: _buttonForVariant(context, content, minWidth: double.infinity),
+          child: _buttonForVariant(
+            context,
+            content,
+            metrics,
+            minWidth: double.infinity,
+          ),
         );
       },
     );
@@ -168,111 +317,114 @@ class SldsButton extends StatelessWidget {
 
   Widget _buttonForVariant(
     BuildContext context,
-    Widget content, {
+    Widget content,
+    _SldsButtonMetrics metrics, {
     required double minWidth,
   }) {
-    final style = _buildStyle(
-      context,
-      padding: const EdgeInsets.symmetric(
-        horizontal: SldsSpacing.lg,
-        vertical: SldsSpacing.md,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(SldsSpacing.sm),
-      ),
-      minWidth: minWidth,
-    );
+    final style = _buildStyle(context, metrics: metrics, minWidth: minWidth);
 
-    return switch (variant) {
+    final button = switch (variant) {
       SldsButtonVariant.primary ||
       SldsButtonVariant.destructive => FilledButton(
-        onPressed: _enabled ? onPressed : null,
+        onPressed: _enabled ? widget.onPressed : null,
+        onFocusChange: _handleFocusChange,
         style: style,
         child: content,
       ),
       SldsButtonVariant.secondary ||
       SldsButtonVariant.tertiary => OutlinedButton(
-        onPressed: _enabled ? onPressed : null,
+        onPressed: _enabled ? widget.onPressed : null,
+        onFocusChange: _handleFocusChange,
         style: style,
         child: content,
       ),
       SldsButtonVariant.text => TextButton(
-        onPressed: _enabled ? onPressed : null,
+        onPressed: _enabled ? widget.onPressed : null,
+        onFocusChange: _handleFocusChange,
         style: style,
         child: content,
       ),
     };
+
+    // The ring is painted outside the button box rather than as a border, so
+    // it does not shift the button's own geometry when focus arrives.
+    final ringed = SldsFocusRing(
+      focused: _focused,
+      borderRadius: BorderRadius.circular(metrics.radius),
+      error: variant == SldsButtonVariant.destructive,
+      child: button,
+    );
+
+    // WCAG 2.5.5 / the SLDS 48px floor. The small and medium sizes paint
+    // below 48px by design, so the shortfall is reclaimed as an invisible
+    // tap area around the painted box instead of by inflating it.
+    final target = context.slds.dimensions.tapTargetMin;
+    if (metrics.height >= target) return ringed;
+    // A minimum rather than a fixed height, for the same reason as the style
+    // above: a 2x text scale must be free to grow past the tap target.
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: target),
+      child: Center(heightFactor: 1, child: ringed),
+    );
   }
 
-  /// The resolved accent color: [color] override, else the token driven by
-  /// the ambient [ColorScheme] (so it flips with light/dark mode).
-  Color _baseColor(BuildContext context) {
-    if (color != null) return color!;
-    final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive
-        ? scheme.error
-        : scheme.primary;
-  }
-
-  Color _onBaseColor(BuildContext context) {
-    if (color != null) {
-      return ThemeData.estimateBrightnessForColor(color!) == Brightness.dark
-          ? Colors.white
-          : Colors.black;
-    }
-    final scheme = Theme.of(context).colorScheme;
-    return variant == SldsButtonVariant.destructive
-        ? scheme.onError
-        : scheme.onPrimary;
-  }
-
+  /// Resting, hover and pressed backgrounds per variant.
+  ///
+  /// Each state reads a designed token rather than being derived from the
+  /// resting colour, so the palette stays the design team's decision and
+  /// holds under the high-contrast theme, where a computed tint would not.
   Color? _background(BuildContext context, Set<WidgetState> states) {
-    if (variant == SldsButtonVariant.text) {
-      return null; // text style stays transparent in both light and dark
-    }
-    if (variant == SldsButtonVariant.secondary ||
+    final colors = context.slds.colors;
+
+    // Text and tertiary are borderless/transparent at rest; their feedback
+    // comes from the ghost overlay tokens.
+    if (variant == SldsButtonVariant.text ||
         variant == SldsButtonVariant.tertiary) {
-      // Light mode: transparent-with-border. Dark mode: filled with a dark
-      // surface tone (per the SLDS dark-mode spec) — border stays too.
-      final theme = Theme.of(context);
-      if (theme.brightness == Brightness.light) return null;
-      final container = theme.colorScheme.surfaceContainerHighest;
-      if (states.contains(WidgetState.disabled)) {
-        return container.withValues(alpha: SldsColors.disabledOpacity);
-      }
+      if (states.contains(WidgetState.disabled)) return null;
       if (states.contains(WidgetState.pressed)) {
-        return Color.lerp(container, Colors.white, 0.08);
+        return colors.buttonGhostPressed;
       }
       if (states.contains(WidgetState.hovered) ||
           states.contains(WidgetState.focused)) {
-        return Color.lerp(container, Colors.white, 0.04);
+        return colors.buttonGhostHover;
       }
-      return container;
+      return null;
     }
-    final base = _baseColor(context);
-    if (states.contains(WidgetState.disabled)) {
-      return base.withValues(alpha: SldsColors.disabledOpacity);
-    }
-    if (states.contains(WidgetState.pressed)) {
-      return Color.lerp(base, Colors.black, 0.16);
-    }
-    if (states.contains(WidgetState.hovered) ||
-        states.contains(WidgetState.focused)) {
-      return Color.lerp(base, Colors.black, 0.08);
-    }
-    return base;
+
+    if (states.contains(WidgetState.disabled)) return colors.disabledBackground;
+
+    final pressed = states.contains(WidgetState.pressed);
+    final hovered =
+        states.contains(WidgetState.hovered) ||
+        states.contains(WidgetState.focused);
+
+    return switch (variant) {
+      SldsButtonVariant.primary when pressed => colors.buttonPrimaryPressed,
+      SldsButtonVariant.primary when hovered => colors.buttonPrimaryHover,
+      SldsButtonVariant.primary => colors.buttonPrimaryBackground,
+      SldsButtonVariant.destructive when pressed =>
+        colors.buttonDestructivePressed,
+      SldsButtonVariant.destructive when hovered =>
+        colors.buttonDestructiveHover,
+      SldsButtonVariant.destructive => colors.buttonDestructiveBackground,
+      SldsButtonVariant.secondary when pressed => colors.buttonSecondaryPressed,
+      SldsButtonVariant.secondary when hovered => colors.buttonSecondaryHover,
+      SldsButtonVariant.secondary => colors.buttonSecondaryBackground,
+      _ => null,
+    };
   }
 
   Color _foreground(BuildContext context, {required bool selected}) {
-    final isFilled =
-        variant == SldsButtonVariant.primary ||
-        variant == SldsButtonVariant.destructive;
-    if (!selected) {
-      return Theme.of(
-        context,
-      ).colorScheme.onSurface.withValues(alpha: SldsColors.disabledOpacity);
-    }
-    return isFilled ? _onBaseColor(context) : _baseColor(context);
+    final colors = context.slds.colors;
+    if (!selected) return colors.disabledForeground;
+
+    return switch (variant) {
+      SldsButtonVariant.primary => colors.buttonPrimaryLabel,
+      SldsButtonVariant.destructive => colors.buttonDestructiveLabel,
+      SldsButtonVariant.secondary => colors.buttonSecondaryLabel,
+      SldsButtonVariant.tertiary ||
+      SldsButtonVariant.text => colors.buttonGhostLabel,
+    };
   }
 
   BorderSide? _border(BuildContext context, Set<WidgetState> states) {
@@ -280,32 +432,16 @@ class SldsButton extends StatelessWidget {
         variant != SldsButtonVariant.tertiary) {
       return null;
     }
-    final outline = Theme.of(context).colorScheme.outline;
+    final colors = context.slds.colors;
+    final width = context.slds.dimensions.controlBorderWidth;
     if (states.contains(WidgetState.disabled)) {
-      return BorderSide(
-        color: outline.withValues(alpha: SldsColors.disabledOpacity),
-      );
+      return BorderSide(color: colors.disabledBorder, width: width);
     }
-    final color = variant == SldsButtonVariant.tertiary
-        ? outline
-        : _baseColor(context);
-    return BorderSide(color: color);
-  }
-
-  Color _overlay(BuildContext context, Set<WidgetState> states) {
-    final isFilled =
-        variant == SldsButtonVariant.primary ||
-        variant == SldsButtonVariant.destructive;
-    final base = isFilled ? _onBaseColor(context) : _baseColor(context);
-    if (states.contains(WidgetState.pressed)) {
-      return base.withValues(alpha: 0.12);
-    }
-    if (states.contains(WidgetState.hovered)) {
-      return base.withValues(alpha: 0.08);
-    }
-    if (states.contains(WidgetState.focused)) {
-      return base.withValues(alpha: 0.10);
-    }
-    return Colors.transparent;
+    return BorderSide(
+      color: variant == SldsButtonVariant.tertiary
+          ? colors.borderDefault
+          : colors.buttonSecondaryBorder,
+      width: width,
+    );
   }
 }

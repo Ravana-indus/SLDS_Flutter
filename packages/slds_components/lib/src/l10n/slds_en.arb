@@ -1,7 +1,116 @@
 {
   "@@locale": "en",
   "loading": "Loading",
+  "loadingEllipsis": "Loading…",
+  "@loadingEllipsis": {
+    "description": "Visible label beside a progress indicator. Distinct from \"loading\": the trailing ellipsis signals ongoing work to a sighted reader, and is noise when spoken aloud."
+  },
   "@loading": {
-    "description": "Screen-reader label announced while an SldsButton/SldsIconButton is in its loading state."
+    "description": "Screen-reader label announced while a component is in its loading state."
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Label for the control that dismisses a dialog, sheet or banner."
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Label for the control that re-attempts a failed action."
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Screen-reader label announced when a component enters its error state."
+  },
+  "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Label for the control that dismisses a transient message such as a snackbar."
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Screen-reader label for the control that returns to the previous screen."
+  },
+  "menu": "Menu",
+  "@menu": {
+    "description": "Screen-reader label for the control that opens the navigation menu."
+  },
+  "progress": "Progress",
+  "@progress": {
+    "description": "Screen-reader label for a progress indicator."
+  },
+  "upload": "Upload",
+  "@upload": {
+    "description": "Screen-reader label for the control that starts a file upload."
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Default placeholder for a search input."
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Label for the control that abandons a dialog without applying changes."
+  },
+  "apply": "Apply",
+  "@apply": {
+    "description": "Label for the control that confirms a dialog's changes."
+  },
+  "selectAnOption": "Select an option",
+  "@selectAnOption": {
+    "description": "Default placeholder for a dropdown with no selection."
+  },
+  "recentSearches": "RECENT SEARCHES",
+  "@recentSearches": {
+    "description": "Heading above previously used search terms. Upper case in English; translators should use whatever case is idiomatic."
+  },
+  "unreadCount": "{count, plural, =0{No unread notifications} =1{1 unread notification} other{{count} unread notifications}}",
+  "@unreadCount": {
+    "description": "Screen-reader label giving a badge count its meaning, rather than announcing a bare number.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "removeItem": "Remove {label}",
+  "@removeItem": {
+    "description": "Screen-reader label for the control that removes a chip or tag. {label} is the chip's own text.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "stepOf": "Step {number}: {title}. {description}",
+  "@stepOf": {
+    "description": "Screen-reader label for one step in a process list, read as a single sentence.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      },
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "labelledValue": "{label}: {value}",
+  "@labelledValue": {
+    "description": "Screen-reader label pairing a field name with its value in a summary list.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "setYourTime": "Set Your Time",
+  "@setYourTime": {
+    "description": "Title of the time picker dialog."
+  },
+  "uploadHint": "PDF, JPEG or PNG less than 5MB",
+  "@uploadHint": {
+    "description": "Helper text under an upload field listing accepted formats and the size limit. The format names are proper nouns and stay in Latin script; the rest is translated."
   }
 }

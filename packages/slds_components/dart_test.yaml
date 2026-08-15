@@ -1,0 +1,8 @@
+# Declares the tags used by this package's tests, so `--exclude-tags` and
+# `--tags` are recognised rather than warned about.
+tags:
+  golden:
+    # Image comparison is platform-sensitive (§8): font rasterisation differs
+    # between operating systems, so these run on their own CI job pinned to
+    # the platform the committed images were generated on.
+    description: Golden image comparisons.

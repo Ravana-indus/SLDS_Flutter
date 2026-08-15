@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/slds_components.dart'
+    show SldsSummaryBadgeStatus, SldsSummaryList;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_summary_list.dart'
+    show SldsSummaryBadgeStatus, SldsSummaryList;
 
 /// Status of one [SldsProcessStep] — drives the numbered badge's color.
 /// Reuses the same tone pairing as [SldsSummaryBadgeStatus] (approved/green
@@ -25,7 +30,7 @@ class SldsProcessStep {
 /// numbered badge per [SldsProcessStep.status] and 1px dividers between
 /// rows, inside a bordered card (same shell as [SldsSummaryList]).
 class SldsProcessList extends StatelessWidget {
-  const SldsProcessList({super.key, required this.steps, this.width});
+  const SldsProcessList({required this.steps, super.key, this.width});
 
   final List<SldsProcessStep> steps;
 
@@ -48,7 +53,7 @@ class SldsProcessList extends StatelessWidget {
                 ? constraints.maxWidth
                 : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
-            ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
+            ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
 
         return Container(
@@ -104,7 +109,7 @@ class _ProcessStepTile extends StatelessWidget {
     return Semantics(
       container: true,
       explicitChildNodes: true,
-      label: 'Step $index: ${step.title}. ${step.description}',
+      label: context.sldsStrings.stepOf(index, step.title, step.description),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: dimensions.space16,

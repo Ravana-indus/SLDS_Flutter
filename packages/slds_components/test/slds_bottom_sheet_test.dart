@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget sheet) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: SizedBox(height: 600, child: sheet)),
     ),
   );
@@ -80,12 +82,14 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: SldsTheme.light(),
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          theme: SldsTheme.light,
           home: Builder(
             builder: (context) => Scaffold(
               body: Center(
                 child: ElevatedButton(
-                  onPressed: () => SldsBottomSheet.show(
+                  onPressed: () => SldsBottomSheet.show<void>(
                     context,
                     title: 'Sheet Title',
                     child: const Text('Content'),

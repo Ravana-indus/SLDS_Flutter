@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/slds_components.dart' show SldsAvatar;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_avatar.dart' show SldsAvatar;
 
 /// SLDS chip — a pill-shaped label with an optional leading [avatar]/[icon]
 /// and an optional trailing close button (shown when [onDeleted] is set).
@@ -8,13 +11,12 @@ import '../theme/slds_tokens.dart';
 /// a remove action).
 class SldsChip extends StatelessWidget {
   const SldsChip({
-    super.key,
     required this.label,
+    super.key,
     this.avatar,
     this.icon,
     this.onDeleted,
     this.onTap,
-    this.color,
   });
 
   final String label;
@@ -34,15 +36,12 @@ class SldsChip extends StatelessWidget {
   /// the label non-interactive.
   final VoidCallback? onTap;
 
-  /// Overrides the token-driven background for this instance only.
-  final Color? color;
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final background = color ?? colors.surfaceHover;
+    final background = colors.surfaceHover;
 
     return Semantics(
       container: true,
@@ -84,7 +83,7 @@ class SldsChip extends StatelessWidget {
                   SizedBox(width: dimensions.space8),
                   Semantics(
                     button: true,
-                    label: 'Remove $label',
+                    label: context.sldsStrings.removeItem(label),
                     child: InkWell(
                       onTap: onDeleted,
                       borderRadius: BorderRadius.circular(

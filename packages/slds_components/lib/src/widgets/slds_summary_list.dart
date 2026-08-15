@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/slds_tokens.dart';
+import 'package:slds_components/src/l10n/slds_strings.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual tone for [SldsSummaryRow.badgeStatus] — maps 1:1 onto
 /// [SldsColorTokens]'s dedicated status-badge pairs (e.g. [inReview] uses
@@ -38,7 +39,7 @@ class SldsSummaryRow {
 /// with 1px dividers inside a bordered card; a row's value can be plain
 /// text or a status badge via [SldsSummaryRow.badgeStatus].
 class SldsSummaryList extends StatelessWidget {
-  const SldsSummaryList({super.key, required this.rows, this.width});
+  const SldsSummaryList({required this.rows, super.key, this.width});
 
   final List<SldsSummaryRow> rows;
 
@@ -61,7 +62,7 @@ class SldsSummaryList extends StatelessWidget {
                 ? constraints.maxWidth
                 : figmaReferenceWidth);
         final resolvedWidth = constraints.hasBoundedWidth
-            ? requestedWidth.clamp(0.0, constraints.maxWidth).toDouble()
+            ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
 
         return Container(
@@ -101,7 +102,7 @@ class _SummaryRowTile extends StatelessWidget {
     return Semantics(
       container: true,
       explicitChildNodes: true,
-      label: '${row.label}: ${row.value}',
+      label: context.sldsStrings.labelledValue(row.label, row.value),
       child: Container(
         width: double.infinity,
         color: colors.surfacePage,

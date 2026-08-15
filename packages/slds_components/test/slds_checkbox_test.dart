@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: field),
     ),
   );
@@ -45,7 +47,7 @@ void main() {
   });
 
   testWidgets('disabled checkbox does not respond to taps', (tester) async {
-    bool called = false;
+    var called = false;
     await pump(
       tester,
       SldsCheckbox(

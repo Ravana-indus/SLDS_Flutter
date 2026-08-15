@@ -5,7 +5,9 @@ import 'package:slds_components/slds_components.dart';
 void main() {
   Future<void> pump(WidgetTester tester, Widget widget) => tester.pumpWidget(
     MaterialApp(
-      theme: SldsTheme.light(),
+      localizationsDelegates: SldsLocalizations.localizationsDelegates,
+      supportedLocales: SldsLocalizations.supportedLocales,
+      theme: SldsTheme.light,
       home: Scaffold(body: Center(child: widget)),
     ),
   );
@@ -51,7 +53,6 @@ void main() {
     await pump(
       tester,
       SldsDatePicker(
-        mode: SldsDatePickerMode.range,
         initialRange: DateTimeRange(
           start: DateTime(2026, 1, 10),
           end: DateTime(2026, 1, 20),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../tokens/slds_colors.dart';
-import '../tokens/slds_spacing.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Fixed box dimensions for [SldsOtpInput], per the SLDS spec's size scale.
 enum SldsOtpInputSize {
   large(width: 56, height: 80),
   medium(width: 48, height: 68),
-  small(width: 44, height: 60);
+  small(width: 44, height: 60)
+  ;
 
   const SldsOtpInputSize({required this.width, required this.height});
 
@@ -65,11 +65,14 @@ class SldsOtpInput extends StatefulWidget {
 }
 
 class _SldsOtpInputState extends State<SldsOtpInput> {
-  late final controllers = List.generate(
+  late final List<TextEditingController> controllers = List.generate(
     widget.length,
     (_) => TextEditingController(),
   );
-  late final focusNodes = List.generate(widget.length, (_) => FocusNode());
+  late final List<FocusNode> focusNodes = List.generate(
+    widget.length,
+    (_) => FocusNode(),
+  );
 
   @override
   void initState() {
@@ -160,13 +163,14 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final dimensions = context.slds.dimensions;
 
     // Wrap (not Row+Expanded) — boxes are a fixed [widget.size], so at
     // narrow widths (mobile) the row wraps onto a second line instead of
     // overflowing or squeezing the boxes out of spec.
     return Wrap(
-      spacing: SldsSpacing.sm,
-      runSpacing: SldsSpacing.sm,
+      spacing: dimensions.space8,
+      runSpacing: dimensions.space8,
       children: [
         for (var i = 0; i < widget.length; i++) _buildBox(context, scheme, i),
       ],
@@ -181,10 +185,10 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
     final Color textColor;
     if (!widget.enabled) {
       borderColor = scheme.outline.withValues(
-        alpha: SldsColors.disabledOpacity,
+        alpha: context.slds.opacities.disabled,
       );
       textColor = scheme.onSurface.withValues(
-        alpha: SldsColors.disabledOpacity,
+        alpha: context.slds.opacities.disabled,
       );
     } else if (_hasError) {
       // Only the border goes red — the digit itself stays normal ink.

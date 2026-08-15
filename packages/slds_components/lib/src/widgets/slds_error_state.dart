@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../theme/slds_tokens.dart';
-import 'slds_button.dart';
+import 'package:slds_components/slds_components.dart' show SldsEmptyState;
+import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_empty_state.dart'
+    show SldsEmptyState;
 
 /// Common failure kinds [SldsErrorState.forKind] has copy for — covers the
 /// Figma "Error State" swatch's four variants. Use the base
@@ -20,9 +22,9 @@ enum SldsErrorKind { notFound, serverError, unauthorized }
 /// [illustration]) since this package bundles no custom artwork.
 class SldsErrorState extends StatelessWidget {
   const SldsErrorState({
-    super.key,
     required this.illustration,
     required this.title,
+    super.key,
     this.code,
     this.description,
     this.actionLabel,
@@ -52,7 +54,7 @@ class SldsErrorState extends StatelessWidget {
       SldsErrorKind.serverError => (
         '500',
         "This page isn't working",
-        "We apologise and are fixing the problem. Please try again later.",
+        'We apologise and are fixing the problem. Please try again later.',
       ),
       SldsErrorKind.unauthorized => (
         '401',

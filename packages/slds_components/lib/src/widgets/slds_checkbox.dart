@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/slds_colors.dart';
+import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS checkbox sizes.
 enum SldsCheckboxSize {
   large(box: 24, icon: 16),
-  small(box: 20, icon: 14);
+  small(box: 20, icon: 14)
+  ;
 
   const SldsCheckboxSize({required this.box, required this.icon});
 
@@ -13,33 +14,45 @@ enum SldsCheckboxSize {
   final double icon;
 }
 
-/// SLDS checkbox — a rounded-square box that fills with the accent color
-/// (a white check, or a dash for [SldsTristate.indeterminate]) once
-/// checked, plain outline while unchecked, a gold focus ring while focused
-/// via keyboard/tap-down, and dimmed when [enabled] is false.
+/// SLDS checkbox — a rounded-square box that fills once checked, shows a
+/// dash while indeterminate, carries a focus ring while focused, and dims
+/// when [enabled] is false.
 ///
-/// Tristate: pass [value] as `null` for the indeterminate ("some but not
-/// all selected") state — matches [Checkbox.tristate] semantics. Colors
-/// resolve from the ambient [Theme]'s [ColorScheme] (light/dark aware);
-/// pass [color] to override the accent for one instance.
+/// Colours resolve from the ambient SLDS token set, so the control follows
+/// light, dark and high-contrast themes.
+///
+/// Tristate: pass [value] as `null` for the indeterminate ("some but not all
+/// selected") state, matching [Checkbox.tristate].
+///
+/// Pass [semanticLabel] naming what is being checked. A checkbox announced
+/// as "checked" without saying what is checked tells a screen-reader user
+/// nothing, so supply it unless a visible label already sits beside the
+/// control inside the same [MergeSemantics] boundary.
 class SldsCheckbox extends StatefulWidget {
+  /// Creates a checkbox.
   const SldsCheckbox({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
     this.size = SldsCheckboxSize.large,
     this.enabled = true,
-    this.color,
+    this.semanticLabel,
   });
 
   /// `true` checked, `false` unchecked, `null` indeterminate.
   final bool? value;
+
+  /// Called with the new value. Null disables the control.
   final ValueChanged<bool?>? onChanged;
+
+  /// Box and glyph size.
   final SldsCheckboxSize size;
+
+  /// Whether the control accepts input.
   final bool enabled;
 
-  /// Overrides the token-driven accent color for this instance only.
-  final Color? color;
+  /// What this checkbox controls, for assistive technology.
+  final String? semanticLabel;
 
   @override
   State<SldsCheckbox> createState() => _SldsCheckboxState();
@@ -75,21 +88,21 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.slds;
+    final dimensions = tokens.dimensions;
     final scheme = Theme.of(context).colorScheme;
-    final accent = widget.color ?? scheme.primary;
-    final filled = widget.value == true || widget.value == null;
+    final accent = scheme.primary;
+    final filled = (widget.value ?? false) || widget.value == null;
 
     final Color boxColor;
     final Color borderColor;
     final Color iconColor;
     if (!_enabled) {
       boxColor = filled
-          ? scheme.onSurface.withValues(alpha: SldsColors.disabledOpacity)
+          ? context.slds.colors.disabledBackground
           : Colors.transparent;
-      borderColor = scheme.outline.withValues(
-        alpha: SldsColors.disabledOpacity,
-      );
-      iconColor = scheme.surface;
+      borderColor = context.slds.colors.disabledBorder;
+      iconColor = context.slds.colors.disabledForeground;
     } else if (filled) {
       boxColor = accent;
       borderColor = accent;
@@ -105,42 +118,60 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
 
     final radius = widget.size.box / 6;
 
-    return Focus(
-      focusNode: _focusNode,
-      child: GestureDetector(
-        onTap: _toggle,
-        child: Container(
-          width: widget.size.box,
-          height: widget.size.box,
-          padding: _focused ? const EdgeInsets.all(2) : EdgeInsets.zero,
-          decoration: _focused
-              ? BoxDecoration(
-                  border: Border.all(color: accent, width: 1.5),
-                  borderRadius: BorderRadius.circular(radius + 2),
-                )
-              : null,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 120),
-            decoration: BoxDecoration(
-              color: boxColor,
-              borderRadius: BorderRadius.circular(radius),
-              border: Border.all(color: borderColor, width: 1.5),
-            ),
-            child: widget.value == null
-                ? Center(
-                    child: Container(
-                      width: widget.size.icon * 0.7,
-                      height: 2,
-                      color: iconColor,
+    // Role, state and name in one node. Without this a screen reader reaches
+    // an unlabelled box with no indication that it is checkable at all.
+    return Semantics(
+      checked: widget.value ?? false,
+      mixed: widget.value == null,
+      enabled: _enabled,
+      label: widget.semanticLabel,
+      onTap: _enabled ? _toggle : null,
+      child: Focus(
+        focusNode: _focusNode,
+        child: GestureDetector(
+          onTap: _toggle,
+          child: Container(
+            width: widget.size.box,
+            height: widget.size.box,
+            padding: _focused
+                ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+                : EdgeInsets.zero,
+            // focusRing, not the accent: only the former is contrast-checked
+            // against every surface the control can sit on (WCAG 1.4.11).
+            decoration: _focused
+                ? BoxDecoration(
+                    border: Border.all(
+                      color: context.slds.colors.focusRing,
+                      width: dimensions.emphasizedBorderWidth,
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      radius + dimensions.controlBorderWidth * 2,
                     ),
                   )
-                : (widget.value == true
-                      ? Icon(
-                          Icons.check,
-                          size: widget.size.icon,
-                          color: iconColor,
-                        )
-                      : null),
+                : null,
+            child: AnimatedContainer(
+              duration: tokens.motion.fast,
+              decoration: BoxDecoration(
+                color: boxColor,
+                borderRadius: BorderRadius.circular(radius),
+                border: Border.all(color: borderColor, width: 1.5),
+              ),
+              child: widget.value == null
+                  ? Center(
+                      child: Container(
+                        width: widget.size.icon * 0.7,
+                        height: 2,
+                        color: iconColor,
+                      ),
+                    )
+                  : (widget.value ?? false
+                        ? Icon(
+                            Icons.check,
+                            size: widget.size.icon,
+                            color: iconColor,
+                          )
+                        : null),
+            ),
           ),
         ),
       ),

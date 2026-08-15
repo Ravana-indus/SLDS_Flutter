@@ -1,0 +1,23 @@
+# Every component has a named owner responsible for defects and upgrades
+# (§10). Pull requests require review from at least one library maintainer;
+# agency teams may contribute but do not self-merge.
+#
+# TODO(GovTech): replace the placeholder handles below with real GitHub
+# usernames or teams before this file has any effect. An unowned path falls
+# through to the default owner on the first line.
+
+* @Ravana-indus/slds-maintainers
+
+# Token values are the design team's decision, not engineering's (§9).
+# Changes here should be reviewed by design as well as by a maintainer.
+/packages/slds_tokens/lib/src/colors.dart      @Ravana-indus/slds-design @Ravana-indus/slds-maintainers
+/packages/slds_tokens/lib/src/typography.dart  @Ravana-indus/slds-design @Ravana-indus/slds-maintainers
+
+# The accessibility gates. A change that weakens one of these needs an
+# explicit decision, not a drive-by review.
+/packages/slds_tokens/test/contrast_test.dart                     @Ravana-indus/slds-maintainers
+/packages/slds_components/test/slds_accessibility_guidelines_test.dart @Ravana-indus/slds-maintainers
+/.github/workflows/                                                @Ravana-indus/slds-maintainers
+
+# Golden images are the review artefact for every visual change (§8).
+/packages/slds_components/test/goldens/  @Ravana-indus/slds-maintainers @Ravana-indus/slds-design

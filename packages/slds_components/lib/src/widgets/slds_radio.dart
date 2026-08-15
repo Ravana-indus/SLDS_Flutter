@@ -30,13 +30,29 @@ class SldsRadio<T> extends StatefulWidget {
     super.key,
     this.size = SldsRadioSize.large,
     this.enabled = true,
+    this.semanticLabel,
   });
 
+  /// The value this button represents within its group.
   final T value;
+
+  /// The group's currently selected value.
   final T? groupValue;
+
+  /// Called with [value] when this button is selected. Null disables it.
   final ValueChanged<T>? onChanged;
+
+  /// Circle and dot size.
   final SldsRadioSize size;
+
+  /// Whether the control accepts input.
   final bool enabled;
+
+  /// What this option means, for assistive technology.
+  ///
+  /// A radio announced as "selected" without naming the option tells a
+  /// screen-reader user nothing.
+  final String? semanticLabel;
 
   @override
   State<SldsRadio<T>> createState() => _SldsRadioState<T>();
@@ -92,40 +108,50 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
       dotColor = Colors.transparent;
     }
 
-    return Focus(
-      focusNode: _focusNode,
-      child: GestureDetector(
-        onTap: _select,
-        child: Container(
-          width: widget.size.circle,
-          height: widget.size.circle,
-          padding: _focused
-              ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
-              : EdgeInsets.zero,
-          // The focus stroke reads from focusRing, which is contrast-checked
-          // against every surface; the accent gold is not (1.4.11).
-          decoration: _focused
-              ? BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: context.slds.colors.focusRing,
-                    width: dimensions.emphasizedBorderWidth,
-                  ),
-                )
-              : null,
+    // inMutuallyExclusiveGroup is what tells a screen reader this is a radio
+    // rather than a checkbox — that one flag changes how the whole group is
+    // announced and navigated.
+    return Semantics(
+      inMutuallyExclusiveGroup: true,
+      checked: _selected,
+      enabled: _enabled,
+      label: widget.semanticLabel,
+      onTap: _enabled ? _select : null,
+      child: Focus(
+        focusNode: _focusNode,
+        child: GestureDetector(
+          onTap: _select,
           child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: ringColor, width: 1.5),
-            ),
-            child: Center(
-              child: AnimatedContainer(
-                duration: tokens.motion.fast,
-                width: _selected ? widget.size.dot : 0,
-                height: _selected ? widget.size.dot : 0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: dotColor,
+            width: widget.size.circle,
+            height: widget.size.circle,
+            padding: _focused
+                ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+                : EdgeInsets.zero,
+            // The focus stroke reads from focusRing, which is contrast-checked
+            // against every surface; the accent gold is not (1.4.11).
+            decoration: _focused
+                ? BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: context.slds.colors.focusRing,
+                      width: dimensions.emphasizedBorderWidth,
+                    ),
+                  )
+                : null,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: ringColor, width: 1.5),
+              ),
+              child: Center(
+                child: AnimatedContainer(
+                  duration: tokens.motion.fast,
+                  width: _selected ? widget.size.dot : 0,
+                  height: _selected ? widget.size.dot : 0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: dotColor,
+                  ),
                 ),
               ),
             ),

@@ -33,12 +33,26 @@ class SldsToggle extends StatefulWidget {
     super.key,
     this.size = SldsToggleSize.large,
     this.enabled = true,
+    this.semanticLabel,
   });
 
+  /// Whether the switch is on.
   final bool value;
+
+  /// Called with the new value. Null disables the control.
   final ValueChanged<bool>? onChanged;
+
+  /// Track and thumb size.
   final SldsToggleSize size;
+
+  /// Whether the control accepts input.
   final bool enabled;
+
+  /// What this switch controls, for assistive technology.
+  ///
+  /// A switch announced as "on" without naming what is on tells a
+  /// screen-reader user nothing.
+  final String? semanticLabel;
 
   @override
   State<SldsToggle> createState() => _SldsToggleState();
@@ -99,55 +113,64 @@ class _SldsToggleState extends State<SldsToggle> {
     // expanded to the 48x48 minimum instead. Shrinking the visual switch to
     // fit, or leaving a 28px-tall tap target, would each fail one of the two
     // requirements — this satisfies both.
-    return Focus(
-      focusNode: _focusNode,
-      child: GestureDetector(
-        onTap: _toggle,
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          constraints: BoxConstraints(
-            minWidth: dimensions.tapTargetMin,
-            minHeight: dimensions.tapTargetMin,
-          ),
-          alignment: Alignment.center,
+    // `toggled`, not `checked`: that is what makes a screen reader announce
+    // this as a switch rather than a checkbox.
+    return Semantics(
+      toggled: widget.value,
+      enabled: _enabled,
+      label: widget.semanticLabel,
+      onTap: _enabled ? _toggle : null,
+      child: Focus(
+        focusNode: _focusNode,
+        child: GestureDetector(
+          onTap: _toggle,
+          behavior: HitTestBehavior.opaque,
           child: Container(
-            width: widget.size.width,
-            height: widget.size.height,
-            padding: _focused
-                ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
-                : EdgeInsets.zero,
-            // focusRing, not the accent: only the former is contrast-checked
-            // against every surface the control can sit on (WCAG 1.4.11).
-            decoration: _focused
-                ? BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      (widget.size.height + dimensions.controlBorderWidth * 4) /
-                          2,
-                    ),
-                    border: Border.all(
-                      color: context.slds.colors.focusRing,
-                      width: dimensions.emphasizedBorderWidth,
-                    ),
-                  )
-                : null,
-            child: AnimatedContainer(
-              duration: tokens.motion.fast,
-              padding: EdgeInsets.symmetric(horizontal: trackPadding),
-              decoration: BoxDecoration(
-                color: trackColor,
-                borderRadius: BorderRadius.circular(widget.size.height / 2),
-              ),
-              alignment: widget.value
-                  ? Alignment.centerRight
-                  : Alignment.centerLeft,
+            constraints: BoxConstraints(
+              minWidth: dimensions.tapTargetMin,
+              minHeight: dimensions.tapTargetMin,
+            ),
+            alignment: Alignment.center,
+            child: Container(
+              width: widget.size.width,
+              height: widget.size.height,
+              padding: _focused
+                  ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+                  : EdgeInsets.zero,
+              // focusRing, not the accent: only the former is contrast-checked
+              // against every surface the control can sit on (WCAG 1.4.11).
+              decoration: _focused
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        (widget.size.height +
+                                dimensions.controlBorderWidth * 4) /
+                            2,
+                      ),
+                      border: Border.all(
+                        color: context.slds.colors.focusRing,
+                        width: dimensions.emphasizedBorderWidth,
+                      ),
+                    )
+                  : null,
               child: AnimatedContainer(
                 duration: tokens.motion.fast,
-                curve: Curves.easeOut,
-                width: widget.size.thumb,
-                height: widget.size.thumb,
+                padding: EdgeInsets.symmetric(horizontal: trackPadding),
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: thumbColor,
+                  color: trackColor,
+                  borderRadius: BorderRadius.circular(widget.size.height / 2),
+                ),
+                alignment: widget.value
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
+                child: AnimatedContainer(
+                  duration: tokens.motion.fast,
+                  curve: Curves.easeOut,
+                  width: widget.size.thumb,
+                  height: widget.size.thumb,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: thumbColor,
+                  ),
                 ),
               ),
             ),

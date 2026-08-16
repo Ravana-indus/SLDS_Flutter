@@ -25,6 +25,7 @@ class SldsTextField extends StatelessWidget {
     this.leadingWidget,
     this.trailingIcon,
     this.trailingIconColor,
+    this.trailingIconTooltip,
     this.onTrailingIconPressed,
     this.enabled = true,
     this.obscureText = false,
@@ -50,6 +51,11 @@ class SldsTextField extends StatelessWidget {
   /// Overrides the trailing icon's color; defaults to [ColorScheme.onSurface]
   /// (or [ColorScheme.error] while [errorText] is set).
   final Color? trailingIconColor;
+
+  /// Accessible name for the trailing icon button. An icon-only control has
+  /// no visible text, so pass this whenever [onTrailingIconPressed] is set.
+  final String? trailingIconTooltip;
+
   final VoidCallback? onTrailingIconPressed;
   final bool enabled;
   final bool obscureText;
@@ -66,14 +72,15 @@ class SldsTextField extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
 
-    OutlineInputBorder border(Color borderColor, {double? width}) =>
-        OutlineInputBorder(
-          borderRadius: BorderRadius.circular(dimensions.radiusLg),
-          borderSide: BorderSide(
-            color: borderColor,
-            width: width ?? dimensions.controlBorderWidth,
-          ),
-        );
+    // Figma draws a plain 1px border in every state and carries the state in
+    // the colour alone, so no state thickens the stroke.
+    OutlineInputBorder border(Color borderColor) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(dimensions.radius2xl),
+      borderSide: BorderSide(
+        color: borderColor,
+        width: dimensions.controlBorderWidth,
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +88,9 @@ class SldsTextField extends StatelessWidget {
       children: [
         Text.rich(
           TextSpan(
-            style: tokens.typography.fieldLabel.copyWith(
+            // Figma labels the field in Body 2 (14px), not the 16px
+            // fieldLabel token used by the selection controls.
+            style: tokens.typography.body2.copyWith(
               color: enabled ? colors.inputLabel : colors.disabledForeground,
             ),
             children: [
@@ -105,14 +114,14 @@ class SldsTextField extends StatelessWidget {
           inputFormatters: inputFormatters,
           onChanged: onChanged,
           validator: validator,
-          // The default '•' obscuring dot renders oversized at bodyLarge's
-          // 18px next to normal letters — a slightly smaller size keeps the
-          // obscured and revealed states visually balanced.
-          style: obscureText
-              ? Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 14)
-              : Theme.of(context).textTheme.bodyLarge,
+          // Figma sets the value in Body 1 whether or not it is obscured, so
+          // revealing a password must not reflow the field.
+          style: tokens.typography.body1.copyWith(color: colors.textPrimary),
           decoration: InputDecoration(
             hintText: hintText,
+            hintStyle: tokens.typography.body1.copyWith(
+              color: colors.inputPlaceholder,
+            ),
             prefixIcon: leadingWidget != null
                 ? Center(widthFactor: 1, child: leadingWidget)
                 : (leadingIcon != null ? Icon(leadingIcon, size: 20) : null),
@@ -123,17 +132,22 @@ class SldsTextField extends StatelessWidget {
                 ? IconButton(
                     icon: Icon(
                       trailingIcon,
-                      size: 20,
+                      size: dimensions.iconSizeMedium,
                       color: trailingIconColor,
                     ),
+                    tooltip: trailingIconTooltip,
                     onPressed: onTrailingIconPressed,
                   )
                 : null,
             filled: true,
             fillColor: enabled ? colors.surfaceCard : colors.disabledBackground,
+            // Figma's Content box is a fixed 52px tall with 8px of horizontal
+            // padding; constraints rather than vertical padding so the height
+            // is a floor the field can still grow past at large text scales.
+            constraints: BoxConstraints(minHeight: dimensions.inputHeight),
             contentPadding: EdgeInsetsDirectional.symmetric(
-              horizontal: dimensions.space12,
-              vertical: dimensions.space12,
+              horizontal: dimensions.space8,
+              vertical: dimensions.space8,
             ),
             border: border(colors.inputBorderDefault),
             enabledBorder: border(
@@ -141,21 +155,14 @@ class SldsTextField extends StatelessWidget {
             ),
             focusedBorder: border(
               _hasError ? colors.inputBorderError : colors.inputBorderFocused,
-              width: dimensions.emphasizedBorderWidth,
             ),
             errorBorder: border(colors.inputBorderError),
-            focusedErrorBorder: border(
-              colors.inputBorderError,
-              width: dimensions.emphasizedBorderWidth,
-            ),
-            disabledBorder: border(
-              colors.inputBorderDisabled,
-              width: dimensions.inputDisabledBorderWidth,
-            ),
+            focusedErrorBorder: border(colors.inputBorderError),
+            disabledBorder: border(colors.inputBorderDisabled),
           ),
         ),
         if (_hasError || (helpText != null && helpText!.isNotEmpty)) ...[
-          SizedBox(height: dimensions.space8),
+          SizedBox(height: dimensions.space6),
           Text(
             _hasError ? errorText! : helpText!,
             style: tokens.typography.caption1.copyWith(

@@ -20,5 +20,7 @@
   "stepOf": "පියවර {number}: {title}. {description}",
   "labelledValue": "{label}: {value}",
   "setYourTime": "ඔබේ වේලාව සකසන්න",
-  "uploadHint": "PDF, JPEG හෝ PNG, 5MB ට අඩු"
+  "uploadHint": "PDF, JPEG හෝ PNG, 5MB ට අඩු",
+  "showPassword": "මුරපදය පෙන්වන්න",
+  "hidePassword": "මුරපදය සඟවන්න"
 }

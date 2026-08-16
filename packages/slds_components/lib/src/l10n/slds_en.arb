@@ -112,5 +112,13 @@
   "uploadHint": "PDF, JPEG or PNG less than 5MB",
   "@uploadHint": {
     "description": "Helper text under an upload field listing accepted formats and the size limit. The format names are proper nouns and stay in Latin script; the rest is translated."
+  },
+  "showPassword": "Show password",
+  "@showPassword": {
+    "description": "Accessible name for the password reveal toggle when the password is hidden."
+  },
+  "hidePassword": "Hide password",
+  "@hidePassword": {
+    "description": "Accessible name for the password reveal toggle when the password is visible."
   }
 }

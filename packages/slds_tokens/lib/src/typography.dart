@@ -79,6 +79,7 @@ class SldsRawTypographyTokens {
     required this.caption1,
     required this.caption2,
     required this.mobileCaption2,
+    required this.overline,
     required this.mobileDisplay1,
     required this.display2,
     required this.heading4,
@@ -116,6 +117,7 @@ class SldsRawTypographyTokens {
       lineHeight: 20,
       fontWeight: 400,
     ),
+    overline: SldsTextStyleToken(fontSize: 10, lineHeight: 12, fontWeight: 300),
     mobileDisplay1: SldsTextStyleToken(
       fontSize: 36,
       lineHeight: 44,
@@ -205,6 +207,10 @@ class SldsRawTypographyTokens {
   /// Mobile caption 2 style (Figma Mobile/Caption 2: 11px/20px regular).
   final SldsTextStyleToken mobileCaption2;
 
+  /// Mobile overline style (Figma Mobile/Overline: 10px/12 light), used
+  /// for the supporting line under a Mobile Menu Block title.
+  final SldsTextStyleToken overline;
+
   /// Mobile display 1 style used by numeric error-state codes
   /// (Figma Mobile/Display 1: 36px/44px medium, -2.0 tracking).
   final SldsTextStyleToken mobileDisplay1;
@@ -259,6 +265,7 @@ class SldsRawTypographyTokens {
     SldsTextStyleToken? caption1,
     SldsTextStyleToken? caption2,
     SldsTextStyleToken? mobileCaption2,
+    SldsTextStyleToken? overline,
     SldsTextStyleToken? mobileDisplay1,
     SldsTextStyleToken? display2,
     SldsTextStyleToken? heading4,
@@ -282,6 +289,7 @@ class SldsRawTypographyTokens {
       caption1: caption1 ?? this.caption1,
       caption2: caption2 ?? this.caption2,
       mobileCaption2: mobileCaption2 ?? this.mobileCaption2,
+      overline: overline ?? this.overline,
       mobileDisplay1: mobileDisplay1 ?? this.mobileDisplay1,
       display2: display2 ?? this.display2,
       heading4: heading4 ?? this.heading4,
@@ -309,6 +317,7 @@ class SldsRawTypographyTokens {
         other.caption1 == caption1 &&
         other.caption2 == caption2 &&
         other.mobileCaption2 == mobileCaption2 &&
+        other.overline == overline &&
         other.mobileDisplay1 == mobileDisplay1 &&
         other.display2 == display2 &&
         other.heading4 == heading4 &&
@@ -333,6 +342,7 @@ class SldsRawTypographyTokens {
     caption1,
     caption2,
     mobileCaption2,
+    overline,
     mobileDisplay1,
     display2,
     heading4,

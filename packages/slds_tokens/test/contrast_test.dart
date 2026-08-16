@@ -48,6 +48,31 @@ final _pairs = <_Pair>[
   _Pair('tertiary text on page', (c) => c.textTertiary, (c) => c.surfacePage),
   _Pair('tertiary text on card', (c) => c.textTertiary, (c) => c.surfaceCard),
 
+  // Ghost and secondary buttons in their hover and pressed states. The label
+  // sits directly on these surfaces, so a state that lightens too far pushes
+  // white text below the floor — the failure that made the dark pressed
+  // surface unreadable before it was pinned here.
+  _Pair(
+    'secondary label on hover surface',
+    (c) => c.buttonSecondaryLabel,
+    (c) => c.buttonSecondaryHover,
+  ),
+  _Pair(
+    'secondary label on pressed surface',
+    (c) => c.buttonSecondaryLabel,
+    (c) => c.buttonSecondaryPressed,
+  ),
+  _Pair(
+    'ghost label on hover surface',
+    (c) => c.buttonGhostLabel,
+    (c) => c.buttonGhostHover,
+  ),
+  _Pair(
+    'ghost label on pressed surface',
+    (c) => c.buttonGhostLabel,
+    (c) => c.buttonGhostPressed,
+  ),
+
   // Inline text links. Body-sized interactive text, so the 4.5:1 floor
   // applies at rest as well as on hover.
   _Pair('link on page', (c) => c.linkLabel, (c) => c.surfacePage),

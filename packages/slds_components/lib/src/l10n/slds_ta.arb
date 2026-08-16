@@ -20,5 +20,7 @@
   "stepOf": "படி {number}: {title}. {description}",
   "labelledValue": "{label}: {value}",
   "setYourTime": "உங்கள் நேரத்தை அமைக்கவும்",
-  "uploadHint": "PDF, JPEG அல்லது PNG, 5MB க்கும் குறைவாக"
+  "uploadHint": "PDF, JPEG அல்லது PNG, 5MB க்கும் குறைவாக",
+  "showPassword": "கடவுச்சொல்லைக் காட்டு",
+  "hidePassword": "கடவுச்சொல்லை மறை"
 }

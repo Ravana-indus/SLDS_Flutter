@@ -98,6 +98,8 @@ class SldsDimensionTokens {
     required this.iconSizeSmall,
     required this.iconSizeMedium,
     required this.iconSizeLarge,
+    required this.iconSizeXLarge,
+    required this.countBubbleSize,
     required this.snackbarShadowBlur,
   });
 
@@ -189,6 +191,8 @@ class SldsDimensionTokens {
     iconSizeSmall: 16,
     iconSizeMedium: 20,
     iconSizeLarge: 24,
+    iconSizeXLarge: 28,
+    countBubbleSize: 32,
     snackbarShadowBlur: 7.5,
   );
 
@@ -459,6 +463,12 @@ class SldsDimensionTokens {
   /// Large icon size, used by the extra-large Button.
   final double iconSizeLarge;
 
+  /// Extra-large icon size, used by the Mobile Menu Block leading icon.
+  final double iconSizeXLarge;
+
+  /// Diameter of the Mobile Menu Block count bubble.
+  final double countBubbleSize;
+
   /// Snackbar shadow blur radius.
   final double snackbarShadowBlur;
 
@@ -550,6 +560,8 @@ class SldsDimensionTokens {
     double? iconSizeSmall,
     double? iconSizeMedium,
     double? iconSizeLarge,
+    double? iconSizeXLarge,
+    double? countBubbleSize,
     double? snackbarShadowBlur,
   }) {
     return SldsDimensionTokens(
@@ -644,6 +656,8 @@ class SldsDimensionTokens {
       iconSizeSmall: iconSizeSmall ?? this.iconSizeSmall,
       iconSizeMedium: iconSizeMedium ?? this.iconSizeMedium,
       iconSizeLarge: iconSizeLarge ?? this.iconSizeLarge,
+      iconSizeXLarge: iconSizeXLarge ?? this.iconSizeXLarge,
+      countBubbleSize: countBubbleSize ?? this.countBubbleSize,
       snackbarShadowBlur: snackbarShadowBlur ?? this.snackbarShadowBlur,
     );
   }
@@ -738,6 +752,8 @@ class SldsDimensionTokens {
         other.iconSizeSmall == iconSizeSmall &&
         other.iconSizeMedium == iconSizeMedium &&
         other.iconSizeLarge == iconSizeLarge &&
+        other.iconSizeXLarge == iconSizeXLarge &&
+        other.countBubbleSize == countBubbleSize &&
         other.snackbarShadowBlur == snackbarShadowBlur;
   }
 
@@ -829,6 +845,8 @@ class SldsDimensionTokens {
     iconSizeSmall,
     iconSizeMedium,
     iconSizeLarge,
+    iconSizeXLarge,
+    countBubbleSize,
     snackbarShadowBlur,
   ]);
 }

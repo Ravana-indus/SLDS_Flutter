@@ -202,11 +202,11 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
         : focused
         ? colors.inputBorderFocused
         : colors.inputBorderDefault;
-    final borderWidth = disabled
-        ? dimensions.inputDisabledBorderWidth
-        : error || focused
-        ? dimensions.emphasizedBorderWidth
-        : dimensions.controlBorderWidth;
+    // Figma carries the state in the border colour alone; no state thickens
+    // the stroke. (This frame's Default node exports a one-off 1.6px, but its
+    // Focused node declares no width at all and the rest of the Input family
+    // is a plain 1px, so the ramp is normalised here.)
+    final borderWidth = dimensions.controlBorderWidth;
     final labelColor = disabled ? colors.disabledForeground : colors.inputLabel;
     final supportText = error ? widget.errorText : widget.helperText;
     final supportColor = disabled
@@ -239,7 +239,7 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                     ? colors.disabledForeground
                     : colors.inputBorderError,
               ),
-              SizedBox(height: dimensions.space4),
+              SizedBox(height: dimensions.space8),
               AnimatedContainer(
                 duration: tokens.motion.fast,
                 height: dimensions.inputHeight,
@@ -311,7 +311,7 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                               color: disabled
                                   ? colors.disabledForeground
                                   : colors.inputIcon,
-                              size: dimensions.space16,
+                              size: dimensions.iconSizeMedium,
                             ),
                             child: widget.trailing!,
                           ),
@@ -362,13 +362,13 @@ class _MobileNumberLabel extends StatelessWidget {
           child: Text(
             label,
             locale: Localizations.maybeLocaleOf(context),
-            style: typography.fieldLabel.copyWith(color: color),
+            style: typography.body2.copyWith(color: color),
           ),
         ),
         if (required)
           Text(
             '*',
-            style: typography.fieldLabel.copyWith(color: requiredColor),
+            style: typography.body2.copyWith(color: requiredColor),
           ),
       ],
     );

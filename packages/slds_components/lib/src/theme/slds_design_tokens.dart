@@ -79,6 +79,9 @@ class SldsColorTokens {
   /// hover). Figma calls this out as distinct from the white card surface.
   Color get surfaceRaised => Color(tokens.surfaceRaised);
 
+  /// Figma Surface/Sunken — the ground a menu-block list sits on.
+  Color get surfaceSunken => Color(tokens.surfaceSunken);
+
   /// Hover surface.
   Color get surfaceHover => Color(tokens.surfaceHover);
 
@@ -371,6 +374,9 @@ class SldsTypographyTokens {
   /// Mobile caption 2 style.
   TextStyle get mobileCaption2 =>
       tokens.mobileCaption2.toTextStyle(tokens.fontFamily);
+
+  /// Mobile overline style, used by the menu-block supporting line.
+  TextStyle get overline => tokens.overline.toTextStyle(tokens.fontFamily);
 
   /// Mobile display 1 style used by numeric error-state codes.
   TextStyle get mobileDisplay1 =>

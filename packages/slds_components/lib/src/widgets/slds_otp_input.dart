@@ -6,8 +6,8 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// Fixed box dimensions for [SldsOtpInput], per the SLDS spec's size scale.
 enum SldsOtpInputSize {
   large(width: 56, height: 80),
-  medium(width: 48, height: 68),
-  small(width: 44, height: 60)
+  medium(width: 48, height: 60),
+  small(width: 44, height: 52)
   ;
 
   const SldsOtpInputSize({required this.width, required this.height});
@@ -74,6 +74,15 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
     (_) => FocusNode(),
   );
 
+  /// Key-listener nodes, one per box.
+  ///
+  /// Owned here rather than constructed inline in [build]: a node created
+  /// during build is rebuilt and leaked on every frame.
+  late final List<FocusNode> keyNodes = List.generate(
+    widget.length,
+    (_) => FocusNode(skipTraversal: true),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -95,6 +104,9 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
       f
         ..removeListener(_onFocusChanged)
         ..dispose();
+    }
+    for (final f in keyNodes) {
+      f.dispose();
     }
     super.dispose();
   }
@@ -162,7 +174,6 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final dimensions = context.slds.dimensions;
 
     // Wrap (not Row+Expanded) — boxes are a fixed [widget.size], so at
@@ -172,50 +183,55 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
       spacing: dimensions.space8,
       runSpacing: dimensions.space8,
       children: [
-        for (var i = 0; i < widget.length; i++) _buildBox(context, scheme, i),
+        for (var i = 0; i < widget.length; i++) _buildBox(context, i),
       ],
     );
   }
 
-  Widget _buildBox(BuildContext context, ColorScheme scheme, int index) {
+  /// The box outline: a flat `radius2xl` corner and a 1px stroke, per Figma.
+  OutlineInputBorder _boxBorder(SldsTokenSet tokens, Color color) =>
+      OutlineInputBorder(
+        borderRadius: BorderRadius.circular(tokens.dimensions.radius2xl),
+        borderSide: BorderSide(
+          color: color,
+          width: tokens.dimensions.controlBorderWidth,
+        ),
+      );
+
+  Widget _buildBox(BuildContext context, int index) {
+    final tokens = context.slds;
+    final colors = tokens.colors;
     final filled = controllers[index].text.isNotEmpty;
     final focused = focusNodes[index].hasFocus;
 
     final Color borderColor;
     final Color textColor;
     if (!widget.enabled) {
-      borderColor = scheme.outline.withValues(
-        alpha: context.slds.opacities.disabled,
-      );
-      textColor = scheme.onSurface.withValues(
-        alpha: context.slds.opacities.disabled,
-      );
+      borderColor = colors.disabledBorder;
+      textColor = colors.disabledForeground;
     } else if (_hasError) {
       // Only the border goes red — the digit itself stays normal ink.
-      borderColor = scheme.error;
-      textColor = scheme.onSurface;
+      borderColor = colors.inputBorderError;
+      textColor = colors.inputLabel;
     } else if (widget.success) {
-      borderColor = Colors.green;
-      textColor = Colors.green;
+      borderColor = colors.success;
+      textColor = colors.success;
     } else if (focused && !filled) {
       // Gold — the active box awaiting input, cursor showing (design row 2).
-      borderColor = scheme.primary;
-      textColor = scheme.primary;
+      borderColor = colors.inputBorderFocused;
+      textColor = colors.inputLabel;
     } else {
-      // Gray for both untouched and already-filled boxes (design rows 1/3).
-      borderColor = scheme.outline;
-      textColor = scheme.onSurface;
+      // Figma's Default and Filled nodes share a border; only the digit
+      // differs, and an empty box has no digit to colour.
+      borderColor = colors.inputBorderDefault;
+      textColor = colors.inputLabel;
     }
-
-    final radius =
-        widget.size.width / 3.5; // scales with box size, ~16 at large
-    final fontSize = widget.size.width / 2.5; // ~22 at large, ~18 at small
 
     return SizedBox(
       width: widget.size.width,
       height: widget.size.height,
       child: KeyboardListener(
-        focusNode: FocusNode(skipTraversal: true),
+        focusNode: keyNodes[index],
         onKeyEvent: (event) => _onKey(index, event),
         child: TextField(
           controller: controllers[index],
@@ -226,30 +242,22 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
           keyboardType: TextInputType.number,
           maxLength: widget.length, // allows pasting the full code into one box
           cursorColor: borderColor,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            color: textColor,
-            fontSize: fontSize,
-            fontWeight: FontWeight.w600,
-          ),
+          // Figma sets the digit in Heading 1 at every size — the box grows,
+          // the numeral does not.
+          style: tokens.typography.heading1.copyWith(color: textColor),
           decoration: InputDecoration(
             counterText: '',
             filled: true,
             fillColor: widget.enabled
-                ? scheme.surface
-                : scheme.onSurface.withValues(alpha: 0.04),
+                ? colors.surfaceCard
+                : colors.disabledBackground,
             contentPadding: EdgeInsets.zero,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius),
-              borderSide: BorderSide(color: borderColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius),
-              borderSide: BorderSide(color: borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius),
-              borderSide: BorderSide(color: borderColor, width: 2),
-            ),
+            // One radius and one border width for every size and state; the
+            // state is carried by the border colour alone.
+            border: _boxBorder(tokens, borderColor),
+            enabledBorder: _boxBorder(tokens, borderColor),
+            focusedBorder: _boxBorder(tokens, borderColor),
+            disabledBorder: _boxBorder(tokens, borderColor),
           ),
           onChanged: (value) => _onChanged(index, value),
         ),

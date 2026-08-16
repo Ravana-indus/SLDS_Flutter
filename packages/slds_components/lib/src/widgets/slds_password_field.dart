@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/widgets/slds_text_field.dart';
 
 /// SLDS password input — an [SldsTextField] with a built-in show/hide
@@ -50,9 +51,17 @@ class _SldsPasswordFieldState extends State<SldsPasswordField> {
       onChanged: widget.onChanged,
       validator: widget.validator,
       obscureText: _obscured,
+      // Figma pairs Show Password=False with Eye and =True with EyeSlash: the
+      // glyph shows what the field currently is, not what tapping would do.
       trailingIcon: _obscured
-          ? Icons.visibility_outlined
-          : Icons.visibility_off_outlined,
+          ? Icons.visibility_off_outlined
+          : Icons.visibility_outlined,
+      // An icon-only toggle has no visible text, so this is the control's
+      // accessible name — and it names the action, which is the opposite of
+      // what the glyph depicts.
+      trailingIconTooltip: _obscured
+          ? context.sldsStrings.showPassword
+          : context.sldsStrings.hidePassword,
       onTrailingIconPressed: widget.enabled
           ? () => setState(() => _obscured = !_obscured)
           : null,

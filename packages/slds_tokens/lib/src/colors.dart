@@ -19,6 +19,7 @@ class SldsRawColorTokens {
     required this.surfacePage,
     required this.surfaceCard,
     required this.surfaceRaised,
+    required this.surfaceSunken,
     required this.surfaceHover,
     required this.surfacePrimary,
     required this.borderDefault,
@@ -149,6 +150,7 @@ class SldsRawColorTokens {
     surfacePage: 0xfff7f7f7,
     surfaceCard: 0xffffffff,
     surfaceRaised: 0xffeeeeee,
+    surfaceSunken: 0xffffffff,
     surfaceHover: 0xffeeeeee,
     surfacePrimary: 0xfffdfdfd,
     borderDefault: 0xff8f8f8f,
@@ -251,6 +253,17 @@ class SldsRawColorTokens {
   ///                 #F47272 (6.74:1), which is Figma's own Red/300 and the
   ///                 value its Border/Error dark already uses.
   ///   focusRing     0xffffd740 -> 0xffffffff  (invisible -> 18.88 on page)
+  ///   linkDestructiveLabel
+  ///                 Figma Feedback/Error Text #F47272 clears the page
+  ///                 (6.74:1) but is only 3.48:1 on the #444444 card, and an
+  ///                 inline link sits in body copy on either. Held at #FCA5A5
+  ///                 (9.95 page / 5.13 card).
+  ///   linkDestructiveLabelHover
+  ///                 Figma Feedback/Error Hover #B91C1C is 2.92:1 on the
+  ///                 #111111 page — a light-theme value reused unchanged, so
+  ///                 the link would fall below AA exactly when hovered. Held
+  ///                 at #FFC9C9 (12.99:1); on a dark surface hover has to
+  ///                 lighten, not darken.
   factory SldsRawColorTokens.dark() => const SldsRawColorTokens(
     textPrimary: 0xffffffff,
     textSecondary: 0xffbcbcbc,
@@ -258,6 +271,7 @@ class SldsRawColorTokens {
     surfacePage: 0xff111111,
     surfaceCard: 0xff444444,
     surfaceRaised: 0xff565656,
+    surfaceSunken: 0xff444444,
     surfaceHover: 0xff444444,
     surfacePrimary: 0xff444444,
     borderDefault: 0xffababab,
@@ -283,19 +297,19 @@ class SldsRawColorTokens {
     buttonSecondaryBackground: 0xff444444,
     buttonSecondaryLabel: 0xffffffff,
     buttonSecondaryBorder: 0xff565656,
-    buttonSecondaryHover: 0xff676767,
-    buttonSecondaryPressed: 0xff898989,
+    buttonSecondaryHover: 0xff444444,
+    buttonSecondaryPressed: 0xff222222,
     buttonGhostLabel: 0xffffffff,
-    buttonGhostHover: 0xff676767,
-    buttonGhostPressed: 0xff898989,
+    buttonGhostHover: 0xff444444,
+    buttonGhostPressed: 0xff222222,
     linkLabel: 0xffbcbcbc,
     linkLabelHover: 0xffffffff,
-    // Brighter, not darker: Figma's #b91c1c hover is a light-theme value and
-    // drops to 3.10:1 on the dark card. On a dark surface the hover state has
-    // to move away from the background, not toward it. Both are lifted a step
-    // beyond Figma's Red/300 resting colour, which is only 3.48:1 once the
-    // card follows Figma's own Neutral/800 (#444444).
     linkDestructiveLabel: 0xfffca5a5,
+    // Brighter, not darker. Figma pairs its rest colour with a #b91c1c
+    // hover, but that is a light-theme value: on the dark page it measures
+    // 2.92:1, so the hover state would drop below AA precisely when the user
+    // is pointing at it. On a dark surface the hover has to move away from
+    // the background, not toward it.
     linkDestructiveLabelHover: 0xffffc9c9,
     buttonDestructiveBackground: 0xffd32f2f,
     buttonDestructiveLabel: 0xffffffff,
@@ -303,7 +317,7 @@ class SldsRawColorTokens {
     buttonDestructivePressed: 0xffb91c1c,
     disabledBackground: 0xff444444,
     disabledForeground: 0xff898989,
-    disabledBorder: 0xff565656,
+    disabledBorder: 0xff898989,
     textStaticBlack: 0xff000000,
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xffffe880,
@@ -354,6 +368,7 @@ class SldsRawColorTokens {
     surfacePage: 0xffffffff,
     surfaceCard: 0xffffffff,
     surfaceRaised: 0xffe8e8e8,
+    surfaceSunken: 0xffffffff,
     surfaceHover: 0xffe2e2e2,
     surfacePrimary: 0xffffffff,
     borderDefault: 0xff000000,
@@ -454,6 +469,9 @@ class SldsRawColorTokens {
 
   /// hover). Figma calls this out as distinct from the white card surface.
   final int surfaceRaised;
+
+  /// Figma Surface/Sunken — the ground a Mobile Menu Block list sits on.
+  final int surfaceSunken;
 
   /// Hover surface.
   final int surfaceHover;
@@ -706,6 +724,7 @@ class SldsRawColorTokens {
     int? surfacePage,
     int? surfaceCard,
     int? surfaceRaised,
+    int? surfaceSunken,
     int? surfaceHover,
     int? surfacePrimary,
     int? borderDefault,
@@ -795,6 +814,7 @@ class SldsRawColorTokens {
       surfacePage: surfacePage ?? this.surfacePage,
       surfaceCard: surfaceCard ?? this.surfaceCard,
       surfaceRaised: surfaceRaised ?? this.surfaceRaised,
+      surfaceSunken: surfaceSunken ?? this.surfaceSunken,
       surfaceHover: surfaceHover ?? this.surfaceHover,
       surfacePrimary: surfacePrimary ?? this.surfacePrimary,
       borderDefault: borderDefault ?? this.borderDefault,
@@ -912,6 +932,7 @@ class SldsRawColorTokens {
       surfacePage: lerpArgb(a.surfacePage, b.surfacePage, t),
       surfaceCard: lerpArgb(a.surfaceCard, b.surfaceCard, t),
       surfaceRaised: lerpArgb(a.surfaceRaised, b.surfaceRaised, t),
+      surfaceSunken: lerpArgb(a.surfaceSunken, b.surfaceSunken, t),
       surfaceHover: lerpArgb(a.surfaceHover, b.surfaceHover, t),
       surfacePrimary: lerpArgb(a.surfacePrimary, b.surfacePrimary, t),
       borderDefault: lerpArgb(a.borderDefault, b.borderDefault, t),
@@ -1158,6 +1179,7 @@ class SldsRawColorTokens {
         other.surfacePage == surfacePage &&
         other.surfaceCard == surfaceCard &&
         other.surfaceRaised == surfaceRaised &&
+        other.surfaceSunken == surfaceSunken &&
         other.surfaceHover == surfaceHover &&
         other.surfacePrimary == surfacePrimary &&
         other.borderDefault == borderDefault &&
@@ -1251,6 +1273,7 @@ class SldsRawColorTokens {
     surfacePage,
     surfaceCard,
     surfaceRaised,
+    surfaceSunken,
     surfaceHover,
     surfacePrimary,
     borderDefault,

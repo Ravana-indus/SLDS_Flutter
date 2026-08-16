@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
+import 'package:slds_tokens/slds_tokens.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field, {double width = 400}) =>
@@ -136,6 +137,57 @@ void main() {
       );
     },
   );
+
+  testWidgets('field geometry matches the Figma spec in every state', (
+    tester,
+  ) async {
+    // Pinned against Figma node 510:3072: a 52px box with a 12px radius and
+    // a plain 1px border whose colour — never its width — carries the state.
+    const d = SldsDimensionTokens.standard;
+
+    for (final state in SldsMobileNumberInputState.values) {
+      await pump(
+        tester,
+        SldsMobileNumberInput(
+          label: 'Mobile Number',
+          errorText: state == SldsMobileNumberInputState.error ? 'Bad' : null,
+          visualState: state,
+        ),
+      );
+
+      final box = tester.widget<AnimatedContainer>(
+        find.byType(AnimatedContainer),
+      );
+      final decoration = box.decoration! as BoxDecoration;
+
+      expect(
+        tester.getSize(find.byType(AnimatedContainer)).height,
+        d.inputHeight,
+        reason: '$state height',
+      );
+      expect(
+        decoration.borderRadius,
+        BorderRadius.circular(d.radius2xl),
+        reason: '$state radius',
+      );
+      expect(
+        (decoration.border! as Border).top.width,
+        d.controlBorderWidth,
+        reason: '$state border width',
+      );
+    }
+  });
+
+  testWidgets('the label is set in Body 2', (tester) async {
+    // Figma labels the field in Body 2 (14px), not the 16px fieldLabel token.
+    await pump(tester, const SldsMobileNumberInput(label: 'Mobile Number'));
+
+    final label = tester.widget<Text>(find.text('Mobile Number'));
+    expect(
+      label.style?.fontSize,
+      SldsRawTypographyTokens.standard.body2.fontSize,
+    );
+  });
 
   testWidgets('countryFlag widget renders inside the prefix', (tester) async {
     await pump(

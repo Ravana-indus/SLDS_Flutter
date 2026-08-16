@@ -85,4 +85,10 @@ class SldsLocalizationsTa extends SldsLocalizations {
 
   @override
   String get uploadHint => 'PDF, JPEG அல்லது PNG, 5MB க்கும் குறைவாக';
+
+  @override
+  String get showPassword => 'கடவுச்சொல்லைக் காட்டு';
+
+  @override
+  String get hidePassword => 'கடவுச்சொல்லை மறை';
 }

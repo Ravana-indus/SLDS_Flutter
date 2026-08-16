@@ -251,6 +251,17 @@ class SldsRawColorTokens {
   ///                 #F47272 (6.74:1), which is Figma's own Red/300 and the
   ///                 value its Border/Error dark already uses.
   ///   focusRing     0xffffd740 -> 0xffffffff  (invisible -> 18.88 on page)
+  ///   linkDestructiveLabel
+  ///                 Figma Feedback/Error Text #F47272 clears the page
+  ///                 (6.74:1) but is only 3.48:1 on the #444444 card, and an
+  ///                 inline link sits in body copy on either. Held at #FCA5A5
+  ///                 (9.95 page / 5.13 card).
+  ///   linkDestructiveLabelHover
+  ///                 Figma Feedback/Error Hover #B91C1C is 2.92:1 on the
+  ///                 #111111 page — a light-theme value reused unchanged, so
+  ///                 the link would fall below AA exactly when hovered. Held
+  ///                 at #FFC9C9 (12.99:1); on a dark surface hover has to
+  ///                 lighten, not darken.
   factory SldsRawColorTokens.dark() => const SldsRawColorTokens(
     textPrimary: 0xffffffff,
     textSecondary: 0xffbcbcbc,
@@ -283,19 +294,19 @@ class SldsRawColorTokens {
     buttonSecondaryBackground: 0xff444444,
     buttonSecondaryLabel: 0xffffffff,
     buttonSecondaryBorder: 0xff565656,
-    buttonSecondaryHover: 0xff676767,
-    buttonSecondaryPressed: 0xff898989,
+    buttonSecondaryHover: 0xff444444,
+    buttonSecondaryPressed: 0xff222222,
     buttonGhostLabel: 0xffffffff,
-    buttonGhostHover: 0xff676767,
-    buttonGhostPressed: 0xff898989,
+    buttonGhostHover: 0xff444444,
+    buttonGhostPressed: 0xff222222,
     linkLabel: 0xffbcbcbc,
     linkLabelHover: 0xffffffff,
-    // Brighter, not darker: Figma's #b91c1c hover is a light-theme value and
-    // drops to 3.10:1 on the dark card. On a dark surface the hover state has
-    // to move away from the background, not toward it. Both are lifted a step
-    // beyond Figma's Red/300 resting colour, which is only 3.48:1 once the
-    // card follows Figma's own Neutral/800 (#444444).
     linkDestructiveLabel: 0xfffca5a5,
+    // Brighter, not darker. Figma pairs its rest colour with a #b91c1c
+    // hover, but that is a light-theme value: on the dark page it measures
+    // 2.92:1, so the hover state would drop below AA precisely when the user
+    // is pointing at it. On a dark surface the hover has to move away from
+    // the background, not toward it.
     linkDestructiveLabelHover: 0xffffc9c9,
     buttonDestructiveBackground: 0xffd32f2f,
     buttonDestructiveLabel: 0xffffffff,
@@ -303,7 +314,7 @@ class SldsRawColorTokens {
     buttonDestructivePressed: 0xffb91c1c,
     disabledBackground: 0xff444444,
     disabledForeground: 0xff898989,
-    disabledBorder: 0xff565656,
+    disabledBorder: 0xff898989,
     textStaticBlack: 0xff000000,
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xffffe880,

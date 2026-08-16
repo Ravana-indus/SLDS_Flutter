@@ -225,6 +225,18 @@ abstract class SldsLocalizations {
   /// In en, this message translates to:
   /// **'PDF, JPEG or PNG less than 5MB'**
   String get uploadHint;
+
+  /// Accessible name for the password reveal toggle when the password is hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// Accessible name for the password reveal toggle when the password is visible.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
 }
 
 class _SldsLocalizationsDelegate

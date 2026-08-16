@@ -85,4 +85,10 @@ class SldsLocalizationsEn extends SldsLocalizations {
 
   @override
   String get uploadHint => 'PDF, JPEG or PNG less than 5MB';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
 }

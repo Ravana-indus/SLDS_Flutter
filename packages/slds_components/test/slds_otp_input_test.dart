@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
+import 'package:slds_tokens/slds_tokens.dart';
 
 void main() {
   Future<void> pump(WidgetTester tester, Widget field) => tester.pumpWidget(
@@ -106,7 +107,7 @@ void main() {
     );
     box = tester.widget<SizedBox>(find.byType(SizedBox).first);
     expect(box.width, 44);
-    expect(box.height, 60);
+    expect(box.height, 52);
   });
 
   testWidgets('success state colors every box border green', (tester) async {
@@ -114,7 +115,7 @@ void main() {
 
     for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
       final border = field.decoration!.enabledBorder! as OutlineInputBorder;
-      expect(border.borderSide.color, Colors.green);
+      expect(border.borderSide.color, SldsColorTokens.light().success);
     }
   });
 
@@ -151,5 +152,84 @@ void main() {
     for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
       expect(field.enabled, isFalse);
     }
+  });
+
+  testWidgets('every size renders its Figma box, radius and digit size', (
+    tester,
+  ) async {
+    // Pinned against Figma node 515:803. The box grows across the size ramp
+    // but the radius and the numeral do not — both were previously derived
+    // from the box width, so neither matched at any size but large.
+    const d = SldsDimensionTokens.standard;
+    const expected = {
+      SldsOtpInputSize.small: Size(44, 52),
+      SldsOtpInputSize.medium: Size(48, 60),
+      SldsOtpInputSize.large: Size(56, 80),
+    };
+
+    for (final entry in expected.entries) {
+      await pump(tester, SldsOtpInput(length: 2, size: entry.key));
+
+      final box = tester.widget<SizedBox>(find.byType(SizedBox).first);
+      expect(
+        Size(box.width!, box.height!),
+        entry.value,
+        reason: '${entry.key} box',
+      );
+
+      final field = tester.widget<TextField>(find.byType(TextField).first);
+      final border = field.decoration!.enabledBorder! as OutlineInputBorder;
+      expect(
+        border.borderRadius,
+        BorderRadius.circular(d.radius2xl),
+        reason: '${entry.key} radius',
+      );
+      expect(
+        border.borderSide.width,
+        d.controlBorderWidth,
+        reason: '${entry.key} border width',
+      );
+      expect(
+        field.style?.fontSize,
+        SldsRawTypographyTokens.standard.heading1.fontSize,
+        reason: '${entry.key} digit size',
+      );
+    }
+  });
+
+  testWidgets('colours resolve from SLDS tokens, not the Material scheme', (
+    tester,
+  ) async {
+    // The success state used a literal Colors.green, which tracks no theme.
+    // Every state must come from the palette so dark and high-contrast work.
+    final light = SldsColorTokens.light();
+
+    await pump(tester, const SldsOtpInput(length: 2));
+    var field = tester.widget<TextField>(find.byType(TextField).first);
+    var border = field.decoration!.enabledBorder! as OutlineInputBorder;
+    expect(border.borderSide.color, light.inputBorderDefault);
+
+    await pump(tester, const SldsOtpInput(length: 2, enabled: false));
+    field = tester.widget<TextField>(find.byType(TextField).first);
+    border = field.decoration!.enabledBorder! as OutlineInputBorder;
+    expect(border.borderSide.color, light.disabledBorder);
+
+  });
+
+  testWidgets('the palette follows the ambient theme into dark mode', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: SldsTheme.dark,
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: const Scaffold(body: SldsOtpInput(length: 2, success: true)),
+      ),
+    );
+
+    final field = tester.widget<TextField>(find.byType(TextField).first);
+    final border = field.decoration!.enabledBorder! as OutlineInputBorder;
+    expect(border.borderSide.color, SldsColorTokens.dark().success);
   });
 }

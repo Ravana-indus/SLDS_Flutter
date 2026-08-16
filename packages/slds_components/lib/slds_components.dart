@@ -36,6 +36,7 @@ export 'src/widgets/slds_icon_card.dart';
 export 'src/widgets/slds_input.dart';
 export 'src/widgets/slds_input_mask.dart';
 export 'src/widgets/slds_link_button.dart';
+export 'src/widgets/slds_mobile_menu_block.dart';
 export 'src/widgets/slds_mobile_number_input.dart';
 export 'src/widgets/slds_notification_card.dart';
 export 'src/widgets/slds_otp_input.dart';

@@ -19,6 +19,7 @@ class SldsRawColorTokens {
     required this.surfacePage,
     required this.surfaceCard,
     required this.surfaceRaised,
+    required this.surfaceSunken,
     required this.surfaceHover,
     required this.surfacePrimary,
     required this.borderDefault,
@@ -149,6 +150,7 @@ class SldsRawColorTokens {
     surfacePage: 0xfff7f7f7,
     surfaceCard: 0xffffffff,
     surfaceRaised: 0xffeeeeee,
+    surfaceSunken: 0xffffffff,
     surfaceHover: 0xffeeeeee,
     surfacePrimary: 0xfffdfdfd,
     borderDefault: 0xff8f8f8f,
@@ -269,6 +271,7 @@ class SldsRawColorTokens {
     surfacePage: 0xff111111,
     surfaceCard: 0xff444444,
     surfaceRaised: 0xff565656,
+    surfaceSunken: 0xff444444,
     surfaceHover: 0xff444444,
     surfacePrimary: 0xff444444,
     borderDefault: 0xffababab,
@@ -365,6 +368,7 @@ class SldsRawColorTokens {
     surfacePage: 0xffffffff,
     surfaceCard: 0xffffffff,
     surfaceRaised: 0xffe8e8e8,
+    surfaceSunken: 0xffffffff,
     surfaceHover: 0xffe2e2e2,
     surfacePrimary: 0xffffffff,
     borderDefault: 0xff000000,
@@ -465,6 +469,9 @@ class SldsRawColorTokens {
 
   /// hover). Figma calls this out as distinct from the white card surface.
   final int surfaceRaised;
+
+  /// Figma Surface/Sunken — the ground a Mobile Menu Block list sits on.
+  final int surfaceSunken;
 
   /// Hover surface.
   final int surfaceHover;
@@ -717,6 +724,7 @@ class SldsRawColorTokens {
     int? surfacePage,
     int? surfaceCard,
     int? surfaceRaised,
+    int? surfaceSunken,
     int? surfaceHover,
     int? surfacePrimary,
     int? borderDefault,
@@ -806,6 +814,7 @@ class SldsRawColorTokens {
       surfacePage: surfacePage ?? this.surfacePage,
       surfaceCard: surfaceCard ?? this.surfaceCard,
       surfaceRaised: surfaceRaised ?? this.surfaceRaised,
+      surfaceSunken: surfaceSunken ?? this.surfaceSunken,
       surfaceHover: surfaceHover ?? this.surfaceHover,
       surfacePrimary: surfacePrimary ?? this.surfacePrimary,
       borderDefault: borderDefault ?? this.borderDefault,
@@ -923,6 +932,7 @@ class SldsRawColorTokens {
       surfacePage: lerpArgb(a.surfacePage, b.surfacePage, t),
       surfaceCard: lerpArgb(a.surfaceCard, b.surfaceCard, t),
       surfaceRaised: lerpArgb(a.surfaceRaised, b.surfaceRaised, t),
+      surfaceSunken: lerpArgb(a.surfaceSunken, b.surfaceSunken, t),
       surfaceHover: lerpArgb(a.surfaceHover, b.surfaceHover, t),
       surfacePrimary: lerpArgb(a.surfacePrimary, b.surfacePrimary, t),
       borderDefault: lerpArgb(a.borderDefault, b.borderDefault, t),
@@ -1169,6 +1179,7 @@ class SldsRawColorTokens {
         other.surfacePage == surfacePage &&
         other.surfaceCard == surfaceCard &&
         other.surfaceRaised == surfaceRaised &&
+        other.surfaceSunken == surfaceSunken &&
         other.surfaceHover == surfaceHover &&
         other.surfacePrimary == surfacePrimary &&
         other.borderDefault == borderDefault &&
@@ -1262,6 +1273,7 @@ class SldsRawColorTokens {
     surfacePage,
     surfaceCard,
     surfaceRaised,
+    surfaceSunken,
     surfaceHover,
     surfacePrimary,
     borderDefault,

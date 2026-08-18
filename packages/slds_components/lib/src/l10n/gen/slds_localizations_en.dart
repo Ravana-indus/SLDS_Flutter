@@ -91,4 +91,37 @@ class SldsLocalizationsEn extends SldsLocalizations {
 
   @override
   String get hidePassword => 'Hide password';
+
+  @override
+  String get timePeriodAm => 'AM';
+
+  @override
+  String get timePeriodPm => 'PM';
+
+  @override
+  String get errorNotFoundTitle => 'Page not found';
+
+  @override
+  String get errorNotFoundDescription =>
+      'Sorry we were unable to find that page';
+
+  @override
+  String get errorServerTitle => 'This page isn\'t working';
+
+  @override
+  String get errorServerDescription =>
+      'We apologise and are fixing the problem. Please try again later.';
+
+  @override
+  String get errorUnauthorizedTitle => 'Unauthorized';
+
+  @override
+  String get errorUnauthorizedDescription =>
+      'Something has gone wrong on the app\'s server';
+
+  @override
+  String get goToHome => 'Go to Home';
+
+  @override
+  String get thereIsAProblem => 'There is a problem';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slds_components/slds_components.dart' show SldsEmptyState;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 import 'package:slds_components/src/widgets/slds_empty_state.dart'
@@ -35,41 +36,57 @@ class SldsErrorState extends StatelessWidget {
   /// common HTTP failure kinds. Pass [illustration] to override the
   /// built-in one (e.g. with your own artwork); override any of
   /// [title]/[description]/[code] to customize just that field.
-  factory SldsErrorState.forKind(
+  /// Preset copy and a built-in icon-composition illustration for the
+  /// common HTTP failure kinds. Pass [illustration] to override the
+  /// built-in one (e.g. with your own artwork); override any of
+  /// [title]/[description]/[code] to customize just that field.
+  ///
+  /// The preset copy is localized, so it is resolved from the ambient
+  /// [Localizations] at build time rather than baked in here — a factory
+  /// has no [BuildContext] to read.
+  static Widget forKind(
     SldsErrorKind kind, {
     Key? key,
     Widget? illustration,
     String? title,
     String? code,
     String? description,
-    String? actionLabel = 'Go to Home',
+    String? actionLabel,
     VoidCallback? onAction,
+    bool useDefaultActionLabel = true,
   }) {
-    final (defaultCode, defaultTitle, defaultDescription) = switch (kind) {
-      SldsErrorKind.notFound => (
-        '404',
-        'Page not found',
-        'Sorry we were unable to find that page',
-      ),
-      SldsErrorKind.serverError => (
-        '500',
-        "This page isn't working",
-        'We apologise and are fixing the problem. Please try again later.',
-      ),
-      SldsErrorKind.unauthorized => (
-        '401',
-        'Unauthorized',
-        "Something has gone wrong on the app's server",
-      ),
-    };
-    return SldsErrorState(
+    return Builder(
       key: key,
-      illustration: illustration ?? _ErrorIllustration(kind: kind),
-      code: code ?? defaultCode,
-      title: title ?? defaultTitle,
-      description: description ?? defaultDescription,
-      actionLabel: actionLabel,
-      onAction: onAction,
+      builder: (context) {
+        final strings = context.sldsStrings;
+        final (defaultCode, defaultTitle, defaultDescription) = switch (kind) {
+          SldsErrorKind.notFound => (
+            '404',
+            strings.errorNotFoundTitle,
+            strings.errorNotFoundDescription,
+          ),
+          SldsErrorKind.serverError => (
+            '500',
+            strings.errorServerTitle,
+            strings.errorServerDescription,
+          ),
+          SldsErrorKind.unauthorized => (
+            '401',
+            strings.errorUnauthorizedTitle,
+            strings.errorUnauthorizedDescription,
+          ),
+        };
+        return SldsErrorState(
+          illustration: illustration ?? _ErrorIllustration(kind: kind),
+          code: code ?? defaultCode,
+          title: title ?? defaultTitle,
+          description: description ?? defaultDescription,
+          actionLabel:
+              actionLabel ??
+              (useDefaultActionLabel ? strings.goToHome : null),
+          onAction: onAction,
+        );
+      },
     );
   }
 

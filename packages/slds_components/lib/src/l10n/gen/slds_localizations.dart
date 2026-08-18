@@ -237,6 +237,66 @@ abstract class SldsLocalizations {
   /// In en, this message translates to:
   /// **'Hide password'**
   String get hidePassword;
+
+  /// Before-noon marker in the time picker (English: AM).
+  ///
+  /// In en, this message translates to:
+  /// **'AM'**
+  String get timePeriodAm;
+
+  /// After-noon marker in the time picker (English: PM).
+  ///
+  /// In en, this message translates to:
+  /// **'PM'**
+  String get timePeriodPm;
+
+  /// Title of the 404 error state.
+  ///
+  /// In en, this message translates to:
+  /// **'Page not found'**
+  String get errorNotFoundTitle;
+
+  /// Body of the 404 error state.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry we were unable to find that page'**
+  String get errorNotFoundDescription;
+
+  /// Title of the 500 error state.
+  ///
+  /// In en, this message translates to:
+  /// **'This page isn\'t working'**
+  String get errorServerTitle;
+
+  /// Body of the 500 error state.
+  ///
+  /// In en, this message translates to:
+  /// **'We apologise and are fixing the problem. Please try again later.'**
+  String get errorServerDescription;
+
+  /// Title of the 401 error state.
+  ///
+  /// In en, this message translates to:
+  /// **'Unauthorized'**
+  String get errorUnauthorizedTitle;
+
+  /// Body of the 401 error state.
+  ///
+  /// In en, this message translates to:
+  /// **'Something has gone wrong on the app\'s server'**
+  String get errorUnauthorizedDescription;
+
+  /// Default action label on an error state.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Home'**
+  String get goToHome;
+
+  /// Default heading of the form error summary.
+  ///
+  /// In en, this message translates to:
+  /// **'There is a problem'**
+  String get thereIsAProblem;
 }
 
 class _SldsLocalizationsDelegate

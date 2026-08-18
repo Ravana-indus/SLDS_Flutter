@@ -91,4 +91,37 @@ class SldsLocalizationsTa extends SldsLocalizations {
 
   @override
   String get hidePassword => 'கடவுச்சொல்லை மறை';
+
+  @override
+  String get timePeriodAm => 'மு.ப.';
+
+  @override
+  String get timePeriodPm => 'பி.ப.';
+
+  @override
+  String get errorNotFoundTitle => 'பக்கம் கிடைக்கவில்லை';
+
+  @override
+  String get errorNotFoundDescription =>
+      'மன்னிக்கவும், அந்தப் பக்கத்தைக் கண்டுபிடிக்க முடியவில்லை';
+
+  @override
+  String get errorServerTitle => 'இந்தப் பக்கம் இயங்கவில்லை';
+
+  @override
+  String get errorServerDescription =>
+      'வருந்துகிறோம், சிக்கலைச் சரிசெய்து வருகிறோம். பின்னர் மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get errorUnauthorizedTitle => 'அங்கீகாரம் இல்லை';
+
+  @override
+  String get errorUnauthorizedDescription =>
+      'செயலியின் சேவையகத்தில் ஏதோ தவறு நேர்ந்துள்ளது';
+
+  @override
+  String get goToHome => 'முகப்புக்குச் செல்';
+
+  @override
+  String get thereIsAProblem => 'ஒரு சிக்கல் உள்ளது';
 }

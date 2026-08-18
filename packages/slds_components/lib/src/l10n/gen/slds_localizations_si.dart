@@ -91,4 +91,36 @@ class SldsLocalizationsSi extends SldsLocalizations {
 
   @override
   String get hidePassword => 'මුරපදය සඟවන්න';
+
+  @override
+  String get timePeriodAm => 'පෙ.ව.';
+
+  @override
+  String get timePeriodPm => 'ප.ව.';
+
+  @override
+  String get errorNotFoundTitle => 'පිටුව හමු නොවීය';
+
+  @override
+  String get errorNotFoundDescription => 'කණගාටුයි, එම පිටුව සොයාගත නොහැකි විය';
+
+  @override
+  String get errorServerTitle => 'මෙම පිටුව ක්‍රියා නොකරයි';
+
+  @override
+  String get errorServerDescription =>
+      'අපි කණගාටු වන අතර ගැටලුව නිවැරදි කරමින් සිටිමු. පසුව නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get errorUnauthorizedTitle => 'අනවසර ප්‍රවේශයකි';
+
+  @override
+  String get errorUnauthorizedDescription =>
+      'යෙදුමේ සේවාදායකයේ යම් දෝෂයක් ඇති වී තිබේ';
+
+  @override
+  String get goToHome => 'මුල් පිටුවට යන්න';
+
+  @override
+  String get thereIsAProblem => 'ගැටලුවක් ඇත';
 }

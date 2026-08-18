@@ -263,7 +263,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                         vertical: 4,
                       ),
                       child: Text(
-                        'AM',
+                        context.sldsStrings.timePeriodAm,
                         style: tokens.typography.body1.copyWith(
                           fontWeight: FontWeight.bold,
                           color: _period == DayPeriod.am
@@ -281,7 +281,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                         vertical: 4,
                       ),
                       child: Text(
-                        'PM',
+                        context.sldsStrings.timePeriodPm,
                         style: tokens.typography.body1.copyWith(
                           fontWeight: FontWeight.bold,
                           color: _period == DayPeriod.pm
@@ -529,7 +529,16 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
   void initState() {
     super.initState();
     _selectedTime = widget.initialTime;
-    _controller = TextEditingController(text: _formatTime(_selectedTime));
+    _controller = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Not initState: the formatted value carries a localized AM/PM marker,
+    // and Localizations cannot be read until dependencies are available.
+    // Running here also re-formats the field when the locale changes.
+    _controller.text = _formatTime(context, _selectedTime);
   }
 
   @override
@@ -537,7 +546,7 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
     super.didUpdateWidget(oldWidget);
     if (widget.initialTime != oldWidget.initialTime) {
       _selectedTime = widget.initialTime;
-      _controller.text = _formatTime(_selectedTime);
+      _controller.text = _formatTime(context, _selectedTime);
     }
   }
 
@@ -547,11 +556,14 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
     super.dispose();
   }
 
-  String _formatTime(TimeOfDay? time) {
+  String _formatTime(BuildContext context, TimeOfDay? time) {
     if (time == null) return '';
+    final strings = context.sldsStrings;
     final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
     final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    final period = time.period == DayPeriod.am
+        ? strings.timePeriodAm
+        : strings.timePeriodPm;
     return '$hour:$minute $period';
   }
 
@@ -581,7 +593,7 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
-        _controller.text = _formatTime(picked);
+        _controller.text = _formatTime(context, picked);
       });
       widget.onTimeChanged?.call(picked);
     }

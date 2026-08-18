@@ -22,5 +22,15 @@
   "setYourTime": "உங்கள் நேரத்தை அமைக்கவும்",
   "uploadHint": "PDF, JPEG அல்லது PNG, 5MB க்கும் குறைவாக",
   "showPassword": "கடவுச்சொல்லைக் காட்டு",
-  "hidePassword": "கடவுச்சொல்லை மறை"
+  "hidePassword": "கடவுச்சொல்லை மறை",
+  "timePeriodAm": "மு.ப.",
+  "timePeriodPm": "பி.ப.",
+  "errorNotFoundTitle": "பக்கம் கிடைக்கவில்லை",
+  "errorNotFoundDescription": "மன்னிக்கவும், அந்தப் பக்கத்தைக் கண்டுபிடிக்க முடியவில்லை",
+  "errorServerTitle": "இந்தப் பக்கம் இயங்கவில்லை",
+  "errorServerDescription": "வருந்துகிறோம், சிக்கலைச் சரிசெய்து வருகிறோம். பின்னர் மீண்டும் முயற்சிக்கவும்.",
+  "errorUnauthorizedTitle": "அங்கீகாரம் இல்லை",
+  "errorUnauthorizedDescription": "செயலியின் சேவையகத்தில் ஏதோ தவறு நேர்ந்துள்ளது",
+  "goToHome": "முகப்புக்குச் செல்",
+  "thereIsAProblem": "ஒரு சிக்கல் உள்ளது"
 }

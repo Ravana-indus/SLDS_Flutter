@@ -35,6 +35,21 @@ const _localeAxis = <String>['si', 'ta'];
 /// realistic credential data.
 const _label = 'Continue';
 
+/// Fixture text per locale, so a locale golden actually exercises its own
+/// script. Rendering Latin text under `Locale('si')` would prove nothing
+/// about Sinhala shaping — which is exactly what these goldens did before,
+/// leaving the si, ta and default images byte-identical.
+const _localizedLabel = <String, String>{
+  'si': 'ඉදිරියට',
+  'ta': 'தொடரவும்',
+};
+
+/// Field label per locale, as above.
+const _localizedFieldLabel = <String, String>{
+  'si': 'බලපත්‍ර අංකය',
+  'ta': 'உரிம எண்',
+};
+
 void main() {
   group('SldsButton', () {
     for (final variant in SldsButtonVariant.values) {
@@ -64,7 +79,10 @@ void main() {
       testWidgets('primary $locale x2.0', (tester) async {
         await tester.pumpWidget(
           wrap(
-            SldsButton(label: _label, onPressed: () {}),
+            SldsButton(
+              label: _localizedLabel[locale]!,
+              onPressed: () {},
+            ),
             locale: Locale(locale),
             textScale: 2,
           ),
@@ -173,9 +191,9 @@ void main() {
       testWidgets('default $locale x2.0', (tester) async {
         await tester.pumpWidget(
           wrap(
-            const SizedBox(
+            SizedBox(
               width: 320,
-              child: SldsTextField(label: 'Licence number'),
+              child: SldsTextField(label: _localizedFieldLabel[locale]!),
             ),
             locale: Locale(locale),
             textScale: 2,

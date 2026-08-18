@@ -23,6 +23,14 @@ const String _fontPackage = 'slds_components';
 /// No `fontFamilyFallback` is set: the bundled Google Sans covers Latin,
 /// Sinhala and Tamil in one family, so every locale the platform supports
 /// renders from the same metrics with no substitution.
+///
+/// That is a load-bearing claim, not an assumption — dropping the fallback
+/// chain is only safe while it holds. Two tests pin it:
+/// `test/slds_font_coverage_test.dart` parses the font's own `cmap` and
+/// asserts every character the shipped translations use is present, and
+/// `test/slds_type_specimen_test.dart` renders all three scripts so the
+/// glyphs are shown to shape, not merely to exist. A font swap that drops a
+/// script fails those rather than silently substituting a platform face.
 extension SldsTextStyleTokenX on SldsTextStyleToken {
   /// Builds the [TextStyle] for this token in [fontFamily].
   TextStyle toTextStyle(String fontFamily) {

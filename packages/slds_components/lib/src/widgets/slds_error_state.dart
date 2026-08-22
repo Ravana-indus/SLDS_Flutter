@@ -82,8 +82,7 @@ class SldsErrorState extends StatelessWidget {
           title: title ?? defaultTitle,
           description: description ?? defaultDescription,
           actionLabel:
-              actionLabel ??
-              (useDefaultActionLabel ? strings.goToHome : null),
+              actionLabel ?? (useDefaultActionLabel ? strings.goToHome : null),
           onAction: onAction,
         );
       },

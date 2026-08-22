@@ -92,8 +92,7 @@ void main() {
     // names what tapping does, which is the inverse of the glyph.
     await pump(tester, const SldsPasswordField());
 
-    IconButton toggle() =>
-        tester.widget<IconButton>(find.byType(IconButton));
+    IconButton toggle() => tester.widget<IconButton>(find.byType(IconButton));
 
     expect(toggle().tooltip, isNotNull);
     final whenHidden = toggle().tooltip;

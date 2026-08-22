@@ -18,6 +18,7 @@ Widget buildSldsTextFieldUseCase(BuildContext context) {
     label: 'Help text',
     initialValue: 'Help Text',
   );
+  final compact = context.knobs.boolean(label: 'Compact', initialValue: false);
   final isRequired = context.knobs.boolean(
     label: 'Required',
     initialValue: true,
@@ -32,6 +33,10 @@ Widget buildSldsTextFieldUseCase(BuildContext context) {
     label: 'Trailing icon',
     initialValue: true,
   );
+  final showInfoButton = context.knobs.boolean(
+    label: 'Info button',
+    initialValue: true,
+  );
 
   return Padding(
     padding: const EdgeInsets.all(24),
@@ -39,11 +44,16 @@ Widget buildSldsTextFieldUseCase(BuildContext context) {
       label: label,
       hintText: hintText,
       helpText: helpText,
+      compact: compact,
       isRequired: isRequired,
       enabled: isEnabled,
       errorText: hasError ? 'Error Text' : null,
       leadingIcon: showLeadingIcon ? Icons.star_border : null,
-      trailingIcon: showTrailingIcon ? Icons.info_outline : null,
+      trailingIcon: showTrailingIcon ? Icons.star_border : null,
+      trailingIconTooltip: 'Favourite',
+      infoIcon: showInfoButton ? Icons.info : null,
+      infoTooltip: 'About this field',
+      onInfoPressed: () {},
     ),
   );
 }

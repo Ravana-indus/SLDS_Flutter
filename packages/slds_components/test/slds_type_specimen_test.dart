@@ -69,9 +69,8 @@ String _properties(SldsTextStyleToken s) {
     500 => 'Medium',
     _ => 'Regular',
   };
-  String px(double v) => v == v.roundToDouble()
-      ? v.toStringAsFixed(0)
-      : v.toStringAsFixed(1);
+  String px(double v) =>
+      v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(1);
   return 'Google Sans $weight · ${px(s.fontSize)}px · '
       'LH ${px(s.lineHeight)}px · LS ${s.letterSpacing.toStringAsFixed(1)}px';
 }
@@ -89,8 +88,10 @@ Widget _sheet() {
   // `softWrap: false`: a specimen row must show the glyphs at their designed
   // size on one line. Letting the largest styles wrap would turn a legitimate
   // render into an apparent layout bug.
-  Widget cell(String text, TextStyle style, double width) =>
-      SizedBox(width: width, child: Text(text, style: style, softWrap: false));
+  Widget cell(String text, TextStyle style, double width) => SizedBox(
+    width: width,
+    child: Text(text, style: style, softWrap: false),
+  );
 
   return MaterialApp(
     debugShowCheckedModeBanner: false,

@@ -213,7 +213,6 @@ void main() {
     field = tester.widget<TextField>(find.byType(TextField).first);
     border = field.decoration!.enabledBorder! as OutlineInputBorder;
     expect(border.borderSide.color, light.disabledBorder);
-
   });
 
   testWidgets('the palette follows the ambient theme into dark mode', (

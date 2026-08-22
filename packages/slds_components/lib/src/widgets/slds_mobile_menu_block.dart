@@ -133,9 +133,7 @@ class SldsMobileMenuBlock extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final foreground = enabled
-        ? colors.textPrimary
-        : colors.disabledForeground;
+    final foreground = enabled ? colors.textPrimary : colors.disabledForeground;
 
     final row = Padding(
       padding: EdgeInsets.all(dimensions.space16),
@@ -191,10 +189,7 @@ class SldsMobileMenuBlock extends StatelessWidget {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (_interactive)
-          InkWell(onTap: onTap, child: row)
-        else
-          row,
+        if (_interactive) InkWell(onTap: onTap, child: row) else row,
         if (showDivider)
           Divider(
             height: dimensions.controlBorderWidth,

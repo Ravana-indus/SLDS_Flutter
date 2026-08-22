@@ -77,21 +77,19 @@ void main() {
     expect(value, '1234');
   });
 
-  testWidgets(
-    'error state colors every box border red but keeps digits black',
-    (tester) async {
-      await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
-      final theme = SldsTheme.light;
+  testWidgets('error state colors every box border and digit red', (
+    tester,
+  ) async {
+    await pump(tester, const SldsOtpInput(length: 4, errorText: 'Error'));
+    final theme = SldsTheme.light;
 
-      for (final field in tester.widgetList<TextField>(
-        find.byType(TextField),
-      )) {
-        final border = field.decoration!.enabledBorder! as OutlineInputBorder;
-        expect(border.borderSide.color, theme.colorScheme.error);
-        expect(field.style?.color, theme.colorScheme.onSurface);
-      }
-    },
-  );
+    for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
+      final border = field.decoration!.enabledBorder! as OutlineInputBorder;
+      expect(border.borderSide.color, theme.colorScheme.error);
+      // Figma's error digit takes `Input/Error Text`, matching the border.
+      expect(field.style?.color, SldsColorTokens.light().inputBorderError);
+    }
+  });
 
   testWidgets('size controls box dimensions, defaulting to large (56x80)', (
     tester,
@@ -230,5 +228,98 @@ void main() {
     final field = tester.widget<TextField>(find.byType(TextField).first);
     final border = field.decoration!.enabledBorder! as OutlineInputBorder;
     expect(border.borderSide.color, SldsColorTokens.dark().success);
+  });
+
+  group('Figma state fidelity', () {
+    testWidgets('error colours the digit red, not just the border', (
+      tester,
+    ) async {
+      await pump(tester, const SldsOtpInput(length: 2, errorText: 'Error'));
+
+      final field = tester.widget<TextField>(find.byType(TextField).first);
+      expect(field.style!.color, SldsColorTokens.light().inputBorderError);
+    });
+
+    testWidgets('success colours the digit green to match the border', (
+      tester,
+    ) async {
+      await pump(tester, const SldsOtpInput(length: 2, success: true));
+
+      final field = tester.widget<TextField>(find.byType(TextField).first);
+      expect(field.style!.color, SldsColorTokens.light().success);
+    });
+
+    testWidgets('focused, error and success draw the emphasized 1.5px stroke', (
+      tester,
+    ) async {
+      const dimensions = SldsDimensionTokens.standard;
+
+      double widthOf(WidgetTester t) {
+        final field = t.widget<TextField>(find.byType(TextField).first);
+        return (field.decoration!.enabledBorder! as OutlineInputBorder)
+            .borderSide
+            .width;
+      }
+
+      await pump(tester, const SldsOtpInput(length: 2, errorText: 'Error'));
+      expect(widthOf(tester), dimensions.emphasizedBorderWidth);
+
+      await pump(tester, const SldsOtpInput(length: 2, success: true));
+      expect(widthOf(tester), dimensions.emphasizedBorderWidth);
+
+      await pump(tester, const SldsOtpInput(length: 2));
+      expect(widthOf(tester), dimensions.controlBorderWidth);
+
+      await tester.tap(find.byType(TextField).first);
+      await tester.pump();
+      expect(widthOf(tester), dimensions.emphasizedBorderWidth);
+    });
+
+    testWidgets('default and disabled keep the plain 1px stroke', (
+      tester,
+    ) async {
+      const dimensions = SldsDimensionTokens.standard;
+
+      await pump(tester, const SldsOtpInput(length: 2));
+      var field = tester.widget<TextField>(find.byType(TextField).first);
+      var border = field.decoration!.enabledBorder! as OutlineInputBorder;
+      expect(border.borderSide.width, dimensions.controlBorderWidth);
+
+      await pump(tester, const SldsOtpInput(length: 2, enabled: false));
+      field = tester.widget<TextField>(find.byType(TextField).first);
+      border = field.decoration!.enabledBorder! as OutlineInputBorder;
+      expect(border.borderSide.width, dimensions.controlBorderWidth);
+    });
+
+    testWidgets('a filled box keeps its gold ring while focused', (
+      tester,
+    ) async {
+      // The old build dropped the focus ring the moment a digit landed, so
+      // typing over an existing digit lost the indicator entirely.
+      await pump(tester, const SldsOtpInput(length: 3));
+
+      await tester.enterText(find.byType(TextField).first, '1');
+      await tester.pump();
+      // Focus advanced to box 2; go back to the filled first box.
+      await tester.tap(find.byType(TextField).first);
+      await tester.pump();
+
+      final field = tester.widget<TextField>(find.byType(TextField).first);
+      final border = field.decoration!.enabledBorder! as OutlineInputBorder;
+      expect(field.controller!.text, '1');
+      expect(
+        border.borderSide.color,
+        SldsColorTokens.light().inputBorderFocused,
+      );
+    });
+
+    testWidgets('disabled keeps the white fill rather than darkening it', (
+      tester,
+    ) async {
+      await pump(tester, const SldsOtpInput(length: 2, enabled: false));
+
+      final field = tester.widget<TextField>(find.byType(TextField).first);
+      expect(field.decoration!.fillColor, SldsColorTokens.light().surfaceCard);
+    });
   });
 }

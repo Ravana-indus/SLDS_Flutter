@@ -23,6 +23,8 @@
   "uploadHint": "PDF, JPEG அல்லது PNG, 5MB க்கும் குறைவாக",
   "showPassword": "கடவுச்சொல்லைக் காட்டு",
   "hidePassword": "கடவுச்சொல்லை மறை",
+  "passwordLabel": "கடவுச்சொல்",
+  "passwordHint": "எடுத்துக்காட்டு",
   "timePeriodAm": "மு.ப.",
   "timePeriodPm": "பி.ப.",
   "errorNotFoundTitle": "பக்கம் கிடைக்கவில்லை",

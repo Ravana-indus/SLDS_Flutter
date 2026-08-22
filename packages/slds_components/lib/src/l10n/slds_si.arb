@@ -23,6 +23,8 @@
   "uploadHint": "PDF, JPEG හෝ PNG, 5MB ට අඩු",
   "showPassword": "මුරපදය පෙන්වන්න",
   "hidePassword": "මුරපදය සඟවන්න",
+  "passwordLabel": "මුරපදය",
+  "passwordHint": "උදාහරණ",
   "timePeriodAm": "පෙ.ව.",
   "timePeriodPm": "ප.ව.",
   "errorNotFoundTitle": "පිටුව හමු නොවීය",

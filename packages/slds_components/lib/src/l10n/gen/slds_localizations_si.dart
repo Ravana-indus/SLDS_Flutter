@@ -93,6 +93,12 @@ class SldsLocalizationsSi extends SldsLocalizations {
   String get hidePassword => 'මුරපදය සඟවන්න';
 
   @override
+  String get passwordLabel => 'මුරපදය';
+
+  @override
+  String get passwordHint => 'උදාහරණ';
+
+  @override
   String get timePeriodAm => 'පෙ.ව.';
 
   @override

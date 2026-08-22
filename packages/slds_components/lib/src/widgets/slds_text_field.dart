@@ -33,6 +33,7 @@ class SldsTextField extends StatefulWidget {
     this.trailingIconColor,
     this.trailingIconTooltip,
     this.onTrailingIconPressed,
+    this.largeTrailingIcon = false,
     this.infoIcon,
     this.infoTooltip,
     this.onInfoPressed,
@@ -76,6 +77,12 @@ class SldsTextField extends StatefulWidget {
   final String? trailingIconTooltip;
 
   final VoidCallback? onTrailingIconPressed;
+
+  /// Draws the trailing icon in the larger 36dp box rather than the 28dp
+  /// one. Figma uses the bigger slot where the trailing icon is the field's
+  /// primary control rather than an adornment — the password reveal toggle
+  /// being the case in the spec.
+  final bool largeTrailingIcon;
 
   /// Figma's third trailing slot — a filled affordance sitting after the
   /// trailing icon, used for "what is this field for?" help.
@@ -165,9 +172,10 @@ class _SldsTextFieldState extends State<SldsTextField> {
           ),
         );
 
-    // Figma's icon slots are fixed square boxes with a 16px glyph, not the
-    // 48dp default an unconstrained IconButton would claim. Keeping the box
-    // at the drawn size stops the field's internals from bulging.
+    // Figma's icon slots are fixed square boxes, not the 48dp default an
+    // unconstrained IconButton would claim. Keeping the box at the drawn
+    // size stops the field's internals from bulging. The larger box carries
+    // a proportionally larger glyph.
     Widget iconSlot({
       required IconData icon,
       required double box,
@@ -181,7 +189,9 @@ class _SldsTextFieldState extends State<SldsTextField> {
         child: IconButton(
           padding: EdgeInsets.zero,
           constraints: BoxConstraints.tight(Size(box, box)),
-          iconSize: dimensions.iconSizeSmall,
+          iconSize: box >= dimensions.iconButtonMedium
+              ? dimensions.iconSizeMedium
+              : dimensions.iconSizeSmall,
           icon: Icon(icon, color: color),
           tooltip: tooltip,
           onPressed: onPressed,
@@ -197,7 +207,9 @@ class _SldsTextFieldState extends State<SldsTextField> {
       if (widget.trailingIcon != null)
         iconSlot(
           icon: widget.trailingIcon!,
-          box: dimensions.buttonHeightSmall,
+          box: widget.largeTrailingIcon && !compact
+              ? dimensions.iconButtonMedium
+              : dimensions.buttonHeightSmall,
           color:
               widget.trailingIconColor ??
               (_hasError ? colors.error : iconColor),

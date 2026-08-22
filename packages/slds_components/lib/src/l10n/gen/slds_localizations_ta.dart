@@ -93,6 +93,12 @@ class SldsLocalizationsTa extends SldsLocalizations {
   String get hidePassword => 'கடவுச்சொல்லை மறை';
 
   @override
+  String get passwordLabel => 'கடவுச்சொல்';
+
+  @override
+  String get passwordHint => 'எடுத்துக்காட்டு';
+
+  @override
   String get timePeriodAm => 'மு.ப.';
 
   @override

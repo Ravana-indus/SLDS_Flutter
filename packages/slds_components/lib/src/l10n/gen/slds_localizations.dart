@@ -238,6 +238,18 @@ abstract class SldsLocalizations {
   /// **'Hide password'**
   String get hidePassword;
 
+  /// Default label for the password field.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// Default placeholder shown in an empty password field.
+  ///
+  /// In en, this message translates to:
+  /// **'Example'**
+  String get passwordHint;
+
   /// Before-noon marker in the time picker (English: AM).
   ///
   /// In en, this message translates to:

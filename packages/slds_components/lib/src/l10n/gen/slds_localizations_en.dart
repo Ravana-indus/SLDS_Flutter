@@ -93,6 +93,12 @@ class SldsLocalizationsEn extends SldsLocalizations {
   String get hidePassword => 'Hide password';
 
   @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get passwordHint => 'Example';
+
+  @override
   String get timePeriodAm => 'AM';
 
   @override

@@ -10,23 +10,34 @@ import 'package:slds_components/src/widgets/slds_text_field.dart';
 class SldsPasswordField extends StatefulWidget {
   const SldsPasswordField({
     super.key,
-    this.label = 'Password',
+    this.label,
     this.controller,
+    this.compact = false,
     this.isRequired = false,
     this.helpText,
     this.errorText,
-    this.hintText = 'Example',
+    this.hintText,
     this.enabled = true,
     this.onChanged,
     this.validator,
   });
 
-  final String label;
+  /// Defaults to the localized "Password" when null.
+  final String? label;
+
   final TextEditingController? controller;
+
+  /// Figma's password set has no compact variant; this forwards the density
+  /// so a password can sit in a compact form without breaking its rhythm.
+  final bool compact;
+
   final bool isRequired;
   final String? helpText;
   final String? errorText;
+
+  /// Defaults to the localized placeholder when null.
   final String? hintText;
+
   final bool enabled;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
@@ -40,28 +51,34 @@ class _SldsPasswordFieldState extends State<SldsPasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.sldsStrings;
+
     return SldsTextField(
-      label: widget.label,
+      label: widget.label ?? strings.passwordLabel,
       controller: widget.controller,
+      compact: widget.compact,
       isRequired: widget.isRequired,
       helpText: widget.helpText,
       errorText: widget.errorText,
-      hintText: widget.hintText,
+      hintText: widget.hintText ?? strings.passwordHint,
       enabled: widget.enabled,
       onChanged: widget.onChanged,
       validator: widget.validator,
       obscureText: _obscured,
-      // Figma pairs Show Password=False with Eye and =True with EyeSlash: the
-      // glyph shows what the field currently is, not what tapping would do.
+      // Figma pairs Show Password=False with Eye (69:23803) and =True with
+      // EyeSlash (69:23894): the glyph is the affordance — a plain eye means
+      // "tap to reveal" — not a depiction of the field's current state.
       trailingIcon: _obscured
-          ? Icons.visibility_off_outlined
-          : Icons.visibility_outlined,
+          ? Icons.visibility_outlined
+          : Icons.visibility_off_outlined,
+      // The reveal toggle is the field's primary control, so Figma draws it
+      // in the 36dp box rather than the 28dp adornment slot.
+      largeTrailingIcon: true,
       // An icon-only toggle has no visible text, so this is the control's
-      // accessible name — and it names the action, which is the opposite of
-      // what the glyph depicts.
+      // accessible name. It names the action, matching the glyph.
       trailingIconTooltip: _obscured
-          ? context.sldsStrings.showPassword
-          : context.sldsStrings.hidePassword,
+          ? strings.showPassword
+          : strings.hidePassword,
       onTrailingIconPressed: widget.enabled
           ? () => setState(() => _obscured = !_obscured)
           : null,

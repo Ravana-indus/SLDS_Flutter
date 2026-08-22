@@ -121,6 +121,14 @@
   "@hidePassword": {
     "description": "Accessible name for the password reveal toggle when the password is visible."
   },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Default label for the password field."
+  },
+  "passwordHint": "Example",
+  "@passwordHint": {
+    "description": "Default placeholder shown in an empty password field."
+  },
   "timePeriodAm": "AM",
   "@timePeriodAm": {
     "description": "Before-noon marker in the time picker (English: AM)."

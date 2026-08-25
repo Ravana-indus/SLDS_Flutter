@@ -19,8 +19,8 @@ enum SldsOtpInputSize {
 /// SLDS OTP (one-time-passcode) input — a row of single-digit boxes that
 /// auto-advances focus as the user types, supports pasting the full code,
 /// and colors each box by state: empty (outline), active/focused (gold
-/// border), filled (outline, black digit), [errorText] set (red border,
-/// black digit), [success] (green border + digit), disabled (dimmed).
+/// border), filled (outline, black digit), [errorText] set (red border +
+/// digit), [success] (green border + digit), disabled (dimmed).
 ///
 /// Boxes are a fixed size from [SldsOtpInputSize] (large/medium/small) per
 /// the design spec, rather than stretching to fill the parent — pick the
@@ -50,8 +50,8 @@ class SldsOtpInput extends StatefulWidget {
   /// Called once with the full code when all [length] boxes are filled.
   final ValueChanged<String>? onCompleted;
 
-  /// Non-null/non-empty colors every box's border red, per SLDS error
-  /// convention — the digit itself stays normal ink.
+  /// Non-null/non-empty colors every box's border and digit red, per the
+  /// SLDS error convention.
   final String? errorText;
 
   /// Colors every box green — set once the caller has verified the code.
@@ -188,43 +188,58 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
     );
   }
 
-  /// The box outline: a flat `radius2xl` corner and a 1px stroke, per Figma.
-  OutlineInputBorder _boxBorder(SldsTokenSet tokens, Color color) =>
-      OutlineInputBorder(
-        borderRadius: BorderRadius.circular(tokens.dimensions.radius2xl),
-        borderSide: BorderSide(
-          color: color,
-          width: tokens.dimensions.controlBorderWidth,
-        ),
-      );
+  /// The box outline: a flat `radius2xl` corner at every size. The stroke
+  /// widens for the states Figma emphasizes — Focused, Error and Success —
+  /// and stays 1px for Default, Filled and Disabled.
+  OutlineInputBorder _boxBorder(
+    SldsTokenSet tokens,
+    Color color, {
+    required bool emphasized,
+  }) => OutlineInputBorder(
+    borderRadius: BorderRadius.circular(tokens.dimensions.radius2xl),
+    borderSide: BorderSide(
+      color: color,
+      width: emphasized
+          ? tokens.dimensions.emphasizedBorderWidth
+          : tokens.dimensions.controlBorderWidth,
+    ),
+  );
 
   Widget _buildBox(BuildContext context, int index) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final filled = controllers[index].text.isNotEmpty;
     final focused = focusNodes[index].hasFocus;
 
     final Color borderColor;
     final Color textColor;
+    // Figma emphasizes exactly the three states that need to catch the eye.
+    final bool emphasized;
     if (!widget.enabled) {
       borderColor = colors.disabledBorder;
       textColor = colors.disabledForeground;
+      emphasized = false;
     } else if (_hasError) {
-      // Only the border goes red — the digit itself stays normal ink.
+      // The digit goes red with the border, not just the outline.
       borderColor = colors.inputBorderError;
-      textColor = colors.inputLabel;
+      textColor = colors.inputBorderError;
+      emphasized = true;
     } else if (widget.success) {
       borderColor = colors.success;
       textColor = colors.success;
-    } else if (focused && !filled) {
-      // Gold — the active box awaiting input, cursor showing (design row 2).
+      emphasized = true;
+    } else if (focused) {
+      // Gold — the active box, whether or not it already holds a digit.
+      // Figma has no filled-vs-empty carve-out here, and dropping the ring
+      // when typing over an existing digit would lose the focus indicator.
       borderColor = colors.inputBorderFocused;
       textColor = colors.inputLabel;
+      emphasized = true;
     } else {
       // Figma's Default and Filled nodes share a border; only the digit
       // differs, and an empty box has no digit to colour.
       borderColor = colors.inputBorderDefault;
       textColor = colors.inputLabel;
+      emphasized = false;
     }
 
     return SizedBox(
@@ -248,16 +263,28 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
           decoration: InputDecoration(
             counterText: '',
             filled: true,
-            fillColor: widget.enabled
-                ? colors.surfaceCard
-                : colors.disabledBackground,
+            // Figma's `Input/Background` is the card surface in every state:
+            // disabled fades the border and digit but keeps the fill white.
+            fillColor: colors.surfaceCard,
             contentPadding: EdgeInsets.zero,
-            // One radius and one border width for every size and state; the
-            // state is carried by the border colour alone.
-            border: _boxBorder(tokens, borderColor),
-            enabledBorder: _boxBorder(tokens, borderColor),
-            focusedBorder: _boxBorder(tokens, borderColor),
-            disabledBorder: _boxBorder(tokens, borderColor),
+            // One radius for every size and state; the state is carried by
+            // the border colour and, for the emphasized states, its width.
+            border: _boxBorder(tokens, borderColor, emphasized: emphasized),
+            enabledBorder: _boxBorder(
+              tokens,
+              borderColor,
+              emphasized: emphasized,
+            ),
+            focusedBorder: _boxBorder(
+              tokens,
+              borderColor,
+              emphasized: emphasized,
+            ),
+            disabledBorder: _boxBorder(
+              tokens,
+              borderColor,
+              emphasized: emphasized,
+            ),
           ),
           onChanged: (value) => _onChanged(index, value),
         ),

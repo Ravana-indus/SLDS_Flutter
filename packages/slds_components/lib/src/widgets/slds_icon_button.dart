@@ -101,9 +101,7 @@ class SldsIconButton extends StatefulWidget {
 
   SldsButtonSize _size(BuildContext context) =>
       size ??
-      (context.sldsIsMobile
-          ? SldsButtonSize.extraLarge
-          : SldsButtonSize.large);
+      (context.sldsIsMobile ? SldsButtonSize.extraLarge : SldsButtonSize.large);
 
   @override
   State<SldsIconButton> createState() => _SldsIconButtonState();

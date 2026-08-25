@@ -58,6 +58,7 @@ class SldsDimensionTokens {
     required this.tabBadgeWidth,
     required this.listItemWidth,
     required this.listSlotSize,
+    required this.menuBlockHeight,
     required this.accordionWidth,
     required this.progressWidth,
     required this.progressLabelWidth,
@@ -151,6 +152,7 @@ class SldsDimensionTokens {
     tabBadgeWidth: 24,
     listItemWidth: 400,
     listSlotSize: 40,
+    menuBlockHeight: 64,
     accordionWidth: 400,
     progressWidth: 339,
     progressLabelWidth: 40,
@@ -333,6 +335,9 @@ class SldsDimensionTokens {
 
   /// List leading slot size.
   final double listSlotSize;
+
+  /// Minimum height of a mobile menu block row.
+  final double menuBlockHeight;
 
   /// Figma accordion width.
   final double accordionWidth;
@@ -520,6 +525,7 @@ class SldsDimensionTokens {
     double? tabBadgeWidth,
     double? listItemWidth,
     double? listSlotSize,
+    double? menuBlockHeight,
     double? accordionWidth,
     double? progressWidth,
     double? progressLabelWidth,
@@ -612,6 +618,7 @@ class SldsDimensionTokens {
       tabBadgeWidth: tabBadgeWidth ?? this.tabBadgeWidth,
       listItemWidth: listItemWidth ?? this.listItemWidth,
       listSlotSize: listSlotSize ?? this.listSlotSize,
+      menuBlockHeight: menuBlockHeight ?? this.menuBlockHeight,
       accordionWidth: accordionWidth ?? this.accordionWidth,
       progressWidth: progressWidth ?? this.progressWidth,
       progressLabelWidth: progressLabelWidth ?? this.progressLabelWidth,
@@ -712,6 +719,7 @@ class SldsDimensionTokens {
         other.tabBadgeWidth == tabBadgeWidth &&
         other.listItemWidth == listItemWidth &&
         other.listSlotSize == listSlotSize &&
+        other.menuBlockHeight == menuBlockHeight &&
         other.accordionWidth == accordionWidth &&
         other.progressWidth == progressWidth &&
         other.progressLabelWidth == progressLabelWidth &&
@@ -805,6 +813,7 @@ class SldsDimensionTokens {
     tabBadgeWidth,
     listItemWidth,
     listSlotSize,
+    menuBlockHeight,
     accordionWidth,
     progressWidth,
     progressLabelWidth,

@@ -131,4 +131,70 @@ void main() {
       );
     });
   });
+
+  group('catalog copy', () {
+    testWidgets('error-state preset copy is localized, not baked in', (
+      tester,
+    ) async {
+      // forKind's copy used to be hardcoded English in a factory, which has
+      // no BuildContext; it now resolves at build time.
+      Future<List<String>> copyIn(Locale locale) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: locale,
+            localizationsDelegates: SldsLocalizations.localizationsDelegates,
+            supportedLocales: SldsLocalizations.supportedLocales,
+            home: Scaffold(
+              body: SldsErrorState.forKind(
+                SldsErrorKind.notFound,
+                onAction: () {},
+              ),
+            ),
+          ),
+        );
+        return tester
+            .widgetList<Text>(find.byType(Text))
+            .map((t) => t.data)
+            .whereType<String>()
+            .toList();
+      }
+
+      final english = await copyIn(const Locale('en'));
+      final tamil = await copyIn(const Locale('ta'));
+
+      expect(english, contains('Page not found'));
+      expect(english, contains('Go to Home'));
+      // The numeric code is not language-specific and must not change.
+      expect(tamil, contains('404'));
+      expect(tamil, isNot(contains('Page not found')));
+    });
+
+    testWidgets('the time picker AM/PM marker is localized', (tester) async {
+      Future<String> formattedIn(Locale locale) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: locale,
+            localizationsDelegates: SldsLocalizations.localizationsDelegates,
+            supportedLocales: SldsLocalizations.supportedLocales,
+            home: Scaffold(
+              body: SldsTimePicker(
+                label: 'Time',
+                initialTime: const TimeOfDay(hour: 14, minute: 5),
+              ),
+            ),
+          ),
+        );
+        return tester
+                .widget<TextField>(find.byType(TextField).first)
+                .controller
+                ?.text ??
+            '';
+      }
+
+      expect(await formattedIn(const Locale('en')), '2:05 PM');
+      // The digits stay Latin; only the marker is translated.
+      expect(await formattedIn(const Locale('ta')), startsWith('2:05 '));
+      expect(await formattedIn(const Locale('ta')), isNot(endsWith('PM')));
+    });
+  });
 }

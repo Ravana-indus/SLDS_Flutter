@@ -18,28 +18,28 @@ void main() {
 
     final field = tester.widget<TextField>(find.byType(TextField));
     expect(field.obscureText, isTrue);
-    // Figma pairs Show Password=False with EyeSlash: the glyph depicts the
-    // field's current state, while the tooltip names the action.
-    expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
+    // Figma pairs Show Password=False with Eye: the glyph is the
+    // affordance — a plain eye means "tap to reveal".
+    expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
   });
 
   testWidgets('tapping the eye icon reveals the password', (tester) async {
     await pump(tester, const SldsPasswordField());
 
-    await tester.tap(find.byIcon(Icons.visibility_off_outlined));
+    await tester.tap(find.byIcon(Icons.visibility_outlined));
     await tester.pump();
 
     final field = tester.widget<TextField>(find.byType(TextField));
     expect(field.obscureText, isFalse);
-    expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
   });
 
   testWidgets('tapping again re-obscures the password', (tester) async {
     await pump(tester, const SldsPasswordField());
 
-    await tester.tap(find.byIcon(Icons.visibility_off_outlined));
-    await tester.pump();
     await tester.tap(find.byIcon(Icons.visibility_outlined));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.visibility_off_outlined));
     await tester.pump();
 
     final field = tester.widget<TextField>(find.byType(TextField));
@@ -79,7 +79,7 @@ void main() {
 
     expect(sizeNow(), expected.body1.fontSize);
 
-    await tester.tap(find.byIcon(Icons.visibility_off_outlined));
+    await tester.tap(find.byIcon(Icons.visibility_outlined));
     await tester.pump();
 
     expect(sizeNow(), expected.body1.fontSize);
@@ -89,19 +89,65 @@ void main() {
     tester,
   ) async {
     // The toggle is icon-only, so the tooltip is its accessible name. It
-    // names what tapping does, which is the inverse of the glyph.
+    // names what tapping does, matching the glyph.
     await pump(tester, const SldsPasswordField());
 
-    IconButton toggle() =>
-        tester.widget<IconButton>(find.byType(IconButton));
+    IconButton toggle() => tester.widget<IconButton>(find.byType(IconButton));
 
     expect(toggle().tooltip, isNotNull);
     final whenHidden = toggle().tooltip;
 
-    await tester.tap(find.byIcon(Icons.visibility_off_outlined));
+    await tester.tap(find.byIcon(Icons.visibility_outlined));
     await tester.pump();
 
     expect(toggle().tooltip, isNotNull);
     expect(toggle().tooltip, isNot(whenHidden));
+  });
+
+  testWidgets('the reveal toggle uses the 36dp box, not the 28dp slot', (
+    tester,
+  ) async {
+    // Figma draws the password toggle in the larger icon-button box because
+    // it is the field's primary control, not a trailing adornment.
+    await pump(tester, const SldsPasswordField());
+
+    final box = tester.getSize(
+      find
+          .ancestor(
+            of: find.byType(IconButton),
+            matching: find.byType(SizedBox),
+          )
+          .first,
+    );
+    expect(box.width, SldsDimensionTokens.standard.iconButtonMedium);
+    expect(box.height, SldsDimensionTokens.standard.iconButtonMedium);
+  });
+
+  testWidgets('compact forwards to the underlying field', (tester) async {
+    await pump(tester, const SldsPasswordField(compact: true));
+
+    final decoration = tester
+        .widget<TextField>(find.byType(TextField))
+        .decoration!;
+    expect(
+      decoration.constraints!.minHeight,
+      SldsDimensionTokens.standard.inputHeightCompact,
+    );
+  });
+
+  testWidgets('label and hint default to localized strings', (tester) async {
+    await pump(tester, const SldsPasswordField());
+    expect(find.textContaining('Password'), findsOneWidget);
+    expect(find.text('Example'), findsOneWidget);
+  });
+
+  testWidgets('explicit label and hint override the defaults', (tester) async {
+    await pump(
+      tester,
+      const SldsPasswordField(label: 'PIN', hintText: '••••'),
+    );
+    expect(find.textContaining('PIN'), findsOneWidget);
+    expect(find.text('••••'), findsOneWidget);
+    expect(find.text('Example'), findsNothing);
   });
 }

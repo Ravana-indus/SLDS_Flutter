@@ -17,6 +17,7 @@ Widget buildSldsPasswordFieldUseCase(BuildContext context) {
     label: 'Required',
     initialValue: true,
   );
+  final compact = context.knobs.boolean(label: 'Compact', initialValue: false);
   final hasError = context.knobs.boolean(label: 'Error', initialValue: false);
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
 
@@ -24,6 +25,7 @@ Widget buildSldsPasswordFieldUseCase(BuildContext context) {
     padding: const EdgeInsets.all(24),
     child: SldsPasswordField(
       helpText: helpText,
+      compact: compact,
       isRequired: isRequired,
       enabled: isEnabled,
       errorText: hasError ? 'Error Text' : null,

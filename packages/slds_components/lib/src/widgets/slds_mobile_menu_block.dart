@@ -133,11 +133,13 @@ class SldsMobileMenuBlock extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final foreground = enabled
-        ? colors.textPrimary
-        : colors.disabledForeground;
+    final foreground = enabled ? colors.textPrimary : colors.disabledForeground;
 
-    final row = Padding(
+    final row = Container(
+      // Figma floors the row at 64 so a title-only block still lines up with
+      // its neighbours. A minimum rather than a fixed height, so a wrapped
+      // title or a large text scale grows the row instead of clipping it.
+      constraints: BoxConstraints(minHeight: dimensions.menuBlockHeight),
       padding: EdgeInsets.all(dimensions.space16),
       child: Row(
         children: [
@@ -191,10 +193,7 @@ class SldsMobileMenuBlock extends StatelessWidget {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (_interactive)
-          InkWell(onTap: onTap, child: row)
-        else
-          row,
+        if (_interactive) InkWell(onTap: onTap, child: row) else row,
         if (showDivider)
           Divider(
             height: dimensions.controlBorderWidth,
@@ -283,8 +282,10 @@ class _CountBubble extends StatelessWidget {
       ),
       child: Text(
         count,
+        // Figma sets the count in Text/Primary, not a static black, so it
+        // follows the theme like the rest of the row's ink.
         style: tokens.typography.caption1.copyWith(
-          color: enabled ? colors.textStaticBlack : colors.disabledForeground,
+          color: enabled ? colors.textPrimary : colors.disabledForeground,
         ),
       ),
     );

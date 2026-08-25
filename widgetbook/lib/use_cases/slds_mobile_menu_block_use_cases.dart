@@ -12,7 +12,10 @@ enum _Trailing { none, navigate, badge, validated, toggle, radio }
   path: '[Navigation]',
 )
 Widget buildSldsMobileMenuBlockUseCase(BuildContext context) {
-  final title = context.knobs.string(label: 'Title', initialValue: 'My Account');
+  final title = context.knobs.string(
+    label: 'Title',
+    initialValue: 'My Account',
+  );
   final subtitle = context.knobs.stringOrNull(
     label: 'Subtitle',
     initialValue: 'Name . Preferences',
@@ -65,9 +68,7 @@ Widget buildSldsMobileMenuBlockUseCase(BuildContext context) {
     // A row whose trailing control owns the interaction takes no onTap of
     // its own, so the two do not compete for the same gesture.
     onTap:
-        isEnabled &&
-            trailing != _Trailing.toggle &&
-            trailing != _Trailing.radio
+        isEnabled && trailing != _Trailing.toggle && trailing != _Trailing.radio
         ? () {}
         : null,
   );

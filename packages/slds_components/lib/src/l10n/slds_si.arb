@@ -22,5 +22,17 @@
   "setYourTime": "ඔබේ වේලාව සකසන්න",
   "uploadHint": "PDF, JPEG හෝ PNG, 5MB ට අඩු",
   "showPassword": "මුරපදය පෙන්වන්න",
-  "hidePassword": "මුරපදය සඟවන්න"
+  "hidePassword": "මුරපදය සඟවන්න",
+  "passwordLabel": "මුරපදය",
+  "passwordHint": "උදාහරණ",
+  "timePeriodAm": "පෙ.ව.",
+  "timePeriodPm": "ප.ව.",
+  "errorNotFoundTitle": "පිටුව හමු නොවීය",
+  "errorNotFoundDescription": "කණගාටුයි, එම පිටුව සොයාගත නොහැකි විය",
+  "errorServerTitle": "මෙම පිටුව ක්‍රියා නොකරයි",
+  "errorServerDescription": "අපි කණගාටු වන අතර ගැටලුව නිවැරදි කරමින් සිටිමු. පසුව නැවත උත්සාහ කරන්න.",
+  "errorUnauthorizedTitle": "අනවසර ප්‍රවේශයකි",
+  "errorUnauthorizedDescription": "යෙදුමේ සේවාදායකයේ යම් දෝෂයක් ඇති වී තිබේ",
+  "goToHome": "මුල් පිටුවට යන්න",
+  "thereIsAProblem": "ගැටලුවක් ඇත"
 }

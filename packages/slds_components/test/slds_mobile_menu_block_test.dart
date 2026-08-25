@@ -229,4 +229,84 @@ void main() {
       SldsColorTokens.dark().textPrimary,
     );
   });
+  group('Figma fidelity', () {
+    testWidgets('a title-only row still meets the 64dp floor', (tester) async {
+      // Without the floor the row collapsed to its padded content — roughly
+      // 52dp — so title-only rows sat shorter than rows with a subtitle.
+      await pump(tester, const SldsMobileMenuBlock(title: 'My Account'));
+
+      final height = tester.getSize(find.byType(SldsMobileMenuBlock)).height;
+      expect(
+        height,
+        greaterThanOrEqualTo(SldsDimensionTokens.standard.menuBlockHeight),
+      );
+    });
+
+    testWidgets('both title-only and subtitle rows clear the floor', (
+      tester,
+    ) async {
+      final floor = SldsDimensionTokens.standard.menuBlockHeight;
+
+      await pump(tester, const SldsMobileMenuBlock(title: 'My Account'));
+      final titleOnly = tester.getSize(find.byType(SldsMobileMenuBlock)).height;
+
+      await pump(
+        tester,
+        const SldsMobileMenuBlock(
+          title: 'My Account',
+          subtitle: 'Name . Preferences',
+        ),
+      );
+      final withSubtitle = tester
+          .getSize(find.byType(SldsMobileMenuBlock))
+          .height;
+
+      expect(titleOnly, greaterThanOrEqualTo(floor));
+      expect(withSubtitle, greaterThanOrEqualTo(floor));
+      // 64 is a floor, not a fixed height: two lines of text legitimately
+      // grow the row past it rather than being squeezed to fit.
+      expect(withSubtitle, greaterThan(titleOnly));
+    });
+
+    testWidgets('the floor is a minimum, not a clamp', (tester) async {
+      // A long title that wraps must grow the row rather than be clipped.
+      await pump(
+        tester,
+        const SizedBox(
+          width: 200,
+          child: SldsMobileMenuBlock(
+            title: 'A considerably longer account row title that must wrap',
+            subtitle: 'Name . Preferences',
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('the count bubble uses textPrimary, not a static black', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SldsMobileMenuBlock(title: 'My Account', count: '03'),
+      );
+
+      final count = tester.widget<Text>(find.text('03'));
+      expect(count.style!.color, SldsColorTokens.light().textPrimary);
+    });
+
+    testWidgets('the count bubble follows the theme into dark mode', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SldsMobileMenuBlock(title: 'My Account', count: '03'),
+        theme: SldsTheme.dark,
+      );
+
+      final count = tester.widget<Text>(find.text('03'));
+      expect(count.style!.color, SldsColorTokens.dark().textPrimary);
+    });
+  });
 }

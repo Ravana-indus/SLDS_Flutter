@@ -161,9 +161,7 @@ class SldsButton extends StatefulWidget {
 
   SldsButtonSize _size(BuildContext context) =>
       size ??
-      (context.sldsIsMobile
-          ? SldsButtonSize.extraLarge
-          : SldsButtonSize.large);
+      (context.sldsIsMobile ? SldsButtonSize.extraLarge : SldsButtonSize.large);
 
   /// Optional icon shown before the label.
   final IconData? leadingIcon;

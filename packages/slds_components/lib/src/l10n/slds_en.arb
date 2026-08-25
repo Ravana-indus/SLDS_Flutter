@@ -120,5 +120,53 @@
   "hidePassword": "Hide password",
   "@hidePassword": {
     "description": "Accessible name for the password reveal toggle when the password is visible."
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Default label for the password field."
+  },
+  "passwordHint": "Example",
+  "@passwordHint": {
+    "description": "Default placeholder shown in an empty password field."
+  },
+  "timePeriodAm": "AM",
+  "@timePeriodAm": {
+    "description": "Before-noon marker in the time picker (English: AM)."
+  },
+  "timePeriodPm": "PM",
+  "@timePeriodPm": {
+    "description": "After-noon marker in the time picker (English: PM)."
+  },
+  "errorNotFoundTitle": "Page not found",
+  "@errorNotFoundTitle": {
+    "description": "Title of the 404 error state."
+  },
+  "errorNotFoundDescription": "Sorry we were unable to find that page",
+  "@errorNotFoundDescription": {
+    "description": "Body of the 404 error state."
+  },
+  "errorServerTitle": "This page isn't working",
+  "@errorServerTitle": {
+    "description": "Title of the 500 error state."
+  },
+  "errorServerDescription": "We apologise and are fixing the problem. Please try again later.",
+  "@errorServerDescription": {
+    "description": "Body of the 500 error state."
+  },
+  "errorUnauthorizedTitle": "Unauthorized",
+  "@errorUnauthorizedTitle": {
+    "description": "Title of the 401 error state."
+  },
+  "errorUnauthorizedDescription": "Something has gone wrong on the app's server",
+  "@errorUnauthorizedDescription": {
+    "description": "Body of the 401 error state."
+  },
+  "goToHome": "Go to Home",
+  "@goToHome": {
+    "description": "Default action label on an error state."
+  },
+  "thereIsAProblem": "There is a problem",
+  "@thereIsAProblem": {
+    "description": "Default heading of the form error summary."
   }
 }

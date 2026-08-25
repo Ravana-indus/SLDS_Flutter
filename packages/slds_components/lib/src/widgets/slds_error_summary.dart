@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// One row in an [SldsErrorSummary] — the field's error message, and an
@@ -19,13 +20,15 @@ class SldsErrorSummary extends StatelessWidget {
   const SldsErrorSummary({
     required this.errors,
     super.key,
-    this.title = 'There is a problem',
+    this.title,
   });
 
   /// The form's validation failures, in the order fields appear.
   final List<SldsErrorSummaryItem> errors;
 
-  final String title;
+  /// Heading above the list. Defaults to the localized "There is a
+  /// problem" when null.
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +54,7 @@ class SldsErrorSummary extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              title,
+              title ?? context.sldsStrings.thereIsAProblem,
               style: tokens.typography.heading4.copyWith(
                 color: colors.textPrimary,
               ),

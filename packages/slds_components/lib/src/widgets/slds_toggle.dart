@@ -159,9 +159,11 @@ class _SldsToggleState extends State<SldsToggle> {
                   color: trackColor,
                   borderRadius: BorderRadius.circular(widget.size.height / 2),
                 ),
+                // Directional: "on" belongs at the trailing edge of the
+                // track, which is the left edge in an RTL locale.
                 alignment: widget.value
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
+                    ? AlignmentDirectional.centerEnd
+                    : AlignmentDirectional.centerStart,
                 child: AnimatedContainer(
                   duration: tokens.motion.fast,
                   curve: Curves.easeOut,

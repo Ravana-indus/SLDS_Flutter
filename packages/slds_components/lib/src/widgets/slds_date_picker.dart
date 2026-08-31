@@ -586,12 +586,18 @@ class _SldsBaseDateCell extends StatelessWidget {
     } else if (isRangeStart && !isRangeEnd) {
       rangeBackgroundDecoration = BoxDecoration(
         color: rangeHighlight,
-        borderRadius: const BorderRadius.horizontal(left: Radius.circular(20)),
+        // Directional: the range's first day is rounded on the leading edge,
+        // which is the right-hand side when the calendar runs right-to-left.
+        borderRadius: const BorderRadiusDirectional.horizontal(
+          start: Radius.circular(20),
+        ),
       );
     } else if (isRangeEnd && !isRangeStart) {
       rangeBackgroundDecoration = BoxDecoration(
         color: rangeHighlight,
-        borderRadius: const BorderRadius.horizontal(right: Radius.circular(20)),
+        borderRadius: const BorderRadiusDirectional.horizontal(
+          end: Radius.circular(20),
+        ),
       );
     }
 

@@ -244,4 +244,160 @@ void main() {
       }
     }
   });
+
+  // Every widget below carries a directional inset, alignment, border radius
+  // or Positioned that only mirrors if it was written with the *Directional
+  // variant. A left/right value renders identically to a start/end one under
+  // LTR, so the rest of this matrix cannot tell them apart — these images are
+  // the only thing standing between a mirrored layout and a silent
+  // regression, which is what §5 means by an unverified RTL claim.
+  //
+  // Read each image against its LTR counterpart: the layout should be a
+  // mirror, never merely a translated copy.
+  group('rtl', () {
+    Future<void> expectRtl(
+      WidgetTester tester,
+      Widget child,
+      Finder finder,
+      String name,
+    ) async {
+      await tester.pumpWidget(wrap(child, textDirection: TextDirection.rtl));
+      await expectGolden(finder, 'rtl_$name');
+    }
+
+    testWidgets('SldsTooltip tail hugs the leading edge', (tester) async {
+      // The enum says start/end but the inset and the Align were both
+      // hardcoded left/right, so "start" rendered on the right in RTL.
+      await expectRtl(
+        tester,
+        const SizedBox(
+          width: 240,
+          child: SldsTooltip(title: 'Tap here to continue'),
+        ),
+        find.byType(SldsTooltip),
+        'tooltip_tail_start',
+      );
+    }, skip: goldenSkipReason != null);
+
+    testWidgets(
+      'SldsServiceCard mirrors its asymmetric padding',
+      (
+        tester,
+      ) async {
+        await expectRtl(
+          tester,
+          SldsServiceCard(
+            icon: const Icon(Icons.description),
+            title: 'Licence renewal',
+            description: 'Renew online in minutes',
+            onTap: () {},
+          ),
+          find.byType(SldsServiceCard),
+          'service_card',
+        );
+      },
+      skip: goldenSkipReason != null,
+    );
+
+    testWidgets(
+      'SldsComboBox mirrors its field and chip padding',
+      (
+        tester,
+      ) async {
+        await expectRtl(
+          tester,
+          SldsComboBox(
+            label: 'District',
+            placeholder: 'Select',
+            options: const ['Colombo', 'Kandy'],
+            selectedValues: const ['Colombo'],
+            multiple: true,
+            onSelectionChanged: (_) {},
+          ),
+          find.byType(SldsComboBox),
+          'combo_box',
+        );
+      },
+      skip: goldenSkipReason != null,
+    );
+
+    testWidgets('SldsToggle puts "on" at the leading edge', (tester) async {
+      await expectRtl(
+        tester,
+        SldsToggle(value: true, onChanged: (_) {}),
+        find.byType(SldsToggle),
+        'toggle_on',
+      );
+    }, skip: goldenSkipReason != null);
+
+    testWidgets(
+      'SldsProgressBar aligns its percentage to the end',
+      (
+        tester,
+      ) async {
+        await expectRtl(
+          tester,
+          const SizedBox(width: 240, child: SldsProgressBar(value: 0.4)),
+          find.byType(SldsProgressBar),
+          'progress_bar',
+        );
+      },
+      skip: goldenSkipReason != null,
+    );
+
+    testWidgets('SldsIconCard badge sits at the leading edge', (tester) async {
+      await expectRtl(
+        tester,
+        SldsIconCard(
+          title: 'Vehicle',
+          icon: const Icon(Icons.directions_car),
+          badgeLabel: 'New',
+          onTap: () {},
+        ),
+        find.byType(SldsIconCard),
+        'icon_card_badge',
+      );
+    }, skip: goldenSkipReason != null);
+
+    testWidgets(
+      'SldsBottomNav count badge sits at the trailing edge',
+      (
+        tester,
+      ) async {
+        await expectRtl(
+          tester,
+          SldsBottomNav(
+            currentIndex: 0,
+            onTap: (_) {},
+            items: const [
+              SldsBottomNavItem(icon: Icons.home, label: 'Home'),
+              SldsBottomNavItem(
+                icon: Icons.notifications,
+                label: 'Alerts',
+                badgeCount: 3,
+              ),
+            ],
+          ),
+          find.byType(SldsBottomNav),
+          'bottom_nav_badge',
+        );
+      },
+      skip: goldenSkipReason != null,
+    );
+
+    testWidgets(
+      'SldsErrorState overlay glyph sits at the trailing edge',
+      (
+        tester,
+      ) async {
+        await expectRtl(
+          tester,
+          SldsErrorState.forKind(SldsErrorKind.notFound),
+          find.byType(SldsErrorState),
+          'error_state',
+        );
+      },
+      skip: goldenSkipReason != null,
+    );
+  });
 }

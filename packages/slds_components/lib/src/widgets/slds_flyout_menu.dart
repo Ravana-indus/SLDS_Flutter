@@ -80,7 +80,9 @@ class _SldsFlyoutMenuState extends State<SldsFlyoutMenu> {
           children: [
             if (widget.onClose != null)
               Align(
-                alignment: Alignment.topRight,
+                // The close affordance sits in the trailing corner, which
+                // flips to the left in an RTL locale.
+                alignment: AlignmentDirectional.topEnd,
                 child: IconButton(
                   onPressed: widget.onClose,
                   icon: Icon(Icons.close, color: colors.textPrimary),

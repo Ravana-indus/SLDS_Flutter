@@ -185,9 +185,9 @@ class _SldsIconCardState extends State<SldsIconCard> {
                   ),
                 ),
                 if (widget.badgeLabel != null)
-                  Positioned(
+                  PositionedDirectional(
                     top: -dimensions.space8,
-                    left: dimensions.space12,
+                    start: dimensions.space12,
                     child: Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: dimensions.space8,

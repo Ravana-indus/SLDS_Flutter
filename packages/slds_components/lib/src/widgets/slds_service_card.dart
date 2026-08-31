@@ -97,9 +97,9 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
             onTap: widget.onTap,
             borderRadius: BorderRadius.circular(dimensions.radiusMd),
             child: Padding(
-              padding: EdgeInsets.only(
-                left: dimensions.space16,
-                right: dimensions.space8,
+              padding: EdgeInsetsDirectional.only(
+                start: dimensions.space16,
+                end: dimensions.space8,
                 top: dimensions.space8,
                 bottom: dimensions.space8,
               ),

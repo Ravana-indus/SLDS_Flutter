@@ -176,8 +176,8 @@ class _NavItem extends StatelessWidget {
                       color: iconColor,
                     ),
                     if (item.badgeCount != null && item.badgeCount! > 0)
-                      Positioned(
-                        right: -6,
+                      PositionedDirectional(
+                        end: -6,
                         top: -4,
                         child: _CountBadge(
                           count: item.badgeCount!,

@@ -96,11 +96,11 @@ class SldsTooltip extends StatelessWidget {
     final pointsUp = tailSide == SldsTooltipTailSide.top;
     // Fixed inset from the card edge, not a fraction of its width — a
     // fractional inset drifts as the card grows.
-    final tailInset = EdgeInsets.only(
-      left: tailAlignment == SldsTooltipTailAlignment.start
+    final tailInset = EdgeInsetsDirectional.only(
+      start: tailAlignment == SldsTooltipTailAlignment.start
           ? dimensions.space16
           : 0,
-      right: tailAlignment == SldsTooltipTailAlignment.end
+      end: tailAlignment == SldsTooltipTailAlignment.end
           ? dimensions.space16
           : 0,
     );
@@ -108,10 +108,14 @@ class SldsTooltip extends StatelessWidget {
     final tail = Padding(
       padding: tailInset,
       child: Align(
+        // AlignmentDirectional, not Alignment: the enum is named start/end,
+        // so a hardcoded centerLeft would put "start" on the right in an RTL
+        // locale while the inset above mirrored — tail and padding would
+        // drift to opposite edges.
         alignment: switch (tailAlignment) {
-          SldsTooltipTailAlignment.start => Alignment.centerLeft,
-          SldsTooltipTailAlignment.center => Alignment.center,
-          SldsTooltipTailAlignment.end => Alignment.centerRight,
+          SldsTooltipTailAlignment.start => AlignmentDirectional.centerStart,
+          SldsTooltipTailAlignment.center => AlignmentDirectional.center,
+          SldsTooltipTailAlignment.end => AlignmentDirectional.centerEnd,
         },
         // Overlap the card by 1px so no hairline seam shows between them.
         child: Transform.translate(

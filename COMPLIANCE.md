@@ -82,7 +82,7 @@ Ordered by what a re-audit is most likely to reject.
 | Item | Section | State |
 |------|---------|-------|
 | Semantics missing on ~29 widgets | §5 | The form controls (checkbox, radio, toggle) are done; dropdown, search bar, OTP input and the pickers are not |
-| si/ta translations unreviewed | §6 (M6) | **The one localization blocker left.** All 21 strings are machine-drafted; §6 treats unverified as missing. Needs a Sinhala and a Tamil speaker |
+| si/ta translations unreviewed | §6 (M6) | **The one localization blocker left.** All 47 strings are machine-drafted; §6 treats unverified as missing. Needs a Sinhala and a Tamil speaker |
 | Golden coverage is partial | §8 | 61 images across 5 components; the remaining 46 need the same matrix |
 | `EdgeInsetsDirectional` not used widely | §5 | One RTL golden proves the button mirrors; the rest is unverified |
 | Credential/PII marker convention | §1 (M7) | No credential component exists yet; the contract should exist before the first one |

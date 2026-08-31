@@ -154,7 +154,10 @@ class SldsNotificationCard extends StatelessWidget {
       direction: DismissDirection.endToStart,
       onDismissed: onDismissed,
       background: Container(
-        alignment: Alignment.centerRight,
+        // The swipe is endToStart, so the revealed icon has to sit at the
+        // end edge — pinning it right would reveal it on the wrong side of
+        // an RTL card, opposite the direction the finger moved.
+        alignment: AlignmentDirectional.centerEnd,
         padding: EdgeInsets.symmetric(horizontal: dimensions.space20),
         decoration: BoxDecoration(
           color: colors.error,

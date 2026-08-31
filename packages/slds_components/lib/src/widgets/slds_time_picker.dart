@@ -412,6 +412,9 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
             : ((_selectedMinute / 5).round() * 5 % 60 == val);
 
         return Positioned(
+          // Deliberately absolute, not PositionedDirectional: cx comes from
+          // an angle on a clock face, and a clock reads clockwise in every
+          // locale. Mirroring this would put 3 o'clock on the left.
           left: cx - 18,
           top: cy - 18,
           child: Semantics(

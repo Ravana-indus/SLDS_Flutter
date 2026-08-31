@@ -200,8 +200,8 @@ class _ErrorIllustration extends StatelessWidget {
             ),
           ),
           Icon(baseIcon, size: 48, color: colors.textTertiary),
-          Positioned(
-            right: 12,
+          PositionedDirectional(
+            end: 12,
             bottom: 12,
             child: Container(
               width: 32,

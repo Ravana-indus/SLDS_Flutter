@@ -79,7 +79,7 @@ class SldsProgressBar extends StatelessWidget {
                 width: 40,
                 child: Text(
                   '$percent%',
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.end,
                   style: tokens.typography.body1.copyWith(
                     color: colors.textSecondary,
                   ),

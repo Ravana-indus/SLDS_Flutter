@@ -178,7 +178,7 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                 constraints: fieldHeight == null
                     ? const BoxConstraints(minHeight: 52)
                     : BoxConstraints.tightFor(height: fieldHeight),
-                padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
+                padding: const EdgeInsetsDirectional.fromSTEB(4, 8, 8, 8),
                 decoration: BoxDecoration(
                   color: colors.surfaceCard,
                   border: Border.all(
@@ -340,7 +340,7 @@ class _SelectionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
+    padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 4, 4),
     decoration: BoxDecoration(
       color: context.slds.colors.badgeNeutralBackground,
       borderRadius: BorderRadius.circular(9999),

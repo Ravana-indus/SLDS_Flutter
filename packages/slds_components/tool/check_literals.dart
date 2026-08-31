@@ -28,7 +28,12 @@ final _hexLiteral = RegExp(r'Color\(\s*0x[0-9a-fA-F]{6,8}');
 ///
 /// `Colors.` followed by an uppercase letter is a swatch shade accessor like
 /// `Colors.red[500]`, which is equally disallowed, so the pattern accepts both.
-final _namedColor = RegExp(r'\bColors\.[a-zA-Z]');
+///
+/// `Colors.transparent` is excluded: it carries no palette value, so it is
+/// not a design decision the token layer can own. Widgets use it to suppress
+/// Material's state layer where the design gives a control no surface, and
+/// there is nothing for a token to say about "no colour at all".
+final _namedColor = RegExp(r'\bColors\.(?!transparent\b)[a-zA-Z]');
 
 void main(List<String> args) {
   final dir = Directory(_widgetDir);

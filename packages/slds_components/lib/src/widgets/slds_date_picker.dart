@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/format/slds_format.dart';
 import 'package:slds_components/src/l10n/slds_strings.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
@@ -261,12 +262,16 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: _previousMonth,
-                      child: const Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Icon(Icons.chevron_left, size: 18),
+                    Semantics(
+                      button: true,
+                      label: context.sldsStrings.previousMonth,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: _previousMonth,
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(Icons.chevron_left, size: 18),
+                        ),
                       ),
                     ),
                     Padding(
@@ -279,12 +284,16 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                         ),
                       ),
                     ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: _nextMonth,
-                      child: const Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Icon(Icons.chevron_right, size: 18),
+                    Semantics(
+                      button: true,
+                      label: context.sldsStrings.nextMonth,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: _nextMonth,
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(Icons.chevron_right, size: 18),
+                        ),
                       ),
                     ),
                   ],
@@ -360,7 +369,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           const SizedBox(height: 12),
 
           // Days Grid
-          _buildDaysGrid(primaryAccent, rangeHighlight, colors),
+          _buildDaysGrid(context, primaryAccent, rangeHighlight, colors),
 
           const SizedBox(height: 16),
 
@@ -413,6 +422,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   }
 
   Widget _buildDaysGrid(
+    BuildContext context,
     Color primaryAccent,
     Color rangeHighlight,
     SldsColorTokens colors,
@@ -472,19 +482,30 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
         isSelected = isRangeStart || isRangeEnd;
       }
 
+      final disabled = _isDayDisabled(date);
       dayWidgets.add(
-        GestureDetector(
-          onTap: () => _onDayTap(date),
-          behavior: HitTestBehavior.opaque,
-          child: _SldsBaseDateCell(
-            dayText: dayText,
-            isSelected: isSelected,
-            isRangeStart: isRangeStart,
-            isRangeEnd: isRangeEnd,
-            isInRange: isInRange,
-            isDisabled: _isDayDisabled(date),
-            primaryAccent: primaryAccent,
-            rangeHighlight: rangeHighlight,
+        Semantics(
+          // The cell shows a bare "05". Announcing the full formatted date
+          // is what makes the grid navigable — the month and year are only
+          // in the header, and selection is conveyed by a colour swatch.
+          button: true,
+          enabled: !disabled,
+          selected: isSelected,
+          label: SldsFormat.of(context).date(date),
+          excludeSemantics: true,
+          child: GestureDetector(
+            onTap: () => _onDayTap(date),
+            behavior: HitTestBehavior.opaque,
+            child: _SldsBaseDateCell(
+              dayText: dayText,
+              isSelected: isSelected,
+              isRangeStart: isRangeStart,
+              isRangeEnd: isRangeEnd,
+              isInRange: isInRange,
+              isDisabled: disabled,
+              primaryAccent: primaryAccent,
+              rangeHighlight: rangeHighlight,
+            ),
           ),
         ),
       );

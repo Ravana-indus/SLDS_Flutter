@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS text input — label (with a required marker), leading/trailing
@@ -43,6 +44,7 @@ class SldsTextField extends StatefulWidget {
     this.inputFormatters,
     this.onChanged,
     this.validator,
+    this.semanticLabel,
   });
 
   final String label;
@@ -101,6 +103,10 @@ class SldsTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
 
+  /// Overrides the accessible name. Defaults to [label]; pass this where the
+  /// visible label is too terse to stand alone out of context ("From", "To").
+  final String? semanticLabel;
+
   @override
   State<SldsTextField> createState() => _SldsTextFieldState();
 }
@@ -143,6 +149,17 @@ class _SldsTextFieldState extends State<SldsTextField> {
 
   bool get _hasError =>
       widget.errorText != null && widget.errorText!.isNotEmpty;
+
+  /// The field's accessible name: the visible label, plus the two things
+  /// the design conveys only in colour — the required asterisk and the
+  /// error message.
+  String _semanticLabel(BuildContext context) {
+    final strings = context.sldsStrings;
+    final buffer = StringBuffer(widget.semanticLabel ?? widget.label);
+    if (widget.isRequired) buffer.write(', ${strings.required}');
+    if (_hasError) buffer.write(', ${strings.error}: ${widget.errorText}');
+    return buffer.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -256,72 +273,92 @@ class _SldsTextFieldState extends State<SldsTextField> {
         SizedBox(
           height: compact ? dimensions.space4 : dimensions.space8,
         ),
-        TextFormField(
-          controller: widget.controller,
-          focusNode: _node,
-          enabled: widget.enabled,
-          obscureText: widget.obscureText,
-          keyboardType: widget.keyboardType,
-          inputFormatters: widget.inputFormatters,
-          onChanged: widget.onChanged,
-          validator: widget.validator,
-          // The value keeps its style whether or not it is obscured, so
-          // revealing a password must not reflow the field.
-          style: valueStyle.copyWith(color: colors.textPrimary),
-          decoration: InputDecoration(
-            hintText: widget.hintText,
-            hintStyle: valueStyle.copyWith(color: colors.inputPlaceholder),
-            prefixIcon:
-                widget.leadingWidget ??
-                (widget.leadingIcon != null
-                    ? iconSlot(
-                        icon: widget.leadingIcon!,
-                        box: dimensions.buttonHeightSmall,
-                        color: iconColor,
-                      )
-                    : null),
-            prefixIconConstraints: widget.leadingWidget != null
-                ? const BoxConstraints()
-                : null,
-            suffixIcon: trailing.isEmpty
-                ? null
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: trailing,
-                  ),
-            suffixIconConstraints: const BoxConstraints(),
-            filled: true,
-            // Figma's `Input/Background` is the card surface in every state:
-            // disabled fades the border and text but does not darken the fill.
-            fillColor: colors.surfaceCard,
-            // Figma's Content box is a fixed height with the padding below;
-            // constraints rather than vertical padding so the height is a
-            // floor the field can still grow past at large text scales.
-            constraints: BoxConstraints(
-              minHeight: compact
-                  ? dimensions.inputHeightCompact
-                  : dimensions.inputHeight,
+        // MergeSemantics is load-bearing: TextFormField wraps its field in a
+        // FormField, whose semantics boundary drops a plain ancestor
+        // Semantics label (a bare TextField would have taken it). Without
+        // the merge the field announces with no name at all.
+        MergeSemantics(
+          child: Semantics(
+            // The visible label is a sibling Text, so nothing connects it to
+            // the field. Required and error state are visual-only too (a red
+            // asterisk, red helper text), so both are folded into the name —
+            // a screen-reader user otherwise cannot tell a mandatory field
+            // from an optional one, or know why the form refused to submit.
+            textField: true,
+            label: _semanticLabel(context),
+            child: TextFormField(
+              controller: widget.controller,
+              focusNode: _node,
+              enabled: widget.enabled,
+              obscureText: widget.obscureText,
+              keyboardType: widget.keyboardType,
+              inputFormatters: widget.inputFormatters,
+              onChanged: widget.onChanged,
+              validator: widget.validator,
+              // The value keeps its style whether or not it is obscured, so
+              // revealing a password must not reflow the field.
+              style: valueStyle.copyWith(color: colors.textPrimary),
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                hintStyle: valueStyle.copyWith(color: colors.inputPlaceholder),
+                prefixIcon:
+                    widget.leadingWidget ??
+                    (widget.leadingIcon != null
+                        ? iconSlot(
+                            icon: widget.leadingIcon!,
+                            box: dimensions.buttonHeightSmall,
+                            color: iconColor,
+                          )
+                        : null),
+                prefixIconConstraints: widget.leadingWidget != null
+                    ? const BoxConstraints()
+                    : null,
+                suffixIcon: trailing.isEmpty
+                    ? null
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: trailing,
+                      ),
+                suffixIconConstraints: const BoxConstraints(),
+                filled: true,
+                // Figma's `Input/Background` is the card surface in every
+                // state: disabled fades the border and text but does not
+                // darken the fill.
+                fillColor: colors.surfaceCard,
+                // Figma's Content box is a fixed height with the padding below;
+                // constraints rather than vertical padding so the height is a
+                // floor the field can still grow past at large text scales.
+                constraints: BoxConstraints(
+                  minHeight: compact
+                      ? dimensions.inputHeightCompact
+                      : dimensions.inputHeight,
+                ),
+                // Focus widens the horizontal padding to keep the text from
+                // shifting under the thicker stroke.
+                contentPadding: EdgeInsetsDirectional.symmetric(
+                  horizontal: _focused ? dimensions.space12 : dimensions.space8,
+                  vertical: dimensions.space8,
+                ),
+                border: border(colors.inputBorderDefault),
+                enabledBorder: border(
+                  _hasError
+                      ? colors.inputBorderError
+                      : colors.inputBorderDefault,
+                ),
+                focusedBorder: border(
+                  _hasError
+                      ? colors.inputBorderError
+                      : colors.inputBorderFocused,
+                  emphasized: true,
+                ),
+                errorBorder: border(colors.inputBorderError),
+                focusedErrorBorder: border(
+                  colors.inputBorderError,
+                  emphasized: true,
+                ),
+                disabledBorder: border(colors.inputBorderDisabled),
+              ),
             ),
-            // Focus widens the horizontal padding to keep the text from
-            // shifting under the thicker stroke.
-            contentPadding: EdgeInsetsDirectional.symmetric(
-              horizontal: _focused ? dimensions.space12 : dimensions.space8,
-              vertical: dimensions.space8,
-            ),
-            border: border(colors.inputBorderDefault),
-            enabledBorder: border(
-              _hasError ? colors.inputBorderError : colors.inputBorderDefault,
-            ),
-            focusedBorder: border(
-              _hasError ? colors.inputBorderError : colors.inputBorderFocused,
-              emphasized: true,
-            ),
-            errorBorder: border(colors.inputBorderError),
-            focusedErrorBorder: border(
-              colors.inputBorderError,
-              emphasized: true,
-            ),
-            disabledBorder: border(colors.inputBorderDisabled),
           ),
         ),
         if (_hasError ||

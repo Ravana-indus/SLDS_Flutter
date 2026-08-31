@@ -34,5 +34,71 @@
   "errorUnauthorizedTitle": "අනවසර ප්‍රවේශයකි",
   "errorUnauthorizedDescription": "යෙදුමේ සේවාදායකයේ යම් දෝෂයක් ඇති වී තිබේ",
   "goToHome": "මුල් පිටුවට යන්න",
-  "thereIsAProblem": "ගැටලුවක් ඇත"
+  "thereIsAProblem": "ගැටලුවක් ඇත",
+  "required": "අවශ්‍යයි",
+  "@required": {
+    "description": "Spoken suffix marking a mandatory form field. The design shows this only as a red asterisk, which a screen reader does not convey."
+  },
+  "expanded": "දිග හැරී ඇත",
+  "@expanded": {
+    "description": "Spoken state of a dropdown or panel that is currently open."
+  },
+  "collapsed": "හකුළා ඇත",
+  "@collapsed": {
+    "description": "Spoken state of a dropdown or panel that is currently closed."
+  },
+  "digitOf": "ඉලක්කම {position} / {total}",
+  "@digitOf": {
+    "description": "Accessible name for one box of a one-time-passcode input, so each box announces its position rather than as an anonymous field.",
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "clearSearch": "සෙවීම හිස් කරන්න",
+  "@clearSearch": {
+    "description": "Accessible name for the button that empties the search field."
+  },
+  "recentSearch": "මෑත සෙවීම: {label}",
+  "@recentSearch": {
+    "description": "Accessible name for a row in the recent-searches list, distinguishing it from a live suggestion.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "suggestion": "යෝජනාව: {label}",
+  "@suggestion": {
+    "description": "Accessible name for a row in the search suggestions list.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "previousMonth": "පෙර මාසය",
+  "@previousMonth": {
+    "description": "Accessible name for the calendar control that moves back one month."
+  },
+  "nextMonth": "ඊළඟ මාසය",
+  "@nextMonth": {
+    "description": "Accessible name for the calendar control that moves forward one month."
+  },
+  "selectHour": "පැය තෝරන්න",
+  "@selectHour": {
+    "description": "Accessible name for the hour field of the time picker."
+  },
+  "selectMinute": "මිනිත්තුව තෝරන්න",
+  "@selectMinute": {
+    "description": "Accessible name for the minute field of the time picker."
+  },
+  "noResults": "ප්‍රතිඵල නොමැත",
+  "@noResults": {
+    "description": "Shown in a dropdown or search panel when the query matches no options."
+  }
 }

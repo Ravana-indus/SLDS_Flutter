@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:slds_components/slds_components.dart'
     show SldsMobileNumberInput;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_mobile_number_input.dart'
     show SldsMobileNumberInput;
@@ -165,6 +166,18 @@ class _SldsInputState extends State<SldsInput> {
     return _hasValue ? SldsInputState.filled : SldsInputState.defaultState;
   }
 
+  /// The field's accessible name: the visible label plus the state the
+  /// design carries only in colour — the required marker and the error.
+  String _semanticLabel(BuildContext context, bool error) {
+    final strings = context.sldsStrings;
+    final buffer = StringBuffer(widget.label);
+    if (widget.required) buffer.write(', ${strings.required}');
+    if (error && widget.errorText != null) {
+      buffer.write(', ${strings.error}: ${widget.errorText}');
+    }
+    return buffer.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
@@ -262,24 +275,31 @@ class _SldsInputState extends State<SldsInput> {
                       SizedBox(width: dimensions.space8),
                     ],
                     Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        focusNode: _focusNode,
-                        enabled: !disabled,
-                        keyboardType: widget.keyboardType,
-                        inputFormatters: widget.inputFormatters,
-                        onChanged: widget.onChanged,
-                        onSubmitted: widget.onSubmitted,
-                        style: tokens.typography.body1.copyWith(
-                          color: valueColor,
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                          hintText: widget.hintText,
-                          hintStyle: tokens.typography.body1.copyWith(
-                            color: colors.inputPlaceholder,
+                      child: Semantics(
+                        // The visible label is a sibling Text, so the field
+                        // itself announces unnamed; required and error are
+                        // colour-only, so both are folded into the name.
+                        textField: true,
+                        label: _semanticLabel(context, error),
+                        child: TextField(
+                          controller: _controller,
+                          focusNode: _focusNode,
+                          enabled: !disabled,
+                          keyboardType: widget.keyboardType,
+                          inputFormatters: widget.inputFormatters,
+                          onChanged: widget.onChanged,
+                          onSubmitted: widget.onSubmitted,
+                          style: tokens.typography.body1.copyWith(
+                            color: valueColor,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                            hintText: widget.hintText,
+                            hintStyle: tokens.typography.body1.copyWith(
+                              color: colors.inputPlaceholder,
+                            ),
                           ),
                         ),
                       ),

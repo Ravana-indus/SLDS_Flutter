@@ -175,32 +175,41 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Hour Box
-              GestureDetector(
-                onTap: () =>
-                    setState(() => _activeUnit = SldsTimePickerUnit.hour),
-                child: Container(
-                  width: 54,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: _activeUnit == SldsTimePickerUnit.hour
-                        ? _defaultLightYellow
-                        : colors.surfaceCard,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
+              Semantics(
+                button: true,
+                selected: _activeUnit == SldsTimePickerUnit.hour,
+                label: context.sldsStrings.selectHour,
+                value: '$_selectedHour12',
+                excludeSemantics: true,
+                child: GestureDetector(
+                  onTap: () =>
+                      setState(() => _activeUnit = SldsTimePickerUnit.hour),
+                  child: Container(
+                    width: 54,
+                    height: 44,
+                    decoration: BoxDecoration(
                       color: _activeUnit == SldsTimePickerUnit.hour
-                          ? primaryAccent
-                          : colors.borderDefault,
-                      width: _activeUnit == SldsTimePickerUnit.hour ? 1.5 : 1.0,
+                          ? _defaultLightYellow
+                          : colors.surfaceCard,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _activeUnit == SldsTimePickerUnit.hour
+                            ? primaryAccent
+                            : colors.borderDefault,
+                        width: _activeUnit == SldsTimePickerUnit.hour
+                            ? 1.5
+                            : 1.0,
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      _selectedHour12 < 10
-                          ? '0$_selectedHour12'
-                          : '$_selectedHour12',
-                      style: tokens.typography.heading4.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: colors.textPrimary,
+                    child: Center(
+                      child: Text(
+                        _selectedHour12 < 10
+                            ? '0$_selectedHour12'
+                            : '$_selectedHour12',
+                        style: tokens.typography.heading4.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: colors.textPrimary,
+                        ),
                       ),
                     ),
                   ),
@@ -216,34 +225,41 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
               ),
 
               // Minute Box
-              GestureDetector(
-                onTap: () =>
-                    setState(() => _activeUnit = SldsTimePickerUnit.minute),
-                child: Container(
-                  width: 54,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: _activeUnit == SldsTimePickerUnit.minute
-                        ? _defaultLightYellow
-                        : colors.surfaceCard,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
+              Semantics(
+                button: true,
+                selected: _activeUnit == SldsTimePickerUnit.minute,
+                label: context.sldsStrings.selectMinute,
+                value: '$_selectedMinute',
+                excludeSemantics: true,
+                child: GestureDetector(
+                  onTap: () =>
+                      setState(() => _activeUnit = SldsTimePickerUnit.minute),
+                  child: Container(
+                    width: 54,
+                    height: 44,
+                    decoration: BoxDecoration(
                       color: _activeUnit == SldsTimePickerUnit.minute
-                          ? primaryAccent
-                          : colors.borderDefault,
-                      width: _activeUnit == SldsTimePickerUnit.minute
-                          ? 1.5
-                          : 1.0,
+                          ? _defaultLightYellow
+                          : colors.surfaceCard,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _activeUnit == SldsTimePickerUnit.minute
+                            ? primaryAccent
+                            : colors.borderDefault,
+                        width: _activeUnit == SldsTimePickerUnit.minute
+                            ? 1.5
+                            : 1.0,
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      _selectedMinute < 10
-                          ? '0$_selectedMinute'
-                          : '$_selectedMinute',
-                      style: tokens.typography.heading4.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: colors.textPrimary,
+                    child: Center(
+                      child: Text(
+                        _selectedMinute < 10
+                            ? '0$_selectedMinute'
+                            : '$_selectedMinute',
+                        style: tokens.typography.heading4.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: colors.textPrimary,
+                        ),
                       ),
                     ),
                   ),
@@ -255,38 +271,56 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
               // AM/PM Segmented Control
               Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => _setPeriod(DayPeriod.am),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 4,
-                      ),
-                      child: Text(
-                        context.sldsStrings.timePeriodAm,
-                        style: tokens.typography.body1.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: _period == DayPeriod.am
-                              ? primaryAccent
-                              : colors.textSecondary.withValues(alpha: 0.6),
+                  Semantics(
+                    // A segmented control: the reader must hear which of the
+                    // two is active, which the design shows only in colour.
+                    inMutuallyExclusiveGroup: true,
+                    selected: _period == DayPeriod.am,
+                    button: true,
+                    label: context.sldsStrings.timePeriodAm,
+                    excludeSemantics: true,
+                    child: GestureDetector(
+                      onTap: () => _setPeriod(DayPeriod.am),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 4,
+                        ),
+                        child: Text(
+                          context.sldsStrings.timePeriodAm,
+                          style: tokens.typography.body1.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: _period == DayPeriod.am
+                                ? primaryAccent
+                                : colors.textSecondary.withValues(alpha: 0.6),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () => _setPeriod(DayPeriod.pm),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 4,
-                      ),
-                      child: Text(
-                        context.sldsStrings.timePeriodPm,
-                        style: tokens.typography.body1.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: _period == DayPeriod.pm
-                              ? primaryAccent
-                              : colors.textSecondary.withValues(alpha: 0.6),
+                  Semantics(
+                    // A segmented control: the reader must hear which of the
+                    // two is active, which the design shows only in colour.
+                    inMutuallyExclusiveGroup: true,
+                    selected: _period == DayPeriod.pm,
+                    button: true,
+                    label: context.sldsStrings.timePeriodPm,
+                    excludeSemantics: true,
+                    child: GestureDetector(
+                      onTap: () => _setPeriod(DayPeriod.pm),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 4,
+                        ),
+                        child: Text(
+                          context.sldsStrings.timePeriodPm,
+                          style: tokens.typography.body1.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: _period == DayPeriod.pm
+                                ? primaryAccent
+                                : colors.textSecondary.withValues(alpha: 0.6),
+                          ),
                         ),
                       ),
                     ),
@@ -380,40 +414,48 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
         return Positioned(
           left: cx - 18,
           top: cy - 18,
-          child: GestureDetector(
-            onTap: () {
-              if (isHour) {
-                _selectHour(val);
-              } else {
-                _selectMinute(val);
-              }
-            },
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: isSelected
-                  ? BoxDecoration(
-                      color: primaryAccent,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: primaryAccent.withValues(alpha: 0.3),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    )
-                  : null,
-              child: Center(
-                child: Text(
-                  isHour ? '$val' : (val < 10 ? '0$val' : '$val'),
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    color: isSelected
-                        ? const Color(0xFF1C1B1F)
-                        : const Color(0xFF1C1B1F),
+          child: Semantics(
+            button: true,
+            selected: isSelected,
+            label: '$val',
+            excludeSemantics: true,
+            child: GestureDetector(
+              onTap: () {
+                if (isHour) {
+                  _selectHour(val);
+                } else {
+                  _selectMinute(val);
+                }
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: isSelected
+                    ? BoxDecoration(
+                        color: primaryAccent,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: primaryAccent.withValues(alpha: 0.3),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      )
+                    : null,
+                child: Center(
+                  child: Text(
+                    isHour ? '$val' : (val < 10 ? '0$val' : '$val'),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.w500,
+                      color: isSelected
+                          ? const Color(0xFF1C1B1F)
+                          : const Color(0xFF1C1B1F),
+                    ),
                   ),
                 ),
               ),
@@ -601,18 +643,27 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.enabled ? () => _showTimePicker(context) : null,
-      child: AbsorbPointer(
-        child: SldsTextField(
-          label: widget.label,
-          controller: _controller,
-          hintText: widget.hintText,
-          helpText: widget.helpText,
-          errorText: widget.errorText,
-          enabled: widget.enabled,
-          isRequired: widget.isRequired,
-          trailingIcon: Icons.access_time,
+    return Semantics(
+      // AbsorbPointer blocks the inner field's own tap semantics, so the
+      // control is a button that opens a picker, not an editable field.
+      button: true,
+      enabled: widget.enabled,
+      label: widget.label,
+      value: _controller.text,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: widget.enabled ? () => _showTimePicker(context) : null,
+        child: AbsorbPointer(
+          child: SldsTextField(
+            label: widget.label,
+            controller: _controller,
+            hintText: widget.hintText,
+            helpText: widget.helpText,
+            errorText: widget.errorText,
+            enabled: widget.enabled,
+            isRequired: widget.isRequired,
+            trailingIcon: Icons.access_time,
+          ),
         ),
       ),
     );

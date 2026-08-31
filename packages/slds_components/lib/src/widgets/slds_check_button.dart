@@ -50,26 +50,35 @@ class SldsCheckButton extends StatelessWidget {
       borderColor = colors.borderDefault;
     }
 
-    return InkWell(
-      onTap: _interactive ? () => onChanged!.call(!selected) : null,
-      borderRadius: BorderRadius.circular(dimensions.radiusLg),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(
-          horizontal: dimensions.space16,
-          vertical: dimensions.space12,
-        ),
-        decoration: BoxDecoration(
-          color: background,
-          border: Border.all(color: borderColor),
-          borderRadius: BorderRadius.circular(dimensions.radiusLg),
-        ),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: tokens.typography.compactLabel.copyWith(
-            color: foreground,
-            fontWeight: FontWeight.w600,
+    return Semantics(
+      // A toggle whose on/off state is carried entirely by fill colour, so
+      // it has to be announced as a checked state rather than left to the
+      // label alone.
+      checked: selected,
+      enabled: _interactive,
+      label: label,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: _interactive ? () => onChanged!.call(!selected) : null,
+        borderRadius: BorderRadius.circular(dimensions.radiusLg),
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+            horizontal: dimensions.space16,
+            vertical: dimensions.space12,
+          ),
+          decoration: BoxDecoration(
+            color: background,
+            border: Border.all(color: borderColor),
+            borderRadius: BorderRadius.circular(dimensions.radiusLg),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: tokens.typography.compactLabel.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),

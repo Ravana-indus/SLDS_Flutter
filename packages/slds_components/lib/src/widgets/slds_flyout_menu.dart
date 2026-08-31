@@ -125,33 +125,40 @@ class _FlyoutItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: dimensions.space20,
-              vertical: dimensions.space16,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    item.label,
-                    style: tokens.typography.body2.copyWith(
-                      color: colors.textPrimary,
-                      fontWeight: FontWeight.w600,
+        Semantics(
+          // Expandable rows show their state only as a chevron direction.
+          button: true,
+          expanded: expandable ? expanded : null,
+          label: item.label,
+          excludeSemantics: true,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: dimensions.space20,
+                vertical: dimensions.space16,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      item.label,
+                      style: tokens.typography.body2.copyWith(
+                        color: colors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                if (expandable)
-                  Icon(
-                    expanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    size: dimensions.iconSizeMedium,
-                    color: colors.textPrimary,
-                  ),
-              ],
+                  if (expandable)
+                    Icon(
+                      expanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      size: dimensions.iconSizeMedium,
+                      color: colors.textPrimary,
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -175,32 +182,37 @@ class _FlyoutItem extends StatelessWidget {
                   ),
                   SizedBox(height: dimensions.space8),
                   for (final entry in group.entries)
-                    InkWell(
-                      onTap: entry.onTap,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: dimensions.space20,
-                          vertical: dimensions.space8,
-                        ),
-                        child: Row(
-                          children: [
-                            if (entry.icon != null) ...[
-                              Icon(
-                                entry.icon,
-                                size: dimensions.iconSizeMedium,
-                                color: colors.textSecondary,
-                              ),
-                              SizedBox(width: dimensions.space12),
-                            ],
-                            Expanded(
-                              child: Text(
-                                entry.label,
-                                style: tokens.typography.body2.copyWith(
-                                  color: colors.textPrimary,
+                    Semantics(
+                      button: true,
+                      label: entry.label,
+                      excludeSemantics: true,
+                      child: InkWell(
+                        onTap: entry.onTap,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: dimensions.space20,
+                            vertical: dimensions.space8,
+                          ),
+                          child: Row(
+                            children: [
+                              if (entry.icon != null) ...[
+                                Icon(
+                                  entry.icon,
+                                  size: dimensions.iconSizeMedium,
+                                  color: colors.textSecondary,
+                                ),
+                                SizedBox(width: dimensions.space12),
+                              ],
+                              Expanded(
+                                child: Text(
+                                  entry.label,
+                                  style: tokens.typography.body2.copyWith(
+                                    color: colors.textPrimary,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

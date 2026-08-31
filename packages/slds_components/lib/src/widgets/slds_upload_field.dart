@@ -161,54 +161,66 @@ class SldsUploadField extends StatelessWidget {
           ],
         ),
         SizedBox(height: dimensions.space4),
-        InkWell(
-          onTap: interactive ? onTap : null,
-          borderRadius: BorderRadius.circular(dimensions.radius2xl),
-          child: Container(
-            constraints: BoxConstraints(
-              minHeight: dimensions.buttonHeightExtraLarge,
+        Semantics(
+          button: true,
+          enabled: interactive,
+          // The asterisk and the red error text are visual-only, so both
+          // are folded into the name.
+          label: [
+            label,
+            if (required) context.sldsStrings.required,
+            if (status == SldsUploadStatus.error && errorText != null)
+              '${context.sldsStrings.error}: $errorText',
+          ].join(', '),
+          child: InkWell(
+            onTap: interactive ? onTap : null,
+            borderRadius: BorderRadius.circular(dimensions.radius2xl),
+            child: Container(
+              constraints: BoxConstraints(
+                minHeight: dimensions.buttonHeightExtraLarge,
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: dimensions.space12,
+                vertical: dimensions.space12,
+              ),
+              decoration: BoxDecoration(
+                color: enabled ? colors.surfaceCard : colors.disabledBackground,
+                border: Border.all(color: colors.borderDefault),
+                borderRadius: BorderRadius.circular(dimensions.radius2xl),
+              ),
+              child: switch (status) {
+                SldsUploadStatus.empty => _EmptyRow(
+                  hintText: hintText,
+                  enabled: enabled,
+                  icon: emptyIcon,
+                  customWidget: emptyWidget,
+                ),
+                SldsUploadStatus.uploading => _UploadingRow(
+                  fileName: fileName ?? '',
+                  progress: progress,
+                ),
+                SldsUploadStatus.uploaded => _ResultRow(
+                  fileName: fileName ?? '',
+                  leading: leadingUploaded,
+                  leadingBackground: colors.badgeSuccessBackground,
+                  caption: 'Uploaded',
+                  captionColor: colors.inputHelper,
+                  onRemove: onRemove,
+                  removeIcon: removeIcon,
+                  removeWidget: removeWidget,
+                ),
+                SldsUploadStatus.error => _ResultRow(
+                  fileName: fileName ?? '',
+                  leading: leadingError,
+                  leadingBackground: colors.badgeErrorBackground,
+                  caption: errorText,
+                  captionColor: colors.error,
+                  onRemove: onRemove,
+                  removeIcon: removeIcon,
+                  removeWidget: removeWidget,
+                ),
+              },
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: dimensions.space12,
-              vertical: dimensions.space12,
-            ),
-            decoration: BoxDecoration(
-              color: enabled ? colors.surfaceCard : colors.disabledBackground,
-              border: Border.all(color: colors.borderDefault),
-              borderRadius: BorderRadius.circular(dimensions.radius2xl),
-            ),
-            child: switch (status) {
-              SldsUploadStatus.empty => _EmptyRow(
-                hintText: hintText,
-                enabled: enabled,
-                icon: emptyIcon,
-                customWidget: emptyWidget,
-              ),
-              SldsUploadStatus.uploading => _UploadingRow(
-                fileName: fileName ?? '',
-                progress: progress,
-              ),
-              SldsUploadStatus.uploaded => _ResultRow(
-                fileName: fileName ?? '',
-                leading: leadingUploaded,
-                leadingBackground: colors.badgeSuccessBackground,
-                caption: 'Uploaded',
-                captionColor: colors.inputHelper,
-                onRemove: onRemove,
-                removeIcon: removeIcon,
-                removeWidget: removeWidget,
-              ),
-              SldsUploadStatus.error => _ResultRow(
-                fileName: fileName ?? '',
-                leading: leadingError,
-                leadingBackground: colors.badgeErrorBackground,
-                caption: errorText,
-                captionColor: colors.error,
-                onRemove: onRemove,
-                removeIcon: removeIcon,
-                removeWidget: removeWidget,
-              ),
-            },
           ),
         ),
       ],
@@ -398,6 +410,7 @@ class _ResultRow extends StatelessWidget {
           SizedBox(width: tokens.dimensions.space8),
           IconButton(
             onPressed: onRemove,
+            tooltip: context.sldsStrings.removeItem(fileName),
             icon: trailingWidget,
             iconSize: tokens.dimensions.avatarIconMedium,
             color: colors.inputIcon,

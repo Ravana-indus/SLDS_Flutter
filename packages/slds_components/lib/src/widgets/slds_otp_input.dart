@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Fixed box dimensions for [SldsOtpInput], per the SLDS spec's size scale.
@@ -36,6 +37,7 @@ class SldsOtpInput extends StatefulWidget {
     this.success = false,
     this.enabled = true,
     this.autofocus = false,
+    this.semanticLabel,
   });
 
   /// Number of digit boxes. Defaults to 6.
@@ -59,6 +61,10 @@ class SldsOtpInput extends StatefulWidget {
 
   final bool enabled;
   final bool autofocus;
+
+  /// Accessible name for the group of boxes as a whole, e.g. "One-time
+  /// passcode". Each box announces its own position within the group.
+  final String? semanticLabel;
 
   @override
   State<SldsOtpInput> createState() => _SldsOtpInputState();
@@ -176,15 +182,27 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
   Widget build(BuildContext context) {
     final dimensions = context.slds.dimensions;
 
+    // The boxes are one logical field split across [length] controls. The
+    // group carries the name and, since the error is otherwise only a red
+    // border, announces the error once for the whole code rather than
+    // repeating it on every box.
+    //
     // Wrap (not Row+Expanded) — boxes are a fixed [widget.size], so at
     // narrow widths (mobile) the row wraps onto a second line instead of
     // overflowing or squeezing the boxes out of spec.
-    return Wrap(
-      spacing: dimensions.space8,
-      runSpacing: dimensions.space8,
-      children: [
-        for (var i = 0; i < widget.length; i++) _buildBox(context, i),
-      ],
+    return Semantics(
+      container: true,
+      label: widget.semanticLabel,
+      value: _code,
+      liveRegion: _hasError,
+      hint: _hasError ? widget.errorText : null,
+      child: Wrap(
+        spacing: dimensions.space8,
+        runSpacing: dimensions.space8,
+        children: [
+          for (var i = 0; i < widget.length; i++) _buildBox(context, i),
+        ],
+      ),
     );
   }
 
@@ -242,51 +260,59 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
       emphasized = false;
     }
 
-    return SizedBox(
-      width: widget.size.width,
-      height: widget.size.height,
-      child: KeyboardListener(
-        focusNode: keyNodes[index],
-        onKeyEvent: (event) => _onKey(index, event),
-        child: TextField(
-          controller: controllers[index],
-          focusNode: focusNodes[index],
-          enabled: widget.enabled,
-          autofocus: widget.autofocus && index == 0,
-          textAlign: TextAlign.center,
-          keyboardType: TextInputType.number,
-          maxLength: widget.length, // allows pasting the full code into one box
-          cursorColor: borderColor,
-          // Figma sets the digit in Heading 1 at every size — the box grows,
-          // the numeral does not.
-          style: tokens.typography.heading1.copyWith(color: textColor),
-          decoration: InputDecoration(
-            counterText: '',
-            filled: true,
-            // Figma's `Input/Background` is the card surface in every state:
-            // disabled fades the border and digit but keeps the fill white.
-            fillColor: colors.surfaceCard,
-            contentPadding: EdgeInsets.zero,
-            // One radius for every size and state; the state is carried by
-            // the border colour and, for the emphasized states, its width.
-            border: _boxBorder(tokens, borderColor, emphasized: emphasized),
-            enabledBorder: _boxBorder(
-              tokens,
-              borderColor,
-              emphasized: emphasized,
+    return Semantics(
+      // Without a position each box announces as an anonymous text field,
+      // so a reader tabbing through six of them cannot tell which digit
+      // they are on or how many are left.
+      textField: true,
+      label: context.sldsStrings.digitOf(index + 1, widget.length),
+      child: SizedBox(
+        width: widget.size.width,
+        height: widget.size.height,
+        child: KeyboardListener(
+          focusNode: keyNodes[index],
+          onKeyEvent: (event) => _onKey(index, event),
+          child: TextField(
+            controller: controllers[index],
+            focusNode: focusNodes[index],
+            enabled: widget.enabled,
+            autofocus: widget.autofocus && index == 0,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            maxLength:
+                widget.length, // allows pasting the full code into one box
+            cursorColor: borderColor,
+            // Figma sets the digit in Heading 1 at every size — the box grows,
+            // the numeral does not.
+            style: tokens.typography.heading1.copyWith(color: textColor),
+            decoration: InputDecoration(
+              counterText: '',
+              filled: true,
+              // Figma's `Input/Background` is the card surface in every state:
+              // disabled fades the border and digit but keeps the fill white.
+              fillColor: colors.surfaceCard,
+              contentPadding: EdgeInsets.zero,
+              // One radius for every size and state; the state is carried by
+              // the border colour and, for the emphasized states, its width.
+              border: _boxBorder(tokens, borderColor, emphasized: emphasized),
+              enabledBorder: _boxBorder(
+                tokens,
+                borderColor,
+                emphasized: emphasized,
+              ),
+              focusedBorder: _boxBorder(
+                tokens,
+                borderColor,
+                emphasized: emphasized,
+              ),
+              disabledBorder: _boxBorder(
+                tokens,
+                borderColor,
+                emphasized: emphasized,
+              ),
             ),
-            focusedBorder: _boxBorder(
-              tokens,
-              borderColor,
-              emphasized: emphasized,
-            ),
-            disabledBorder: _boxBorder(
-              tokens,
-              borderColor,
-              emphasized: emphasized,
-            ),
+            onChanged: (value) => _onChanged(index, value),
           ),
-          onChanged: (value) => _onChanged(index, value),
         ),
       ),
     );

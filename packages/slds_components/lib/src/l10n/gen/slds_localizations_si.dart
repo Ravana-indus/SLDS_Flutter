@@ -129,4 +129,46 @@ class SldsLocalizationsSi extends SldsLocalizations {
 
   @override
   String get thereIsAProblem => 'ගැටලුවක් ඇත';
+
+  @override
+  String get required => 'අවශ්‍යයි';
+
+  @override
+  String get expanded => 'දිග හැරී ඇත';
+
+  @override
+  String get collapsed => 'හකුළා ඇත';
+
+  @override
+  String digitOf(int position, int total) {
+    return 'ඉලක්කම $position / $total';
+  }
+
+  @override
+  String get clearSearch => 'සෙවීම හිස් කරන්න';
+
+  @override
+  String recentSearch(String label) {
+    return 'මෑත සෙවීම: $label';
+  }
+
+  @override
+  String suggestion(String label) {
+    return 'යෝජනාව: $label';
+  }
+
+  @override
+  String get previousMonth => 'පෙර මාසය';
+
+  @override
+  String get nextMonth => 'ඊළඟ මාසය';
+
+  @override
+  String get selectHour => 'පැය තෝරන්න';
+
+  @override
+  String get selectMinute => 'මිනිත්තුව තෝරන්න';
+
+  @override
+  String get noResults => 'ප්‍රතිඵල නොමැත';
 }

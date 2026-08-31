@@ -34,5 +34,71 @@
   "errorUnauthorizedTitle": "அங்கீகாரம் இல்லை",
   "errorUnauthorizedDescription": "செயலியின் சேவையகத்தில் ஏதோ தவறு நேர்ந்துள்ளது",
   "goToHome": "முகப்புக்குச் செல்",
-  "thereIsAProblem": "ஒரு சிக்கல் உள்ளது"
+  "thereIsAProblem": "ஒரு சிக்கல் உள்ளது",
+  "required": "தேவை",
+  "@required": {
+    "description": "Spoken suffix marking a mandatory form field. The design shows this only as a red asterisk, which a screen reader does not convey."
+  },
+  "expanded": "விரிவாக்கப்பட்டது",
+  "@expanded": {
+    "description": "Spoken state of a dropdown or panel that is currently open."
+  },
+  "collapsed": "சுருக்கப்பட்டது",
+  "@collapsed": {
+    "description": "Spoken state of a dropdown or panel that is currently closed."
+  },
+  "digitOf": "இலக்கம் {position} / {total}",
+  "@digitOf": {
+    "description": "Accessible name for one box of a one-time-passcode input, so each box announces its position rather than as an anonymous field.",
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "clearSearch": "தேடலை அழி",
+  "@clearSearch": {
+    "description": "Accessible name for the button that empties the search field."
+  },
+  "recentSearch": "சமீபத்திய தேடல்: {label}",
+  "@recentSearch": {
+    "description": "Accessible name for a row in the recent-searches list, distinguishing it from a live suggestion.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "suggestion": "பரிந்துரை: {label}",
+  "@suggestion": {
+    "description": "Accessible name for a row in the search suggestions list.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "previousMonth": "முந்தைய மாதம்",
+  "@previousMonth": {
+    "description": "Accessible name for the calendar control that moves back one month."
+  },
+  "nextMonth": "அடுத்த மாதம்",
+  "@nextMonth": {
+    "description": "Accessible name for the calendar control that moves forward one month."
+  },
+  "selectHour": "மணிநேரத்தைத் தேர்ந்தெடுக்கவும்",
+  "@selectHour": {
+    "description": "Accessible name for the hour field of the time picker."
+  },
+  "selectMinute": "நிமிடத்தைத் தேர்ந்தெடுக்கவும்",
+  "@selectMinute": {
+    "description": "Accessible name for the minute field of the time picker."
+  },
+  "noResults": "முடிவுகள் இல்லை",
+  "@noResults": {
+    "description": "Shown in a dropdown or search panel when the query matches no options."
+  }
 }

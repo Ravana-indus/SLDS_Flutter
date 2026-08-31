@@ -130,4 +130,46 @@ class SldsLocalizationsEn extends SldsLocalizations {
 
   @override
   String get thereIsAProblem => 'There is a problem';
+
+  @override
+  String get required => 'required';
+
+  @override
+  String get expanded => 'expanded';
+
+  @override
+  String get collapsed => 'collapsed';
+
+  @override
+  String digitOf(int position, int total) {
+    return 'Digit $position of $total';
+  }
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String recentSearch(String label) {
+    return 'Recent search: $label';
+  }
+
+  @override
+  String suggestion(String label) {
+    return 'Suggestion: $label';
+  }
+
+  @override
+  String get previousMonth => 'Previous month';
+
+  @override
+  String get nextMonth => 'Next month';
+
+  @override
+  String get selectHour => 'Select hour';
+
+  @override
+  String get selectMinute => 'Select minute';
+
+  @override
+  String get noResults => 'No results';
 }

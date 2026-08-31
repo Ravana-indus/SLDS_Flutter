@@ -168,5 +168,71 @@
   "thereIsAProblem": "There is a problem",
   "@thereIsAProblem": {
     "description": "Default heading of the form error summary."
+  },
+  "required": "required",
+  "@required": {
+    "description": "Spoken suffix marking a mandatory form field. The design shows this only as a red asterisk, which a screen reader does not convey."
+  },
+  "expanded": "expanded",
+  "@expanded": {
+    "description": "Spoken state of a dropdown or panel that is currently open."
+  },
+  "collapsed": "collapsed",
+  "@collapsed": {
+    "description": "Spoken state of a dropdown or panel that is currently closed."
+  },
+  "digitOf": "Digit {position} of {total}",
+  "@digitOf": {
+    "description": "Accessible name for one box of a one-time-passcode input, so each box announces its position rather than as an anonymous field.",
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "clearSearch": "Clear search",
+  "@clearSearch": {
+    "description": "Accessible name for the button that empties the search field."
+  },
+  "recentSearch": "Recent search: {label}",
+  "@recentSearch": {
+    "description": "Accessible name for a row in the recent-searches list, distinguishing it from a live suggestion.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "suggestion": "Suggestion: {label}",
+  "@suggestion": {
+    "description": "Accessible name for a row in the search suggestions list.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "previousMonth": "Previous month",
+  "@previousMonth": {
+    "description": "Accessible name for the calendar control that moves back one month."
+  },
+  "nextMonth": "Next month",
+  "@nextMonth": {
+    "description": "Accessible name for the calendar control that moves forward one month."
+  },
+  "selectHour": "Select hour",
+  "@selectHour": {
+    "description": "Accessible name for the hour field of the time picker."
+  },
+  "selectMinute": "Select minute",
+  "@selectMinute": {
+    "description": "Accessible name for the minute field of the time picker."
+  },
+  "noResults": "No results",
+  "@noResults": {
+    "description": "Shown in a dropdown or search panel when the query matches no options."
   }
 }

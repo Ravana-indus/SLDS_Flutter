@@ -130,4 +130,46 @@ class SldsLocalizationsTa extends SldsLocalizations {
 
   @override
   String get thereIsAProblem => 'ஒரு சிக்கல் உள்ளது';
+
+  @override
+  String get required => 'தேவை';
+
+  @override
+  String get expanded => 'விரிவாக்கப்பட்டது';
+
+  @override
+  String get collapsed => 'சுருக்கப்பட்டது';
+
+  @override
+  String digitOf(int position, int total) {
+    return 'இலக்கம் $position / $total';
+  }
+
+  @override
+  String get clearSearch => 'தேடலை அழி';
+
+  @override
+  String recentSearch(String label) {
+    return 'சமீபத்திய தேடல்: $label';
+  }
+
+  @override
+  String suggestion(String label) {
+    return 'பரிந்துரை: $label';
+  }
+
+  @override
+  String get previousMonth => 'முந்தைய மாதம்';
+
+  @override
+  String get nextMonth => 'அடுத்த மாதம்';
+
+  @override
+  String get selectHour => 'மணிநேரத்தைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get selectMinute => 'நிமிடத்தைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get noResults => 'முடிவுகள் இல்லை';
 }

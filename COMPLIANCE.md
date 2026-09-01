@@ -2,7 +2,7 @@
 
 **Against:** SLDS Flutter UI Library: Engineering Guidelines v1.1 (2026-08-08)
 **Reviewed commit:** `9810563` (GovTech automated code audit, 2026-08-14)
-**This document:** current `main`, 2026-08-15
+**This document:** current `main`, 2026-09-01
 
 This is the response to the compliance review. It records what has changed
 since the reviewed commit, what is fixed, and what is still open — including
@@ -21,7 +21,7 @@ review's own scorecard:
 |---|---------|---------------|-----|
 | 1 | Purpose, scope, device floor | Fail | Partial — floor declared and tested; credential/PII contract still absent |
 | 2 | Package architecture | Fail | **Pass** — `slds_tokens` is pure Dart, one-way dependency enforced in CI |
-| 3 | Versioning and distribution | Fail | Partial — real CHANGELOG at 0.1.0; registry still an open §12 decision |
+| 3 | Versioning and distribution | Fail | Partial — real CHANGELOG at 0.1.0-alpha; registry still an open §12 decision |
 | 4 | Theming | Fail | **Pass** — explicit `ColorScheme`, cached statics, high contrast reachable |
 | 5 | Accessibility | Fail | Partial — focus, contrast, touch targets and reduced motion fixed; semantics coverage incomplete |
 | 6 | Localization | Partial | Partial — all strings through the delegate, intl layer added; si/ta review is the only gap |
@@ -39,7 +39,7 @@ role coverage), M3 (badge semantics), M4 (heroTag), M7 (device floor), M8
 
 Several were already closed before the review was written — `slds_tokens`,
 the CI workflow, the bundled fonts and the pubspec metadata all predate it.
-The component count also moved from 5 to 51.
+The component count also moved from 5 to 52.
 
 ---
 
@@ -54,7 +54,7 @@ against the page background, where WCAG 2.2 requires 3.0:1 for non-text
 contrast. WCAG 2.4.7 (Focus Visible) and 1.4.11 (Non-text Contrast) were
 therefore failing together, on a citizen-facing national service.
 
-Compounding it, the ring helper was applied in 3 of 51 widgets while 41
+Compounding it, the ring helper was applied in 3 of 52 widgets while 41
 managed a `FocusNode`, and the controls that drew their own ring used the
 accent gold, which is not contrast-checked against the surfaces it sits on.
 
@@ -81,12 +81,13 @@ Ordered by what a re-audit is most likely to reject.
 
 | Item | Section | State |
 |------|---------|-------|
-| Semantics missing on ~29 widgets | §5 | The form controls (checkbox, radio, toggle) are done; dropdown, search bar, OTP input and the pickers are not |
+| Semantics missing on 14 widgets | §5 | 38 of 52 widget files declare semantics directly. Of the 14 that do not, `SldsIconButton`, `SldsLinkButton`, `SldsPasswordField` and `SldsDialog` inherit them from the Material widget they wrap (`IconButton`, `TextButton`, `TextField`, `AlertDialog`); the real gap is the presentational set — badge, card, divider, empty/error state, notification card, snack bar, step indicator, pull-to-refresh |
 | si/ta translations unreviewed | §6 (M6) | **The one localization blocker left.** All 47 strings are machine-drafted; §6 treats unverified as missing. Needs a Sinhala and a Tamil speaker |
-| Golden coverage is partial | §8 | 61 images across 5 components; the remaining 46 need the same matrix |
-| `EdgeInsetsDirectional` not used widely | §5 | One RTL golden proves the button mirrors; the rest is unverified |
+| Low-end device smoke test not run | §8 | Neither the procedure nor a pass exists. Naming the handset is a GovTech decision, and the §1 device floor is declared but unexercised |
+| Golden coverage is partial | §8 | 70 images: a full theme x text-scale matrix for 5 components (button, card, FAB, text field, toggle), 8 single-shot RTL goldens and a type specimen. The remaining 47 components have no golden |
+| `EdgeInsetsDirectional` not used widely | §5 | **Resolved.** Every directional inset, alignment, border radius and `Positioned` now uses the `*Directional` variant; 9 RTL goldens prove the mirroring. The two remaining `EdgeInsets.only` are vertical-only, and the time picker's clock face is deliberately absolute |
 | Credential/PII marker convention | §1 (M7) | No credential component exists yet; the contract should exist before the first one |
-| 309 undocumented public members | §7 | Ratcheted in CI so the count can only fall |
+| 305 undocumented public members | §7 | Ratcheted in CI so the count can only fall |
 | Private pub registry | §3, §12 | Open GovTech decision; the package is `publish_to: none` until it is made |
 
 ---
@@ -94,11 +95,11 @@ Ordered by what a re-audit is most likely to reject.
 ## 4. Definition of Done
 
 The audit's headline was "0 of 5 components pass". That is no longer the right
-measure — there are 51 components — but the honest answer is that **no
+measure — there are 52 components — but the honest answer is that **no
 component fully meets all 13 criteria yet**. The blocking gaps are DoD 3
-(semantics on most components), DoD 5 (si/ta translations still unreviewed),
-DoD 7 (goldens for every component), DoD 9 (dartdoc) and DoD 13 (manual
-TalkBack/VoiceOver pass, which has not been performed).
+(semantics on the 14 widgets in §3), DoD 5 (si/ta translations still
+unreviewed), DoD 7 (goldens for 47 of the 52 components), DoD 9 (dartdoc) and
+DoD 13 (manual TalkBack/VoiceOver pass, which has not been performed).
 
 `SldsButton` is closest: tokens, three themes, 48px targets, live-region
 loading announcement, full golden matrix including RTL and si/ta, guideline
@@ -116,7 +117,7 @@ left to be discovered at re-audit.
 prescribes one `ThemeExtension` subclass per component. This library instead
 exposes a single `SldsTokenSet` read through `context.slds`, with value
 equality on every group. It achieves the same goals — no literals in widgets,
-values changeable in one place, no unnecessary rebuilds — without 51 extension
+values changeable in one place, no unnecessary rebuilds — without 52 extension
 classes to keep in sync. If GovTech requires the prescribed shape, the
 migration is mechanical but touches every widget; we would rather agree the
 approach than build it twice.
@@ -130,9 +131,11 @@ first. The migration path is recorded in `.github/workflows/ci.yaml`.
 
 **Token values are engineering proposals pending design sign-off (§9).** §9
 makes the design team the source of truth for token values via the Figma sync.
-The 19 contrast corrections were made by engineering to unblock the WCAG gate.
-Each is annotated `PENDING DESIGN SIGN-OFF` in
-`packages/slds_tokens/lib/src/colors.dart` with its before/after ratio. The
+The contrast corrections were made by engineering to unblock the WCAG gate.
+They are recorded under two `PENDING DESIGN SIGN-OFF` blocks in
+`packages/slds_tokens/lib/src/colors.dart` — one per palette — each listing
+the affected tokens with their before/after ratios, plus the departures from
+Figma that are deliberate and must not be "corrected" back. The
 now-blocking CI check is what proves any replacement still passes.
 
 ---
@@ -167,5 +170,6 @@ dart format --set-exit-if-changed packages widgetbook app
 (cd packages/slds_components && flutter test)
 ```
 
-Current: 485 component tests, 118 token tests, all passing. Contrast is
-94 pass / 0 fail, from 75 / 19 at the reviewed commit.
+Current: 588 component tests (1 skipped) and 150 token tests, all passing.
+Contrast is 120 pairings across the three palettes, 0 failing, from 19
+failing at the reviewed commit.

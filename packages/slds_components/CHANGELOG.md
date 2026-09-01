@@ -5,7 +5,12 @@ follows semantic versioning (§3): a renamed parameter, a changed default or a
 removed widget is a breaking change. A change that alters a golden without
 changing the API is a minor bump at minimum, with before/after images.
 
-## 0.1.0
+Pre-1.0 the API is not yet stable: `0.x` releases may break without a major
+bump, and `-alpha` releases carry no compatibility promise at all. Alpha
+ordering is semver's, so `0.1.0-alpha` precedes `0.1.0` — pin an exact
+version while consuming a pre-release.
+
+## 0.1.0-alpha
 
 First release addressing the GovTech compliance review of commit `9810563`
 against *SLDS Flutter UI Library: Engineering Guidelines v1.1*.

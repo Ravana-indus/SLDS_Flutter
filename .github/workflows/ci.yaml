@@ -74,6 +74,14 @@ jobs:
         run: dart run tool/check_public_docs.dart
         working-directory: packages/slds_components
 
+      # Advisory on every push: the si/ta strings are known to be unreviewed,
+      # so failing here would leave CI permanently red and train people to
+      # ignore it. The release workflow runs this with --release, where §6
+      # makes an unreviewed translation a blocking defect.
+      - name: Translation review (§6)
+        run: dart run tool/check_translation_review.dart
+        working-directory: packages/slds_components
+
       # Behaviour, semantics and accessibility-guideline tests. Goldens are
       # excluded here — see the note on the `goldens` job below.
       - name: Tests

@@ -24,7 +24,8 @@ omission is a documented decision, not a gap to be found later.
 - [ ] CHANGELOG entry, with before/after images if a golden changed
 - [ ] Zero analyzer warnings, CI green
 - [ ] Manual TalkBack / VoiceOver pass (required once per release for every
-      component that shipped or changed)
+      component that shipped or changed). Generate the checklist with
+      `dart run tool/build_screen_reader_packet.dart` and attach the result
 
 **States deliberately omitted, and why:**
 

@@ -20,18 +20,18 @@ review's own scorecard:
 | # | Section | Audit verdict | Now |
 |---|---------|---------------|-----|
 | 1 | Purpose, scope, device floor | Fail | Partial — floor declared and tested; credential/PII contract still absent |
-| 2 | Package architecture | Fail | **Pass** — `slds_tokens` is pure Dart, one-way dependency enforced in CI |
+| 2 | Package architecture | Fail | Partial — `slds_tokens` is pure Dart with the one-way dependency enforced in CI, but §2's no-raw-values rule is a ratchet, not a ban: 21 colour and 100 dimension literals remain |
 | 3 | Versioning and distribution | Fail | Partial — real CHANGELOG at 0.1.0-alpha; registry still an open §12 decision |
 | 4 | Theming | Fail | **Pass** — explicit `ColorScheme`, cached statics, high contrast reachable |
-| 5 | Accessibility | Fail | Partial — focus, contrast, touch targets, reduced motion and semantics coverage fixed; the manual screen-reader pass is the one gap left |
+| 5 | Accessibility | Fail | Partial — focus, contrast, touch targets, reduced motion and semantics coverage fixed, and three components that could not reach the high-contrast palette now do; the manual screen-reader pass is the one gap left |
 | 6 | Localization | Partial | Partial — all strings through the delegate, intl layer added; si/ta review is the only gap |
-| 7 | API design | Partial | **Pass** — `color` removed everywhere, `heroTag` and badge semantics fixed, and every public member now carries dartdoc |
+| 7 | API design | Partial | Partial — per-instance colour overrides are now genuinely gone (`SldsDatePicker.rangeColor` survived the first pass and has since been removed), `heroTag` and badge semantics fixed, every public member carries dartdoc; §7's mandatory state set is still missing offline and stale |
 | 8 | Testing | Fail | **Pass with a disclosed deviation** — goldens, contrast and guideline matchers all in CI |
 | 9 | Documentation and catalog | Partial | Partial — the public API is fully documented; the catalog narrative is still thin |
 | 10 | Contribution and governance | Not evidenced | Partial — CODEOWNERS and PR/issue templates added; owner handles are placeholders |
 | 11 | Definition of Done | 0 of 5 components pass | Improved, not yet met — see §4 below |
 
-Findings the audit raised that are now **closed**: C1 (package architecture), C2 (`color` override),
+Findings the audit raised that are now **closed**: C1 (package architecture), C2 (`color` override — reopened once when `SldsDatePicker.rangeColor` was found to have survived, now closed),
 C3 (no CI), C4 (no goldens), C5 (no high contrast), C6 (no component theming
 layer — addressed differently, see §5), M1 (theme methods), M2 (ColorScheme
 role coverage), M3 (badge semantics), M4 (heroTag), M7 (device floor), M8
@@ -42,6 +42,29 @@ the CI workflow, the bundled fonts and the pubspec metadata all predate it.
 The component count also moved from 5 to 52.
 
 ---
+
+## 1a. Corrections to an earlier revision of this document
+
+A later verification pass found three claims in this document that did not
+hold, all in the direction of overstating compliance. They are corrected in
+place above; recorded here because a compliance record that quietly revises
+itself is worth less than one that says what it got wrong.
+
+- **"No literals, enforced in CI" (DoD 1) was not true.** The mechanism is a
+  ratchet with a per-file allowance, and its own baseline file describes the
+  entries as "known violations awaiting cleanup". Three of them were live
+  accessibility defects, below.
+- **The literal checker only ever matched colours.** §2 bans raw sizes, radii
+  and stroke widths too; those were never checked. Adding a dimension rule
+  surfaced 100 in 21 files.
+- **Git LFS was declared but never active.** `.gitattributes` carries the
+  filter and admits in a comment that it was never installed; this document
+  did not mention it, and all 238 PNGs are ordinary blobs.
+
+A fourth item was found in CI rather than in this document: the golden job
+uploaded its failure artifact from `test/goldens/failures/`, but
+`flutter_test` writes to `test/failures/`. A red golden job would have
+uploaded nothing, which is precisely when the images are needed. Fixed.
 
 ## 2. Two defects the audit did not find
 
@@ -73,6 +96,33 @@ component could render in it.
 
 Fixed: the legacy layer is deleted and every widget resolves from one source.
 
+### Three components could not reach the high-contrast palette
+
+Found in the same verification pass as the corrections in §1a, and the same
+class of defect as the one directly above — a component that renders the same
+colour whatever the palette says.
+
+`SldsDatePicker`, `SldsTimePickerDialog` and `SldsServiceCard` hardcoded their
+selection colours: the range fill `#FFF7D6`, the selected-day and clock
+numerals `#1C1B1F`, and the selected card `#E3EDFF`. All three therefore
+rendered identically in light, dark and high contrast. The high-contrast
+palette was reachable — §2's defect was fixed — but these components did not
+read from it.
+
+The clock-face numeral was also a dead ternary: both arms were `#1C1B1F`, so
+the selected state had been styled by weight alone for as long as the code
+had existed.
+
+Fixed: two new tokens, `datePickerRangeHighlight` and
+`serviceCardSelectedBackground`, in all three palettes. Their dark and
+high-contrast values are engineering proposals recorded under a third
+`PENDING DESIGN SIGN-OFF` block, chosen to keep text above 4.5:1 while
+staying visible against the surface behind them — the high-contrast range
+fill reuses the SLDS accent rather than a pale yellow, which at 1.24:1
+against a white page was too faint to mark a selection for the users that
+palette exists for. Both tokens are now in the blocking contrast check, and
+8 goldens were regenerated.
+
 ---
 
 ## 3. What is still open
@@ -89,6 +139,9 @@ Ordered by what a re-audit is most likely to reject.
 | `EdgeInsetsDirectional` not used widely | §5 | **Resolved.** Every directional inset, alignment, border radius and `Positioned` now uses the `*Directional` variant; 9 RTL goldens prove the mirroring. The two remaining `EdgeInsets.only` are vertical-only, and the time picker's clock face is deliberately absolute |
 | Credential/PII marker convention | §1 (M7) | No credential component exists yet; the contract should exist before the first one |
 | Undocumented public members | §7 | **Resolved.** 305 → 0. `public_member_api_docs` is back at its default severity, so a new undocumented member fails `flutter analyze` directly; the ratchet tool that guarded the backlog is deleted |
+| Raw literals in widget code | §2, DoD 1 | **Partly open, and previously overstated here.** DoD 1 is enforced by a ratchet, not a ban: 21 colour literals remain in 11 files. Three widgets were live defects — the date picker, time picker and service card hardcoded their selection colours and so could not render in the high-contrast palette at all; those are fixed and the values are now tokens. The rest are component *style variants* (`SldsBottomNavStyle.dark`), which violate §2 without being user-visible theme bugs. Separately, the checker only ever matched colours, so §2's ban on raw sizes, radii and stroke widths was unenforced; it now also ratchets dimensions, which surfaced **100** in 21 files that CI could not previously see |
+| Golden images not in Git LFS | §8 | **Open.** `.gitattributes` declares the LFS filter but `git-lfs` is not installed, so all 238 PNGs are ordinary blobs. Needs `git lfs install` then `git lfs migrate import` — a history rewrite, so it must be coordinated across outstanding branches rather than run unilaterally |
+| Offline and stale states absent | §7, DoD 6 | **Open, and previously omitted from this document rather than marked unmet.** Zero occurrences library-wide. §7 calls these "not optional" for components displaying SLUDI, GovPay or NDX data. No component currently fetches remote data, so the honest options are to document that the state does not yet apply, or to build a shared wrapper before the first data-bearing component lands. A GovTech scope decision, not an engineering one |
 | Private pub registry | §3, §12 | Open GovTech decision; the package is `publish_to: none` until it is made |
 
 ---
@@ -101,20 +154,28 @@ every one of them are now closed:
 
 | DoD | Criterion | State |
 |-----|-----------|-------|
+| 1 | Values from tokens, no literals | **Not met, enforced as a ratchet.** 21 colour and 100 dimension literals remain. The three that were live theme defects are fixed; see the row in §3 |
 | 3 | Semantics | **Met.** The two components that genuinely lost information — a silent step indicator and a snack bar nobody was told about — now announce themselves, and both are regression-tested |
 | 5 | Localization | **Not met.** si/ta remain machine-drafted. Needs two native speakers |
+| 6 | Mandatory state set | **Not met.** Offline and stale are absent library-wide; see the row in §3 |
 | 7 | Goldens | **Met.** Every exported component has images across light, dark and high contrast, plus a 200% text-scale pass |
 | 9 | Dartdoc | **Met.** 305 → 0, with the analyzer rule back at default severity |
 | 13 | Manual screen-reader pass | **Not met.** Needs a person and a handset |
 
-**`SldsButton` now meets 11 of the 13**, and is blocked only by the two
-gates below. It renders `sldsStrings.loading` in its loading state, so DoD 5
-binds it like any other component carrying translated copy — an earlier
-draft of this section claimed otherwise and was wrong. Every component is
-blocked by DoD 13; every component that renders a library string is blocked
-by DoD 5 as well.
+**`SldsButton` now meets 11 of the 13** — it carries no literals and has no
+data-bearing state, so DoD 1 and 6 do not bite it — and is blocked only by
+the two gates below. It renders `sldsStrings.loading` in its loading state,
+so DoD 5 binds it like any other component carrying translated copy — an
+earlier draft of this section claimed otherwise and was wrong. Every
+component is blocked by DoD 13; every component that renders a library
+string is blocked by DoD 5 as well.
 
-The two remaining gates are the two that no amount of engineering closes,
+Components in the two ratchet baselines are additionally blocked by DoD 1.
+That is 11 files for colours and 21 for dimensions, so the DoD-1 gap is
+wider than any other except the two staffing gates — it was previously
+reported here as closed, which it is not.
+
+The two remaining gates below are the two that no amount of engineering closes,
 and it is worth being precise about why:
 
 **DoD 13** needs a person with a screen reader on a physical handset. The
@@ -183,7 +244,8 @@ A red build blocks merge, with no override path.
 | Analyze with `very_good_analysis`, failing on warnings and errors | §8 |
 | Dependency direction (`slds_tokens` never imports Flutter) | §2 |
 | WCAG contrast on every declared token pair — **blocking**, was advisory | §5, §8 |
-| Colour-literal ratchet over `widgets/` | §2 |
+| Colour-literal ratchet over `widgets/` — 21 remaining in 11 files | §2 |
+| Dimension-literal ratchet over `widgets/` — 100 remaining in 21 files | §2 |
 | Public-member documentation ratchet | §7 |
 | Translation completeness across en/si/ta | §6 |
 | Widget, semantics and `meetsGuideline` tests | §8 |
@@ -202,8 +264,17 @@ dart format --set-exit-if-changed packages widgetbook app
 (cd packages/slds_components && flutter test)
 ```
 
-Current: 760 component tests (1 skipped) and 150 token tests, all passing —
+Current: 911 component tests (1 skipped) and 156 token tests, all passing —
 238 golden images, `flutter analyze` clean of errors and warnings with
-`public_member_api_docs` at its default severity. Contrast is 120 pairings
+`public_member_api_docs` at its default severity. Contrast is 126 pairings
 across the three palettes, 0 failing, from 19 failing at the reviewed
-commit.
+commit; the 3 skipped token tests are documented WCAG exemptions
+(disabled controls and supplementary placeholder text), each carrying its
+justification in `_exemptions`.
+
+`check_literals.dart` reports two ratchets — 21 colour literals and 100
+dimensions — and exits non-zero if either grows.
+
+Note: `test/dbg_locale_test.dart` is an untracked scratch file that fails on
+its own and is excluded from the counts above. It predates this pass and
+should be deleted.

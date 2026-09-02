@@ -80,6 +80,9 @@ final _dimensionLiterals = <RegExp>[
   // Explicit sizes on icons and gaps
   RegExp(r'\bsize:\s*[1-9][\d.]*\s*[,)]'),
   RegExp(r'\b(?:blurRadius|spreadRadius|elevation):\s*[1-9][\d.]*'),
+  // Duration(milliseconds: 300) — §2 names durations alongside sizes and
+  // radii. `Duration.zero` and a bare `Duration()` carry no design decision.
+  RegExp(r'Duration\(\s*\w+:\s*[1-9][\d.]*'),
 ];
 
 final _rules = <_Rule>[

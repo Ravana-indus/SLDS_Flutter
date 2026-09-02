@@ -9,7 +9,13 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// Visual container styles for [SldsPullToRefresh] — mirrors
 /// [SldsBottomNav]/[SldsTopNavBar]'s light/dark choice for the loading bar;
 /// independent of the app's own light/dark theme.
-enum SldsPullToRefreshStyle { light, dark }
+enum SldsPullToRefreshStyle {
+  /// Dark indicator on a light surface.
+  light,
+
+  /// Light indicator on a dark surface.
+  dark,
+}
 
 /// SLDS pull-to-refresh — wraps [child] in a scrollable that reveals an
 /// iOS-style "Loading…" bar (spinner + text, not a bare circular spinner)
@@ -22,6 +28,7 @@ enum SldsPullToRefreshStyle { light, dark }
 /// its height fits, or wrap your own slivers instead of a plain [child] by
 /// using [CustomScrollView] directly if you need more control.
 class SldsPullToRefresh extends StatelessWidget {
+  /// Creates a pull-to-refresh wrapper around [child].
   const SldsPullToRefresh({
     required this.onRefresh,
     required this.child,
@@ -35,8 +42,14 @@ class SldsPullToRefresh extends StatelessWidget {
   /// visible until it resolves.
   final RefreshCallback onRefresh;
 
+  /// The scrollable content the gesture refreshes.
   final Widget child;
+
+  /// Text shown beside the indicator while refreshing. Null uses the
+  /// localized default.
   final String? loadingText;
+
+  /// Which of the two token palettes the indicator is drawn in.
   final SldsPullToRefreshStyle style;
 
   @override

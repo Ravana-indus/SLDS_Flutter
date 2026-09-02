@@ -42,6 +42,7 @@ enum SldsUploadStatus {
 /// )
 /// ```
 class SldsUploadField extends StatelessWidget {
+  /// Creates a file upload field.
   const SldsUploadField({
     required this.label,
     super.key,
@@ -96,6 +97,7 @@ class SldsUploadField extends StatelessWidget {
   /// Null hides the button.
   final VoidCallback? onRemove;
 
+  /// Whether the field accepts new files.
   final bool enabled;
 
   /// Custom icon data for empty state.
@@ -267,24 +269,29 @@ class _EmptyRow extends StatelessWidget {
           child: Center(child: leadingChild),
         ),
         SizedBox(width: tokens.dimensions.space12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Upload',
-              style: tokens.typography.body1.copyWith(
-                color: iconColor,
-                decoration: TextDecoration.underline,
+        // Expanded, like the uploading and result rows: without it the hint
+        // cannot wrap, and at a 200% text scale it overflows the field
+        // instead — text that WCAG 1.4.4 requires to stay readable.
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Upload',
+                style: tokens.typography.body1.copyWith(
+                  color: iconColor,
+                  decoration: TextDecoration.underline,
+                ),
               ),
-            ),
-            Text(
-              hintText ?? context.sldsStrings.uploadHint,
-              style: tokens.typography.caption1.copyWith(
-                color: colors.inputHelper,
+              Text(
+                hintText ?? context.sldsStrings.uploadHint,
+                style: tokens.typography.caption1.copyWith(
+                  color: colors.inputHelper,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

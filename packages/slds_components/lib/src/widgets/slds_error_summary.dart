@@ -6,9 +6,13 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// One row in an [SldsErrorSummary] — the field's error message, and an
 /// optional [onTap] (e.g. move focus to that field) triggered by tapping it.
 class SldsErrorSummaryItem {
+  /// Creates one entry in the summary.
   const SldsErrorSummaryItem(this.message, {this.onTap});
 
+  /// The validation message shown for this field.
   final String message;
+
+  /// Called when the entry is tapped — move focus to the offending field.
   final VoidCallback? onTap;
 }
 
@@ -17,6 +21,7 @@ class SldsErrorSummaryItem {
 /// field via [SldsErrorSummaryItem.onTap]). Show above the form on submit
 /// failure; screen readers announce it as an alert as soon as it appears.
 class SldsErrorSummary extends StatelessWidget {
+  /// Creates an error summary.
   const SldsErrorSummary({
     required this.errors,
     super.key,

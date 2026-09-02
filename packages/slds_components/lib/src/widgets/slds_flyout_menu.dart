@@ -6,19 +6,29 @@ import 'package:slds_components/src/widgets/slds_time_picker.dart'
 
 /// One tappable row inside an [SldsFlyoutMenuGroup].
 class SldsFlyoutMenuEntry {
+  /// Creates a menu row.
   const SldsFlyoutMenuEntry({required this.label, this.icon, this.onTap});
 
+  /// The row's visible text, and its accessible name.
   final String label;
+
+  /// Optional leading icon. Decorative — [label] carries the meaning.
   final IconData? icon;
+
+  /// Called when the row is tapped.
   final VoidCallback? onTap;
 }
 
 /// A labeled section of [entries] shown under an expanded [SldsFlyoutMenuItem]
 /// (e.g. "Tools for Trusted Data").
 class SldsFlyoutMenuGroup {
+  /// Creates a labelled group of [entries].
   const SldsFlyoutMenuGroup({required this.header, required this.entries});
 
+  /// Section heading shown above [entries].
   final String header;
+
+  /// The rows in this section, in display order.
   final List<SldsFlyoutMenuEntry> entries;
 }
 
@@ -26,14 +36,21 @@ class SldsFlyoutMenuGroup {
 /// place to reveal them when tapped; a row with no [groups] is a plain
 /// tappable link (fires [onTap] directly, never expands).
 class SldsFlyoutMenuItem {
+  /// Creates a top-level menu row.
   const SldsFlyoutMenuItem({
     required this.label,
     this.groups = const [],
     this.onTap,
   });
 
+  /// The row's visible text, and its accessible name.
   final String label;
+
+  /// Sub-sections revealed when the row expands. Empty makes the row a
+  /// plain link that fires [onTap] instead of expanding.
   final List<SldsFlyoutMenuGroup> groups;
+
+  /// Called when a row with no [groups] is tapped.
   final VoidCallback? onTap;
 }
 
@@ -45,8 +62,10 @@ class SldsFlyoutMenuItem {
 /// full-screen scrim + sheet with a close button, matching the mock) or
 /// your own [showModalBottomSheet]/[Drawer] if you need different framing.
 class SldsFlyoutMenu extends StatefulWidget {
+  /// Creates a flyout menu panel listing [items].
   const SldsFlyoutMenu({required this.items, super.key, this.onClose});
 
+  /// The top-level rows, in display order.
   final List<SldsFlyoutMenuItem> items;
 
   /// Null hides the close button (e.g. when embedded without its own modal

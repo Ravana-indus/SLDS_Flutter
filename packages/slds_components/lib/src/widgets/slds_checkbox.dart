@@ -4,13 +4,19 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS checkbox sizes.
 enum SldsCheckboxSize {
+  /// 24px box with a 16px check.
   large(box: 24, icon: 16),
+
+  /// 20px box with a 14px check.
   small(box: 20, icon: 14)
   ;
 
   const SldsCheckboxSize({required this.box, required this.icon});
 
+  /// Box edge length in logical pixels.
   final double box;
+
+  /// Check glyph size in logical pixels.
   final double icon;
 }
 

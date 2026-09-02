@@ -19,6 +19,7 @@ enum SldsDatePickerMode {
 /// featuring base date cell states, month/year controls, range highlighting,
 /// and customizable action buttons matching the SLDS design specification.
 class SldsDatePicker extends StatefulWidget {
+  /// Creates a date picker field.
   const SldsDatePicker({
     super.key,
     this.mode = SldsDatePickerMode.range,

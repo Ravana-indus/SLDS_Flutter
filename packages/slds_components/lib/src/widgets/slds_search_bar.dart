@@ -24,6 +24,7 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// )
 /// ```
 class SldsSearchBar extends StatefulWidget {
+  /// Creates a search bar.
   const SldsSearchBar({
     super.key,
     this.controller,
@@ -39,7 +40,11 @@ class SldsSearchBar extends StatefulWidget {
     this.semanticLabel,
   });
 
+  /// Supply one to read or drive the query externally. When null the bar
+  /// owns an internal controller for its lifetime.
   final TextEditingController? controller;
+
+  /// Placeholder shown while the query is empty.
   final String? hintText;
 
   /// Filtered suggestion labels shown at the top of the panel while focused
@@ -52,14 +57,21 @@ class SldsSearchBar extends StatefulWidget {
   /// Section heading above [recentSearches].
   final String? recentSearchesLabel;
 
+  /// Called on every change to the query.
   final ValueChanged<String>? onChanged;
+
+  /// Called when the user submits the query from the keyboard.
   final ValueChanged<String>? onSubmitted;
 
   /// Invoked when a row in [suggestions] or [recentSearches] is tapped —
   /// typically you'll set the query to the tapped value and close the panel.
   final ValueChanged<String>? onSuggestionSelected;
 
+  /// Supply one to drive focus externally. When null the bar owns an
+  /// internal node.
   final FocusNode? focusNode;
+
+  /// Whether the bar accepts input.
   final bool enabled;
 
   /// Accessible name for the field. Defaults to the localized "Search" —

@@ -14,6 +14,7 @@ import 'package:slds_components/src/widgets/slds_filter_dropdown.dart'
 /// (e.g. via [showModalBottomSheet] or an [OverlayEntry] wrapping
 /// [SldsFilterDropdown]); no popover behavior is baked in.
 class SldsFilterButton extends StatelessWidget {
+  /// Creates a filter button.
   const SldsFilterButton({
     required this.label,
     super.key,
@@ -22,6 +23,7 @@ class SldsFilterButton extends StatelessWidget {
     this.enabled = true,
   });
 
+  /// The button's visible text, and its accessible name.
   final String label;
 
   /// Number of active selections for this filter — shown as a badge and
@@ -29,7 +31,10 @@ class SldsFilterButton extends StatelessWidget {
   /// plain outlined look with no badge.
   final int? count;
 
+  /// Called when the button is tapped.
   final VoidCallback? onTap;
+
+  /// Whether the button responds to taps.
   final bool enabled;
 
   bool get _active => count != null && count! > 0;

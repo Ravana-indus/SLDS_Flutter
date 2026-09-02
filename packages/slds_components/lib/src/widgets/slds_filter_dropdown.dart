@@ -19,6 +19,7 @@ import 'package:slds_components/src/widgets/slds_radio.dart';
 /// on-screen (uncommitted); [onApply] fires once, with the final selection,
 /// when Apply is tapped. [onCancel] discards without calling [onApply].
 class SldsFilterDropdown extends StatelessWidget {
+  /// Creates a filter panel.
   const SldsFilterDropdown({
     required this.options,
     required this.selectedValues,
@@ -32,6 +33,7 @@ class SldsFilterDropdown extends StatelessWidget {
     this.width,
   });
 
+  /// The selectable options, in display order.
   final List<String> options;
 
   /// The in-progress (not yet applied) selection.
@@ -51,7 +53,10 @@ class SldsFilterDropdown extends StatelessWidget {
   /// Checkboxes (multi-select) when true, radios (single-select) when false.
   final bool multiple;
 
+  /// Label for the dismiss action. Null uses the localized default.
   final String? cancelText;
+
+  /// Label for the confirm action. Null uses the localized default.
   final String? applyText;
 
   /// Preferred width, clamped to the available parent width.

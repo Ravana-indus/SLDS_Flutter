@@ -4,7 +4,19 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma states for [SldsComboBox], matching node `543:5821`.
-enum SldsComboBoxState { defaultState, filling, multiSelect, inputExpanded }
+enum SldsComboBoxState {
+  /// Closed, at rest.
+  defaultState,
+
+  /// The user is typing a filter query.
+  filling,
+
+  /// Open with multiple options selectable.
+  multiSelect,
+
+  /// Open with the input expanded over the field.
+  inputExpanded,
+}
 
 /// A controlled, filterable single- or multi-select combo box.
 ///

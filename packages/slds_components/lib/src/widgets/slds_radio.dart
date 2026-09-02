@@ -4,13 +4,19 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS radio sizes.
 enum SldsRadioSize {
+  /// 24px circle with a 10px dot.
   large(circle: 24, dot: 10),
+
+  /// 20px circle with an 8px dot.
   small(circle: 20, dot: 8)
   ;
 
   const SldsRadioSize({required this.circle, required this.dot});
 
+  /// Outer circle diameter in logical pixels.
   final double circle;
+
+  /// Selected dot diameter in logical pixels.
   final double dot;
 }
 
@@ -23,6 +29,7 @@ enum SldsRadioSize {
 /// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
 /// aware); pass [color] to override the accent for one instance.
 class SldsRadio<T> extends StatefulWidget {
+  /// Creates a radio button.
   const SldsRadio({
     required this.value,
     required this.groupValue,

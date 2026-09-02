@@ -5,10 +5,25 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Which edge of [SldsTooltip] the pointer tail sticks out of — point it at
 /// whatever the tooltip is anchored to.
-enum SldsTooltipTailAlignment { start, center, end }
+enum SldsTooltipTailAlignment {
+  /// Tail near the leading edge.
+  start,
+
+  /// Tail centred along the edge.
+  center,
+
+  /// Tail near the trailing edge.
+  end,
+}
 
 /// Which edge the pointer tail sticks out of.
-enum SldsTooltipTailSide { top, bottom }
+enum SldsTooltipTailSide {
+  /// Tail on the top edge — the card sits below its anchor.
+  top,
+
+  /// Tail on the bottom edge — the card sits above its anchor.
+  bottom,
+}
 
 /// SLDS tooltip — a dark card with a triangular pointer tail. Scales from a
 /// single-line label (just [title]) up to a full walkthrough step (title +
@@ -19,6 +34,7 @@ enum SldsTooltipTailSide { top, bottom }
 /// a [Positioned]/[CompositedTransformFollower] near the anchor widget) and
 /// point [tailAlignment] at it.
 class SldsTooltip extends StatelessWidget {
+  /// Creates a tooltip card.
   const SldsTooltip({
     required this.title,
     super.key,
@@ -32,6 +48,7 @@ class SldsTooltip extends StatelessWidget {
     this.width,
   });
 
+  /// The tooltip's headline, and its accessible name.
   final String title;
 
   /// Supporting copy under [title]. Null renders the compact label-only
@@ -45,12 +62,17 @@ class SldsTooltip extends StatelessWidget {
   /// Trailing action button label (e.g. "Action", "Next"). Null hides the
   /// button.
   final String? actionLabel;
+
+  /// Called when the action button is tapped.
   final VoidCallback? onAction;
 
   /// Null hides the close (×) button — only shown alongside [description].
   final VoidCallback? onClose;
 
+  /// Where the tail sits along its edge. Point it at the anchor.
   final SldsTooltipTailAlignment tailAlignment;
+
+  /// Which edge the tail sticks out of.
   final SldsTooltipTailSide tailSide;
 
   /// Preferred width, clamped to the available parent width. Defaults to

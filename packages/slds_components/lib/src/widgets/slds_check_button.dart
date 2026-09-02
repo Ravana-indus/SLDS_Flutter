@@ -8,6 +8,7 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// tappable blocks (e.g. a settings toggle list) rather than inline
 /// checkboxes.
 class SldsCheckButton extends StatelessWidget {
+  /// Creates a check button.
   const SldsCheckButton({
     required this.label,
     required this.selected,
@@ -16,12 +17,17 @@ class SldsCheckButton extends StatelessWidget {
     this.enabled = true,
   });
 
+  /// The button's visible text, and its accessible name.
   final String label;
+
+  /// Whether the button reads as checked.
   final bool selected;
 
   /// Invoked with the new selected value on tap. Null (or [enabled] false)
   /// makes the button non-interactive.
   final ValueChanged<bool>? onChanged;
+
+  /// Whether the button responds to taps.
   final bool enabled;
 
   bool get _interactive => enabled && onChanged != null;

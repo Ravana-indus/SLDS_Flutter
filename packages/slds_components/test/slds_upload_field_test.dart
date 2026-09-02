@@ -266,4 +266,33 @@ void main() {
       expect(find.text('REMOVE'), findsOneWidget);
     },
   );
+
+  testWidgets('empty state hint wraps instead of overflowing at 200%', (
+    tester,
+  ) async {
+    // The empty row's text column lacked the Expanded its sibling rows have,
+    // so at a doubled text scale the hint ran 88px past the field edge —
+    // WCAG 1.4.4 requires it stay readable, not clip.
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: const TextScaler.linear(2)),
+            child: const Scaffold(
+              body: SizedBox(
+                width: 340,
+                child: SldsUploadField(label: 'Proof of address'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+  });
 }

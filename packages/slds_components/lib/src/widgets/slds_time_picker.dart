@@ -8,11 +8,18 @@ import 'package:slds_components/src/widgets/slds_button.dart';
 import 'package:slds_components/src/widgets/slds_text_field.dart';
 
 /// Which unit is currently being edited in [SldsTimePickerDialog].
-enum SldsTimePickerUnit { hour, minute }
+enum SldsTimePickerUnit {
+  /// The hour ring is being edited.
+  hour,
+
+  /// The minute ring is being edited.
+  minute,
+}
 
 /// SLDS Time Picker Dialog — the analog & digital modal dialog portion
 /// of the time picker.
 class SldsTimePickerDialog extends StatefulWidget {
+  /// Creates the time picker dialog.
   const SldsTimePickerDialog({
     super.key,
     this.initialTime = const TimeOfDay(hour: 7, minute: 0),
@@ -535,6 +542,7 @@ class _RadialClockDialPainter extends CustomPainter {
 /// SLDS Time Picker field — an input field that displays the selected time
 /// and opens the [SldsTimePickerDialog] when tapped.
 class SldsTimePicker extends StatefulWidget {
+  /// Creates a time picker field.
   const SldsTimePicker({
     required this.label,
     super.key,
@@ -550,16 +558,40 @@ class SldsTimePicker extends StatefulWidget {
     this.applyText,
   });
 
+  /// Visible label above the field, and its default accessible name.
   final String label;
+
+  /// Time selected when the dialog first opens. Null leaves the field empty
+  /// and starts the dialog at its own default.
   final TimeOfDay? initialTime;
+
+  /// Called with the chosen time when the user applies the dialog.
   final ValueChanged<TimeOfDay>? onTimeChanged;
+
+  /// Placeholder shown while no time is selected. Defaults to `HH:MM`.
   final String hintText;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set.
   final String? helpText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state and announces it as an error.
   final String? errorText;
+
+  /// Whether the field opens the dialog when tapped.
   final bool enabled;
+
+  /// Marks the field as required, appending the required marker to the
+  /// label and announcing it as required to a screen reader.
   final bool isRequired;
+
+  /// Dialog heading. Null uses the library's localized default.
   final String? titleText;
+
+  /// Label for the dialog's dismiss action. Null uses the localized default.
   final String? cancelText;
+
+  /// Label for the dialog's confirm action. Null uses the localized default.
   final String? applyText;
 
   @override

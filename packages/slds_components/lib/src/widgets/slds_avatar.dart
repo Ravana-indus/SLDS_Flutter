@@ -3,9 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Circular footprint for [SldsAvatar], keyed to [SldsDimensionTokens]'s
-/// `avatarSize*` scale (24/32/40/48/56, plus a 64px `extraLarge` matching
-/// the Figma reference's largest swatch).
-enum SldsAvatarSize { small, medium, large, extraLarge, huge }
+/// `avatarSize*` scale.
+enum SldsAvatarSize {
+  /// 24px — dense lists and inline mentions.
+  small,
+
+  /// 32px — the default; list rows and compact headers.
+  medium,
+
+  /// 40px — cards and comment threads.
+  large,
+
+  /// 48px — profile headers.
+  extraLarge,
+
+  /// 56px — the largest swatch, for account/profile pages.
+  huge,
+}
 
 /// SLDS avatar — a circular person indicator with three fallback tiers:
 /// [imageProvider] (a photo) beats [initials] (e.g. "LK") beats the default
@@ -13,6 +27,8 @@ enum SldsAvatarSize { small, medium, large, extraLarge, huge }
 /// so swapping between them (e.g. photo fails to load → initials) never
 /// reflows the layout.
 class SldsAvatar extends StatelessWidget {
+  /// Creates an avatar, resolving its content in the order
+  /// [imageProvider], then [initials], then the default person glyph.
   const SldsAvatar({
     super.key,
     this.imageProvider,
@@ -29,8 +45,15 @@ class SldsAvatar extends StatelessWidget {
   /// or empty.
   final String? initials;
 
+  /// Circular footprint, from the token size scale. Defaults to
+  /// [SldsAvatarSize.medium] (32px).
   final SldsAvatarSize size;
 
+  /// Screen reader label for the avatar, normally the person's name.
+  ///
+  /// Null leaves the avatar unlabeled, which is right only when an adjacent
+  /// widget already names the same person — otherwise a screen reader
+  /// announces nothing, since neither a photo nor initials carry a name.
   final String? semanticLabel;
 
   double _diameter(SldsDimensionTokens dimensions) => switch (size) {

@@ -4,6 +4,7 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// One destination in an [SldsBottomNav].
 class SldsBottomNavItem {
+  /// Creates a navigation destination.
   const SldsBottomNavItem({
     required this.icon,
     required this.label,
@@ -11,7 +12,10 @@ class SldsBottomNavItem {
     this.enabled = true,
   });
 
+  /// The destination's icon.
   final IconData icon;
+
+  /// The destination's visible text, and its accessible name.
   final String label;
 
   /// Shown as a small red count badge over the icon; values over 99 render
@@ -42,6 +46,7 @@ enum SldsBottomNavStyle {
 /// width equally via [Expanded], so it reflows to any phone width without a
 /// fixed per-item size.
 class SldsBottomNav extends StatelessWidget {
+  /// Creates a bottom navigation bar.
   const SldsBottomNav({
     required this.items,
     required this.currentIndex,
@@ -50,9 +55,16 @@ class SldsBottomNav extends StatelessWidget {
     this.style = SldsBottomNavStyle.light,
   });
 
+  /// The destinations, in display order.
   final List<SldsBottomNavItem> items;
+
+  /// Index into [items] of the active destination.
   final int currentIndex;
+
+  /// Called with the tapped destination's index.
   final ValueChanged<int>? onTap;
+
+  /// Which of the two token palettes the bar is drawn in.
   final SldsBottomNavStyle style;
 
   @override

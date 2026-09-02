@@ -7,13 +7,26 @@ import 'package:slds_components/src/widgets/slds_button.dart';
 /// color pairing. [document] is a neutral file icon on a plain white
 /// circle; the rest reuse the matching badge token pair (e.g. [error] uses
 /// `badgeErrorBackground`/`Text`).
-enum SldsNotificationType { document, warning, success, error }
+enum SldsNotificationType {
+  /// A neutral file/document notice.
+  document,
+
+  /// Something needing attention.
+  warning,
+
+  /// Something that completed successfully.
+  success,
+
+  /// Something that failed.
+  error,
+}
 
 /// SLDS mobile notification card — leading type icon, title, body, a
 /// timestamp, and an optional primary action button. Swipe left to reveal
 /// a red delete action (via [Dismissible]) when [onDismissed] is set;
 /// otherwise the card is static.
 class SldsNotificationCard extends StatelessWidget {
+  /// Creates a notification card.
   const SldsNotificationCard({
     required this.title,
     required this.body,
@@ -27,12 +40,16 @@ class SldsNotificationCard extends StatelessWidget {
     this.width,
   });
 
+  /// The notification's headline.
   final String title;
+
+  /// The notification's message text.
   final String body;
 
   /// e.g. "Today, 12:00pm". Null hides the timestamp line.
   final String? timestamp;
 
+  /// Icon tone for the leading circle.
   final SldsNotificationType type;
 
   /// Shows a small blue dot in the top-right corner when true.
@@ -40,6 +57,8 @@ class SldsNotificationCard extends StatelessWidget {
 
   /// Primary action button label (e.g. "Download"). Null hides the button.
   final String? actionLabel;
+
+  /// Called when the action button is tapped.
   final VoidCallback? onAction;
 
   /// Called with the notification removed after a left swipe reveals the

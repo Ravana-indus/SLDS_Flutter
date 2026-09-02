@@ -14,6 +14,7 @@ import 'package:slds_components/src/widgets/slds_text_field.dart'
 /// Colors resolve from the ambient theme's SLDS tokens, so the field
 /// follows light/dark/high-contrast without per-instance overrides.
 class SldsTextArea extends StatefulWidget {
+  /// Creates a multi-line text area.
   const SldsTextArea({
     required this.label,
     super.key,
@@ -30,16 +31,29 @@ class SldsTextArea extends StatefulWidget {
     this.validator,
   });
 
+  /// Visible label above the field, and its default accessible name.
   final String label;
+
+  /// Supply one to read or drive the text externally. When null the field
+  /// owns an internal controller for its lifetime.
   final TextEditingController? controller;
 
   /// Supply one to drive focus externally; the field listens either way,
   /// because the focused state changes the border colour.
   final FocusNode? focusNode;
 
+  /// Marks the field as required, appending the required marker to the
+  /// label and announcing it as required to a screen reader.
   final bool isRequired;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set.
   final String? helpText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state and announces it as an error.
   final String? errorText;
+
+  /// Placeholder shown inside an empty field. Not a label substitute.
   final String? hintText;
 
   /// Caps input length and drives the `n/max` counter. Null hides the
@@ -50,8 +64,14 @@ class SldsTextArea extends StatefulWidget {
   /// still starts at the spec's fixed height either way.
   final int? maxLines;
 
+  /// Whether the field accepts input. Disabled fields dim and stop taking
+  /// focus, but stay readable by a screen reader.
   final bool enabled;
+
+  /// Called on every change to the text.
   final ValueChanged<String>? onChanged;
+
+  /// Validation callback, used when the field sits inside a [Form].
   final FormFieldValidator<String>? validator;
 
   @override

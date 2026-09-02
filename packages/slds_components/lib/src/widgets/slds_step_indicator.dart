@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slds_components/slds_components.dart' show SldsTopNavBar;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_top_nav_bar.dart'
     show SldsTopNavBar;
@@ -11,12 +12,14 @@ import 'package:slds_components/src/widgets/slds_top_nav_bar.dart'
 /// outside a nav bar (e.g. above a form body). Responsive: segments share
 /// the row's width equally via [Expanded].
 class SldsStepIndicator extends StatelessWidget {
+  /// Creates a step indicator.
   const SldsStepIndicator({
     required this.totalSteps,
     required this.currentStep,
     super.key,
   });
 
+  /// How many segments the flow has.
   final int totalSteps;
 
   /// Number of segments to fill (0-based position — e.g. 3 fills the first
@@ -30,21 +33,27 @@ class SldsStepIndicator extends StatelessWidget {
     final dimensions = tokens.dimensions;
     final accent = colors.buttonPrimaryBackground;
 
-    return Row(
-      children: [
-        for (var i = 0; i < totalSteps; i++) ...[
-          if (i > 0) SizedBox(width: dimensions.space8),
-          Expanded(
-            child: Container(
-              height: 6,
-              decoration: BoxDecoration(
-                color: i < currentStep ? accent : colors.borderDefault,
-                borderRadius: BorderRadius.circular(dimensions.radiusFull),
+    return Semantics(
+      label: context.sldsStrings.progress,
+      value: '$currentStep/$totalSteps',
+      child: ExcludeSemantics(
+        child: Row(
+          children: [
+            for (var i = 0; i < totalSteps; i++) ...[
+              if (i > 0) SizedBox(width: dimensions.space8),
+              Expanded(
+                child: Container(
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: i < currentStep ? accent : colors.borderDefault,
+                    borderRadius: BorderRadius.circular(dimensions.radiusFull),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
-      ],
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

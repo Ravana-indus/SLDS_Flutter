@@ -10,6 +10,7 @@ import 'package:slds_components/src/widgets/slds_avatar.dart' show SldsAvatar;
 /// Used for selected filters/tags (e.g. an assignee chip with a photo and
 /// a remove action).
 class SldsChip extends StatelessWidget {
+  /// Creates a chip.
   const SldsChip({
     required this.label,
     super.key,
@@ -19,6 +20,7 @@ class SldsChip extends StatelessWidget {
     this.onTap,
   });
 
+  /// The chip's visible text, and its accessible name.
   final String label;
 
   /// A leading [SldsAvatar] (or any small widget) — takes precedence over

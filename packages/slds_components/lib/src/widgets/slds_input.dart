@@ -36,6 +36,7 @@ enum SldsInputState {
 /// picker, unit picker), build that yourself and pass it through a
 /// [TextField] directly instead.
 class SldsInput extends StatefulWidget {
+  /// Creates an [SldsInput].
   const SldsInput({
     required this.label,
     super.key,
@@ -60,6 +61,9 @@ class SldsInput extends StatefulWidget {
 
   /// Visible field label.
   final String label;
+
+  /// Supply one to read or drive the text externally. When null the field
+  /// owns an internal controller for its lifetime.
   final TextEditingController? controller;
 
   /// Static label rendered before the value (e.g. `LKR`).
@@ -68,8 +72,15 @@ class SldsInput extends StatefulWidget {
   /// Static label rendered after the value (e.g. `KG`).
   final String? suffixText;
 
+  /// Placeholder shown inside an empty field. Not a label substitute — it
+  /// disappears on the first keystroke.
   final String? hintText;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set.
   final String? helperText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state and announces it as an error.
   final String? errorText;
 
   /// Whether to show the required marker beside [label].
@@ -79,13 +90,30 @@ class SldsInput extends StatefulWidget {
   /// null to resolve from live focus/[enabled]/[errorText] instead.
   final SldsInputState? visualState;
 
+  /// Called on every change to the text.
   final ValueChanged<String>? onChanged;
+
+  /// Called when the user submits from the keyboard.
   final ValueChanged<String>? onSubmitted;
+
+  /// Supply one to drive focus externally. When null the field owns an
+  /// internal node.
   final FocusNode? focusNode;
+
+  /// Whether the field accepts input. Disabled fields dim and stop taking
+  /// focus, but stay readable by a screen reader.
   final bool enabled;
+
+  /// Which soft keyboard to raise (e.g. [TextInputType.emailAddress]).
   final TextInputType? keyboardType;
+
+  /// Formatters applied as the user types, e.g. to restrict input.
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Validation callback, used when the field sits inside a [Form].
   final FormFieldValidator<String>? validator;
+
+  /// When [validator] re-runs — on every change, on interaction, or never.
   final AutovalidateMode? autovalidateMode;
 
   /// Preferred width, clamped to the available parent width.

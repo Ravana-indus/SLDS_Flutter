@@ -10,10 +10,8 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 )
 Widget buildSldsTimePickerUseCase(BuildContext context) {
   final label = context.knobs.string(label: 'Label', initialValue: 'Time');
-  final title = context.knobs.string(
-    label: 'Dialog Title',
-    initialValue: 'Set Your Time',
-  );
+  // Empty means "unset" — see the note in the search bar use case.
+  final title = context.knobs.string(label: 'Dialog Title');
   final hintText = context.knobs.string(
     label: 'Hint Text',
     initialValue: 'HH:MM',
@@ -31,7 +29,7 @@ Widget buildSldsTimePickerUseCase(BuildContext context) {
     child: Center(
       child: SldsTimePicker(
         label: label,
-        titleText: title,
+        titleText: title.isEmpty ? null : title,
         hintText: hintText,
         helpText: helpText.isEmpty ? null : helpText,
         errorText: errorText.isEmpty ? null : errorText,

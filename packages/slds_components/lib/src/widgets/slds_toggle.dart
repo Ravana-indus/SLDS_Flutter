@@ -4,7 +4,10 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS toggle sizes.
 enum SldsToggleSize {
+  /// 48x28 track with a 22px thumb.
   large(width: 48, height: 28, thumb: 22),
+
+  /// 40x24 track with an 18px thumb.
   small(width: 40, height: 24, thumb: 18)
   ;
 
@@ -14,8 +17,13 @@ enum SldsToggleSize {
     required this.thumb,
   });
 
+  /// Track width in logical pixels.
   final double width;
+
+  /// Track height in logical pixels.
   final double height;
+
+  /// Thumb diameter in logical pixels.
   final double thumb;
 }
 
@@ -27,6 +35,7 @@ enum SldsToggleSize {
 /// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
 /// aware); pass [color] to override the accent for one instance.
 class SldsToggle extends StatefulWidget {
+  /// Creates a toggle switch.
   const SldsToggle({
     required this.value,
     required this.onChanged,

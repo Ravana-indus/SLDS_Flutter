@@ -12,9 +12,10 @@ import 'package:slds_components/src/widgets/slds_text_field.dart'
 /// the field on tap and closes on selection. Same label/required/help/error
 /// chrome as [SldsTextField].
 ///
-/// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
-/// aware); pass [color] to override the focus/accent color for one instance.
+/// Colors resolve from the ambient [Theme]'s [ColorScheme], so the field
+/// follows light, dark and high-contrast modes.
 class SldsDropdown<T> extends StatefulWidget {
+  /// Creates a searchable dropdown over [items].
   const SldsDropdown({
     required this.label,
     required this.items,
@@ -31,19 +32,42 @@ class SldsDropdown<T> extends StatefulWidget {
     this.semanticLabel,
   });
 
+  /// Visible label above the field, and its default accessible name.
   final String label;
 
   /// The full option list; [searchHintText]'s search box filters this by
   /// [itemLabel] client-side (case-insensitive substring match).
   final List<T> items;
+
+  /// How an item is rendered as text — used for both the visible row and
+  /// the search filter.
   final String Function(T item) itemLabel;
+
+  /// The current selection. Null shows [hintText] instead.
   final T? value;
+
+  /// Called with the newly selected item when the user picks one.
   final ValueChanged<T?>? onChanged;
+
+  /// Marks the field as required, appending the required marker to the
+  /// label and announcing it as required to a screen reader.
   final bool isRequired;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set.
   final String? helpText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state and announces it as an error.
   final String? errorText;
+
+  /// Placeholder shown in the closed field while nothing is selected.
   final String? hintText;
+
+  /// Placeholder for the panel's search box. Null hides the search box, so
+  /// the full [items] list is always shown.
   final String? searchHintText;
+
+  /// Whether the field opens its panel when tapped.
   final bool enabled;
 
   /// Overrides the accessible name. Defaults to [label].

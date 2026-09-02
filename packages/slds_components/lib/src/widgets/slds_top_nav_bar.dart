@@ -7,7 +7,13 @@ import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
 
 /// Visual container styles for [SldsTopNavBar] — mirrors [SldsBottomNav]'s
 /// light/dark choice; independent of the app's own light/dark theme.
-enum SldsTopNavBarStyle { light, dark }
+enum SldsTopNavBarStyle {
+  /// Dark content on a light bar.
+  light,
+
+  /// Light content on a dark bar.
+  dark,
+}
 
 /// SLDS top navigation bar — a back chevron, a center content area (a
 /// [title] string, or an [SldsTopNavBar.progress] constructor's segmented
@@ -38,8 +44,14 @@ class SldsTopNavBar extends StatelessWidget {
     this.style = SldsTopNavBarStyle.light,
   }) : title = null;
 
+  /// Centred heading. Null in the progress variant, which shows a step
+  /// indicator instead.
   final String? title;
+
+  /// Total steps in the flow, for the progress variant.
   final int? totalSteps;
+
+  /// How many steps are complete, for the progress variant.
   final int? currentStep;
 
   /// Null hides the back button.
@@ -48,6 +60,7 @@ class SldsTopNavBar extends StatelessWidget {
   /// Null hides the menu button.
   final VoidCallback? onMenu;
 
+  /// Which of the two token palettes the bar is drawn in.
   final SldsTopNavBarStyle style;
 
   @override

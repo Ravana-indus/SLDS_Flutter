@@ -8,6 +8,7 @@ import 'package:slds_components/src/widgets/slds_text_field.dart';
 /// don't need to; everything else (label, required marker, help/error
 /// text, disabled state, validation) is identical to [SldsTextField].
 class SldsPasswordField extends StatefulWidget {
+  /// Creates a password field with a reveal toggle.
   const SldsPasswordField({
     super.key,
     this.label,
@@ -25,21 +26,35 @@ class SldsPasswordField extends StatefulWidget {
   /// Defaults to the localized "Password" when null.
   final String? label;
 
+  /// Supply one to read or drive the text externally. When null the field
+  /// owns an internal controller for its lifetime.
   final TextEditingController? controller;
 
   /// Figma's password set has no compact variant; this forwards the density
   /// so a password can sit in a compact form without breaking its rhythm.
   final bool compact;
 
+  /// Marks the field as required, appending the required marker to the
+  /// label and announcing it as required to a screen reader.
   final bool isRequired;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set.
   final String? helpText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state and announces it as an error.
   final String? errorText;
 
   /// Defaults to the localized placeholder when null.
   final String? hintText;
 
+  /// Whether the field accepts input.
   final bool enabled;
+
+  /// Called on every change to the text.
   final ValueChanged<String>? onChanged;
+
+  /// Validation callback, used when the field sits inside a [Form].
   final FormFieldValidator<String>? validator;
 
   @override

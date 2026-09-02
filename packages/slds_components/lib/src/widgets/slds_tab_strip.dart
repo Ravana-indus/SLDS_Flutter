@@ -6,12 +6,14 @@ import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
 
 /// One tab in an [SldsTabStrip].
 class SldsTabStripItem {
+  /// Creates a tab.
   const SldsTabStripItem({
     required this.label,
     this.count,
     this.indicatorLeading = true,
   });
 
+  /// The tab's visible text, and its accessible name.
   final String label;
 
   /// Shown as a small numeric badge trailing the label (e.g. an item count
@@ -27,7 +29,13 @@ class SldsTabStripItem {
 
 /// Visual container styles for [SldsTabStrip] — mirrors [SldsBottomNav]'s
 /// light/dark choice; independent of the app's own light/dark theme.
-enum SldsTabStripStyle { light, dark }
+enum SldsTabStripStyle {
+  /// Dark text on a light strip.
+  light,
+
+  /// Light text on a dark strip.
+  dark,
+}
 
 /// SLDS tab strip / segmented control — a row of [items], the selected one
 /// shown as a raised pill over a track background. Responsive: tabs share
@@ -36,6 +44,7 @@ enum SldsTabStripStyle { light, dark }
 /// horizontally scrolling parent yourself if you need un-shrunk labels on
 /// narrow screens instead.
 class SldsTabStrip extends StatelessWidget {
+  /// Creates a tab strip.
   const SldsTabStrip({
     required this.items,
     required this.currentIndex,
@@ -44,9 +53,16 @@ class SldsTabStrip extends StatelessWidget {
     this.style = SldsTabStripStyle.light,
   });
 
+  /// The tabs, in display order.
   final List<SldsTabStripItem> items;
+
+  /// Index into [items] of the selected tab.
   final int currentIndex;
+
+  /// Called with the tapped tab's index. Null makes the strip read-only.
   final ValueChanged<int>? onTap;
+
+  /// Which of the two token palettes the strip is drawn in.
   final SldsTabStripStyle style;
 
   @override

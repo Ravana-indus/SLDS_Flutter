@@ -15,6 +15,7 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// Not a loading spinner — [value] must be known/derivable. Use
 /// [CircularProgressIndicator] for unknown-duration work.
 class SldsProgressBar extends StatelessWidget {
+  /// Creates a determinate progress bar.
   const SldsProgressBar({
     required this.value,
     super.key,

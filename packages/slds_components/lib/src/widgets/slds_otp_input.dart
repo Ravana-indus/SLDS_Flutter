@@ -6,14 +6,22 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Fixed box dimensions for [SldsOtpInput], per the SLDS spec's size scale.
 enum SldsOtpInputSize {
+  /// 56x80 boxes.
   large(width: 56, height: 80),
+
+  /// 48x60 boxes.
   medium(width: 48, height: 60),
+
+  /// 44x52 boxes.
   small(width: 44, height: 52)
   ;
 
   const SldsOtpInputSize({required this.width, required this.height});
 
+  /// Box width in logical pixels.
   final double width;
+
+  /// Box height in logical pixels.
   final double height;
 }
 
@@ -27,6 +35,7 @@ enum SldsOtpInputSize {
 /// the design spec, rather than stretching to fill the parent — pick the
 /// size that fits the breakpoint you're rendering at.
 class SldsOtpInput extends StatefulWidget {
+  /// Creates a row of one-time-passcode boxes.
   const SldsOtpInput({
     super.key,
     this.length = 6,
@@ -59,7 +68,10 @@ class SldsOtpInput extends StatefulWidget {
   /// Colors every box green — set once the caller has verified the code.
   final bool success;
 
+  /// Whether the boxes accept input.
   final bool enabled;
+
+  /// Focuses the first box on mount, so the keyboard opens immediately.
   final bool autofocus;
 
   /// Accessible name for the group of boxes as a whole, e.g. "One-time

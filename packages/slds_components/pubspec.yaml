@@ -1,6 +1,6 @@
 name: slds_components
 description: "Design tokens, themed widgets, and en/si/ta localization for Sri Lanka's government digital services (SLDS), by GovTech Sri Lanka."
-version: 0.1.0
+version: 0.1.0-alpha
 homepage: "https://github.com/Ravana-indus/SLDS_Flutter"
 repository: "https://github.com/Ravana-indus/SLDS_Flutter"
 

@@ -9,6 +9,7 @@ import 'package:slds_components/src/widgets/slds_button.dart' show SldsButton;
 /// segments are `Expanded`, so it always fills whatever width its parent
 /// gives it.
 class SldsDivider extends StatelessWidget {
+  /// Creates a divider, optionally split around [child].
   const SldsDivider({super.key, this.child});
 
   /// Centered content splitting the rule (e.g. a [Text] or [SldsButton]).

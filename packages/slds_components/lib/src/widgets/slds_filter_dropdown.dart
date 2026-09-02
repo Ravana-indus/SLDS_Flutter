@@ -19,6 +19,7 @@ import 'package:slds_components/src/widgets/slds_radio.dart';
 /// on-screen (uncommitted); [onApply] fires once, with the final selection,
 /// when Apply is tapped. [onCancel] discards without calling [onApply].
 class SldsFilterDropdown extends StatelessWidget {
+  /// Creates a filter panel.
   const SldsFilterDropdown({
     required this.options,
     required this.selectedValues,
@@ -32,6 +33,7 @@ class SldsFilterDropdown extends StatelessWidget {
     this.width,
   });
 
+  /// The selectable options, in display order.
   final List<String> options;
 
   /// The in-progress (not yet applied) selection.
@@ -51,7 +53,10 @@ class SldsFilterDropdown extends StatelessWidget {
   /// Checkboxes (multi-select) when true, radios (single-select) when false.
   final bool multiple;
 
+  /// Label for the dismiss action. Null uses the localized default.
   final String? cancelText;
+
+  /// Label for the confirm action. Null uses the localized default.
   final String? applyText;
 
   /// Preferred width, clamped to the available parent width.
@@ -110,38 +115,49 @@ class SldsFilterDropdown extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final option = options[index];
                     final selected = selectedValues.contains(option);
-                    return InkWell(
-                      onTap: () => _toggle(option),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: dimensions.space16,
-                          vertical: dimensions.space12,
-                        ),
-                        child: Row(
-                          children: [
-                            if (multiple)
-                              SldsCheckbox(
-                                value: selected,
-                                size: SldsCheckboxSize.small,
-                                onChanged: (_) => _toggle(option),
-                              )
-                            else
-                              SldsRadio<bool>(
-                                value: true,
-                                groupValue: selected ? true : null,
-                                size: SldsRadioSize.small,
-                                onChanged: (_) => _toggle(option),
-                              ),
-                            SizedBox(width: dimensions.space12),
-                            Expanded(
-                              child: Text(
-                                option,
-                                style: tokens.typography.body1.copyWith(
-                                  color: colors.textPrimary,
+                    return Semantics(
+                      // The row and its checkbox both toggle the same
+                      // option; merging them stops the reader announcing
+                      // one choice as two targets, and names the inner
+                      // control (which only carries a tick glyph).
+                      container: true,
+                      checked: selected,
+                      inMutuallyExclusiveGroup: !multiple,
+                      label: option,
+                      excludeSemantics: true,
+                      child: InkWell(
+                        onTap: () => _toggle(option),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: dimensions.space16,
+                            vertical: dimensions.space12,
+                          ),
+                          child: Row(
+                            children: [
+                              if (multiple)
+                                SldsCheckbox(
+                                  value: selected,
+                                  size: SldsCheckboxSize.small,
+                                  onChanged: (_) => _toggle(option),
+                                )
+                              else
+                                SldsRadio<bool>(
+                                  value: true,
+                                  groupValue: selected ? true : null,
+                                  size: SldsRadioSize.small,
+                                  onChanged: (_) => _toggle(option),
+                                ),
+                              SizedBox(width: dimensions.space12),
+                              Expanded(
+                                child: Text(
+                                  option,
+                                  style: tokens.typography.body1.copyWith(
+                                    color: colors.textPrimary,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );

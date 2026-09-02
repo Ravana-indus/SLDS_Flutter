@@ -16,6 +16,7 @@ import 'package:slds_components/src/widgets/slds_flyout_menu.dart'
 /// full-height [showModalBottomSheet]) or your own sheet/route if you need
 /// different framing.
 class SldsBottomSheet extends StatelessWidget {
+  /// Creates a bottom sheet.
   const SldsBottomSheet({
     required this.title,
     required this.child,
@@ -24,7 +25,10 @@ class SldsBottomSheet extends StatelessWidget {
     this.onClose,
   });
 
+  /// The sheet's heading.
   final String title;
+
+  /// The sheet's body content.
   final Widget child;
 
   /// Null hides the back chevron.

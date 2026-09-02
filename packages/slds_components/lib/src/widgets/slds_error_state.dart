@@ -10,7 +10,16 @@ import 'package:slds_components/src/widgets/slds_empty_state.dart'
 /// Figma "Error State" swatch's four variants. Use the base
 /// [SldsErrorState] constructor instead for anything else (e.g. a custom
 /// "maintenance" banner with no numeric code).
-enum SldsErrorKind { notFound, serverError, unauthorized }
+enum SldsErrorKind {
+  /// The requested page does not exist (404).
+  notFound,
+
+  /// The server failed to handle the request (500).
+  serverError,
+
+  /// The caller is not permitted to see the page (401/403).
+  unauthorized,
+}
 
 /// SLDS error state — a centered illustration, optional large [code]
 /// (e.g. "404"), title, optional description, and an optional action
@@ -22,6 +31,7 @@ enum SldsErrorKind { notFound, serverError, unauthorized }
 /// icon-based illustration per [SldsErrorKind] (still overridable via
 /// [illustration]) since this package bundles no custom artwork.
 class SldsErrorState extends StatelessWidget {
+  /// Creates an error state.
   const SldsErrorState({
     required this.illustration,
     required this.title,
@@ -97,12 +107,18 @@ class SldsErrorState extends StatelessWidget {
   /// Figma "System is down for Maintenance" variant has no code.
   final String? code;
 
+  /// The failure's headline.
   final String title;
+
+  /// Supporting copy under [title], typically what the user can do next.
   final String? description;
 
   /// Shows a secondary (outlined) [SldsButton] below the text when both
   /// this and [onAction] are set.
   final String? actionLabel;
+
+  /// Called when the action button is tapped. Shown only alongside an
+  /// action label.
   final VoidCallback? onAction;
 
   @override
@@ -200,8 +216,8 @@ class _ErrorIllustration extends StatelessWidget {
             ),
           ),
           Icon(baseIcon, size: 48, color: colors.textTertiary),
-          Positioned(
-            right: 12,
+          PositionedDirectional(
+            end: 12,
             bottom: 12,
             child: Container(
               width: 32,

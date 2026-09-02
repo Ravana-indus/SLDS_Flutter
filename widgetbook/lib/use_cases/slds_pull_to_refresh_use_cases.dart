@@ -9,10 +9,8 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
   path: '[Navigation]',
 )
 Widget buildSldsPullToRefreshUseCase(BuildContext context) {
-  final loadingText = context.knobs.string(
-    label: 'Loading text',
-    initialValue: 'Loading…',
-  );
+  // Empty means "unset" — see the note in the search bar use case.
+  final loadingText = context.knobs.string(label: 'Loading text');
   final style = context.knobs.object.dropdown(
     label: 'Style',
     options: SldsPullToRefreshStyle.values,
@@ -23,7 +21,7 @@ Widget buildSldsPullToRefreshUseCase(BuildContext context) {
   return SizedBox(
     height: 400,
     child: SldsPullToRefresh(
-      loadingText: loadingText,
+      loadingText: loadingText.isEmpty ? null : loadingText,
       style: style,
       onRefresh: () => Future.delayed(const Duration(seconds: 2)),
       child: Padding(

@@ -4,7 +4,19 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma states for [SldsComboBox], matching node `543:5821`.
-enum SldsComboBoxState { defaultState, filling, multiSelect, inputExpanded }
+enum SldsComboBoxState {
+  /// Closed, at rest.
+  defaultState,
+
+  /// The user is typing a filter query.
+  filling,
+
+  /// Open with multiple options selectable.
+  multiSelect,
+
+  /// Open with the input expanded over the field.
+  inputExpanded,
+}
 
 /// A controlled, filterable single- or multi-select combo box.
 ///
@@ -178,7 +190,7 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                 constraints: fieldHeight == null
                     ? const BoxConstraints(minHeight: 52)
                     : BoxConstraints.tightFor(height: fieldHeight),
-                padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
+                padding: const EdgeInsetsDirectional.fromSTEB(4, 8, 8, 8),
                 decoration: BoxDecoration(
                   color: colors.surfaceCard,
                   border: Border.all(
@@ -340,7 +352,7 @@ class _SelectionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
+    padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 4, 4),
     decoration: BoxDecoration(
       color: context.slds.colors.badgeNeutralBackground,
       borderRadius: BorderRadius.circular(9999),

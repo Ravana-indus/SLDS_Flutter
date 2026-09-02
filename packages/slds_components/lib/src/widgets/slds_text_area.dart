@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_text_field.dart'
     show SldsTextField;
@@ -13,6 +14,7 @@ import 'package:slds_components/src/widgets/slds_text_field.dart'
 /// Colors resolve from the ambient theme's SLDS tokens, so the field
 /// follows light/dark/high-contrast without per-instance overrides.
 class SldsTextArea extends StatefulWidget {
+  /// Creates a multi-line text area.
   const SldsTextArea({
     required this.label,
     super.key,
@@ -29,16 +31,29 @@ class SldsTextArea extends StatefulWidget {
     this.validator,
   });
 
+  /// Visible label above the field, and its default accessible name.
   final String label;
+
+  /// Supply one to read or drive the text externally. When null the field
+  /// owns an internal controller for its lifetime.
   final TextEditingController? controller;
 
   /// Supply one to drive focus externally; the field listens either way,
   /// because the focused state changes the border colour.
   final FocusNode? focusNode;
 
+  /// Marks the field as required, appending the required marker to the
+  /// label and announcing it as required to a screen reader.
   final bool isRequired;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set.
   final String? helpText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state and announces it as an error.
   final String? errorText;
+
+  /// Placeholder shown inside an empty field. Not a label substitute.
   final String? hintText;
 
   /// Caps input length and drives the `n/max` counter. Null hides the
@@ -49,8 +64,14 @@ class SldsTextArea extends StatefulWidget {
   /// still starts at the spec's fixed height either way.
   final int? maxLines;
 
+  /// Whether the field accepts input. Disabled fields dim and stop taking
+  /// focus, but stay readable by a screen reader.
   final bool enabled;
+
+  /// Called on every change to the text.
   final ValueChanged<String>? onChanged;
+
+  /// Validation callback, used when the field sits inside a [Form].
   final FormFieldValidator<String>? validator;
 
   @override
@@ -112,6 +133,16 @@ class _SldsTextAreaState extends State<SldsTextArea> {
 
   bool get _hasError =>
       widget.errorText != null && widget.errorText!.isNotEmpty;
+
+  /// The field's accessible name: the visible label plus the state the
+  /// design carries only in colour — the required marker and the error.
+  String _semanticLabel(BuildContext context) {
+    final strings = context.sldsStrings;
+    final buffer = StringBuffer(widget.label);
+    if (widget.isRequired) buffer.write(', ${strings.required}');
+    if (_hasError) buffer.write(', ${strings.error}: ${widget.errorText}');
+    return buffer.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,50 +216,59 @@ class _SldsTextAreaState extends State<SldsTextArea> {
         SizedBox(height: dimensions.space8),
         Stack(
           children: [
-            TextFormField(
-              controller: _controller,
-              focusNode: _node,
-              enabled: widget.enabled,
-              maxLines: widget.maxLines,
-              textAlignVertical: TextAlignVertical.top,
-              inputFormatters: widget.maxLength != null
-                  ? [LengthLimitingTextInputFormatter(widget.maxLength)]
-                  : null,
-              onChanged: widget.onChanged,
-              validator: widget.validator,
-              style: typography.body1.copyWith(color: colors.textPrimary),
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                hintStyle: typography.body1.copyWith(
-                  color: colors.inputPlaceholder,
+            // MergeSemantics is load-bearing for the same reason as in
+            // SldsTextField: a FormField's semantics boundary drops a plain
+            // ancestor label, leaving the field with no name at all.
+            MergeSemantics(
+              child: Semantics(
+                textField: true,
+                label: _semanticLabel(context),
+                child: TextFormField(
+                  controller: _controller,
+                  focusNode: _node,
+                  enabled: widget.enabled,
+                  maxLines: widget.maxLines,
+                  textAlignVertical: TextAlignVertical.top,
+                  inputFormatters: widget.maxLength != null
+                      ? [LengthLimitingTextInputFormatter(widget.maxLength)]
+                      : null,
+                  onChanged: widget.onChanged,
+                  validator: widget.validator,
+                  style: typography.body1.copyWith(color: colors.textPrimary),
+                  decoration: InputDecoration(
+                    hintText: widget.hintText,
+                    hintStyle: typography.body1.copyWith(
+                      color: colors.inputPlaceholder,
+                    ),
+                    filled: true,
+                    // Figma's `Input/Background` is the card surface in every
+                    // state: disabled fades the border and text, not the fill.
+                    fillColor: colors.surfaceCard,
+                    // Figma's Content box is a fixed 128px. Treat it as a floor
+                    // rather than a clamp so the box still grows with content
+                    // and at large text scales instead of clipping.
+                    constraints: BoxConstraints(
+                      minHeight: dimensions.textAreaHeight,
+                    ),
+                    contentPadding: EdgeInsetsDirectional.fromSTEB(
+                      dimensions.space12,
+                      dimensions.space8,
+                      dimensions.space12,
+                      // Reserve room for the counter drawn over the box.
+                      dimensions.space8 + counterHeight,
+                    ),
+                    border: border(borderColor),
+                    enabledBorder: border(borderColor),
+                    focusedBorder: border(borderColor),
+                    errorBorder: border(borderColor),
+                    focusedErrorBorder: border(borderColor),
+                    disabledBorder: border(borderColor),
+                    // Figma puts the counter inside the box; Flutter's own
+                    // counter renders below the decorator, so it is suppressed
+                    // and drawn by the Stack instead.
+                    counterText: '',
+                  ),
                 ),
-                filled: true,
-                // Figma's `Input/Background` is the card surface in every
-                // state: disabled fades the border and text, not the fill.
-                fillColor: colors.surfaceCard,
-                // Figma's Content box is a fixed 128px. Treat it as a floor
-                // rather than a clamp so the box still grows with content
-                // and at large text scales instead of clipping.
-                constraints: BoxConstraints(
-                  minHeight: dimensions.textAreaHeight,
-                ),
-                contentPadding: EdgeInsetsDirectional.fromSTEB(
-                  dimensions.space12,
-                  dimensions.space8,
-                  dimensions.space12,
-                  // Reserve room for the counter drawn over the box.
-                  dimensions.space8 + counterHeight,
-                ),
-                border: border(borderColor),
-                enabledBorder: border(borderColor),
-                focusedBorder: border(borderColor),
-                errorBorder: border(borderColor),
-                focusedErrorBorder: border(borderColor),
-                disabledBorder: border(borderColor),
-                // Figma puts the counter inside the box; Flutter's own
-                // counter renders below the decorator, so it is suppressed
-                // and drawn by the Stack instead.
-                counterText: '',
               ),
             ),
             if (showCounter)

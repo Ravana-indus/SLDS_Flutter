@@ -135,4 +135,23 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('Button'), findsOneWidget);
   });
+
+  testWidgets('is a live region so its arrival is announced', (tester) async {
+    // Focus never moves to a snack bar, so without a live region a screen
+    // reader user is never told it appeared (§5).
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: const Scaffold(body: SldsSnackBar(title: 'Saved')),
+      ),
+    );
+
+    final data = tester
+        .getSemantics(find.byType(SldsSnackBar))
+        .getSemanticsData();
+    expect(data.flagsCollection.isLiveRegion, isTrue);
+    handle.dispose();
+  });
 }

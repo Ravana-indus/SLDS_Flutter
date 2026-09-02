@@ -15,7 +15,10 @@ const _allDocuments = [
   path: '[Forms & Inputs]',
 )
 Widget buildSldsSearchBarUseCase(BuildContext context) {
-  final hintText = context.knobs.string(label: 'Hint', initialValue: 'Search');
+  // Empty means "unset", so the widget falls back to its own localized
+  // default and the Locale addon actually changes what you see. Typing a
+  // value here overrides it, which is the point of the knob.
+  final hintText = context.knobs.string(label: 'Hint');
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
   final showRecent = context.knobs.boolean(
     label: 'Show recent searches',
@@ -25,7 +28,7 @@ Widget buildSldsSearchBarUseCase(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(24),
     child: _SearchBarDemo(
-      hintText: hintText,
+      hintText: hintText.isEmpty ? null : hintText,
       isEnabled: isEnabled,
       showRecent: showRecent,
     ),
@@ -41,7 +44,7 @@ class _SearchBarDemo extends StatefulWidget {
     required this.showRecent,
   });
 
-  final String hintText;
+  final String? hintText;
   final bool isEnabled;
   final bool showRecent;
 

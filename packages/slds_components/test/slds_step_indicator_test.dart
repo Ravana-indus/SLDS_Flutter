@@ -46,4 +46,14 @@ void main() {
     );
     expect(tester.getSize(find.byType(SldsStepIndicator)).width, 300);
   });
+
+  testWidgets('announces progress to a screen reader', (tester) async {
+    // The bar is pure colour — without this the whole widget is silent (§5).
+    final handle = tester.ensureSemantics();
+    await pump(tester, const SldsStepIndicator(totalSteps: 4, currentStep: 2));
+
+    final node = tester.getSemantics(find.bySemanticsLabel('Progress'));
+    expect(node.value, '2/4');
+    handle.dispose();
+  });
 }

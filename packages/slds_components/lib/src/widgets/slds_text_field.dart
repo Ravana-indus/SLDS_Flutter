@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// SLDS text input — label (with a required marker), leading/trailing
@@ -17,6 +18,7 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// Colors resolve from the ambient theme's SLDS tokens, so the field
 /// follows light/dark/high-contrast without per-instance overrides.
 class SldsTextField extends StatefulWidget {
+  /// Creates a labelled text field.
   const SldsTextField({
     required this.label,
     super.key,
@@ -43,9 +45,14 @@ class SldsTextField extends StatefulWidget {
     this.inputFormatters,
     this.onChanged,
     this.validator,
+    this.semanticLabel,
   });
 
+  /// Visible label above the field, and its default accessible name.
   final String label;
+
+  /// Supply one to read or drive the text externally. When null the field
+  /// owns an internal controller for its lifetime.
   final TextEditingController? controller;
 
   /// Supply one to drive focus externally. When null the field owns an
@@ -57,15 +64,31 @@ class SldsTextField extends StatefulWidget {
   /// Figma's `Compact=True` density.
   final bool compact;
 
+  /// Marks the field as required, appending the required marker to the
+  /// label and announcing it as required to a screen reader.
   final bool isRequired;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set, so the
+  /// error replaces it rather than stacking.
   final String? helpText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state: error-toned border and message, announced as an error.
   final String? errorText;
+
+  /// Placeholder shown inside an empty field. Not a label substitute — it
+  /// disappears on the first keystroke, so [label] must still carry meaning.
   final String? hintText;
+
+  /// Decorative icon at the leading edge. Superseded by [leadingWidget].
   final IconData? leadingIcon;
 
   /// A full leading widget (e.g. a country-code prefix) — takes precedence
   /// over [leadingIcon] when both are given.
   final Widget? leadingWidget;
+
+  /// Icon at the trailing edge. Interactive when [onTrailingIconPressed] is
+  /// set, in which case [trailingIconTooltip] names it.
   final IconData? trailingIcon;
 
   /// Overrides the trailing icon's color; defaults to the input icon token
@@ -76,6 +99,7 @@ class SldsTextField extends StatefulWidget {
   /// no visible text, so pass this whenever [onTrailingIconPressed] is set.
   final String? trailingIconTooltip;
 
+  /// Makes the trailing icon a button. Null leaves it decorative.
   final VoidCallback? onTrailingIconPressed;
 
   /// Draws the trailing icon in the larger 36dp box rather than the 28dp
@@ -92,14 +116,34 @@ class SldsTextField extends StatefulWidget {
   /// [infoIcon] is set, for the same reason as [trailingIconTooltip].
   final String? infoTooltip;
 
+  /// Called when the info affordance is tapped.
   final VoidCallback? onInfoPressed;
 
+  /// Whether the field accepts input. Disabled fields dim and stop taking
+  /// focus, but stay readable by a screen reader.
   final bool enabled;
+
+  /// Hides the entered text, for passwords and other secrets.
   final bool obscureText;
+
+  /// Which soft keyboard to raise (e.g. [TextInputType.emailAddress]).
   final TextInputType? keyboardType;
+
+  /// Formatters applied as the user types, e.g. to mask or restrict input.
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Called on every change to the text.
   final ValueChanged<String>? onChanged;
+
+  /// Validation callback, used when the field sits inside a [Form].
+  ///
+  /// Returning a message does not itself paint the error state — surface it
+  /// through [errorText] so the styling and the announcement stay in step.
   final FormFieldValidator<String>? validator;
+
+  /// Overrides the accessible name. Defaults to [label]; pass this where the
+  /// visible label is too terse to stand alone out of context ("From", "To").
+  final String? semanticLabel;
 
   @override
   State<SldsTextField> createState() => _SldsTextFieldState();
@@ -143,6 +187,17 @@ class _SldsTextFieldState extends State<SldsTextField> {
 
   bool get _hasError =>
       widget.errorText != null && widget.errorText!.isNotEmpty;
+
+  /// The field's accessible name: the visible label, plus the two things
+  /// the design conveys only in colour — the required asterisk and the
+  /// error message.
+  String _semanticLabel(BuildContext context) {
+    final strings = context.sldsStrings;
+    final buffer = StringBuffer(widget.semanticLabel ?? widget.label);
+    if (widget.isRequired) buffer.write(', ${strings.required}');
+    if (_hasError) buffer.write(', ${strings.error}: ${widget.errorText}');
+    return buffer.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -256,72 +311,92 @@ class _SldsTextFieldState extends State<SldsTextField> {
         SizedBox(
           height: compact ? dimensions.space4 : dimensions.space8,
         ),
-        TextFormField(
-          controller: widget.controller,
-          focusNode: _node,
-          enabled: widget.enabled,
-          obscureText: widget.obscureText,
-          keyboardType: widget.keyboardType,
-          inputFormatters: widget.inputFormatters,
-          onChanged: widget.onChanged,
-          validator: widget.validator,
-          // The value keeps its style whether or not it is obscured, so
-          // revealing a password must not reflow the field.
-          style: valueStyle.copyWith(color: colors.textPrimary),
-          decoration: InputDecoration(
-            hintText: widget.hintText,
-            hintStyle: valueStyle.copyWith(color: colors.inputPlaceholder),
-            prefixIcon:
-                widget.leadingWidget ??
-                (widget.leadingIcon != null
-                    ? iconSlot(
-                        icon: widget.leadingIcon!,
-                        box: dimensions.buttonHeightSmall,
-                        color: iconColor,
-                      )
-                    : null),
-            prefixIconConstraints: widget.leadingWidget != null
-                ? const BoxConstraints()
-                : null,
-            suffixIcon: trailing.isEmpty
-                ? null
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: trailing,
-                  ),
-            suffixIconConstraints: const BoxConstraints(),
-            filled: true,
-            // Figma's `Input/Background` is the card surface in every state:
-            // disabled fades the border and text but does not darken the fill.
-            fillColor: colors.surfaceCard,
-            // Figma's Content box is a fixed height with the padding below;
-            // constraints rather than vertical padding so the height is a
-            // floor the field can still grow past at large text scales.
-            constraints: BoxConstraints(
-              minHeight: compact
-                  ? dimensions.inputHeightCompact
-                  : dimensions.inputHeight,
+        // MergeSemantics is load-bearing: TextFormField wraps its field in a
+        // FormField, whose semantics boundary drops a plain ancestor
+        // Semantics label (a bare TextField would have taken it). Without
+        // the merge the field announces with no name at all.
+        MergeSemantics(
+          child: Semantics(
+            // The visible label is a sibling Text, so nothing connects it to
+            // the field. Required and error state are visual-only too (a red
+            // asterisk, red helper text), so both are folded into the name —
+            // a screen-reader user otherwise cannot tell a mandatory field
+            // from an optional one, or know why the form refused to submit.
+            textField: true,
+            label: _semanticLabel(context),
+            child: TextFormField(
+              controller: widget.controller,
+              focusNode: _node,
+              enabled: widget.enabled,
+              obscureText: widget.obscureText,
+              keyboardType: widget.keyboardType,
+              inputFormatters: widget.inputFormatters,
+              onChanged: widget.onChanged,
+              validator: widget.validator,
+              // The value keeps its style whether or not it is obscured, so
+              // revealing a password must not reflow the field.
+              style: valueStyle.copyWith(color: colors.textPrimary),
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                hintStyle: valueStyle.copyWith(color: colors.inputPlaceholder),
+                prefixIcon:
+                    widget.leadingWidget ??
+                    (widget.leadingIcon != null
+                        ? iconSlot(
+                            icon: widget.leadingIcon!,
+                            box: dimensions.buttonHeightSmall,
+                            color: iconColor,
+                          )
+                        : null),
+                prefixIconConstraints: widget.leadingWidget != null
+                    ? const BoxConstraints()
+                    : null,
+                suffixIcon: trailing.isEmpty
+                    ? null
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: trailing,
+                      ),
+                suffixIconConstraints: const BoxConstraints(),
+                filled: true,
+                // Figma's `Input/Background` is the card surface in every
+                // state: disabled fades the border and text but does not
+                // darken the fill.
+                fillColor: colors.surfaceCard,
+                // Figma's Content box is a fixed height with the padding below;
+                // constraints rather than vertical padding so the height is a
+                // floor the field can still grow past at large text scales.
+                constraints: BoxConstraints(
+                  minHeight: compact
+                      ? dimensions.inputHeightCompact
+                      : dimensions.inputHeight,
+                ),
+                // Focus widens the horizontal padding to keep the text from
+                // shifting under the thicker stroke.
+                contentPadding: EdgeInsetsDirectional.symmetric(
+                  horizontal: _focused ? dimensions.space12 : dimensions.space8,
+                  vertical: dimensions.space8,
+                ),
+                border: border(colors.inputBorderDefault),
+                enabledBorder: border(
+                  _hasError
+                      ? colors.inputBorderError
+                      : colors.inputBorderDefault,
+                ),
+                focusedBorder: border(
+                  _hasError
+                      ? colors.inputBorderError
+                      : colors.inputBorderFocused,
+                  emphasized: true,
+                ),
+                errorBorder: border(colors.inputBorderError),
+                focusedErrorBorder: border(
+                  colors.inputBorderError,
+                  emphasized: true,
+                ),
+                disabledBorder: border(colors.inputBorderDisabled),
+              ),
             ),
-            // Focus widens the horizontal padding to keep the text from
-            // shifting under the thicker stroke.
-            contentPadding: EdgeInsetsDirectional.symmetric(
-              horizontal: _focused ? dimensions.space12 : dimensions.space8,
-              vertical: dimensions.space8,
-            ),
-            border: border(colors.inputBorderDefault),
-            enabledBorder: border(
-              _hasError ? colors.inputBorderError : colors.inputBorderDefault,
-            ),
-            focusedBorder: border(
-              _hasError ? colors.inputBorderError : colors.inputBorderFocused,
-              emphasized: true,
-            ),
-            errorBorder: border(colors.inputBorderError),
-            focusedErrorBorder: border(
-              colors.inputBorderError,
-              emphasized: true,
-            ),
-            disabledBorder: border(colors.inputBorderDisabled),
           ),
         ),
         if (_hasError ||

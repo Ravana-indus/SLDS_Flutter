@@ -4,17 +4,11 @@ include: package:very_good_analysis/analysis_options.yaml
 
 analyzer:
   errors:
-    # DOWNGRADED, NOT ACCEPTED. §7 requires a dartdoc comment on every public
-    # member and 329 are still missing, across 45 widget files. That is real
-    # documentation work, not a rule to argue with, so it is tracked as a
-    # warning that CI reports rather than silenced with `ignore`.
-    #
-    # Raise this back to the default the moment the count reaches zero, and
-    # delete this block. Progress is enforced by tool/check_public_docs.dart,
-    # which fails the build if the count goes up.
-    public_member_api_docs: info
+    # §7's public_member_api_docs backlog is closed — every public member
+    # carries a dartdoc comment, so the rule runs at its default severity and
+    # the ratchet that guarded the backlog is gone.
 
-    # Same treatment: these reference symbols in doc comments that are not in
+    # These reference symbols in doc comments that are not in
     # scope, which is a documentation defect rather than a code one.
     comment_references: info
 

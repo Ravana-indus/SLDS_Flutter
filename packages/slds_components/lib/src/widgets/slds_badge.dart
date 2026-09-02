@@ -10,18 +10,43 @@ import 'package:slds_components/src/widgets/slds_chip.dart' show SldsChip;
 /// background with the lighter `badgeArchivedText` on top (per the Figma
 /// token notes) — the two are distinct statuses, not aliases.
 enum SldsBadgeStatus {
+  /// Completed successfully.
   success,
+
+  /// Awaiting action, without implying a problem.
   pending,
+
+  /// Failed, or blocked by a problem.
   error,
+
+  /// Neutral informational note.
   info,
+
+  /// No particular status — the default.
   neutral,
+
+  /// Saved but not yet submitted. Renders as [neutral].
   draft,
+
+  /// Submitted and awaiting processing.
   submitted,
+
+  /// Being assessed by a reviewer.
   inReview,
+
+  /// Accepted.
   approved,
+
+  /// Declined. Drawn identically to [error]; only the label differs.
   rejected,
+
+  /// Raised to a higher authority.
   escalated,
+
+  /// Paused, pending something external.
   onHold,
+
+  /// Closed and retained for record only.
   archived,
 }
 
@@ -32,6 +57,7 @@ enum SldsBadgeStatus {
 /// For a filter/selection pill with an icon or a remove button, use
 /// [SldsChip] instead; this one is read-only status, no interaction.
 class SldsBadge extends StatelessWidget {
+  /// Creates a badge showing [label], tinted by [status].
   const SldsBadge({
     required this.label,
     super.key,
@@ -43,7 +69,13 @@ class SldsBadge extends StatelessWidget {
   SldsBadge.status(SldsBadgeStatus status, {Key? key})
     : this(key: key, label: _defaultLabel(status), status: status);
 
+  /// The text shown in the pill.
+  ///
+  /// Carries the meaning for a screen reader — the colour alone does not —
+  /// so it should name the status, not abbreviate it.
   final String label;
+
+  /// Which token colour pair the pill is drawn in.
   final SldsBadgeStatus status;
 
   static String _defaultLabel(SldsBadgeStatus status) => switch (status) {

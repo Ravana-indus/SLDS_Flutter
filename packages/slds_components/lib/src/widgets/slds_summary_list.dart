@@ -8,26 +8,46 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// `badgeInReviewText`/`Background`, matching the reference's blue
 /// "In Review" pill).
 enum SldsSummaryBadgeStatus {
+  /// Awaiting action.
   pending,
+
+  /// Failed, or blocked by a problem.
   error,
+
+  /// Submitted and awaiting processing.
   submitted,
+
+  /// Being assessed by a reviewer.
   inReview,
+
+  /// Accepted.
   approved,
+
+  /// Raised to a higher authority.
   escalated,
+
+  /// Paused, pending something external.
   onHold,
+
+  /// No particular status.
   neutral,
 }
 
 /// One label/value row inside [SldsSummaryList]. Pass [badgeStatus] to
 /// render [value] as a status pill instead of plain text.
 class SldsSummaryRow {
+  /// Creates a label/value row.
   const SldsSummaryRow({
     required this.label,
     required this.value,
     this.badgeStatus,
   });
 
+  /// What the row describes, e.g. "Application ID".
   final String label;
+
+  /// The value shown against [label]. Rendered as a status pill when
+  /// [badgeStatus] is set, otherwise as plain text.
   final String value;
 
   /// Null renders [value] as plain text; set to render it as a badge.
@@ -39,8 +59,10 @@ class SldsSummaryRow {
 /// with 1px dividers inside a bordered card; a row's value can be plain
 /// text or a status badge via [SldsSummaryRow.badgeStatus].
 class SldsSummaryList extends StatelessWidget {
+  /// Creates a summary list of [rows].
   const SldsSummaryList({required this.rows, super.key, this.width});
 
+  /// The label/value pairs, rendered top to bottom in the order given.
   final List<SldsSummaryRow> rows;
 
   /// Preferred width, clamped to the available parent width. Defaults to

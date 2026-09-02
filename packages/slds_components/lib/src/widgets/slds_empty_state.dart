@@ -13,6 +13,7 @@ import 'package:slds_components/src/widgets/slds_error_state.dart'
 /// This package ships no illustration assets — pass your own [illustration]
 /// widget (an [Image] or [Icon]); there's no default.
 class SldsEmptyState extends StatelessWidget {
+  /// Creates an empty state.
   const SldsEmptyState({
     required this.illustration,
     required this.title,
@@ -26,12 +27,17 @@ class SldsEmptyState extends StatelessWidget {
   /// doesn't constrain it.
   final Widget illustration;
 
+  /// The state's headline.
   final String title;
+
+  /// Supporting copy under [title], typically what the user can do next.
   final String? description;
 
   /// Shows a primary [SldsButton] below the text when both this and
   /// [onAction] are set.
   final String? actionLabel;
+
+  /// Called when the action button is tapped.
   final VoidCallback? onAction;
 
   @override

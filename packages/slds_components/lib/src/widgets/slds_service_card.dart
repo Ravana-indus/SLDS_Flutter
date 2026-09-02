@@ -5,7 +5,19 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// Visual state for [SldsServiceCard] — background/accent per Figma spec.
 /// [hover] only applies via [MouseRegion] on desktop/web pointer input;
 /// touch devices go straight from [defaultState] to [active] on tap.
-enum SldsServiceCardState { defaultState, hover, selected, active }
+enum SldsServiceCardState {
+  /// At rest.
+  defaultState,
+
+  /// Pointer is over the card. Pointer input only.
+  hover,
+
+  /// Marked as chosen.
+  selected,
+
+  /// Being pressed.
+  active,
+}
 
 /// SLDS service card — a 58px-tall tappable row: icon tile, title +
 /// description, trailing status badge and chevron. Used for lists of
@@ -15,6 +27,7 @@ enum SldsServiceCardState { defaultState, hover, selected, active }
 /// widget derive [SldsServiceCardState.active] from [selected] plus its own
 /// pointer-hover tracking.
 class SldsServiceCard extends StatefulWidget {
+  /// Creates a service row.
   const SldsServiceCard({
     required this.icon,
     required this.title,
@@ -30,7 +43,10 @@ class SldsServiceCard extends StatefulWidget {
   /// 32x32 leading icon/image, laid inside a 40x40 white tile.
   final Widget icon;
 
+  /// The service name — the card's primary line.
   final String title;
+
+  /// Supporting line under [title].
   final String description;
 
   /// Trailing status badge text (e.g. "Success"). Null hides the badge.
@@ -43,7 +59,11 @@ class SldsServiceCard extends StatefulWidget {
   /// Overrides the derived visual state — for widgetbook/preview use.
   final SldsServiceCardState? state;
 
+  /// Called when the card is tapped. Null renders it non-interactive.
   final VoidCallback? onTap;
+
+  /// Overrides the accessible name. Defaults to [title] and [description]
+  /// read together.
   final String? semanticLabel;
 
   @override
@@ -97,9 +117,9 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
             onTap: widget.onTap,
             borderRadius: BorderRadius.circular(dimensions.radiusMd),
             child: Padding(
-              padding: EdgeInsets.only(
-                left: dimensions.space16,
-                right: dimensions.space8,
+              padding: EdgeInsetsDirectional.only(
+                start: dimensions.space16,
+                end: dimensions.space8,
                 top: dimensions.space8,
                 bottom: dimensions.space8,
               ),

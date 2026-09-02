@@ -12,6 +12,7 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// what it contains. Exposed to assistive tech as an `HTML fieldset`/`legend`
 /// pair equivalent via [Semantics.container].
 class SldsFieldset extends StatelessWidget {
+  /// Creates a fieldset grouping related controls under a legend.
   const SldsFieldset({
     required this.legend,
     required this.children,

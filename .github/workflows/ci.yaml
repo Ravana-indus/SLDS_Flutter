@@ -59,9 +59,10 @@ jobs:
         run: dart format --set-exit-if-changed packages widgetbook app
 
       # very_good_analysis per §8, failing on any warning or error.
-      # `--no-fatal-infos` covers the documented backlog downgraded to `info`
-      # in analysis_options.yaml; check_public_docs.dart below is what stops
-      # that backlog growing.
+      # `--no-fatal-infos` covers the remaining `info`-level items documented
+      # in analysis_options.yaml. §7's public-member dartdoc rule is no longer
+      # among them: the backlog is closed, so it runs at its default severity
+      # and a new undocumented member fails this step directly.
       - name: Analyze (very_good_analysis)
         run: flutter analyze --no-fatal-infos
         working-directory: packages/slds_components
@@ -70,8 +71,12 @@ jobs:
         run: dart run tool/check_literals.dart
         working-directory: packages/slds_components
 
-      - name: Public member docs (§7)
-        run: dart run tool/check_public_docs.dart
+      # Advisory on every push: the si/ta strings are known to be unreviewed,
+      # so failing here would leave CI permanently red and train people to
+      # ignore it. The release workflow runs this with --release, where §6
+      # makes an unreviewed translation a blocking defect.
+      - name: Translation review (§6)
+        run: dart run tool/check_translation_review.dart
         working-directory: packages/slds_components
 
       # Behaviour, semantics and accessibility-guideline tests. Goldens are

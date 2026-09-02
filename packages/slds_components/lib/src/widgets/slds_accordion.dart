@@ -6,8 +6,10 @@ import 'package:slds_components/src/widgets/slds_flyout_menu.dart'
 
 /// One expandable section in an [SldsAccordion].
 class SldsAccordionItem {
+  /// Creates an accordion panel.
   const SldsAccordionItem({required this.title, required this.body});
 
+  /// The panel's always-visible heading, and its accessible name.
   final String title;
 
   /// Shown below [title] once expanded — pass a [Text] for plain copy or
@@ -20,12 +22,14 @@ class SldsAccordionItem {
 /// be open at once (unlike [SldsFlyoutMenu], which allows only one);
 /// pass [initiallyExpanded] to control which start open.
 class SldsAccordion extends StatefulWidget {
+  /// Creates an accordion over [items].
   const SldsAccordion({
     required this.items,
     super.key,
     this.initiallyExpanded = const {},
   });
 
+  /// The panels, in display order.
   final List<SldsAccordionItem> items;
 
   /// Indices into [items] that start expanded.

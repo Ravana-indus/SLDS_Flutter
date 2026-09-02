@@ -7,13 +7,28 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// (150x158, 40x40 icon — Figma "Fuel Pass"); [large] is the wider variant
 /// with more breathing room for the icon (Figma "Name/Description", 64x64
 /// icon). Both keep the same icon-then-title-then-description stack.
-enum SldsIconCardSize { small, large }
+enum SldsIconCardSize {
+  /// Compact grid tile, 150x158 with a 40x40 icon.
+  small,
+
+  /// Wider tile with more room around a 64x64 icon.
+  large,
+}
 
 /// Visual state for [SldsIconCard] — mirrors [SldsServiceCard]'s state
 /// pattern. [state] forces one for previews; leave it null to let the
 /// widget derive [hover] from pointer tracking and [disabled] from
 /// [onTap] being null.
-enum SldsIconCardState { defaultState, hover, disabled }
+enum SldsIconCardState {
+  /// At rest.
+  defaultState,
+
+  /// Pointer is over the card. Pointer input only.
+  hover,
+
+  /// Not interactive.
+  disabled,
+}
 
 /// SLDS icon card — a fixed-size mobile service-category grid tile: an
 /// icon/image slot over a left-aligned title/description, with an optional
@@ -25,6 +40,7 @@ enum SldsIconCardState { defaultState, hover, disabled }
 /// tile width and skip long [description] text — this is a compact grid
 /// tile, not a content card ([SldsCard] for anything larger).
 class SldsIconCard extends StatefulWidget {
+  /// Creates an icon card tile.
   const SldsIconCard({
     required this.title,
     required this.icon,
@@ -36,6 +52,7 @@ class SldsIconCard extends StatefulWidget {
     this.onTap,
   });
 
+  /// The tile's primary line. Keep it short enough to fit the tile.
   final String title;
 
   /// The icon/image slot — pass an [Image] for product/service artwork or
@@ -50,11 +67,13 @@ class SldsIconCard extends StatefulWidget {
   /// hides it.
   final String? badgeLabel;
 
+  /// Which fixed footprint the tile uses.
   final SldsIconCardSize size;
 
   /// Overrides the derived visual state — for widgetbook/preview use.
   final SldsIconCardState? state;
 
+  /// Called when the tile is tapped. Null renders it disabled.
   final VoidCallback? onTap;
 
   @override
@@ -185,9 +204,9 @@ class _SldsIconCardState extends State<SldsIconCard> {
                   ),
                 ),
                 if (widget.badgeLabel != null)
-                  Positioned(
+                  PositionedDirectional(
                     top: -dimensions.space8,
-                    left: dimensions.space12,
+                    start: dimensions.space12,
                     child: Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: dimensions.space8,

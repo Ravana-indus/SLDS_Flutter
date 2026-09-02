@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:slds_components/slds_components.dart' show SldsInput;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_input.dart' show SldsInput;
 
@@ -30,6 +31,7 @@ enum SldsInputMaskState {
 /// The prefix/suffix cells are static text, not editable — build your own
 /// composited field if either side needs to be interactive.
 class SldsInputMask extends StatefulWidget {
+  /// Creates an [SldsInputMask].
   const SldsInputMask({
     required this.label,
     super.key,
@@ -54,6 +56,9 @@ class SldsInputMask extends StatefulWidget {
 
   /// Visible field label.
   final String label;
+
+  /// Supply one to read or drive the text externally. When null the field
+  /// owns an internal controller for its lifetime.
   final TextEditingController? controller;
 
   /// Static mask segment rendered in its own cell before the value (e.g. `http://`).
@@ -62,8 +67,15 @@ class SldsInputMask extends StatefulWidget {
   /// Static mask segment rendered in its own cell after the value (e.g. `.com`).
   final String? suffixText;
 
+  /// Placeholder shown inside an empty field. Not a label substitute — it
+  /// disappears on the first keystroke.
   final String? hintText;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set.
   final String? helperText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state and announces it as an error.
   final String? errorText;
 
   /// Whether to show the required marker beside [label].
@@ -73,13 +85,31 @@ class SldsInputMask extends StatefulWidget {
   /// null to resolve from live focus/[enabled]/[errorText] instead.
   final SldsInputMaskState? visualState;
 
+  /// Called on every change to the text.
   final ValueChanged<String>? onChanged;
+
+  /// Called when the user submits from the keyboard.
   final ValueChanged<String>? onSubmitted;
+
+  /// Supply one to drive focus externally. When null the field owns an
+  /// internal node.
   final FocusNode? focusNode;
+
+  /// Whether the field accepts input. Disabled fields dim and stop taking
+  /// focus, but stay readable by a screen reader.
   final bool enabled;
+
+  /// Which soft keyboard to raise (e.g. [TextInputType.emailAddress]).
   final TextInputType? keyboardType;
+
+  /// Formatters applied as the user types. The mask's own formatter runs
+  /// first; these are appended after it.
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Validation callback, used when the field sits inside a [Form].
   final FormFieldValidator<String>? validator;
+
+  /// When [validator] re-runs — on every change, on interaction, or never.
   final AutovalidateMode? autovalidateMode;
 
   /// Preferred width, clamped to the available parent width.
@@ -161,6 +191,18 @@ class _SldsInputMaskState extends State<SldsInputMask> {
     return _hasValue
         ? SldsInputMaskState.filled
         : SldsInputMaskState.defaultState;
+  }
+
+  /// The field's accessible name: the visible label plus the state the
+  /// design carries only in colour — the required marker and the error.
+  String _semanticLabel(BuildContext context, bool error) {
+    final strings = context.sldsStrings;
+    final buffer = StringBuffer(widget.label);
+    if (widget.required) buffer.write(', ${strings.required}');
+    if (error && widget.errorText != null) {
+      buffer.write(', ${strings.error}: ${widget.errorText}');
+    }
+    return buffer.toString();
   }
 
   @override
@@ -266,24 +308,31 @@ class _SldsInputMaskState extends State<SldsInputMask> {
                         padding: EdgeInsets.symmetric(
                           horizontal: dimensions.space12,
                         ),
-                        child: TextField(
-                          controller: _controller,
-                          focusNode: _focusNode,
-                          enabled: !disabled,
-                          keyboardType: widget.keyboardType,
-                          inputFormatters: widget.inputFormatters,
-                          onChanged: widget.onChanged,
-                          onSubmitted: widget.onSubmitted,
-                          style: tokens.typography.body1.copyWith(
-                            color: valueColor,
-                          ),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            hintText: widget.hintText,
-                            hintStyle: tokens.typography.body1.copyWith(
-                              color: colors.inputPlaceholder,
+                        child: Semantics(
+                          // The visible label is a sibling Text, so the field
+                          // itself announces unnamed; required and error are
+                          // colour-only, so both are folded into the name.
+                          textField: true,
+                          label: _semanticLabel(context, error),
+                          child: TextField(
+                            controller: _controller,
+                            focusNode: _focusNode,
+                            enabled: !disabled,
+                            keyboardType: widget.keyboardType,
+                            inputFormatters: widget.inputFormatters,
+                            onChanged: widget.onChanged,
+                            onSubmitted: widget.onSubmitted,
+                            style: tokens.typography.body1.copyWith(
+                              color: valueColor,
+                            ),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.zero,
+                              hintText: widget.hintText,
+                              hintStyle: tokens.typography.body1.copyWith(
+                                color: colors.inputPlaceholder,
+                              ),
                             ),
                           ),
                         ),

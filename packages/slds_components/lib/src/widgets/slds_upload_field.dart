@@ -42,6 +42,7 @@ enum SldsUploadStatus {
 /// )
 /// ```
 class SldsUploadField extends StatelessWidget {
+  /// Creates a file upload field.
   const SldsUploadField({
     required this.label,
     super.key,
@@ -96,6 +97,7 @@ class SldsUploadField extends StatelessWidget {
   /// Null hides the button.
   final VoidCallback? onRemove;
 
+  /// Whether the field accepts new files.
   final bool enabled;
 
   /// Custom icon data for empty state.
@@ -161,54 +163,66 @@ class SldsUploadField extends StatelessWidget {
           ],
         ),
         SizedBox(height: dimensions.space4),
-        InkWell(
-          onTap: interactive ? onTap : null,
-          borderRadius: BorderRadius.circular(dimensions.radius2xl),
-          child: Container(
-            constraints: BoxConstraints(
-              minHeight: dimensions.buttonHeightExtraLarge,
+        Semantics(
+          button: true,
+          enabled: interactive,
+          // The asterisk and the red error text are visual-only, so both
+          // are folded into the name.
+          label: [
+            label,
+            if (required) context.sldsStrings.required,
+            if (status == SldsUploadStatus.error && errorText != null)
+              '${context.sldsStrings.error}: $errorText',
+          ].join(', '),
+          child: InkWell(
+            onTap: interactive ? onTap : null,
+            borderRadius: BorderRadius.circular(dimensions.radius2xl),
+            child: Container(
+              constraints: BoxConstraints(
+                minHeight: dimensions.buttonHeightExtraLarge,
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: dimensions.space12,
+                vertical: dimensions.space12,
+              ),
+              decoration: BoxDecoration(
+                color: enabled ? colors.surfaceCard : colors.disabledBackground,
+                border: Border.all(color: colors.borderDefault),
+                borderRadius: BorderRadius.circular(dimensions.radius2xl),
+              ),
+              child: switch (status) {
+                SldsUploadStatus.empty => _EmptyRow(
+                  hintText: hintText,
+                  enabled: enabled,
+                  icon: emptyIcon,
+                  customWidget: emptyWidget,
+                ),
+                SldsUploadStatus.uploading => _UploadingRow(
+                  fileName: fileName ?? '',
+                  progress: progress,
+                ),
+                SldsUploadStatus.uploaded => _ResultRow(
+                  fileName: fileName ?? '',
+                  leading: leadingUploaded,
+                  leadingBackground: colors.badgeSuccessBackground,
+                  caption: 'Uploaded',
+                  captionColor: colors.inputHelper,
+                  onRemove: onRemove,
+                  removeIcon: removeIcon,
+                  removeWidget: removeWidget,
+                ),
+                SldsUploadStatus.error => _ResultRow(
+                  fileName: fileName ?? '',
+                  leading: leadingError,
+                  leadingBackground: colors.badgeErrorBackground,
+                  caption: errorText,
+                  captionColor: colors.error,
+                  onRemove: onRemove,
+                  removeIcon: removeIcon,
+                  removeWidget: removeWidget,
+                ),
+              },
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: dimensions.space12,
-              vertical: dimensions.space12,
-            ),
-            decoration: BoxDecoration(
-              color: enabled ? colors.surfaceCard : colors.disabledBackground,
-              border: Border.all(color: colors.borderDefault),
-              borderRadius: BorderRadius.circular(dimensions.radius2xl),
-            ),
-            child: switch (status) {
-              SldsUploadStatus.empty => _EmptyRow(
-                hintText: hintText,
-                enabled: enabled,
-                icon: emptyIcon,
-                customWidget: emptyWidget,
-              ),
-              SldsUploadStatus.uploading => _UploadingRow(
-                fileName: fileName ?? '',
-                progress: progress,
-              ),
-              SldsUploadStatus.uploaded => _ResultRow(
-                fileName: fileName ?? '',
-                leading: leadingUploaded,
-                leadingBackground: colors.badgeSuccessBackground,
-                caption: 'Uploaded',
-                captionColor: colors.inputHelper,
-                onRemove: onRemove,
-                removeIcon: removeIcon,
-                removeWidget: removeWidget,
-              ),
-              SldsUploadStatus.error => _ResultRow(
-                fileName: fileName ?? '',
-                leading: leadingError,
-                leadingBackground: colors.badgeErrorBackground,
-                caption: errorText,
-                captionColor: colors.error,
-                onRemove: onRemove,
-                removeIcon: removeIcon,
-                removeWidget: removeWidget,
-              ),
-            },
           ),
         ),
       ],
@@ -255,24 +269,29 @@ class _EmptyRow extends StatelessWidget {
           child: Center(child: leadingChild),
         ),
         SizedBox(width: tokens.dimensions.space12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Upload',
-              style: tokens.typography.body1.copyWith(
-                color: iconColor,
-                decoration: TextDecoration.underline,
+        // Expanded, like the uploading and result rows: without it the hint
+        // cannot wrap, and at a 200% text scale it overflows the field
+        // instead — text that WCAG 1.4.4 requires to stay readable.
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Upload',
+                style: tokens.typography.body1.copyWith(
+                  color: iconColor,
+                  decoration: TextDecoration.underline,
+                ),
               ),
-            ),
-            Text(
-              hintText ?? context.sldsStrings.uploadHint,
-              style: tokens.typography.caption1.copyWith(
-                color: colors.inputHelper,
+              Text(
+                hintText ?? context.sldsStrings.uploadHint,
+                style: tokens.typography.caption1.copyWith(
+                  color: colors.inputHelper,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -398,6 +417,7 @@ class _ResultRow extends StatelessWidget {
           SizedBox(width: tokens.dimensions.space8),
           IconButton(
             onPressed: onRemove,
+            tooltip: context.sldsStrings.removeItem(fileName),
             icon: trailingWidget,
             iconSize: tokens.dimensions.avatarIconMedium,
             color: colors.inputIcon,

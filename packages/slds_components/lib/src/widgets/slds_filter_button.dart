@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slds_components/slds_components.dart' show SldsFilterDropdown;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_filter_dropdown.dart'
     show SldsFilterDropdown;
@@ -13,6 +14,7 @@ import 'package:slds_components/src/widgets/slds_filter_dropdown.dart'
 /// (e.g. via [showModalBottomSheet] or an [OverlayEntry] wrapping
 /// [SldsFilterDropdown]); no popover behavior is baked in.
 class SldsFilterButton extends StatelessWidget {
+  /// Creates a filter button.
   const SldsFilterButton({
     required this.label,
     super.key,
@@ -21,6 +23,7 @@ class SldsFilterButton extends StatelessWidget {
     this.enabled = true,
   });
 
+  /// The button's visible text, and its accessible name.
   final String label;
 
   /// Number of active selections for this filter — shown as a badge and
@@ -28,7 +31,10 @@ class SldsFilterButton extends StatelessWidget {
   /// plain outlined look with no badge.
   final int? count;
 
+  /// Called when the button is tapped.
   final VoidCallback? onTap;
+
+  /// Whether the button responds to taps.
   final bool enabled;
 
   bool get _active => count != null && count! > 0;
@@ -58,50 +64,63 @@ class SldsFilterButton extends StatelessWidget {
       borderColor = colors.borderDefault;
     }
 
-    return InkWell(
-      onTap: interactive ? onTap : null,
-      borderRadius: BorderRadius.circular(dimensions.radiusFull),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: dimensions.space16,
-          vertical: dimensions.space8,
-        ),
-        decoration: BoxDecoration(
-          color: background,
-          border: Border.all(color: borderColor),
-          borderRadius: BorderRadius.circular(dimensions.radiusFull),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: tokens.typography.compactLabel.copyWith(color: foreground),
-            ),
-            if (_active) ...[
-              SizedBox(width: dimensions.space8),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: dimensions.space6),
-                decoration: BoxDecoration(
-                  color: colors.surfaceCard,
-                  shape: BoxShape.circle,
-                ),
-                child: Text(
-                  '$count',
-                  style: tokens.typography.caption2.copyWith(
-                    color: colors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
+    return Semantics(
+      // The badge count is the filter's state and reads as a bare numeral
+      // next to the label; spelling it into the name is what tells a reader
+      // the filter is active and by how much.
+      button: true,
+      enabled: interactive,
+      label: _active
+          ? context.sldsStrings.labelledValue(label, '$count')
+          : label,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: interactive ? onTap : null,
+        borderRadius: BorderRadius.circular(dimensions.radiusFull),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: dimensions.space16,
+            vertical: dimensions.space8,
+          ),
+          decoration: BoxDecoration(
+            color: background,
+            border: Border.all(color: borderColor),
+            borderRadius: BorderRadius.circular(dimensions.radiusFull),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: tokens.typography.compactLabel.copyWith(
+                  color: foreground,
                 ),
               ),
+              if (_active) ...[
+                SizedBox(width: dimensions.space8),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: dimensions.space6),
+                  decoration: BoxDecoration(
+                    color: colors.surfaceCard,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '$count',
+                    style: tokens.typography.caption2.copyWith(
+                      color: colors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+              SizedBox(width: dimensions.space4),
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: dimensions.iconSizeMedium,
+                color: foreground,
+              ),
             ],
-            SizedBox(width: dimensions.space4),
-            Icon(
-              Icons.keyboard_arrow_down,
-              size: dimensions.iconSizeMedium,
-              color: foreground,
-            ),
-          ],
+          ),
         ),
       ),
     );

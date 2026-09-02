@@ -10,18 +10,33 @@ import 'package:slds_components/src/widgets/slds_summary_list.dart'
 /// Status of one [SldsProcessStep] — drives the numbered badge's color.
 /// Reuses the same tone pairing as [SldsSummaryBadgeStatus] (approved/green
 /// for done, pending/yellow for current, neutral/gray for upcoming).
-enum SldsProcessStepStatus { done, current, upcoming }
+enum SldsProcessStepStatus {
+  /// Completed.
+  done,
+
+  /// The step in progress.
+  current,
+
+  /// Not yet reached.
+  upcoming,
+}
 
 /// One numbered row in an [SldsProcessList].
 class SldsProcessStep {
+  /// Creates a step.
   const SldsProcessStep({
     required this.title,
     required this.description,
     this.status = SldsProcessStepStatus.upcoming,
   });
 
+  /// The step's name.
   final String title;
+
+  /// Supporting line under [title].
   final String description;
+
+  /// Where this step sits in the flow, which drives its marker styling.
   final SldsProcessStepStatus status;
 }
 
@@ -30,8 +45,10 @@ class SldsProcessStep {
 /// numbered badge per [SldsProcessStep.status] and 1px dividers between
 /// rows, inside a bordered card (same shell as [SldsSummaryList]).
 class SldsProcessList extends StatelessWidget {
+  /// Creates a vertical process list of [steps].
   const SldsProcessList({required this.steps, super.key, this.width});
 
+  /// The steps, in order.
   final List<SldsProcessStep> steps;
 
   /// Preferred width, clamped to the available parent width. Defaults to

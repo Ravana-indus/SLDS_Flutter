@@ -88,6 +88,32 @@ with no font substitution.
 reviewed by a Sinhala/Tamil speaker — verify before shipping.** The
 guidelines (§6) treat an unverified translation the same as a missing one.
 
+### Getting a translation reviewed
+
+Build a self-contained page with every string, its meaning, where it appears
+and a verdict column:
+
+```sh
+cd packages/slds_components
+dart run tool/build_translation_packet.dart   # → build/translation_packet.html
+```
+
+Send that one file to a reviewer — it needs no app, checkout or tooling, and
+the screen-reader-only strings (spoken by TalkBack/VoiceOver but never
+visible, so a mistake in one is invisible until a blind citizen hits it) are
+listed first.
+
+Record the sign-off in the reviewed locale's `.arb`:
+
+```json
+"@@x-reviewed-by": "Name", "@@x-reviewed-on": "2026-09-01", "@@x-reviewed-count": 47
+```
+
+`tool/check_translation_review.dart` reads those. It is advisory on every
+push and blocking in the release workflow (`--release`). The count is what
+keeps a sign-off honest: adding a string after a review invalidates it, since
+the new string was never in front of the reviewer.
+
 ## Design tokens
 
 Raw values live in `packages/slds_tokens` as pure Dart — colours as ARGB

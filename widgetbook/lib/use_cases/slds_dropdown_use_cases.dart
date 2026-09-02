@@ -21,10 +21,8 @@ const _districts = [
 )
 Widget buildSldsDropdownUseCase(BuildContext context) {
   final label = context.knobs.string(label: 'Label', initialValue: 'District');
-  final hintText = context.knobs.string(
-    label: 'Hint',
-    initialValue: 'Select district',
-  );
+  // Empty means "unset" — see the note in the search bar use case.
+  final hintText = context.knobs.string(label: 'Hint');
   final helpText = context.knobs.string(
     label: 'Help text',
     initialValue: 'Help Text',
@@ -43,7 +41,7 @@ Widget buildSldsDropdownUseCase(BuildContext context) {
         String? value;
         return SldsDropdown<String>(
           label: label,
-          hintText: hintText,
+          hintText: hintText.isEmpty ? null : hintText,
           helpText: helpText,
           isRequired: isRequired,
           enabled: isEnabled,

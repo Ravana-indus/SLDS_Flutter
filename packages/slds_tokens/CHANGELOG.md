@@ -2,7 +2,7 @@
 
 Raw design tokens for SLDS. Pure Dart, no Flutter dependency.
 
-## 0.1.0
+## 0.1.0-alpha
 
 ### Added
 

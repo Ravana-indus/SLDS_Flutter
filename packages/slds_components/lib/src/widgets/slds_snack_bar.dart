@@ -13,6 +13,7 @@ import 'package:slds_components/src/widgets/slds_button.dart';
 /// timing, and swipe-to-dismiss, so none of it is re-implemented here.
 /// Requires a [Scaffold]/[ScaffoldMessenger] ancestor like any snack bar.
 class SldsSnackBar extends StatelessWidget {
+  /// Creates a snack bar.
   const SldsSnackBar({
     required this.title,
     super.key,
@@ -21,6 +22,7 @@ class SldsSnackBar extends StatelessWidget {
     this.onAction,
   });
 
+  /// The snack bar's primary line.
   final String title;
 
   /// Secondary line under [title]. Null shows the title alone.
@@ -28,6 +30,8 @@ class SldsSnackBar extends StatelessWidget {
 
   /// Trailing action button label (e.g. "Undo"). Null hides the button.
   final String? actionLabel;
+
+  /// Called when the action button is tapped.
   final VoidCallback? onAction;
 
   /// Shows this snack bar via the ambient [ScaffoldMessenger].
@@ -66,49 +70,55 @@ class SldsSnackBar extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
 
-    return Container(
-      padding: EdgeInsets.all(dimensions.space16),
-      decoration: BoxDecoration(
-        color: colors.surfaceCard,
-        borderRadius: BorderRadius.circular(dimensions.radius2xl),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: tokens.typography.body1.copyWith(
-                    color: colors.textPrimary,
-                  ),
-                ),
-                if (message != null) ...[
-                  SizedBox(height: dimensions.space4),
+    // A snack bar appears without focus moving to it, so without a live
+    // region a screen reader user is never told it arrived (§5).
+    return Semantics(
+      liveRegion: true,
+      container: true,
+      child: Container(
+        padding: EdgeInsets.all(dimensions.space16),
+        decoration: BoxDecoration(
+          color: colors.surfaceCard,
+          borderRadius: BorderRadius.circular(dimensions.radius2xl),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Text(
-                    message!,
-                    style: tokens.typography.body2.copyWith(
-                      color: colors.textSecondary,
+                    title,
+                    style: tokens.typography.body1.copyWith(
+                      color: colors.textPrimary,
                     ),
                   ),
+                  if (message != null) ...[
+                    SizedBox(height: dimensions.space4),
+                    Text(
+                      message!,
+                      style: tokens.typography.body2.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          if (actionLabel != null) ...[
-            SizedBox(width: dimensions.space16),
-            SldsButton(label: actionLabel!, onPressed: onAction),
+            if (actionLabel != null) ...[
+              SizedBox(width: dimensions.space16),
+              SldsButton(label: actionLabel!, onPressed: onAction),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

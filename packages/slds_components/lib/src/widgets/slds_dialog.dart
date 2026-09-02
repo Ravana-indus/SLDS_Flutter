@@ -12,6 +12,7 @@ import 'package:slds_components/src/widgets/slds_button.dart';
 /// focus trap, and Material ancestor for you) with SLDS shape/typography —
 /// not a hand-rolled modal.
 class SldsDialog extends StatelessWidget {
+  /// Creates a dialog.
   const SldsDialog({
     required this.title,
     super.key,
@@ -23,17 +24,25 @@ class SldsDialog extends StatelessWidget {
     this.barrierDismissible = true,
   });
 
+  /// The dialog's heading.
   final String title;
+
+  /// Supporting copy under [title].
   final String? message;
 
   /// Null hides the cancel button.
   final String? cancelLabel;
+
+  /// Called when the dismiss action is tapped.
   final VoidCallback? onCancel;
 
   /// Null hides the confirm button.
   final String? confirmLabel;
+
+  /// Called when the confirm action is tapped.
   final VoidCallback? onConfirm;
 
+  /// Whether tapping the scrim dismisses the dialog.
   final bool barrierDismissible;
 
   /// Shows [SldsDialog] via [showDialog], returning after it's dismissed.

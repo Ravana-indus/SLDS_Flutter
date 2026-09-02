@@ -309,6 +309,78 @@ abstract class SldsLocalizations {
   /// In en, this message translates to:
   /// **'There is a problem'**
   String get thereIsAProblem;
+
+  /// Spoken suffix marking a mandatory form field. The design shows this only as a red asterisk, which a screen reader does not convey.
+  ///
+  /// In en, this message translates to:
+  /// **'required'**
+  String get required;
+
+  /// Spoken state of a dropdown or panel that is currently open.
+  ///
+  /// In en, this message translates to:
+  /// **'expanded'**
+  String get expanded;
+
+  /// Spoken state of a dropdown or panel that is currently closed.
+  ///
+  /// In en, this message translates to:
+  /// **'collapsed'**
+  String get collapsed;
+
+  /// Accessible name for one box of a one-time-passcode input, so each box announces its position rather than as an anonymous field.
+  ///
+  /// In en, this message translates to:
+  /// **'Digit {position} of {total}'**
+  String digitOf(int position, int total);
+
+  /// Accessible name for the button that empties the search field.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// Accessible name for a row in the recent-searches list, distinguishing it from a live suggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent search: {label}'**
+  String recentSearch(String label);
+
+  /// Accessible name for a row in the search suggestions list.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion: {label}'**
+  String suggestion(String label);
+
+  /// Accessible name for the calendar control that moves back one month.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get previousMonth;
+
+  /// Accessible name for the calendar control that moves forward one month.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get nextMonth;
+
+  /// Accessible name for the hour field of the time picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Select hour'**
+  String get selectHour;
+
+  /// Accessible name for the minute field of the time picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Select minute'**
+  String get selectMinute;
+
+  /// Shown in a dropdown or search panel when the query matches no options.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get noResults;
 }
 
 class _SldsLocalizationsDelegate

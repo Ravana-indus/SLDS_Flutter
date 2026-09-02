@@ -11,6 +11,7 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 /// For a caller-owned label/value readout, wrap this yourself; this widget
 /// is just the reskinned control.
 class SldsRangeSlider extends StatelessWidget {
+  /// Creates a single-thumb slider.
   const SldsRangeSlider({
     required this.value,
     required this.onChanged,
@@ -22,13 +23,22 @@ class SldsRangeSlider extends StatelessWidget {
     this.semanticLabel,
   });
 
+  /// The current value, clamped to [min]..[max].
   final double value;
+
+  /// Called as the thumb is dragged. Null makes the slider read-only.
   final ValueChanged<double>? onChanged;
+
+  /// Lower bound of the track.
   final double min;
+
+  /// Upper bound of the track.
   final double max;
 
   /// Number of discrete steps between [min]/[max]; null for a continuous slider.
   final int? divisions;
+
+  /// Whether the thumb can be dragged.
   final bool enabled;
 
   /// Accessible name announced alongside the current value.

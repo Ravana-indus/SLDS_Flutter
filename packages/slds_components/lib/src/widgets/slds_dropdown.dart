@@ -12,9 +12,10 @@ import 'package:slds_components/src/widgets/slds_text_field.dart'
 /// the field on tap and closes on selection. Same label/required/help/error
 /// chrome as [SldsTextField].
 ///
-/// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
-/// aware); pass [color] to override the focus/accent color for one instance.
+/// Colors resolve from the ambient [Theme]'s [ColorScheme], so the field
+/// follows light, dark and high-contrast modes.
 class SldsDropdown<T> extends StatefulWidget {
+  /// Creates a searchable dropdown over [items].
   const SldsDropdown({
     required this.label,
     required this.items,
@@ -28,22 +29,49 @@ class SldsDropdown<T> extends StatefulWidget {
     this.hintText,
     this.searchHintText,
     this.enabled = true,
+    this.semanticLabel,
   });
 
+  /// Visible label above the field, and its default accessible name.
   final String label;
 
   /// The full option list; [searchHintText]'s search box filters this by
   /// [itemLabel] client-side (case-insensitive substring match).
   final List<T> items;
+
+  /// How an item is rendered as text — used for both the visible row and
+  /// the search filter.
   final String Function(T item) itemLabel;
+
+  /// The current selection. Null shows [hintText] instead.
   final T? value;
+
+  /// Called with the newly selected item when the user picks one.
   final ValueChanged<T?>? onChanged;
+
+  /// Marks the field as required, appending the required marker to the
+  /// label and announcing it as required to a screen reader.
   final bool isRequired;
+
+  /// Guidance shown below the field. Hidden while [errorText] is set.
   final String? helpText;
+
+  /// Validation message shown below the field. Non-null puts the field in
+  /// its error state and announces it as an error.
   final String? errorText;
+
+  /// Placeholder shown in the closed field while nothing is selected.
   final String? hintText;
+
+  /// Placeholder for the panel's search box. Null hides the search box, so
+  /// the full [items] list is always shown.
   final String? searchHintText;
+
+  /// Whether the field opens its panel when tapped.
   final bool enabled;
+
+  /// Overrides the accessible name. Defaults to [label].
+  final String? semanticLabel;
 
   @override
   State<SldsDropdown<T>> createState() => _SldsDropdownState<T>();
@@ -91,6 +119,18 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
     });
   }
 
+  /// The dropdown's accessible name: the label plus the state the design
+  /// shows only in colour or glyph — the required asterisk, the error text,
+  /// and whether the panel is open.
+  String _semanticLabel(BuildContext context) {
+    final strings = context.sldsStrings;
+    final buffer = StringBuffer(widget.semanticLabel ?? widget.label);
+    if (widget.isRequired) buffer.write(', ${strings.required}');
+    buffer.write(', ${_open ? strings.expanded : strings.collapsed}');
+    if (_hasError) buffer.write(', ${strings.error}: ${widget.errorText}');
+    return buffer.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -125,54 +165,71 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: dimensions.space4),
-        InkWell(
-          onTap: _toggle,
-          borderRadius: BorderRadius.circular(dimensions.space8),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: dimensions.space12,
-              vertical: dimensions.space12,
-            ),
-            decoration: BoxDecoration(
-              color: widget.enabled
-                  ? scheme.surface
-                  : scheme.onSurface.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(dimensions.space8),
-              // 1.5 matches every other field's focused-border weight
-              // (SldsInput/SldsMobileNumberInput/SldsSearchBar's
-              // emphasizedBorderWidth token) — this widget predates that
-              // token system, so it's hardcoded here to stay in lockstep.
-              border: Border.all(color: borderColor, width: _open ? 1.5 : 1),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.value != null
-                        ? widget.itemLabel(widget.value as T)
-                        : widget.hintText ?? context.sldsStrings.selectAnOption,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: widget.value != null
-                          ? (widget.enabled
-                                ? scheme.onSurface
-                                : scheme.onSurface.withValues(
-                                    alpha: context.slds.opacities.disabled,
-                                  ))
-                          : scheme.onSurface.withValues(alpha: 0.5),
+        Semantics(
+          // Without this the node's name came from the value Text below —
+          // so an empty dropdown announced as "Select an option" with no
+          // hint of which field it was. The name is the label; the current
+          // selection is the value, and open/closed is a state, not a name.
+          button: true,
+          enabled: widget.enabled,
+          label: _semanticLabel(context),
+          value: widget.value != null
+              ? widget.itemLabel(widget.value as T)
+              : '',
+          // Without this the placeholder Text merges its own semantics in
+          // and the name becomes "District, collapsed / Select an option" —
+          // the very placeholder-as-name problem this wrapper exists to fix.
+          excludeSemantics: true,
+          child: InkWell(
+            onTap: _toggle,
+            borderRadius: BorderRadius.circular(dimensions.space8),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: dimensions.space12,
+                vertical: dimensions.space12,
+              ),
+              decoration: BoxDecoration(
+                color: widget.enabled
+                    ? scheme.surface
+                    : scheme.onSurface.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(dimensions.space8),
+                // 1.5 matches every other field's focused-border weight
+                // (SldsInput/SldsMobileNumberInput/SldsSearchBar's
+                // emphasizedBorderWidth token) — this widget predates that
+                // token system, so it's hardcoded here to stay in lockstep.
+                border: Border.all(color: borderColor, width: _open ? 1.5 : 1),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.value != null
+                          ? widget.itemLabel(widget.value as T)
+                          : widget.hintText ??
+                                context.sldsStrings.selectAnOption,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: widget.value != null
+                            ? (widget.enabled
+                                  ? scheme.onSurface
+                                  : scheme.onSurface.withValues(
+                                      alpha: context.slds.opacities.disabled,
+                                    ))
+                            : scheme.onSurface.withValues(alpha: 0.5),
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Icon(
-                  _open ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  size: 20,
-                  color: widget.enabled
-                      ? scheme.onSurface
-                      : scheme.onSurface.withValues(
-                          alpha: context.slds.opacities.disabled,
-                        ),
-                ),
-              ],
+                  Icon(
+                    _open ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    size: 20,
+                    color: widget.enabled
+                        ? scheme.onSurface
+                        : scheme.onSurface.withValues(
+                            alpha: context.slds.opacities.disabled,
+                          ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -189,37 +246,47 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
               children: [
                 Padding(
                   padding: EdgeInsets.all(dimensions.space8),
-                  child: TextField(
-                    controller: _searchController,
-                    autofocus: true,
-                    onChanged: (v) => setState(() => _query = v),
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    decoration: InputDecoration(
-                      hintText:
-                          widget.searchHintText ?? context.sldsStrings.search,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 20,
-                        color: scheme.onSurface.withValues(alpha: 0.5),
-                      ),
-                      isDense: true,
-                      filled: true,
-                      fillColor: scheme.surface,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: dimensions.space12,
-                        vertical: dimensions.space8,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(dimensions.space8),
-                        borderSide: BorderSide(color: scheme.outline),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(dimensions.space8),
-                        borderSide: BorderSide(color: scheme.outline),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(dimensions.space8),
-                        borderSide: BorderSide(color: accent),
+                  child: Semantics(
+                    textField: true,
+                    label: widget.searchHintText ?? context.sldsStrings.search,
+                    child: TextField(
+                      controller: _searchController,
+                      autofocus: true,
+                      onChanged: (v) => setState(() => _query = v),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      decoration: InputDecoration(
+                        hintText:
+                            widget.searchHintText ?? context.sldsStrings.search,
+                        prefixIcon: Icon(
+                          Icons.search,
+                          size: 20,
+                          color: scheme.onSurface.withValues(alpha: 0.5),
+                        ),
+                        isDense: true,
+                        filled: true,
+                        fillColor: scheme.surface,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: dimensions.space12,
+                          vertical: dimensions.space8,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            dimensions.space8,
+                          ),
+                          borderSide: BorderSide(color: scheme.outline),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            dimensions.space8,
+                          ),
+                          borderSide: BorderSide(color: scheme.outline),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            dimensions.space8,
+                          ),
+                          borderSide: BorderSide(color: accent),
+                        ),
                       ),
                     ),
                   ),
@@ -230,7 +297,7 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                       ? Padding(
                           padding: EdgeInsets.all(dimensions.space16),
                           child: Text(
-                            'No results',
+                            context.sldsStrings.noResults,
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   color: scheme.onSurface.withValues(
@@ -246,21 +313,32 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                           itemBuilder: (context, index) {
                             final item = _filtered[index];
                             final selected = item == widget.value;
-                            return InkWell(
-                              onTap: () => _select(item),
-                              child: Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: dimensions.space12,
-                                  vertical: dimensions.space12,
-                                ),
-                                color: selected
-                                    ? scheme.onSurface.withValues(alpha: 0.06)
-                                    : null,
-                                child: Text(
-                                  widget.itemLabel(item),
-                                  style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(color: scheme.onSurface),
+                            return Semantics(
+                              // Each row is a choice in a list: the reader
+                              // needs to hear which one is already selected,
+                              // not just the option's text.
+                              button: true,
+                              inMutuallyExclusiveGroup: true,
+                              selected: selected,
+                              label: widget.itemLabel(item),
+                              child: InkWell(
+                                onTap: () => _select(item),
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: dimensions.space12,
+                                    vertical: dimensions.space12,
+                                  ),
+                                  color: selected
+                                      ? scheme.onSurface.withValues(alpha: 0.06)
+                                      : null,
+                                  child: Text(
+                                    widget.itemLabel(item),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: scheme.onSurface),
+                                  ),
                                 ),
                               ),
                             );

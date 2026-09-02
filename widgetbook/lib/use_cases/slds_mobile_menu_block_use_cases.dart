@@ -3,6 +3,8 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 /// The trailing affordances, as a knob-friendly list.
 enum _Trailing { none, navigate, badge, validated, toggle, radio }
 
@@ -12,10 +14,13 @@ enum _Trailing { none, navigate, badge, validated, toggle, radio }
   path: '[Navigation]',
 )
 Widget buildSldsMobileMenuBlockUseCase(BuildContext context) {
-  final title = context.knobs.string(
+  final copy = DemoCopy.of(context);
+  final titleOverride = context.knobs.string(
     label: 'Title',
-    initialValue: 'My Account',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final title = titleOverride.isEmpty ? copy['My Account'] : titleOverride;
   final subtitle = context.knobs.stringOrNull(
     label: 'Subtitle',
     initialValue: 'Name . Preferences',
@@ -30,7 +35,7 @@ Widget buildSldsMobileMenuBlockUseCase(BuildContext context) {
     description: 'The gold bubble; leave empty to hide it',
   );
   final trailing = context.knobs.object.dropdown<_Trailing>(
-    label: 'Trailing',
+    label: copy['Trailing'],
     options: _Trailing.values,
     initialOption: _Trailing.navigate,
     labelBuilder: (v) => v.name,
@@ -50,9 +55,9 @@ Widget buildSldsMobileMenuBlockUseCase(BuildContext context) {
     showDivider: showDivider,
     trailing: switch (trailing) {
       _Trailing.none => null,
-      _Trailing.navigate => const SldsMobileMenuTrailing.navigate(),
-      _Trailing.badge => const SldsMobileMenuTrailing.badge(label: 'Accepted'),
-      _Trailing.validated => const SldsMobileMenuTrailing.validated(),
+      _Trailing.navigate => SldsMobileMenuTrailing.navigate(),
+      _Trailing.badge => SldsMobileMenuTrailing.badge(label: copy['Accepted']),
+      _Trailing.validated => SldsMobileMenuTrailing.validated(),
       _Trailing.toggle => SldsMobileMenuTrailing.control(
         SldsToggle(value: true, onChanged: (_) {}, semanticLabel: title),
       ),

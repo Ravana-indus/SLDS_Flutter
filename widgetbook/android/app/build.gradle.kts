@@ -24,7 +24,11 @@ android {
         applicationId = "lk.gov.govtech.widgetbook"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // Pinned to the SLDS device floor (§1), matching the example app.
+        // The catalog is the review surface for this library: inheriting
+        // Flutter's default here would let it run — and be signed off — on a
+        // configuration the library does not claim to support.
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

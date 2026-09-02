@@ -3,12 +3,15 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsNotificationCard,
   path: '[Feedback & Status]',
 )
 Widget buildSldsNotificationCardUseCase(BuildContext context) {
+  final copy = DemoCopy.of(context);
   final type = context.knobs.object.dropdown(
     label: 'Type',
     options: SldsNotificationType.values,
@@ -26,10 +29,10 @@ Widget buildSldsNotificationCardUseCase(BuildContext context) {
   );
 
   return Padding(
-    padding: const EdgeInsets.all(16),
+    padding: EdgeInsets.all(16),
     child: SldsNotificationCard(
-      title: 'Your Birth Certificate is ready',
-      body: 'Download it now or collect it from your selected office.',
+      title: copy['Your Birth Certificate is ready'],
+      body: copy['Download it now or collect it from your selected office.'],
       timestamp: 'Today, 12:00pm',
       type: type,
       unread: unread,

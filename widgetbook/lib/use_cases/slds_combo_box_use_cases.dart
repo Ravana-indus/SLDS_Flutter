@@ -3,6 +3,8 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 const _districts = [
   'Batticaloa',
   'Colombo',
@@ -34,11 +36,21 @@ SldsComboBoxState? _toVisualState(_ForcedState state) => switch (state) {
   path: '[Forms & Inputs]',
 )
 Widget buildSldsComboBoxUseCase(BuildContext context) {
-  final label = context.knobs.string(label: 'Label', initialValue: 'District');
-  final helperText = context.knobs.string(
-    label: 'Helper text',
-    initialValue: 'Help Text',
+  final copy = DemoCopy.of(context);
+  final labelOverride = context.knobs.string(
+    label: 'Label',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final label = labelOverride.isEmpty ? copy['District'] : labelOverride;
+  final helperTextOverride = context.knobs.string(
+    label: 'Helper text',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
+  );
+  final helperText = helperTextOverride.isEmpty
+      ? copy['Help Text']
+      : helperTextOverride;
   final isRequired = context.knobs.boolean(
     label: 'Required',
     initialValue: true,

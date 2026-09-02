@@ -3,16 +3,23 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsPasswordField,
   path: '[Forms & Inputs]',
 )
 Widget buildSldsPasswordFieldUseCase(BuildContext context) {
-  final helpText = context.knobs.string(
+  final copy = DemoCopy.of(context);
+  final helpTextOverride = context.knobs.string(
     label: 'Help text',
-    initialValue: 'Help Text',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final helpText = helpTextOverride.isEmpty
+      ? copy['Help Text']
+      : helpTextOverride;
   final isRequired = context.knobs.boolean(
     label: 'Required',
     initialValue: true,

@@ -3,20 +3,29 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsTooltip,
   path: '[Display & Data]',
 )
 Widget buildSldsTooltipUseCase(BuildContext context) {
-  final title = context.knobs.string(
+  final copy = DemoCopy.of(context);
+  final titleOverride = context.knobs.string(
     label: 'Title',
-    initialValue: 'Tooltip Title',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
-  final description = context.knobs.string(
+  final title = titleOverride.isEmpty ? copy['Tooltip Title'] : titleOverride;
+  final descriptionOverride = context.knobs.string(
     label: 'Description',
-    initialValue: 'Enter the description text',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final description = descriptionOverride.isEmpty
+      ? copy['Enter the description text']
+      : descriptionOverride;
   final stepLabel = context.knobs.string(
     label: 'Step label',
     initialValue: '1 of 5',
@@ -31,7 +40,7 @@ Widget buildSldsTooltipUseCase(BuildContext context) {
   );
 
   return Padding(
-    padding: const EdgeInsets.all(24),
+    padding: EdgeInsets.all(24),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,15 +54,15 @@ Widget buildSldsTooltipUseCase(BuildContext context) {
           onClose: showClose ? () {} : null,
           tailAlignment: SldsTooltipTailAlignment.end,
         ),
-        const SizedBox(height: 32),
-        const SldsTooltip(
-          title: 'Tooltip Title',
-          description: 'Enter the description text',
+        SizedBox(height: 32),
+        SldsTooltip(
+          title: copy['Tooltip Title'],
+          description: copy['Enter the description text'],
           tailAlignment: SldsTooltipTailAlignment.end,
         ),
-        const SizedBox(height: 32),
-        const SldsTooltip(
-          title: 'Title',
+        SizedBox(height: 32),
+        SldsTooltip(
+          title: copy['Title'],
           tailAlignment: SldsTooltipTailAlignment.center,
         ),
       ],

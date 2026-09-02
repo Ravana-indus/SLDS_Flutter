@@ -3,24 +3,37 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsTextArea,
   path: '[Forms & Inputs]',
 )
 Widget buildSldsTextAreaUseCase(BuildContext context) {
-  final label = context.knobs.string(
+  final copy = DemoCopy.of(context);
+  final labelOverride = context.knobs.string(
     label: 'Label',
-    initialValue: 'Description',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
-  final hintText = context.knobs.string(
+  final label = labelOverride.isEmpty ? copy['Description'] : labelOverride;
+  final hintTextOverride = context.knobs.string(
     label: 'Hint',
-    initialValue: 'Description placeholder',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
-  final helpText = context.knobs.string(
+  final hintText = hintTextOverride.isEmpty
+      ? copy['Description placeholder']
+      : hintTextOverride;
+  final helpTextOverride = context.knobs.string(
     label: 'Help text',
-    initialValue: 'Help Text',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final helpText = helpTextOverride.isEmpty
+      ? copy['Help Text']
+      : helpTextOverride;
   final isRequired = context.knobs.boolean(
     label: 'Required',
     initialValue: true,

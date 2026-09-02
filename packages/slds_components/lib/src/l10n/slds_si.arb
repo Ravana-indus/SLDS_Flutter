@@ -22,6 +22,8 @@
   "removeItem": "{label} ඉවත් කරන්න",
   "stepOf": "පියවර {number}: {title}. {description}",
   "labelledValue": "{label}: {value}",
+  "sensitiveValue": "{label}: සඟවා ඇත. හෙළි කිරීමට දෙවරක් තට්ටු කරන්න.",
+  "sensitiveValueRevealed": "{label}: {value}. සැඟවීමට දෙවරක් තට්ටු කරන්න.",
   "setYourTime": "ඔබේ වේලාව සකසන්න",
   "uploadHint": "PDF, JPEG හෝ PNG, 5MB ට අඩු",
   "showPassword": "මුරපදය පෙන්වන්න",

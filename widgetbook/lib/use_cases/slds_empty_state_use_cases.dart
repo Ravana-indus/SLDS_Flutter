@@ -3,24 +3,39 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsEmptyState,
   path: '[Feedback & Status]',
 )
 Widget buildSldsEmptyStateUseCase(BuildContext context) {
-  final title = context.knobs.string(
+  final copy = DemoCopy.of(context);
+  final titleOverride = context.knobs.string(
     label: 'Title',
-    initialValue: 'No documents added yet',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
-  final description = context.knobs.string(
+  final title = titleOverride.isEmpty
+      ? copy['No documents added yet']
+      : titleOverride;
+  final descriptionOverride = context.knobs.string(
     label: 'Description',
-    initialValue: 'Your uploaded documents will appear here once added.',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
-  final actionLabel = context.knobs.string(
+  final description = descriptionOverride.isEmpty
+      ? copy['Your uploaded documents will appear here once added.']
+      : descriptionOverride;
+  final actionLabelOverride = context.knobs.string(
     label: 'Action label',
-    initialValue: 'Add Document',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final actionLabel = actionLabelOverride.isEmpty
+      ? copy['Add Document']
+      : actionLabelOverride;
 
   return SldsEmptyState(
     illustration: const Icon(

@@ -18,6 +18,7 @@ Widget buildSldsBadgeUseCase(BuildContext context) {
   final label = context.knobs.string(
     label: 'Label (blank = status default)',
     initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
 
   return Center(

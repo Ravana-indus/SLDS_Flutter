@@ -214,6 +214,18 @@ abstract class SldsLocalizations {
   /// **'{label}: {value}'**
   String labelledValue(String label, String value);
 
+  /// Screen-reader label for a summary row whose value is a credential or personal identifier. The value itself is deliberately not announced.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: hidden. Double tap to reveal.'**
+  String sensitiveValue(String label);
+
+  /// Screen-reader label for a sensitive summary row the user has chosen to reveal.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}. Double tap to hide.'**
+  String sensitiveValueRevealed(String label, String value);
+
   /// Title of the time picker dialog.
   ///
   /// In en, this message translates to:

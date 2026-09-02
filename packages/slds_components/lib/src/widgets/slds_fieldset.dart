@@ -84,9 +84,16 @@ class SldsFieldset extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                legend,
-                style: tokens.typography.heading4.copyWith(color: legendColor),
+              // Flexible so a long legend wraps instead of overflowing: at
+              // the 320dp floor with 200% text a legend of a few words is
+              // already wider than the row.
+              Flexible(
+                child: Text(
+                  legend,
+                  style: tokens.typography.heading4.copyWith(
+                    color: legendColor,
+                  ),
+                ),
               ),
               if (required)
                 Text(

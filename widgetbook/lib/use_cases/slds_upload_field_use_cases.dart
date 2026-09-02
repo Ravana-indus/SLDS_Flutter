@@ -3,12 +3,15 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsUploadField,
   path: '[Forms & Inputs]',
 )
 Widget buildSldsUploadFieldUseCase(BuildContext context) {
+  final copy = DemoCopy.of(context);
   final label = context.knobs.string(label: 'Label', initialValue: 'Upload');
   final isRequired = context.knobs.boolean(
     label: 'Required',
@@ -33,7 +36,7 @@ Widget buildSldsUploadFieldUseCase(BuildContext context) {
   );
 
   return Padding(
-    padding: const EdgeInsets.all(24),
+    padding: EdgeInsets.all(24),
     child: SldsUploadField(
       label: label,
       required: isRequired,
@@ -41,7 +44,7 @@ Widget buildSldsUploadFieldUseCase(BuildContext context) {
       status: status,
       fileName: 'Birth_certificate.pdf',
       progress: progress,
-      errorText: 'File size is too big',
+      errorText: copy['File size is too big'],
       emptyIcon: useCustomIcons ? Icons.cloud_upload : null,
       uploadedIcon: useCustomIcons ? Icons.verified : null,
       errorIcon: useCustomIcons ? Icons.error_outline : null,

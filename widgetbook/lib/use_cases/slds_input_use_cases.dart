@@ -3,6 +3,8 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 /// Knob-only wrapper — Widgetbook's dropdown knob requires a non-null
 /// [initialOption], so [auto] stands in for "no forced state" (`null`)
 /// rather than passing `null` as an option itself.
@@ -23,14 +25,24 @@ SldsInputState? _toVisualState(_ForcedState state) => switch (state) {
   path: '[Forms & Inputs]',
 )
 Widget buildSldsInputUseCase(BuildContext context) {
-  final label = context.knobs.string(label: 'Label', initialValue: 'Input');
+  final copy = DemoCopy.of(context);
+  final labelOverride = context.knobs.string(
+    label: 'Label',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
+  );
+  final label = labelOverride.isEmpty ? copy['Input'] : labelOverride;
   final prefixText = context.knobs.string(label: 'Prefix', initialValue: 'LKR');
   final suffixText = context.knobs.string(label: 'Suffix', initialValue: 'KG');
   final hintText = context.knobs.string(label: 'Hint', initialValue: '0000');
-  final helperText = context.knobs.string(
+  final helperTextOverride = context.knobs.string(
     label: 'Help text',
-    initialValue: 'Help Text',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final helperText = helperTextOverride.isEmpty
+      ? copy['Help Text']
+      : helperTextOverride;
   final isRequired = context.knobs.boolean(
     label: 'Required',
     initialValue: true,

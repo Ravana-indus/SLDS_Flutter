@@ -67,7 +67,7 @@ jobs:
         run: flutter analyze --no-fatal-infos
         working-directory: packages/slds_components
 
-      - name: Colour literals (§2)
+      - name: Raw literals — colours and dimensions (§2)
         run: dart run tool/check_literals.dart
         working-directory: packages/slds_components
 
@@ -122,7 +122,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: golden-failures
-          path: packages/slds_components/test/goldens/failures/
+          # flutter_test writes failure images to <test dir>/failures/, not
+          # beside the goldens themselves.
+          path: packages/slds_components/test/failures/
           if-no-files-found: ignore
 
   catalog:

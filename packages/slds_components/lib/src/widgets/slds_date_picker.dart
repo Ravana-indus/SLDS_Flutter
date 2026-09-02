@@ -33,7 +33,6 @@ class SldsDatePicker extends StatefulWidget {
     this.onApply,
     this.cancelText,
     this.applyText,
-    this.rangeColor,
     this.firstDayOfWeek = DateTime.monday,
     this.width,
   });
@@ -71,9 +70,6 @@ class SldsDatePicker extends StatefulWidget {
   /// Apply button label.
   final String? applyText;
 
-  /// Highlight color for range selection in-between cells.
-  final Color? rangeColor;
-
   /// First day of the week (1 = Monday, 7 = Sunday).
   final int firstDayOfWeek;
 
@@ -89,8 +85,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   DateTime? _selectedSingleDate;
   DateTime? _rangeStartDate;
   DateTime? _rangeEndDate;
-
-  static const Color _defaultRangeLightYellow = Color(0xFFFFF7D6);
 
   @override
   void initState() {
@@ -227,8 +221,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final primaryAccent = context.slds.colors.buttonPrimaryBackground;
-    final rangeHighlight = widget.rangeColor ?? _defaultRangeLightYellow;
+    final primaryAccent = colors.buttonPrimaryBackground;
+    final rangeHighlight = colors.datePickerRangeHighlight;
 
     return Container(
       width: widget.width ?? 340,
@@ -457,6 +451,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
         _SldsBaseDateCell(
           dayText: dayNum < 10 ? '0$dayNum' : '$dayNum',
           isOverflow: true,
+          primaryAccent: primaryAccent,
+          rangeHighlight: rangeHighlight,
         ),
       );
     }
@@ -517,7 +513,14 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     final remainingCells = (7 - (totalCells % 7)) % 7;
     for (var day = 1; day <= remainingCells; day++) {
       final dayText = day < 10 ? '0$day' : '$day';
-      dayWidgets.add(_SldsBaseDateCell(dayText: dayText, isOverflow: true));
+      dayWidgets.add(
+        _SldsBaseDateCell(
+          dayText: dayText,
+          isOverflow: true,
+          primaryAccent: primaryAccent,
+          rangeHighlight: rangeHighlight,
+        ),
+      );
     }
 
     // Render in 7-column Grid
@@ -531,23 +534,24 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   }
 }
 
-/// Base Date Cell representing all 5 distinct design states shown in the specification:
+/// Base Date Cell representing all 5 distinct design states shown in the
+/// specification:
 /// 1. Neutral / Base day
 /// 2. Hover / Highlighted day
-/// 3. Selected day (vibrant circle badge `#FFC700`)
-/// 4. In-Range selection (connecting background pill `#FFF7D6`)
+/// 3. Selected day (vibrant circle badge, `buttonPrimaryBackground`)
+/// 4. In-Range selection (connecting pill, `datePickerRangeHighlight`)
 /// 5. Overflow / Muted day (faded text)
 class _SldsBaseDateCell extends StatelessWidget {
   const _SldsBaseDateCell({
     required this.dayText,
+    required this.primaryAccent,
+    required this.rangeHighlight,
     this.isSelected = false,
     this.isRangeStart = false,
     this.isRangeEnd = false,
     this.isInRange = false,
     this.isOverflow = false,
     this.isDisabled = false,
-    this.primaryAccent = const Color(0xFFFFC700),
-    this.rangeHighlight = const Color(0xFFFFF7D6),
   });
 
   final String dayText;
@@ -576,8 +580,11 @@ class _SldsBaseDateCell extends StatelessWidget {
       );
     }
 
+    // The selected day sits on the gold accent circle, which is the same
+    // colour in every palette, so its label is the static-black role rather
+    // than the palette's own text colour.
     final textColor = isSelected
-        ? const Color(0xFF1C1B1F)
+        ? colors.textStaticBlack
         : (isDisabled ? colors.disabledForeground : colors.textPrimary);
 
     // Range background decoration connecting start, in-between, and end

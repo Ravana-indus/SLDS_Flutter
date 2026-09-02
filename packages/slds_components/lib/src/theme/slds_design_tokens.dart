@@ -235,6 +235,13 @@ class SldsColorTokens {
   /// Figma List/Background/Hover.
   Color get listBackgroundHover => Color(tokens.listBackgroundHover);
 
+  /// Fill behind the in-between cells of a date or time range selection.
+  Color get datePickerRangeHighlight => Color(tokens.datePickerRangeHighlight);
+
+  /// Resting fill of a service card in its selected state.
+  Color get serviceCardSelectedBackground =>
+      Color(tokens.serviceCardSelectedBackground);
+
   /// Input label.
   Color get inputLabel => Color(tokens.inputLabel);
 

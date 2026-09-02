@@ -66,8 +66,6 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
   late DayPeriod _period;
   SldsTimePickerUnit _activeUnit = SldsTimePickerUnit.hour;
 
-  static const Color _defaultLightYellow = Color(0xFFFFF7D6);
-
   @override
   void initState() {
     super.initState();
@@ -196,7 +194,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                     height: 44,
                     decoration: BoxDecoration(
                       color: _activeUnit == SldsTimePickerUnit.hour
-                          ? _defaultLightYellow
+                          ? colors.datePickerRangeHighlight
                           : colors.surfaceCard,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
@@ -246,7 +244,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                     height: 44,
                     decoration: BoxDecoration(
                       color: _activeUnit == SldsTimePickerUnit.minute
-                          ? _defaultLightYellow
+                          ? colors.datePickerRangeHighlight
                           : colors.surfaceCard,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
@@ -354,7 +352,10 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                   borderColor: colors.borderDefault,
                   textColor: colors.textPrimary,
                 ),
-                child: _buildInteractiveClockOverlay(primaryAccent),
+                child: _buildInteractiveClockOverlay(
+                  primaryAccent,
+                  colors.textStaticBlack,
+                ),
               ),
             ),
           ),
@@ -401,7 +402,10 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
     );
   }
 
-  Widget _buildInteractiveClockOverlay(Color primaryAccent) {
+  Widget _buildInteractiveClockOverlay(
+    Color primaryAccent,
+    Color numeralColor,
+  ) {
     final isHour = _activeUnit == SldsTimePickerUnit.hour;
     final totalItems = isHour ? 12 : 12; // 12 numbers on clock face
 
@@ -462,9 +466,10 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                       fontWeight: isSelected
                           ? FontWeight.bold
                           : FontWeight.w500,
-                      color: isSelected
-                          ? const Color(0xFF1C1B1F)
-                          : const Color(0xFF1C1B1F),
+                      // Both dial numerals sit on the clock face, which keeps
+                      // its colour across palettes; selection is signalled by
+                      // weight and the accent circle, not by colour.
+                      color: numeralColor,
                     ),
                   ),
                 ),

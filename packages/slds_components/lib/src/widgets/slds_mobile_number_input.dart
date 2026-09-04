@@ -69,7 +69,7 @@ class SldsMobileNumberInput extends StatefulWidget {
   /// Supporting guidance shown below the field.
   final String? helperText;
 
-  /// Validation guidance shown when the resolved state is [error].
+  /// Validation guidance shown when the resolved state is `error`.
   final String? errorText;
 
   /// Whether to show the required marker beside [label].
@@ -111,7 +111,7 @@ class SldsMobileNumberInput extends StatefulWidget {
   /// Makes the national-number portion selectable but not editable.
   final bool readOnly;
 
-  /// Enables the field unless [visualState] is [disabled].
+  /// Enables the field unless `visualState` is `disabled`.
   final bool enabled;
 
   /// Restricts or transforms user input before it is committed.

@@ -82,7 +82,12 @@ class SldsSummaryRow {
 /// text or a status badge via [SldsSummaryRow.badgeStatus].
 class SldsSummaryList extends StatelessWidget {
   /// Creates a summary list of [rows].
-  const SldsSummaryList({required this.rows, super.key, this.width});
+  const SldsSummaryList({
+    required this.rows,
+    super.key,
+    this.width,
+    this.isCredential = false,
+  });
 
   /// The label/value pairs, rendered top to bottom in the order given.
   final List<SldsSummaryRow> rows;
@@ -90,6 +95,18 @@ class SldsSummaryList extends StatelessWidget {
   /// Preferred width, clamped to the available parent width. Defaults to
   /// the Figma reference width (400) when the parent is unbounded.
   final double? width;
+
+  /// Whether this list presents an identity or credential document (a
+  /// Driving Licence, Revenue Licence, Emission Certificate or Motor
+  /// Insurance record) rather than an ordinary review screen.
+  ///
+  /// This is a marker only — the library does not itself restrict
+  /// screenshots or screen recording, since that is a platform API the host
+  /// app must call (e.g. `FLAG_SECURE` on Android, `UIScreen` capture
+  /// notifications on iOS). A route rendering a credential-bearing list
+  /// should read this flag and apply that restriction, and obscure the
+  /// content in the OS app switcher, before the list is shown.
+  final bool isCredential;
 
   @override
   Widget build(BuildContext context) {

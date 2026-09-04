@@ -24,7 +24,7 @@ sealed class SldsMobileMenuTrailing {
   /// A check mark, for a row that has been validated.
   const factory SldsMobileMenuTrailing.validated() = SldsMobileMenuValidated;
 
-  /// An arbitrary control — pass an [SldsToggle] or [SldsRadio] here.
+  /// An arbitrary control — pass an `SldsToggle` or `SldsRadio` here.
   ///
   /// Those own their state and callbacks, so the block does not wrap them:
   /// it only reserves the slot and lays them out.

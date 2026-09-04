@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart' show SldsAvatar;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
-import 'package:slds_components/src/widgets/slds_focus.dart';
 import 'package:slds_components/src/widgets/slds_avatar.dart' show SldsAvatar;
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// SLDS chip — a pill-shaped label with an optional leading [avatar]/[icon]
 /// and an optional trailing close button (shown when [onDeleted] is set).

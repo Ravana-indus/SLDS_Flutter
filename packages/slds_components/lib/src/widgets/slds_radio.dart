@@ -27,8 +27,9 @@ enum SldsRadioSize {
 /// under the same [groupValue]/[onChanged] pair, one per [value], exactly
 /// like Flutter's own [Radio].
 ///
-/// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
-/// aware); pass [color] to override the accent for one instance.
+/// Colors resolve from the ambient `Theme`'s `ColorScheme` (light/dark
+/// aware). There is no per-instance color override; theming a single
+/// instance goes through a `ThemeExtension` instead.
 class SldsRadio<T> extends StatefulWidget {
   /// Creates a radio button.
   const SldsRadio({

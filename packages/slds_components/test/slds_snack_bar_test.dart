@@ -141,10 +141,10 @@ void main() {
     // reader user is never told it appeared (§5).
     final handle = tester.ensureSemantics();
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         localizationsDelegates: SldsLocalizations.localizationsDelegates,
         supportedLocales: SldsLocalizations.supportedLocales,
-        home: const Scaffold(body: SldsSnackBar(title: 'Saved')),
+        home: Scaffold(body: SldsSnackBar(title: 'Saved')),
       ),
     );
 

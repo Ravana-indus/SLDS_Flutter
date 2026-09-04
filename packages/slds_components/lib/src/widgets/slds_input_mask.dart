@@ -61,10 +61,12 @@ class SldsInputMask extends StatefulWidget {
   /// owns an internal controller for its lifetime.
   final TextEditingController? controller;
 
-  /// Static mask segment rendered in its own cell before the value (e.g. `http://`).
+  /// Static mask segment rendered in its own cell before the value (e.g.
+  /// `http://`).
   final String? prefixText;
 
-  /// Static mask segment rendered in its own cell after the value (e.g. `.com`).
+  /// Static mask segment rendered in its own cell after the value (e.g.
+  /// `.com`).
   final String? suffixText;
 
   /// Placeholder shown inside an empty field. Not a label substitute — it
@@ -241,7 +243,8 @@ class _SldsInputMaskState extends State<SldsInputMask> {
         ? colors.error
         : colors.inputHelper;
     // Boxier corners than SldsInput's pill-ish radius2xl — matches the
-    // reference's segmented-cell look (radiusLg is Figma's compact-field radius).
+    // reference's segmented-cell look (radiusLg is Figma's compact-field
+    // radius).
     final radius = dimensions.radiusLg;
 
     return LayoutBuilder(

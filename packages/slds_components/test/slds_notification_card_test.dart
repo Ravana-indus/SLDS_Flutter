@@ -39,7 +39,8 @@ void main() {
   });
 
   testWidgets(
-    'shows the action button only when actionLabel is set, and it invokes onAction',
+    'shows the action button only when actionLabel is set, and it invokes '
+    'onAction',
     (tester) async {
       var tapped = false;
       await pump(

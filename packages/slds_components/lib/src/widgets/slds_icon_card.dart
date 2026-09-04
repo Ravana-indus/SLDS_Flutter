@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:slds_components/slds_components.dart'
-    show SldsCard, SldsServiceCard;
+import 'package:slds_components/slds_components.dart' show SldsCard;
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Fixed footprint for [SldsIconCard]. [small] is the compact grid tile
@@ -15,10 +14,10 @@ enum SldsIconCardSize {
   large,
 }
 
-/// Visual state for [SldsIconCard] — mirrors [SldsServiceCard]'s state
-/// pattern. [state] forces one for previews; leave it null to let the
-/// widget derive [hover] from pointer tracking and [disabled] from
-/// [onTap] being null.
+/// Visual state for [SldsIconCard] — mirrors `SldsServiceCard`'s state
+/// pattern. `state` forces one for previews; leave it null to let the
+/// widget derive `hover` from pointer tracking and `disabled` from
+/// `onTap` being null.
 enum SldsIconCardState {
   /// At rest.
   defaultState,

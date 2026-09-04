@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/format/slds_format.dart';
 import 'package:slds_components/src/l10n/slds_strings.dart';
-
 import 'package:slds_components/src/theme/slds_tokens.dart';
-import 'package:slds_components/src/widgets/slds_focus.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Selection mode for [SldsDatePicker].
 enum SldsDatePickerMode {
@@ -44,7 +43,8 @@ class SldsDatePicker extends StatefulWidget {
   /// Initially selected date for single mode. Defaults to today if null.
   final DateTime? initialDate;
 
-  /// Initially selected range for range mode. Defaults to Jan 13–18 of current year or sample range if null.
+  /// Initially selected range for range mode. Defaults to Jan 13–18 of
+  /// current year or sample range if null.
   final DateTimeRange? initialRange;
 
   /// Minimum selectable date.
@@ -62,7 +62,8 @@ class SldsDatePicker extends StatefulWidget {
   /// Callback when Cancel button is tapped.
   final VoidCallback? onCancel;
 
-  /// Callback when Apply button is tapped with the currently selected date or range.
+  /// Callback when Apply button is tapped with the currently selected date
+  /// or range.
   final ValueChanged<dynamic>? onApply;
 
   /// Cancel button label.

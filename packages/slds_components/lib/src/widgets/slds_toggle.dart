@@ -33,8 +33,9 @@ enum SldsToggleSize {
 /// gold focus ring while focused via keyboard/tap-down, and dimmed when
 /// [enabled] is false.
 ///
-/// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
-/// aware); pass [color] to override the accent for one instance.
+/// Colors resolve from the ambient `Theme`'s `ColorScheme` (light/dark
+/// aware). There is no per-instance color override; theming a single
+/// instance goes through a `ThemeExtension` instead.
 class SldsToggle extends StatefulWidget {
   /// Creates a toggle switch.
   const SldsToggle({

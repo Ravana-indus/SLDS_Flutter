@@ -1,5 +1,3 @@
-// ignore_for_file: lines_longer_than_80_chars
-
 import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/theme/slds_design_tokens.dart';
@@ -10,6 +8,13 @@ export 'slds_design_tokens.dart';
 /// [MediaQuery], re-derived on every read (not cached) so it tracks
 /// light/dark toggles, the OS high-contrast setting and
 /// [MediaQueryData.disableAnimations] automatically.
+///
+/// The OS bold-text setting needs no token here: every SLDS widget renders
+/// its text through Flutter's own [Text], which already merges
+/// `FontWeight.bold` in whenever [MediaQueryData.boldText] is true (see
+/// `Text.build`). Fighting that with a hardcoded weight would be the bug,
+/// not the fix. `test/slds_bold_text_test.dart` proves this holds for a real
+/// component rather than trusting the framework blind.
 extension SldsTokensContext on BuildContext {
   /// The token set for the current theme and accessibility settings.
   ///
@@ -43,7 +48,8 @@ extension SldsTokensContext on BuildContext {
         : SldsTokenSet.light(reducedMotion: reducedMotion);
   }
 
-  /// Whether the viewport is narrower than [SldsDimensionTokens.breakpointMobile].
+  /// Whether the viewport is narrower than
+  /// [SldsDimensionTokens.breakpointMobile].
   ///
   /// The width itself is a token; this helper lives in `slds_components`
   /// because [BuildContext] is Flutter and the token package stays pure Dart.

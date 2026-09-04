@@ -45,7 +45,7 @@ Future<void> _loadMaterialIcons() async {
 /// name the widgets ask for.
 ///
 /// The family is qualified with the package prefix because
-/// [SldsTextStyleTokenX.toTextStyle] sets `package: 'slds_components'`, and
+/// `SldsTextStyleTokenX.toTextStyle` sets `package: 'slds_components'`, and
 /// Flutter resolves a package-provided font under that prefixed name.
 Future<void> _loadBundledFonts() async {
   const family = 'packages/slds_components/Google Sans';

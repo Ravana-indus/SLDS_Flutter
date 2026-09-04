@@ -183,7 +183,8 @@ void main() {
   );
 
   testWidgets(
-    'custom uploadedIcon and uploadedWidget overrides uploaded status indicator',
+    'custom uploadedIcon and uploadedWidget overrides uploaded status '
+    'indicator',
     (tester) async {
       await pump(
         tester,

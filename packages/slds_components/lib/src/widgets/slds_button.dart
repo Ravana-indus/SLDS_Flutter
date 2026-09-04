@@ -122,7 +122,7 @@ class _SldsButtonMetrics {
 /// per-instance colour override: variants are the supported way to change a
 /// button's emphasis.
 ///
-/// The loading state reads [SldsLocalizations], so the host app's
+/// The loading state reads `SldsLocalizations`, so the host app's
 /// `MaterialApp` must include `SldsLocalizations.localizationsDelegates` /
 /// `.supportedLocales` (merge them into your own lists if you have other
 /// localized packages).

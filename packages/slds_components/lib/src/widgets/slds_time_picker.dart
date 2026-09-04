@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/format/slds_format.dart';
 import 'package:slds_components/src/l10n/slds_strings.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
@@ -648,11 +649,14 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
     if (time == null) return '';
     final strings = context.sldsStrings;
     final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
+    // Numeric H:mm goes through the shared intl-backed formatter (§6)
+    // rather than hand-built padding; the AM/PM marker stays the library's
+    // own reviewed string (see SldsFormat.timeOfDay12 dartdoc).
+    final numeric = context.sldsFormat.timeOfDay12(hour, time.minute);
     final period = time.period == DayPeriod.am
         ? strings.timePeriodAm
         : strings.timePeriodPm;
-    return '$hour:$minute $period';
+    return '$numeric $period';
   }
 
   Future<void> _showTimePicker(BuildContext context) async {

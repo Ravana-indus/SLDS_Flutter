@@ -48,7 +48,8 @@ class SldsFieldset extends StatelessWidget {
   /// as an error, same convention as every other SLDS field.
   final String? errorText;
 
-  /// Vertical gap between [children]. Defaults to [SldsDimensionTokens.space16].
+  /// Vertical gap between [children]. Defaults to
+  /// [SldsDimensionTokens.space16].
   final double? spacing;
 
   /// Dims the legend/description/helper text — does not disable [children]

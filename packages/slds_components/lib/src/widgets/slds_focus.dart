@@ -87,7 +87,8 @@ class SldsFocusRing extends StatelessWidget {
 /// The extra area is transparent and does not affect layout beyond the
 /// minimum, so a control already at or above 48 is unchanged.
 class SldsTapTarget extends StatelessWidget {
-  /// Wraps [child] so its hit area is at least [SldsDimensionTokens.tapTargetMin].
+  /// Wraps [child] so its hit area is at least
+  /// [SldsDimensionTokens.tapTargetMin].
   const SldsTapTarget({required this.child, super.key});
 
   /// The interactive widget whose hit area is being expanded.

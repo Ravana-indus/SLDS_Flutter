@@ -99,7 +99,8 @@ void main() {
 
       expect(
         find.bySemanticsLabel(
-          'Step 1: Prepare documents. Gather all required identification and supporting files',
+          'Step 1: Prepare documents. Gather all required identification '
+          'and supporting files',
         ),
         findsOneWidget,
       );

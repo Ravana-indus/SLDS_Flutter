@@ -176,10 +176,10 @@ void main() {
             locale: locale,
             localizationsDelegates: SldsLocalizations.localizationsDelegates,
             supportedLocales: SldsLocalizations.supportedLocales,
-            home: Scaffold(
+            home: const Scaffold(
               body: SldsTimePicker(
                 label: 'Time',
-                initialTime: const TimeOfDay(hour: 14, minute: 5),
+                initialTime: TimeOfDay(hour: 14, minute: 5),
               ),
             ),
           ),

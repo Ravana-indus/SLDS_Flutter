@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart'
     show SldsSummaryBadgeStatus, SldsSummaryList;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_summary_list.dart'
     show SldsSummaryBadgeStatus, SldsSummaryList;

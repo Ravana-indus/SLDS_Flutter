@@ -8,8 +8,8 @@ import 'package:slds_components/src/widgets/slds_button.dart';
 /// button. Auto-dismisses after the ambient
 /// `SldsMotionTokens.transientMessageDuration` unless a caller overrides it.
 ///
-/// Shown via [SldsSnackBar.show], which wraps the native
-/// [ScaffoldMessenger.showSnackBar] — that handles queueing, auto-dismiss
+/// Shown via `SldsSnackBar.show`, which wraps the native
+/// `ScaffoldMessenger.showSnackBar` — that handles queueing, auto-dismiss
 /// timing, and swipe-to-dismiss, so none of it is re-implemented here.
 /// Requires a [Scaffold]/[ScaffoldMessenger] ancestor like any snack bar.
 class SldsSnackBar extends StatelessWidget {

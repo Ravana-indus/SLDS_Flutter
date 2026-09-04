@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slds_components/slds_components.dart' show SldsTimePickerDialog;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_time_picker.dart'
     show SldsTimePickerDialog;
@@ -104,6 +105,10 @@ class _SldsFlyoutMenuState extends State<SldsFlyoutMenu> {
                 alignment: AlignmentDirectional.topEnd,
                 child: IconButton(
                   onPressed: widget.onClose,
+                  // Icon-only, so it has no text to fall back on: without a
+                  // name a screen reader reaches the button and announces
+                  // nothing.
+                  tooltip: context.sldsStrings.close,
                   icon: Icon(Icons.close, color: colors.textPrimary),
                 ),
               ),

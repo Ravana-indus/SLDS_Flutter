@@ -62,7 +62,11 @@ void main() {
 
     expect(badgeColorFor('1'), colors.badgeApprovedBackground); // done
     expect(badgeColorFor('2'), colors.badgePendingBackground); // current
-    expect(badgeColorFor('3'), colors.disabledBackground); // upcoming
+    // Upcoming reads the neutral badge pair, not the disabled pair: an
+    // upcoming step is information the citizen needs to read, not an inert
+    // control, so WCAG's exemption for disabled elements does not apply.
+    // disabledForeground on disabledBackground measured 1.40:1.
+    expect(badgeColorFor('3'), colors.badgeNeutralBackground); // upcoming
   });
 
   testWidgets('draws a divider between steps but not before the first', (

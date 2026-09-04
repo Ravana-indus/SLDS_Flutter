@@ -295,9 +295,15 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                           context.sldsStrings.timePeriodAm,
                           style: tokens.typography.body1.copyWith(
                             fontWeight: FontWeight.bold,
+                            // The gold accent measures 1.56:1 on the card, so
+                            // painting the *selected* period in it made the
+                            // active option the unreadable one. Selection is
+                            // carried by weight and text colour instead; the
+                            // unselected option drops the 0.6 alpha that put
+                            // it at 2.93:1 (WCAG 1.4.3).
                             color: _period == DayPeriod.am
-                                ? primaryAccent
-                                : colors.textSecondary.withValues(alpha: 0.6),
+                                ? colors.textPrimary
+                                : colors.textSecondary,
                           ),
                         ),
                       ),
@@ -323,8 +329,8 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                           style: tokens.typography.body1.copyWith(
                             fontWeight: FontWeight.bold,
                             color: _period == DayPeriod.pm
-                                ? primaryAccent
-                                : colors.textSecondary.withValues(alpha: 0.6),
+                                ? colors.textPrimary
+                                : colors.textSecondary,
                           ),
                         ),
                       ),

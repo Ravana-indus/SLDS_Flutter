@@ -22,8 +22,8 @@ review's own scorecard:
 | 1 | Purpose, scope, device floor | Fail | Partial — floor declared and tested; credential/PII contract still absent |
 | 2 | Package architecture | Fail | Partial — `slds_tokens` is pure Dart with the one-way dependency enforced in CI, but §2's no-raw-values rule is a ratchet, not a ban: 21 colour and 100 dimension literals remain |
 | 3 | Versioning and distribution | Fail | Partial — real CHANGELOG at 0.1.0-alpha; registry still an open §12 decision |
-| 4 | Theming | Fail | **Pass** — explicit `ColorScheme`, cached statics, high contrast reachable |
-| 5 | Accessibility | Fail | Partial — focus, contrast, touch targets, reduced motion and semantics coverage fixed, and three components that could not reach the high-contrast palette now do; the manual screen-reader pass is the one gap left |
+| 4 | Theming | Fail | **Pass** — explicit `ColorScheme`, cached statics, `SldsTokenSet` installed as a `ThemeExtension`, high contrast reachable by every component |
+| 5 | Accessibility | Fail | Partial — focus, contrast, touch targets, reduced motion and semantics are now gated over *every* component by `slds_accessibility_coverage_test.dart`, which found nine defects the hand-picked suite missed, and seven components that could not reach the high-contrast palette now do; the manual screen-reader pass is the one gap left |
 | 6 | Localization | Partial | Partial — all strings through the delegate, intl layer added; si/ta review is the only gap |
 | 7 | API design | Partial | Partial — per-instance colour overrides are now genuinely gone (`SldsDatePicker.rangeColor` survived the first pass and has since been removed), `heroTag` and badge semantics fixed, every public member carries dartdoc; §7's mandatory state set is still missing offline and stale |
 | 8 | Testing | Fail | **Pass with a disclosed deviation** — goldens, contrast and guideline matchers all in CI |
@@ -96,7 +96,38 @@ component could render in it.
 
 Fixed: the legacy layer is deleted and every widget resolves from one source.
 
-### Three components could not reach the high-contrast palette
+### Nine accessibility defects the hand-picked matcher suite missed
+
+`slds_accessibility_guidelines_test.dart` ran Flutter's three accessibility
+matchers against a handful of components chosen by hand. Driving the same
+matchers from `sldsFixtures()` — every exported component, the same list the
+golden and device-floor suites use — found nine real defects in seven
+components:
+
+| Component | Defect |
+|-----------|--------|
+| `SldsProcessList` | Upcoming step number at **1.40:1** — the disabled token pair used for information the citizen has to read. WCAG's disabled-element exemption does not apply |
+| `SldsTimePickerDialog` | The **selected** AM/PM at **1.56:1** — painted in the gold accent, which is a fill colour, so the active option was the unreadable one |
+| `SldsDatePicker` | Adjacent-month dates at **1.74:1** — `textTertiary` composited at 40% alpha, on dates that are still selectable |
+| `SldsErrorSummary` | Error links under 48dp, and text one grade too light |
+| `SldsAccordion` | Header tappable but nameless — `Semantics` nested *inside* the `InkWell`, so the tappable node and the labelled node were different nodes |
+| `SldsComboBox` | Unlabelled 36dp dropdown toggle; 20dp chip-remove button |
+| `SldsFlyoutMenu` | Icon-only close button with no accessible name |
+| `SldsTabStrip` | Tabs 38dp tall |
+| `SldsTooltip` | Action button 28dp tall |
+
+Three of these are contrast failures on text a citizen must read, and they
+share a root cause worth naming: a *fill*-grade colour or a disabled-grade
+token used for text, or a legible token dimmed with alpha. The remaining six
+are tap targets and missing names.
+
+The nesting bugs are the instructive ones. `Semantics` inside an `InkWell`,
+or `SldsTapTarget` outside a `Semantics`, both compile, both look right, and
+both produce a semantics node that fails — the label lands on one node and the
+tap on another. Only a rendered-tree matcher catches that; no amount of source
+review does.
+
+### Seven components could not reach the high-contrast palette
 
 Found in the same verification pass as the corrections in §1a, and the same
 class of defect as the one directly above — a component that renders the same
@@ -123,6 +154,23 @@ against a white page was too faint to mark a selection for the users that
 palette exists for. Both tokens are now in the blocking contrast check, and
 8 goldens were regenerated.
 
+Four more components had the same defect by a different route.
+`SldsTopNavBar`, `SldsBottomNav`, `SldsTabStrip` and `SldsPullToRefresh` each
+ship a dark *style variant* — a Figma style choice, deliberately independent
+of the app's brightness — and all four painted it with hardcoded
+`Colors.black`/`Colors.white`.
+
+This one hides better than the three above. The `dark` local in those widgets
+is the style variant, not `Theme.brightness`, so the literals read as an
+intentional design decision, and a scan for brightness handling passes over
+them. The consequence is the same: a citizen who has switched on high contrast
+got the same fixed near-black bar as everyone else.
+
+Fixed with a `surfaceInverse`/`textInverse` pair in all three palettes.
+`slds_theme_extension_test.dart` asserts the pair clears 4.5:1 in every
+palette, and the regenerated high-contrast tab-strip golden differs from its
+predecessor — which is the evidence the palette now actually lands.
+
 ---
 
 ## 3. What is still open
@@ -137,6 +185,7 @@ Ordered by what a re-audit is most likely to reject.
 | Low-end device smoke test not run | §8 | Neither the procedure nor a pass exists. Naming the handset is a GovTech decision, and the §1 device floor is declared but unexercised |
 | Golden coverage is partial | §8 | **Resolved.** 238 images. The deep matrix still covers button, card, FAB, text field and toggle; `slds_goldens_coverage_test.dart` adds every remaining component at one image per theme plus a 200% text-scale pass. That shallower pass immediately earned itself: it caught `SldsUploadField` overflowing its field by 88px at a doubled text scale (WCAG 1.4.4), now fixed and regression-tested |
 | `EdgeInsetsDirectional` not used widely | §5 | **Resolved.** Every directional inset, alignment, border radius and `Positioned` now uses the `*Directional` variant; 9 RTL goldens prove the mirroring. The two remaining `EdgeInsets.only` are vertical-only, and the time picker's clock face is deliberately absolute |
+| Per-instance visual overrides | §4, §7 (C2) | **Resolved.** `SldsTextField.trailingIconColor` was the last one — the audit's other cited example, `SldsDatePicker.rangeColor`, does not exist in this codebase. It had no callers, so removal is a breaking change on paper only; the icon now resolves from the input-icon token, or the error token while `errorText` is set |
 | Credential/PII marker convention | §1 (M7) | No credential component exists yet; the contract should exist before the first one |
 | Undocumented public members | §7 | **Resolved.** 305 → 0. `public_member_api_docs` is back at its default severity, so a new undocumented member fails `flutter analyze` directly; the ratchet tool that guarded the backlog is deleted |
 | Raw literals in widget code | §2, DoD 1 | **Partly open, and previously overstated here.** DoD 1 is enforced by a ratchet, not a ban: 21 colour literals remain in 11 files. Three widgets were live defects — the date picker, time picker and service card hardcoded their selection colours and so could not render in the high-contrast palette at all; those are fixed and the values are now tokens. The rest are component *style variants* (`SldsBottomNavStyle.dark`), which violate §2 without being user-visible theme bugs. Separately, the checker only ever matched colours, so §2's ban on raw sizes, radii and stroke widths was unenforced; it now also ratchets dimensions, which surfaced **100** in 21 files that CI could not previously see |
@@ -155,7 +204,7 @@ every one of them are now closed:
 | DoD | Criterion | State |
 |-----|-----------|-------|
 | 1 | Values from tokens, no literals | **Not met, enforced as a ratchet.** 21 colour and 100 dimension literals remain. The three that were live theme defects are fixed; see the row in §3 |
-| 3 | Semantics | **Met.** The two components that genuinely lost information — a silent step indicator and a snack bar nobody was told about — now announce themselves, and both are regression-tested |
+| 3 | Semantics | **Met**, and now enforced over every component rather than a hand-picked few. The two components that genuinely lost information — a silent step indicator and a snack bar nobody was told about — now announce themselves, and both are regression-tested |
 | 5 | Localization | **Not met.** si/ta remain machine-drafted. Needs two native speakers |
 | 6 | Mandatory state set | **Not met.** Offline and stale are absent library-wide; see the row in §3 |
 | 7 | Goldens | **Met.** Every exported component has images across light, dark and high contrast, plus a 200% text-scale pass |
@@ -207,14 +256,30 @@ the process, not a defect left in the code.
 All three are decisions taken knowingly. They are recorded here rather than
 left to be discovered at re-audit.
 
-**Component theming does not use `ThemeExtension` (§4, C6).** The guideline
-prescribes one `ThemeExtension` subclass per component. This library instead
-exposes a single `SldsTokenSet` read through `context.slds`, with value
-equality on every group. It achieves the same goals — no literals in widgets,
-values changeable in one place, no unnecessary rebuilds — without 52 extension
-classes to keep in sync. If GovTech requires the prescribed shape, the
-migration is mechanical but touches every widget; we would rather agree the
-approach than build it twice.
+**One `ThemeExtension`, not one per component (§4, C6).** The guideline
+prescribes one `ThemeExtension` subclass per component. `SldsTokenSet` is now
+a `ThemeExtension` installed on all three `ThemeData`s, and `context.slds`
+reads it back off the theme — so the mechanism §4 asks for is in place and a
+consuming app can rebrand with the standard Flutter idiom:
+
+```dart
+theme: SldsTheme.light.copyWith(
+  extensions: [
+    SldsTheme.light.extension<SldsTokenSet>()!.copyWith(colors: myColors),
+  ],
+),
+```
+
+What remains divergent is only the *granularity*: one extension carrying every
+token group rather than 52 component classes. The guideline's stated goals — no
+literals in widgets, values changed in one place, no rebuilds when nothing
+relevant changed — are met by the single extension with value equality, without
+52 classes to keep in sync. Splitting it per component is mechanical if GovTech
+requires the literal shape.
+
+This also fixed a real defect the previous shape hid: `context.slds` used to
+re-derive a palette from `Theme.brightness`, so an app that overrode tokens was
+silently ignored. It now returns what the theme actually carries.
 
 **Goldens are generated on macOS, not Linux (§8).** §8 makes Linux the sole
 reference platform because font rasterisation differs between operating

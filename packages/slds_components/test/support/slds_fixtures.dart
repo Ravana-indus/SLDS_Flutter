@@ -55,9 +55,22 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
   (
     name: 'bottom_sheet',
     width: 340,
-    build: () => const SldsBottomSheet(
-      title: 'Choose a district',
-      child: Text('Sheet body'),
+    build: () => Builder(
+      builder: (context) => SldsBottomSheet(
+        title: 'Choose a district',
+        // Coloured from the theme and top-aligned, as a consuming app would
+        // write it. The sheet puts its child in an Expanded, so a bare Text
+        // becomes a full-height node of mostly empty surface — which the
+        // contrast matcher then averages, reporting a failure for the
+        // fixture rather than for the component.
+        child: Align(
+          alignment: AlignmentDirectional.topStart,
+          child: Text(
+            'Sheet body',
+            style: TextStyle(color: context.slds.colors.textPrimary),
+          ),
+        ),
+      ),
     ),
   ),
   (
@@ -461,7 +474,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
   (
     name: 'fab',
     width: null,
-    build: () => SldsFab(icon: Icons.add, onPressed: () {}),
+    build: () => SldsFab(icon: Icons.add, tooltip: 'Add', onPressed: () {}),
   ),
   (
     name: 'focus',

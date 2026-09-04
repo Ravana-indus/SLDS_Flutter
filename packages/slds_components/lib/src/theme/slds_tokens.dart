@@ -18,11 +18,27 @@ extension SldsTokensContext on BuildContext {
   SldsTokenSet get slds {
     final mediaQuery = MediaQuery.maybeOf(this);
     final reducedMotion = mediaQuery?.disableAnimations ?? false;
+    final theme = Theme.of(this);
 
+    // Prefer the set the ThemeData carries (§4), so an app that overrode
+    // tokens via `theme.copyWith(extensions:)` gets its own values here
+    // rather than the library's defaults.
+    final fromTheme = theme.extension<SldsTokenSet>();
+    if (fromTheme != null) {
+      return reducedMotion
+          ? fromTheme.copyWith(
+              motion: const SldsMotionTokens(reducedMotion: true),
+            )
+          : fromTheme;
+    }
+
+    // Fallback for a host that installed no SLDS theme at all: derive from
+    // brightness so components still render with real tokens rather than
+    // throwing.
     if (mediaQuery?.highContrast ?? false) {
       return SldsTokenSet.highContrast(reducedMotion: reducedMotion);
     }
-    return Theme.of(this).brightness == Brightness.dark
+    return theme.brightness == Brightness.dark
         ? SldsTokenSet.dark(reducedMotion: reducedMotion)
         : SldsTokenSet.light(reducedMotion: reducedMotion);
   }

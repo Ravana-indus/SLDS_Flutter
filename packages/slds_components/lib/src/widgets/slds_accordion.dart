@@ -85,15 +85,18 @@ class _AccordionTile extends StatelessWidget {
     return Material(
       color: colors.surfaceCard,
       borderRadius: BorderRadius.circular(dimensions.radius2xl),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(dimensions.radius2xl),
-        child: Semantics(
-          container: true,
-          explicitChildNodes: true,
-          button: true,
-          expanded: expanded,
-          label: item.title,
+      // Semantics wraps the InkWell rather than sitting inside it: nested the
+      // other way the tappable node and the labelled node are different nodes,
+      // so a screen reader reaches the header and has nothing to announce.
+      child: Semantics(
+        container: true,
+        explicitChildNodes: true,
+        button: true,
+        expanded: expanded,
+        label: item.title,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(dimensions.radius2xl),
           child: Padding(
             padding: EdgeInsets.all(dimensions.space16),
             child: Column(

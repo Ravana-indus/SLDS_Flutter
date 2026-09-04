@@ -94,6 +94,11 @@ abstract final class SldsTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
+      // §4: the token set travels on the ThemeData as a ThemeExtension, so a
+      // consuming app can override tokens with `theme.copyWith(extensions:)`
+      // and `context.slds` picks the override up. Widgets read it from here
+      // rather than re-deriving a palette from brightness.
+      extensions: <ThemeExtension<dynamic>>[tokens],
       textTheme: tokens.typography.materialTextTheme,
       scaffoldBackgroundColor: colors.surfacePage,
       cardTheme: CardThemeData(

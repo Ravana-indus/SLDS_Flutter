@@ -3,6 +3,8 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 /// `auto` lets state be derived from hover/onTap like a real app; forcing
 /// one of the others previews it directly — dropdown knobs need a non-null
 /// `initialOption`, so `auto` stands in for "no forced state".
@@ -14,15 +16,29 @@ enum _ForcedState { auto, defaultState, hover, disabled }
   path: '[Display & Data]',
 )
 Widget buildSldsIconCardUseCase(BuildContext context) {
-  final title = context.knobs.string(label: 'Title', initialValue: 'Fuel Pass');
-  final description = context.knobs.string(
+  final copy = DemoCopy.of(context);
+  final titleOverride = context.knobs.string(
+    label: 'Title',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
+  );
+  final title = titleOverride.isEmpty ? copy['Fuel Pass'] : titleOverride;
+  final descriptionOverride = context.knobs.string(
     label: 'Description',
-    initialValue: 'Apply for a fuel quota pass',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
-  final badgeLabel = context.knobs.string(
+  final description = descriptionOverride.isEmpty
+      ? copy['Apply for a fuel quota pass']
+      : descriptionOverride;
+  final badgeLabelOverride = context.knobs.string(
     label: 'Badge label',
-    initialValue: 'NEW',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final badgeLabel = badgeLabelOverride.isEmpty
+      ? copy['NEW']
+      : badgeLabelOverride;
   final size = context.knobs.object.dropdown(
     label: 'Size',
     options: SldsIconCardSize.values,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// SLDS toggle sizes.
 enum SldsToggleSize {
@@ -32,8 +33,9 @@ enum SldsToggleSize {
 /// gold focus ring while focused via keyboard/tap-down, and dimmed when
 /// [enabled] is false.
 ///
-/// Colors resolve from the ambient [Theme]'s [ColorScheme] (light/dark
-/// aware); pass [color] to override the accent for one instance.
+/// Colors resolve from the ambient `Theme`'s `ColorScheme` (light/dark
+/// aware). There is no per-instance color override; theming a single
+/// instance goes through a `ThemeExtension` instead.
 class SldsToggle extends StatefulWidget {
   /// Creates a toggle switch.
   const SldsToggle({
@@ -129,58 +131,64 @@ class _SldsToggleState extends State<SldsToggle> {
       enabled: _enabled,
       label: widget.semanticLabel,
       onTap: _enabled ? _toggle : null,
+      // The inner GestureDetector would otherwise surface as a second,
+      // unlabelled tappable node beside this one.
+      excludeSemantics: true,
       child: Focus(
         focusNode: _focusNode,
-        child: GestureDetector(
-          onTap: _toggle,
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            constraints: BoxConstraints(
-              minWidth: dimensions.tapTargetMin,
-              minHeight: dimensions.tapTargetMin,
-            ),
-            alignment: Alignment.center,
+        child: SldsTapTarget(
+          child: GestureDetector(
+            onTap: _toggle,
+            behavior: HitTestBehavior.opaque,
             child: Container(
-              width: widget.size.width,
-              height: widget.size.height,
-              padding: _focused
-                  ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
-                  : EdgeInsets.zero,
-              // focusRing, not the accent: only the former is contrast-checked
-              // against every surface the control can sit on (WCAG 1.4.11).
-              decoration: _focused
-                  ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        (widget.size.height +
-                                dimensions.controlBorderWidth * 4) /
-                            2,
-                      ),
-                      border: Border.all(
-                        color: context.slds.colors.focusRing,
-                        width: dimensions.emphasizedBorderWidth,
-                      ),
-                    )
-                  : null,
-              child: AnimatedContainer(
-                duration: tokens.motion.fast,
-                padding: EdgeInsets.symmetric(horizontal: trackPadding),
-                decoration: BoxDecoration(
-                  color: trackColor,
-                  borderRadius: BorderRadius.circular(widget.size.height / 2),
-                ),
-                // Directional: "on" belongs at the trailing edge of the
-                // track, which is the left edge in an RTL locale.
-                alignment: widget.value
-                    ? AlignmentDirectional.centerEnd
-                    : AlignmentDirectional.centerStart,
+              constraints: BoxConstraints(
+                minWidth: dimensions.tapTargetMin,
+                minHeight: dimensions.tapTargetMin,
+              ),
+              alignment: Alignment.center,
+              child: Container(
+                width: widget.size.width,
+                height: widget.size.height,
+                padding: _focused
+                    ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+                    : EdgeInsets.zero,
+                // focusRing, not the accent: only the former is
+                // contrast-checked
+                // against every surface the control can sit on (WCAG 1.4.11).
+                decoration: _focused
+                    ? BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          (widget.size.height +
+                                  dimensions.controlBorderWidth * 4) /
+                              2,
+                        ),
+                        border: Border.all(
+                          color: context.slds.colors.focusRing,
+                          width: dimensions.emphasizedBorderWidth,
+                        ),
+                      )
+                    : null,
                 child: AnimatedContainer(
                   duration: tokens.motion.fast,
-                  curve: Curves.easeOut,
-                  width: widget.size.thumb,
-                  height: widget.size.thumb,
+                  padding: EdgeInsets.symmetric(horizontal: trackPadding),
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: thumbColor,
+                    color: trackColor,
+                    borderRadius: BorderRadius.circular(widget.size.height / 2),
+                  ),
+                  // Directional: "on" belongs at the trailing edge of the
+                  // track, which is the left edge in an RTL locale.
+                  alignment: widget.value
+                      ? AlignmentDirectional.centerEnd
+                      : AlignmentDirectional.centerStart,
+                  child: AnimatedContainer(
+                    duration: tokens.motion.fast,
+                    curve: Curves.easeOut,
+                    width: widget.size.thumb,
+                    height: widget.size.thumb,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: thumbColor,
+                    ),
                   ),
                 ),
               ),

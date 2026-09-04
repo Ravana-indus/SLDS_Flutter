@@ -51,7 +51,8 @@ void main() {
   });
 
   testWidgets(
-    'cancel and confirm buttons only render when their label is set, and fire callbacks',
+    'cancel and confirm buttons only render when their label is set, and '
+    'fire callbacks',
     (tester) async {
       var cancelled = false;
       var confirmed = false;

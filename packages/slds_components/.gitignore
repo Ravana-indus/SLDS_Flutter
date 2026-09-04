@@ -29,3 +29,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 /build/
 /coverage/
+
+# Golden comparison output. Written beside the goldens on a failed run and
+# uploaded as a CI artifact (§8); never committed.
+test/failures/

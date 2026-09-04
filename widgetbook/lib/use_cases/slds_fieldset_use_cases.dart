@@ -3,20 +3,31 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsFieldset,
   path: '[Forms & Inputs]',
 )
 Widget buildSldsFieldsetUseCase(BuildContext context) {
-  final legend = context.knobs.string(
+  final copy = DemoCopy.of(context);
+  final legendOverride = context.knobs.string(
     label: 'Legend',
-    initialValue: 'Shipping address',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
-  final description = context.knobs.string(
+  final legend = legendOverride.isEmpty
+      ? copy['Shipping address']
+      : legendOverride;
+  final descriptionOverride = context.knobs.string(
     label: 'Description',
-    initialValue: 'Where should we deliver your order?',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final description = descriptionOverride.isEmpty
+      ? copy['Where should we deliver your order?']
+      : descriptionOverride;
   final isRequired = context.knobs.boolean(
     label: 'Required',
     initialValue: true,
@@ -25,31 +36,35 @@ Widget buildSldsFieldsetUseCase(BuildContext context) {
   final hasError = context.knobs.boolean(label: 'Error', initialValue: false);
 
   return Padding(
-    padding: const EdgeInsets.all(24),
+    padding: EdgeInsets.all(24),
     child: SldsFieldset(
       legend: legend,
       description: description.isEmpty ? null : description,
       required: isRequired,
       enabled: isEnabled,
-      helperText: 'All fields in this group are required.',
+      helperText: copy['All fields in this group are required.'],
       errorText: hasError
           ? 'Please complete every field before continuing.'
           : null,
       children: [
-        SldsInput(label: 'Street address', required: true, enabled: isEnabled),
+        SldsInput(
+          label: copy['Street address'],
+          required: true,
+          enabled: isEnabled,
+        ),
         Row(
           children: [
             Expanded(
               child: SldsInput(
-                label: 'City',
+                label: copy['City'],
                 required: true,
                 enabled: isEnabled,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: SldsInput(
-                label: 'Postal code',
+                label: copy['Postal code'],
                 required: true,
                 enabled: isEnabled,
               ),

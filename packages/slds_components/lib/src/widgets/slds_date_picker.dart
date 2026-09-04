@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/format/slds_format.dart';
 import 'package:slds_components/src/l10n/slds_strings.dart';
-
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Selection mode for [SldsDatePicker].
 enum SldsDatePickerMode {
@@ -33,7 +33,6 @@ class SldsDatePicker extends StatefulWidget {
     this.onApply,
     this.cancelText,
     this.applyText,
-    this.rangeColor,
     this.firstDayOfWeek = DateTime.monday,
     this.width,
   });
@@ -44,7 +43,8 @@ class SldsDatePicker extends StatefulWidget {
   /// Initially selected date for single mode. Defaults to today if null.
   final DateTime? initialDate;
 
-  /// Initially selected range for range mode. Defaults to Jan 13–18 of current year or sample range if null.
+  /// Initially selected range for range mode. Defaults to Jan 13–18 of
+  /// current year or sample range if null.
   final DateTimeRange? initialRange;
 
   /// Minimum selectable date.
@@ -62,7 +62,8 @@ class SldsDatePicker extends StatefulWidget {
   /// Callback when Cancel button is tapped.
   final VoidCallback? onCancel;
 
-  /// Callback when Apply button is tapped with the currently selected date or range.
+  /// Callback when Apply button is tapped with the currently selected date
+  /// or range.
   final ValueChanged<dynamic>? onApply;
 
   /// Cancel button label.
@@ -70,9 +71,6 @@ class SldsDatePicker extends StatefulWidget {
 
   /// Apply button label.
   final String? applyText;
-
-  /// Highlight color for range selection in-between cells.
-  final Color? rangeColor;
 
   /// First day of the week (1 = Monday, 7 = Sunday).
   final int firstDayOfWeek;
@@ -89,8 +87,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   DateTime? _selectedSingleDate;
   DateTime? _rangeStartDate;
   DateTime? _rangeEndDate;
-
-  static const Color _defaultRangeLightYellow = Color(0xFFFFF7D6);
 
   @override
   void initState() {
@@ -227,8 +223,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final primaryAccent = context.slds.colors.buttonPrimaryBackground;
-    final rangeHighlight = widget.rangeColor ?? _defaultRangeLightYellow;
+    final primaryAccent = colors.buttonPrimaryBackground;
+    final rangeHighlight = colors.datePickerRangeHighlight;
 
     return Container(
       width: widget.width ?? 340,
@@ -253,51 +249,67 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Month Navigator Pill
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                decoration: BoxDecoration(
-                  border: Border.all(color: colors.borderDefault),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Semantics(
-                      button: true,
-                      label: context.sldsStrings.previousMonth,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: _previousMonth,
-                        child: const Padding(
-                          padding: EdgeInsets.all(4),
-                          child: Icon(Icons.chevron_left, size: 18),
+              // Month Navigator Pill.
+              //
+              // Flexible so the header survives the 320dp floor at 200% text:
+              // both pills are intrinsically sized, and the 48dp tap targets
+              // on the arrows leave the month name nothing to give back.
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: colors.borderDefault),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Semantics(
+                        button: true,
+                        label: context.sldsStrings.previousMonth,
+                        child: SldsTapTarget(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: _previousMonth,
+                            child: const Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Icon(Icons.chevron_left, size: 18),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Text(
-                        _monthNames[_displayedMonth.month - 1],
-                        style: tokens.typography.body1.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: colors.textPrimary,
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Text(
+                            _monthNames[_displayedMonth.month - 1],
+                            overflow: TextOverflow.ellipsis,
+                            style: tokens.typography.body1.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: colors.textPrimary,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    Semantics(
-                      button: true,
-                      label: context.sldsStrings.nextMonth,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: _nextMonth,
-                        child: const Padding(
-                          padding: EdgeInsets.all(4),
-                          child: Icon(Icons.chevron_right, size: 18),
+                      Semantics(
+                        button: true,
+                        label: context.sldsStrings.nextMonth,
+                        child: SldsTapTarget(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: _nextMonth,
+                            child: const Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Icon(Icons.chevron_right, size: 18),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 
@@ -317,28 +329,30 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                     return PopupMenuItem<int>(value: y, child: Text('$y'));
                   }).toList();
                 },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: colors.borderDefault),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '${_displayedMonth.year}',
-                        style: tokens.typography.body1.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: colors.textPrimary,
+                child: SldsTapTarget(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: colors.borderDefault),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${_displayedMonth.year}',
+                          style: tokens.typography.body1.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: colors.textPrimary,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 2),
-                      const Icon(Icons.keyboard_arrow_down, size: 16),
-                    ],
+                        const SizedBox(width: 2),
+                        const Icon(Icons.keyboard_arrow_down, size: 16),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -457,6 +471,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
         _SldsBaseDateCell(
           dayText: dayNum < 10 ? '0$dayNum' : '$dayNum',
           isOverflow: true,
+          primaryAccent: primaryAccent,
+          rangeHighlight: rangeHighlight,
         ),
       );
     }
@@ -517,7 +533,14 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     final remainingCells = (7 - (totalCells % 7)) % 7;
     for (var day = 1; day <= remainingCells; day++) {
       final dayText = day < 10 ? '0$day' : '$day';
-      dayWidgets.add(_SldsBaseDateCell(dayText: dayText, isOverflow: true));
+      dayWidgets.add(
+        _SldsBaseDateCell(
+          dayText: dayText,
+          isOverflow: true,
+          primaryAccent: primaryAccent,
+          rangeHighlight: rangeHighlight,
+        ),
+      );
     }
 
     // Render in 7-column Grid
@@ -531,23 +554,24 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   }
 }
 
-/// Base Date Cell representing all 5 distinct design states shown in the specification:
+/// Base Date Cell representing all 5 distinct design states shown in the
+/// specification:
 /// 1. Neutral / Base day
 /// 2. Hover / Highlighted day
-/// 3. Selected day (vibrant circle badge `#FFC700`)
-/// 4. In-Range selection (connecting background pill `#FFF7D6`)
+/// 3. Selected day (vibrant circle badge, `buttonPrimaryBackground`)
+/// 4. In-Range selection (connecting pill, `datePickerRangeHighlight`)
 /// 5. Overflow / Muted day (faded text)
 class _SldsBaseDateCell extends StatelessWidget {
   const _SldsBaseDateCell({
     required this.dayText,
+    required this.primaryAccent,
+    required this.rangeHighlight,
     this.isSelected = false,
     this.isRangeStart = false,
     this.isRangeEnd = false,
     this.isInRange = false,
     this.isOverflow = false,
     this.isDisabled = false,
-    this.primaryAccent = const Color(0xFFFFC700),
-    this.rangeHighlight = const Color(0xFFFFF7D6),
   });
 
   final String dayText;
@@ -569,15 +593,20 @@ class _SldsBaseDateCell extends StatelessWidget {
       return Center(
         child: Text(
           dayText,
-          style: tokens.typography.body2.copyWith(
-            color: colors.textTertiary.withValues(alpha: 0.4),
-          ),
+          // No alpha: textTertiary is already the "de-emphasised" token and
+          // clears 4.5:1 on its own. Compositing it at 40% dropped an
+          // adjacent-month date to 1.74:1 — a real date, still selectable,
+          // that a low-vision user could not read (WCAG 1.4.3).
+          style: tokens.typography.body2.copyWith(color: colors.textTertiary),
         ),
       );
     }
 
+    // The selected day sits on the gold accent circle, which is the same
+    // colour in every palette, so its label is the static-black role rather
+    // than the palette's own text colour.
     final textColor = isSelected
-        ? const Color(0xFF1C1B1F)
+        ? colors.textStaticBlack
         : (isDisabled ? colors.disabledForeground : colors.textPrimary);
 
     // Range background decoration connecting start, in-between, and end

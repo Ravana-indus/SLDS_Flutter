@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 const _items = [
   SldsFlyoutMenuItem(
     label: 'Navigation 01',
@@ -62,10 +64,11 @@ Widget buildSldsFlyoutMenuUseCase(BuildContext context) {
 
 @widgetbook.UseCase(name: 'Modal', type: SldsFlyoutMenu, path: '[Navigation]')
 Widget buildSldsFlyoutMenuModalUseCase(BuildContext context) {
+  final copy = DemoCopy.of(context);
   return Center(
     child: Builder(
       builder: (context) => SldsButton(
-        label: 'Open menu',
+        label: copy['Open menu'],
         onPressed: () => showSldsFlyoutMenu(context, items: _items),
       ),
     ),

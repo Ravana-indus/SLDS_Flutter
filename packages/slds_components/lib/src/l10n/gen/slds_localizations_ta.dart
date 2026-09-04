@@ -81,6 +81,16 @@ class SldsLocalizationsTa extends SldsLocalizations {
   }
 
   @override
+  String sensitiveValue(String label) {
+    return '$label: மறைக்கப்பட்டுள்ளது. வெளிப்படுத்த இருமுறை தட்டவும்.';
+  }
+
+  @override
+  String sensitiveValueRevealed(String label, String value) {
+    return '$label: $value. மறைக்க இருமுறை தட்டவும்.';
+  }
+
+  @override
   String get setYourTime => 'உங்கள் நேரத்தை அமைக்கவும்';
 
   @override

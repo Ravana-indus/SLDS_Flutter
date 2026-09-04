@@ -32,7 +32,6 @@ class SldsTextField extends StatefulWidget {
     this.leadingIcon,
     this.leadingWidget,
     this.trailingIcon,
-    this.trailingIconColor,
     this.trailingIconTooltip,
     this.onTrailingIconPressed,
     this.largeTrailingIcon = false,
@@ -90,10 +89,6 @@ class SldsTextField extends StatefulWidget {
   /// Icon at the trailing edge. Interactive when [onTrailingIconPressed] is
   /// set, in which case [trailingIconTooltip] names it.
   final IconData? trailingIcon;
-
-  /// Overrides the trailing icon's color; defaults to the input icon token
-  /// (or the error token while [errorText] is set).
-  final Color? trailingIconColor;
 
   /// Accessible name for the trailing icon button. An icon-only control has
   /// no visible text, so pass this whenever [onTrailingIconPressed] is set.
@@ -265,9 +260,7 @@ class _SldsTextFieldState extends State<SldsTextField> {
           box: widget.largeTrailingIcon && !compact
               ? dimensions.iconButtonMedium
               : dimensions.buttonHeightSmall,
-          color:
-              widget.trailingIconColor ??
-              (_hasError ? colors.error : iconColor),
+          color: _hasError ? colors.error : iconColor,
           tooltip: widget.trailingIconTooltip,
           onPressed: widget.onTrailingIconPressed,
         ),

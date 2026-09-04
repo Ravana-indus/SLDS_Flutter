@@ -108,7 +108,8 @@ void main() {
   });
 
   testWidgets(
-    'renders multiple children with spacing between them, none before the first',
+    'renders multiple children with spacing between them, none before the '
+    'first',
     (tester) async {
       await pump(
         tester,

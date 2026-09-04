@@ -242,7 +242,7 @@ class _SldsIconButtonState extends State<SldsIconButton> {
         // pressed feedback, so Material's own state layer is suppressed
         // rather than tinting a colour the design system has decided.
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
         // The painted box is exactly the square Figma specifies; the 48px
         // touch target is restored below so it cannot distort the geometry.
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,

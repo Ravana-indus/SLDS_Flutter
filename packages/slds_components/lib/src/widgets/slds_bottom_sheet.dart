@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart' show SldsFlyoutMenu;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_flyout_menu.dart'
     show SldsFlyoutMenu;
@@ -12,8 +12,8 @@ import 'package:slds_components/src/widgets/slds_flyout_menu.dart'
 /// picking a detail from a list) — [SldsFlyoutMenu]/`showSldsFlyoutMenu`
 /// covers the compact "menu that slides up" case instead.
 ///
-/// This is the panel content only — wrap it in [showSldsBottomSheet] (a
-/// full-height [showModalBottomSheet]) or your own sheet/route if you need
+/// This is the panel content only — wrap it in `showSldsBottomSheet` (a
+/// full-height `showModalBottomSheet`) or your own sheet/route if you need
 /// different framing.
 class SldsBottomSheet extends StatelessWidget {
   /// Creates a bottom sheet.

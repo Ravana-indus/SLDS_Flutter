@@ -5,11 +5,11 @@ import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// SLDS snack bar / toast — a floating card at the bottom of the screen
 /// with a [title], optional [message], and an optional trailing action
-/// button. Auto-dismisses after [duration] (4s by default, per the SLDS
-/// mobile spec).
+/// button. Auto-dismisses after the ambient
+/// `SldsMotionTokens.transientMessageDuration` unless a caller overrides it.
 ///
-/// Shown via [SldsSnackBar.show], which wraps the native
-/// [ScaffoldMessenger.showSnackBar] — that handles queueing, auto-dismiss
+/// Shown via `SldsSnackBar.show`, which wraps the native
+/// `ScaffoldMessenger.showSnackBar` — that handles queueing, auto-dismiss
 /// timing, and swipe-to-dismiss, so none of it is re-implemented here.
 /// Requires a [Scaffold]/[ScaffoldMessenger] ancestor like any snack bar.
 class SldsSnackBar extends StatelessWidget {
@@ -45,11 +45,11 @@ class SldsSnackBar extends StatelessWidget {
     String? message,
     String? actionLabel,
     VoidCallback? onAction,
-    Duration duration = const Duration(seconds: 4),
+    Duration? duration,
   }) {
     return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        duration: duration,
+        duration: duration ?? context.slds.motion.transientMessageDuration,
         behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.transparent,
         elevation: 0,

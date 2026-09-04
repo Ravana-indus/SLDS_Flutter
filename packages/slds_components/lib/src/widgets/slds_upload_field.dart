@@ -9,13 +9,15 @@ enum SldsUploadStatus {
   /// No file selected yet — shows the upload affordance and hint text.
   empty,
 
-  /// A file is mid-transfer — shows the filename and [SldsUploadField.progress].
+  /// A file is mid-transfer — shows the filename and
+  /// [SldsUploadField.progress].
   uploading,
 
   /// The file finished uploading successfully.
   uploaded,
 
-  /// The upload failed or was rejected — [SldsUploadField.errorText] explains why.
+  /// The upload failed or was rejected — [SldsUploadField.errorText]
+  /// explains why.
   error,
 }
 

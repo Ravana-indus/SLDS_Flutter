@@ -123,9 +123,26 @@ class SldsErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = context.slds.dimensions;
+
+    // Scrollable so the state still reads at large text sizes: the
+    // illustration, code, title, description and action together exceed a
+    // short viewport once the user scales text up, and a clipped error
+    // message is one the citizen cannot act on. Centred while it fits,
+    // scrolling only once it does not.
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: _buildBody(context, dimensions),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, SldsDimensionTokens dimensions) {
     final tokens = context.slds;
     final colors = tokens.colors;
-    final dimensions = tokens.dimensions;
 
     return Center(
       child: Padding(

@@ -81,6 +81,16 @@ class SldsLocalizationsSi extends SldsLocalizations {
   }
 
   @override
+  String sensitiveValue(String label) {
+    return '$label: සඟවා ඇත. හෙළි කිරීමට දෙවරක් තට්ටු කරන්න.';
+  }
+
+  @override
+  String sensitiveValueRevealed(String label, String value) {
+    return '$label: $value. සැඟවීමට දෙවරක් තට්ටු කරන්න.';
+  }
+
+  @override
   String get setYourTime => 'ඔබේ වේලාව සකසන්න';
 
   @override

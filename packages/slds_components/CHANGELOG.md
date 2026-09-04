@@ -74,6 +74,19 @@ if (context.sldsIsMobile) ...
 theme-independent and carried by `SldsTheme`, so it no longer swaps text
 themes by width.
 
+**`SldsDatePicker.rangeColor` is removed** — the last surviving per-instance
+colour override (§4). The range fill now resolves from the
+`datePickerRangeHighlight` token, so it follows the palette instead of being
+pinned by the caller.
+
+```dart
+// Before
+SldsDatePicker(rangeColor: const Color(0xFFFFF7D6), onApply: _apply)
+
+// After — the token carries the colour in every palette
+SldsDatePicker(onApply: _apply)
+```
+
 ### Added
 
 - `SldsTheme.highContrast`, and `context.slds` honours
@@ -93,6 +106,23 @@ themes by width.
   matchers, and a `ColorScheme` role-coverage test (§4, §8).
 
 ### Fixed — accessibility
+
+- **The date picker, time picker and service card ignored the palette.** The
+  range-selection fill (`#FFF7D6`), the selected-day and clock numerals
+  (`#1C1B1F`) and the selected service card (`#E3EDFF`) were hardcoded in the
+  widgets, so all three rendered identically in light, dark and high
+  contrast — the high-contrast palette existed but these components could not
+  reach it. They now resolve from two new tokens,
+  `datePickerRangeHighlight` and `serviceCardSelectedBackground`, whose dark
+  and high-contrast values are engineering proposals recorded under a
+  `PENDING DESIGN SIGN-OFF` block in `slds_tokens/lib/src/colors.dart` and
+  covered by the blocking contrast check.
+
+  Alters 8 goldens (`date_picker_*`, `time_picker_dialog_*`). In the light
+  palette the only change is the selected numeral darkening from `#1C1B1F` to
+  the `textStaticBlack` token; in dark and high contrast the selection fills
+  change substantially, which is the defect being fixed. The clock-face
+  numeral colour was also a dead ternary — both arms were `#1C1B1F`.
 
 - **The focus indicator was effectively invisible.** In the light palette the
   ring measured 1.30:1 against the page where WCAG 1.4.11 requires 3.0:1, so

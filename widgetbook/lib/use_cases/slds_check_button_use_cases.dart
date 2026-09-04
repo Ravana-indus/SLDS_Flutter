@@ -3,16 +3,21 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsCheckButton,
   path: '[Forms & Inputs]',
 )
 Widget buildSldsCheckButtonUseCase(BuildContext context) {
-  final label = context.knobs.string(
+  final copy = DemoCopy.of(context);
+  final labelOverride = context.knobs.string(
     label: 'Label',
-    initialValue: 'Option One',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final label = labelOverride.isEmpty ? copy['Option One'] : labelOverride;
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
 
   return Padding(

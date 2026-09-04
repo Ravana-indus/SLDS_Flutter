@@ -175,6 +175,21 @@ final _pairs = <_Pair>[
   // Semantic foregrounds.
   _Pair('error text on page', (c) => c.error, (c) => c.surfacePage),
   _Pair('success text on page', (c) => c.success, (c) => c.surfacePage),
+
+  // Selection fills. Day numerals and card labels are rendered directly on
+  // these, so the fill is a text background and carries the 4.5:1 floor —
+  // the reason both were defects while they were hardcoded in the widgets
+  // and could not follow the palette.
+  _Pair(
+    'day numeral on range highlight',
+    (c) => c.textPrimary,
+    (c) => c.datePickerRangeHighlight,
+  ),
+  _Pair(
+    'card title on selected service card',
+    (c) => c.textPrimary,
+    (c) => c.serviceCardSelectedBackground,
+  ),
 ];
 
 /// Non-text UI components need 3:1 against what they sit on (WCAG 1.4.11).

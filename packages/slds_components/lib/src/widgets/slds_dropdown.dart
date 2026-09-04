@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart' show SldsTextField;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_text_field.dart'
     show SldsTextField;
@@ -263,6 +263,12 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                           color: scheme.onSurface.withValues(alpha: 0.5),
                         ),
                         isDense: true,
+                        // The decorated field paints taller, but the
+                        // text node itself is the tappable target and
+                        // must clear the 48dp floor (WCAG 2.5.8).
+                        constraints: BoxConstraints(
+                          minHeight: dimensions.tapTargetMin,
+                        ),
                         filled: true,
                         fillColor: scheme.surface,
                         contentPadding: EdgeInsets.symmetric(

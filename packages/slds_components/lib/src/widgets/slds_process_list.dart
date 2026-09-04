@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart'
     show SldsSummaryBadgeStatus, SldsSummaryList;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_summary_list.dart'
     show SldsSummaryBadgeStatus, SldsSummaryList;
@@ -117,9 +117,14 @@ class _ProcessStepTile extends StatelessWidget {
         colors.badgePendingBackground,
         colors.badgePendingText,
       ),
+      // The neutral badge pair, not the disabled pair. An upcoming step is
+      // information the citizen needs to read — "you are on 2 of 4" — not an
+      // inert control, so WCAG's exemption for disabled elements does not
+      // apply. disabledForeground on disabledBackground measured 1.40:1,
+      // which made the step number effectively invisible.
       SldsProcessStepStatus.upcoming => (
-        colors.disabledBackground,
-        colors.disabledForeground,
+        colors.badgeNeutralBackground,
+        colors.badgeNeutralText,
       ),
     };
 

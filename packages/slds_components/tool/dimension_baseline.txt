@@ -1,0 +1,36 @@
+# Dimension-literal allowances per widget file (§2, DoD 1).
+#
+# Each line is `<file> <max allowed>`. tool/check_literals.dart fails the
+# build if a file exceeds its number, or if a file absent from this list has
+# any at all. The numbers may only go down.
+#
+# §2 bans raw values in widgets, not just raw colours: padding, sizes, radii
+# and stroke widths are design decisions the token layer owns. The colour rule
+# was enforced from the start; this one was not, so the checker was blind to
+# half of what it claimed to cover. Seeded from the state when the dimension
+# rule was added — every entry is a known violation awaiting cleanup, not an
+# approved exception.
+#
+# Delete a line when its file reaches zero. When this file is empty, delete it
+# and drop the rule from _rules in check_literals.dart to make it a flat ban.
+slds_radio.dart 1
+slds_pull_to_refresh.dart 1
+slds_mobile_number_input.dart 3
+slds_progress_bar.dart 1
+slds_toggle.dart 2
+slds_upload_field.dart 2
+slds_dropdown.dart 2
+slds_snack_bar.dart 1
+slds_process_list.dart 1
+slds_service_card.dart 4
+slds_otp_input.dart 3
+slds_checkbox.dart 1
+slds_error_state.dart 5
+slds_bottom_nav.dart 2
+slds_combo_box.dart 9
+slds_bottom_sheet.dart 4
+slds_date_picker.dart 27
+slds_notification_card.dart 3
+slds_flyout_menu.dart 1
+slds_time_picker.dart 24
+slds_top_nav_bar.dart 3

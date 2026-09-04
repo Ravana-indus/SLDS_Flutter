@@ -67,7 +67,7 @@ jobs:
         run: flutter analyze --no-fatal-infos
         working-directory: packages/slds_components
 
-      - name: Colour literals (§2)
+      - name: Raw literals — colours and dimensions (§2)
         run: dart run tool/check_literals.dart
         working-directory: packages/slds_components
 
@@ -81,6 +81,13 @@ jobs:
 
       # Behaviour, semantics and accessibility-guideline tests. Goldens are
       # excluded here — see the note on the `goldens` job below.
+      # Named separately from the suite below so a red build says "the
+      # accessibility gate failed" rather than "a test failed". Runs every
+      # matcher against every component in sldsFixtures().
+      - name: Accessibility gate — all components (§5, §8)
+        run: flutter test test/slds_accessibility_coverage_test.dart
+        working-directory: packages/slds_components
+
       - name: Tests
         run: flutter test --exclude-tags golden
         working-directory: packages/slds_components
@@ -122,7 +129,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: golden-failures
-          path: packages/slds_components/test/goldens/failures/
+          # flutter_test writes failure images to <test dir>/failures/, not
+          # beside the goldens themselves.
+          path: packages/slds_components/test/failures/
           if-no-files-found: ignore
 
   catalog:

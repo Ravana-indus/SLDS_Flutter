@@ -22,6 +22,8 @@
   "removeItem": "{label} அகற்று",
   "stepOf": "படி {number}: {title}. {description}",
   "labelledValue": "{label}: {value}",
+  "sensitiveValue": "{label}: மறைக்கப்பட்டுள்ளது. வெளிப்படுத்த இருமுறை தட்டவும்.",
+  "sensitiveValueRevealed": "{label}: {value}. மறைக்க இருமுறை தட்டவும்.",
   "setYourTime": "உங்கள் நேரத்தை அமைக்கவும்",
   "uploadHint": "PDF, JPEG அல்லது PNG, 5MB க்கும் குறைவாக",
   "showPassword": "கடவுச்சொல்லைக் காட்டு",

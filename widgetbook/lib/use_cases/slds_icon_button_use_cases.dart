@@ -3,8 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(name: 'Playground', type: SldsIconButton, path: '[Actions]')
 Widget buildSldsIconButtonUseCase(BuildContext context) {
+  final copy = DemoCopy.of(context);
   final variant = context.knobs.object.dropdown<SldsButtonVariant>(
     label: 'Variant',
     options: SldsButtonVariant.values,
@@ -23,8 +26,8 @@ Widget buildSldsIconButtonUseCase(BuildContext context) {
   // The glyph is the whole control here, so it is worth a knob — the icon
   // scales with the size, which is easiest to see by swapping shapes.
   final icon = context.knobs.object.dropdown<IconData>(
-    label: 'Icon',
-    options: const [Icons.add, Icons.close, Icons.search, Icons.more_vert],
+    label: copy['Icon'],
+    options: [Icons.add, Icons.close, Icons.search, Icons.more_vert],
     labelBuilder: (v) => switch (v) {
       Icons.close => 'close',
       Icons.search => 'search',
@@ -38,7 +41,12 @@ Widget buildSldsIconButtonUseCase(BuildContext context) {
   );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
   // Doubles as the accessible name, so it is editable rather than hardcoded.
-  final tooltip = context.knobs.string(label: 'Tooltip', initialValue: 'Add');
+  final tooltipOverride = context.knobs.string(
+    label: 'Tooltip',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
+  );
+  final tooltip = tooltipOverride.isEmpty ? copy['Add'] : tooltipOverride;
 
   return SldsIconButton(
     icon: icon,

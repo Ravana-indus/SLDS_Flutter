@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Which edge of [SldsTooltip] the pointer tail sticks out of — point it at
 /// whatever the tooltip is anchored to.
@@ -274,13 +275,17 @@ class _FullCard extends StatelessWidget {
                 Semantics(
                   button: true,
                   label: context.sldsStrings.close,
-                  child: InkWell(
-                    onTap: onClose,
-                    borderRadius: BorderRadius.circular(dimensions.radiusFull),
-                    child: Icon(
-                      Icons.close,
-                      size: dimensions.iconSizeMedium,
-                      color: colors.tooltipText,
+                  child: SldsTapTarget(
+                    child: InkWell(
+                      onTap: onClose,
+                      borderRadius: BorderRadius.circular(
+                        dimensions.radiusFull,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        size: dimensions.iconSizeMedium,
+                        color: colors.tooltipText,
+                      ),
                     ),
                   ),
                 ),
@@ -305,22 +310,34 @@ class _FullCard extends StatelessWidget {
                     ),
                   ),
                 if (actionLabel != null)
-                  Material(
-                    color: colors.surfaceCard,
-                    borderRadius: BorderRadius.circular(dimensions.radiusMd),
-                    child: InkWell(
-                      onTap: onAction,
+                  // The InkWell carries the semantics node, so the 48dp floor
+                  // has to land on *it* rather than on a wrapper around it
+                  // (WCAG 2.5.8) — a ConstrainedBox inside the Material, not
+                  // an SldsTapTarget outside it. The pill keeps its painted
+                  // size; only the hit area grows.
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: dimensions.tapTargetMin,
+                    ),
+                    child: Material(
+                      color: colors.surfaceCard,
                       borderRadius: BorderRadius.circular(dimensions.radiusMd),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: dimensions.space12,
-                          vertical: dimensions.space6,
+                      child: InkWell(
+                        onTap: onAction,
+                        borderRadius: BorderRadius.circular(
+                          dimensions.radiusMd,
                         ),
-                        child: Text(
-                          actionLabel!,
-                          style: tokens.typography.caption1.copyWith(
-                            color: colors.textPrimary,
-                            fontWeight: FontWeight.w600,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: dimensions.space12,
+                            vertical: dimensions.space6,
+                          ),
+                          child: Text(
+                            actionLabel!,
+                            style: tokens.typography.caption1.copyWith(
+                              color: colors.textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),

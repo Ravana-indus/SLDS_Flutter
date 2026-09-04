@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart' hide RefreshCallback;
 import 'package:flutter/material.dart';
 
-import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart'
     show SldsBottomNav, SldsTopNavBar;
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Visual container styles for [SldsPullToRefresh] — mirrors
@@ -100,7 +100,7 @@ class SldsPullToRefresh extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: dark
-                            ? Colors.black.withValues(alpha: 0.85)
+                            ? colors.surfaceInverse.withValues(alpha: 0.85)
                             : colors.surfaceCard,
                         borderRadius: BorderRadius.circular(
                           tokens.dimensions.radius2xl,
@@ -117,14 +117,18 @@ class SldsPullToRefresh extends StatelessWidget {
                             width: 16,
                             height: 16,
                             child: CupertinoActivityIndicator(
-                              color: dark ? Colors.white : colors.textSecondary,
+                              color: dark
+                                  ? colors.textInverse
+                                  : colors.textSecondary,
                             ),
                           ),
                           SizedBox(width: tokens.dimensions.space8),
                           Text(
                             loadingText ?? context.sldsStrings.loadingEllipsis,
                             style: tokens.typography.body2.copyWith(
-                              color: dark ? Colors.white : colors.textSecondary,
+                              color: dark
+                                  ? colors.textInverse
+                                  : colors.textSecondary,
                             ),
                           ),
                         ],

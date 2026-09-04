@@ -52,6 +52,22 @@ class SldsFormat {
   /// A time of day in 24-hour form: `09:30`.
   String time(DateTime value) => DateFormat.Hm(_tag).format(value);
 
+  /// The numeric `H:mm` portion of a 12-hour time, unpadded hour and
+  /// zero-padded minute per locale digit conventions: `7:05`.
+  ///
+  /// Takes the hour/minute pair rather than a `TimeOfDay` or `DateTime` so
+  /// callers that already track a 12-hour display value (hour 1-12, not
+  /// hour-of-day) don't have to round-trip through a 24-hour type first.
+  /// Deliberately excludes the AM/PM marker: that comes from
+  /// `SldsLocalizations` (`timePeriodAm`/`timePeriodPm`), which the library
+  /// ships as its own reviewed strings per §6, not from `intl`'s ICU locale
+  /// data — appending an intl-sourced marker here would risk a different,
+  /// unreviewed string in si/ta.
+  String timeOfDay12(int hour12, int minute) => DateFormat(
+    'H:mm',
+    _tag,
+  ).format(DateTime(0, 1, 1, hour12, minute));
+
   /// A whole number with grouping separators: `1,250`.
   String number(num value) => NumberFormat.decimalPattern(_tag).format(value);
 

@@ -66,6 +66,13 @@ class SldsColorTokens {
   factory SldsColorTokens.highContrast() =>
       SldsColorTokens(SldsRawColorTokens.highContrast());
 
+  /// Interpolates between two palettes, for an animated theme change.
+  factory SldsColorTokens.lerp(
+    SldsColorTokens a,
+    SldsColorTokens b,
+    double t,
+  ) => SldsColorTokens(SldsRawColorTokens.lerp(a.tokens, b.tokens, t));
+
   /// The underlying raw tokens.
   final SldsRawColorTokens tokens;
 
@@ -235,6 +242,13 @@ class SldsColorTokens {
   /// Figma List/Background/Hover.
   Color get listBackgroundHover => Color(tokens.listBackgroundHover);
 
+  /// Fill behind the in-between cells of a date or time range selection.
+  Color get datePickerRangeHighlight => Color(tokens.datePickerRangeHighlight);
+
+  /// Resting fill of a service card in its selected state.
+  Color get serviceCardSelectedBackground =>
+      Color(tokens.serviceCardSelectedBackground);
+
   /// Input label.
   Color get inputLabel => Color(tokens.inputLabel);
 
@@ -330,6 +344,13 @@ class SldsColorTokens {
 
   /// On hold badge background.
   Color get badgeOnHoldBackground => Color(tokens.badgeOnHoldBackground);
+
+  /// Background for a component variant that deliberately inverts the page
+  /// (dark top nav, bottom nav, tab strip, pull-to-refresh indicator).
+  Color get surfaceInverse => Color(tokens.surfaceInverse);
+
+  /// Foreground for [surfaceInverse].
+  Color get textInverse => Color(tokens.textInverse);
 
   /// Tooltip surface.
   Color get tooltipBackground => Color(tokens.tooltipBackground);
@@ -479,7 +500,28 @@ class SldsTypographyTokens {
 /// Read this from a [BuildContext] via the `slds` extension rather than
 /// constructing it.
 @immutable
-class SldsTokenSet {
+/// The complete SLDS token set for one theme, installed on [ThemeData] as a
+/// [ThemeExtension] and read back with `context.slds`.
+///
+/// §4 asks for component theming via `ThemeExtension`. This is one extension
+/// carrying every token group rather than one class per component: the
+/// guideline's goals — no literals in widgets, values changed in one place,
+/// no rebuilds when nothing relevant changed — are met by a single extension
+/// with value equality, without 52 classes to keep in sync. A consuming app
+/// overrides tokens the standard Flutter way:
+///
+/// ```dart
+/// MaterialApp(
+///   theme: SldsTheme.light.copyWith(
+///     extensions: [
+///       SldsTheme.light.extension<SldsTokenSet>()!.copyWith(
+///         colors: myBrandColors,
+///       ),
+///     ],
+///   ),
+/// )
+/// ```
+class SldsTokenSet extends ThemeExtension<SldsTokenSet> {
   /// Creates a token set.
   const SldsTokenSet({
     required this.colors,
@@ -529,6 +571,7 @@ class SldsTokenSet {
   final SldsOpacityTokens opacities;
 
   /// Returns a copy with the given token groups replaced.
+  @override
   SldsTokenSet copyWith({
     SldsColorTokens? colors,
     SldsDimensionTokens? dimensions,
@@ -542,6 +585,23 @@ class SldsTokenSet {
       typography: typography ?? this.typography,
       motion: motion ?? this.motion,
       opacities: opacities ?? this.opacities,
+    );
+  }
+
+  /// Interpolates between two token sets for an animated theme change.
+  ///
+  /// Colours and dimensions interpolate; typography, motion and opacities
+  /// snap at the halfway point, since a half-interpolated duration or type
+  /// scale is not a meaningful intermediate value.
+  @override
+  SldsTokenSet lerp(ThemeExtension<SldsTokenSet>? other, double t) {
+    if (other is! SldsTokenSet) return this;
+    return SldsTokenSet(
+      colors: SldsColorTokens.lerp(colors, other.colors, t),
+      dimensions: t < 0.5 ? dimensions : other.dimensions,
+      typography: t < 0.5 ? typography : other.typography,
+      motion: t < 0.5 ? motion : other.motion,
+      opacities: t < 0.5 ? opacities : other.opacities,
     );
   }
 

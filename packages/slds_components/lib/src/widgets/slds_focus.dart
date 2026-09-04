@@ -67,3 +67,43 @@ class SldsFocusRing extends StatelessWidget {
     );
   }
 }
+
+/// Expands [child]'s hit area to the SLDS minimum touch target.
+///
+/// WCAG 2.2 Target Size (2.5.8) and §5 require every interactive control to
+/// be tappable at 48x48 logical pixels. A control is free to *paint* smaller
+/// than that — a 24px checkbox box, an 18px chevron — but the region that
+/// responds to a finger must not be, or the control is unusable for anyone
+/// without fine motor control.
+///
+/// Wrap the tappable node, not the painted one:
+///
+/// ```dart
+/// SldsTapTarget(
+///   child: GestureDetector(onTap: _toggle, child: _box()),
+/// )
+/// ```
+///
+/// The extra area is transparent and does not affect layout beyond the
+/// minimum, so a control already at or above 48 is unchanged.
+class SldsTapTarget extends StatelessWidget {
+  /// Wraps [child] so its hit area is at least
+  /// [SldsDimensionTokens.tapTargetMin].
+  const SldsTapTarget({required this.child, super.key});
+
+  /// The interactive widget whose hit area is being expanded.
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final min = context.slds.dimensions.tapTargetMin;
+    return Center(
+      widthFactor: 1,
+      heightFactor: 1,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: min, minHeight: min),
+        child: Center(widthFactor: 1, heightFactor: 1, child: child),
+      ),
+    );
+  }
+}

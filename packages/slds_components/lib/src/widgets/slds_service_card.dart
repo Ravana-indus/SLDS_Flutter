@@ -91,7 +91,7 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
     final background = switch (state) {
       SldsServiceCardState.defaultState => colors.surfacePage,
       SldsServiceCardState.hover => colors.surfaceHover,
-      SldsServiceCardState.selected => const Color(0xffE3EDFF),
+      SldsServiceCardState.selected => colors.serviceCardSelectedBackground,
       SldsServiceCardState.active => colors.buttonPrimaryBackground,
     };
     final titleColor = state == SldsServiceCardState.active

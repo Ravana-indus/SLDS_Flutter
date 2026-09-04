@@ -3,8 +3,11 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(name: 'Playground', type: SldsFab, path: '[Actions]')
 Widget buildSldsFabUseCase(BuildContext context) {
+  final copy = DemoCopy.of(context);
   final variant = context.knobs.object.dropdown<SldsButtonVariant>(
     label: 'Variant',
     options: [
@@ -29,7 +32,7 @@ Widget buildSldsFabUseCase(BuildContext context) {
     icon: Icons.add,
     variant: variant,
     isLoading: isLoading,
-    tooltip: 'Add',
+    tooltip: copy['Add'],
     badgeCount: showBadge ? badgeCount : null,
     onPressed: isEnabled ? () {} : null,
   );

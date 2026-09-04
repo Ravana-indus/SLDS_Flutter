@@ -70,7 +70,7 @@ class SldsTopNavBar extends StatelessWidget {
     final dimensions = tokens.dimensions;
     final dark = style == SldsTopNavBarStyle.dark;
     final accent = colors.buttonPrimaryBackground;
-    final foreground = dark ? Colors.white : colors.textPrimary;
+    final foreground = dark ? colors.textInverse : colors.textPrimary;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -78,7 +78,7 @@ class SldsTopNavBar extends StatelessWidget {
         vertical: dimensions.space12,
       ),
       decoration: BoxDecoration(
-        color: dark ? Colors.black : colors.surfaceCard,
+        color: dark ? colors.surfaceInverse : colors.surfaceCard,
         border: dark
             ? null
             : Border(bottom: BorderSide(color: colors.borderDefault)),
@@ -100,7 +100,9 @@ class SldsTopNavBar extends StatelessWidget {
                       total: totalSteps!,
                       current: currentStep!,
                       accent: accent,
-                      inactiveColor: dark ? Colors.white : colors.borderDefault,
+                      inactiveColor: dark
+                          ? colors.textInverse
+                          : colors.borderDefault,
                     )
                   : Text(
                       title!,

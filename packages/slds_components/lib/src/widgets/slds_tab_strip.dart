@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:slds_components/slds_components.dart' show SldsBottomNav;
+
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
     show SldsBottomNav;
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// One tab in an [SldsTabStrip].
 class SldsTabStripItem {
@@ -71,11 +72,11 @@ class SldsTabStrip extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final dark = style == SldsTabStripStyle.dark;
-    final track = (dark ? Colors.black : colors.surfaceCard);
+    final track = (dark ? colors.surfaceInverse : colors.surfaceCard);
     final pill = dark
         ? colors.surfaceHover.withValues(alpha: 0.16)
         : colors.surfaceHover;
-    final unselectedText = dark ? Colors.white : colors.textPrimary;
+    final unselectedText = dark ? colors.textInverse : colors.textPrimary;
 
     return Container(
       padding: EdgeInsets.all(dimensions.space4),
@@ -122,76 +123,87 @@ class _Tab extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
 
+    // Semantics outside SldsTapTarget: nested the other way the node is the
+    // inner pill (38dp tall) rather than the expanded hit area, so the target
+    // a screen-reader user must hit stays under the 48dp floor (WCAG 2.5.8).
     return Semantics(
       container: true,
       explicitChildNodes: true,
       button: true,
       selected: selected,
       label: item.label,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(dimensions.radiusFull),
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: dimensions.space12,
-            vertical: dimensions.space8,
-          ),
-          decoration: BoxDecoration(
-            color: selected ? pillColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(dimensions.radiusFull),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (!selected && item.indicatorLeading) ...[
-                Icon(
-                  Icons.radio_button_unchecked,
-                  size: dimensions.iconSizeMedium,
-                  color: textColor,
-                ),
-                SizedBox(width: dimensions.space8),
-              ],
-              Flexible(
-                child: Text(
-                  item.label,
-                  overflow: TextOverflow.ellipsis,
-                  style: tokens.typography.body2.copyWith(
+      child: SldsTapTarget(
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(dimensions.radiusFull),
+          child: Container(
+            // The pill is the tap target, so it carries the 48dp floor
+            // itself: Expanded above constrains width only (WCAG 2.5.8).
+            constraints: BoxConstraints(minHeight: dimensions.tapTargetMin),
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(
+              horizontal: dimensions.space12,
+              vertical: dimensions.space8,
+            ),
+            decoration: BoxDecoration(
+              color: selected ? pillColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(dimensions.radiusFull),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (!selected && item.indicatorLeading) ...[
+                  Icon(
+                    Icons.radio_button_unchecked,
+                    size: dimensions.iconSizeMedium,
                     color: textColor,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                   ),
-                ),
-              ),
-              if (!selected && !item.indicatorLeading) ...[
-                SizedBox(width: dimensions.space8),
-                Icon(
-                  Icons.radio_button_unchecked,
-                  size: dimensions.iconSizeMedium,
-                  color: textColor,
-                ),
-              ],
-              if (item.count != null) ...[
-                SizedBox(width: dimensions.space8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 7,
-                    vertical: 1,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colors.badgeInfoBackground,
-                    borderRadius: BorderRadius.circular(dimensions.radiusFull),
-                  ),
+                  SizedBox(width: dimensions.space8),
+                ],
+                Flexible(
                   child: Text(
-                    '${item.count}',
-                    style: TextStyle(
-                      color: colors.badgeInfoText,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                    item.label,
+                    overflow: TextOverflow.ellipsis,
+                    style: tokens.typography.body2.copyWith(
+                      color: textColor,
+                      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                     ),
                   ),
                 ),
+                if (!selected && !item.indicatorLeading) ...[
+                  SizedBox(width: dimensions.space8),
+                  Icon(
+                    Icons.radio_button_unchecked,
+                    size: dimensions.iconSizeMedium,
+                    color: textColor,
+                  ),
+                ],
+                if (item.count != null) ...[
+                  SizedBox(width: dimensions.space8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 1,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colors.badgeInfoBackground,
+                      borderRadius: BorderRadius.circular(
+                        dimensions.radiusFull,
+                      ),
+                    ),
+                    child: Text(
+                      '${item.count}',
+                      style: TextStyle(
+                        color: colors.badgeInfoText,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

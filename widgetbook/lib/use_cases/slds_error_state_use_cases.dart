@@ -3,6 +3,8 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsErrorState,
@@ -27,7 +29,8 @@ Widget buildSldsErrorStateUseCase(BuildContext context) {
   path: '[Feedback & Status]',
 )
 Widget buildSldsErrorStateMaintenanceUseCase(BuildContext context) {
-  return const SldsErrorState(
+  final copy = DemoCopy.of(context);
+  return SldsErrorState(
     illustration: Stack(
       alignment: Alignment.center,
       children: [
@@ -43,7 +46,7 @@ Widget buildSldsErrorStateMaintenanceUseCase(BuildContext context) {
         ),
       ],
     ),
-    title: 'System is down for Maintenance',
+    title: copy['System is down for Maintenance'],
     description: "We promise, we'll be right back!",
   );
 }

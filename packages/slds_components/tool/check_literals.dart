@@ -1,25 +1,40 @@
-// Fails the build when widget code gains new colour literals.
+// Fails the build when widget code gains new raw-value literals.
 //
 // The SLDS engineering guidelines (§2) prohibit raw values in widgets: every
-// colour must resolve from `slds_tokens` or from `ThemeData`. The library
-// currently violates that in a known set of files, so this check is a ratchet
-// rather than a flat ban — `tool/literal_baseline.txt` records how many
-// violations each file is allowed, and the check fails if a file exceeds its
-// allowance or if a file not in the baseline has any at all.
+// colour, size, duration and radius must resolve from `slds_tokens` or from
+// `ThemeData`. The library currently violates that in a known set of files, so
+// this check is a ratchet rather than a flat ban — a baseline file records how
+// many violations each file is allowed, and the check fails if a file exceeds
+// its allowance or if a file not in the baseline has any at all.
+//
+// Two rules run, each with its own baseline: colours and dimensions. They are
+// separate because the colour backlog is nearly drained while the dimension
+// one is not, and merging them would hide progress on either.
 //
 // Cleanup lowers the numbers; nothing can raise them. When a file reaches zero
-// its line is deleted, and when the baseline is empty this whole mechanism
-// goes away and the rule becomes an outright ban.
+// its line is deleted, and when a baseline is empty this whole mechanism goes
+// away for that rule and it becomes an outright ban.
 //
 // Run: dart run tool/check_literals.dart
 
 import 'dart:io';
 
-/// Directory the rule applies to.
+/// Directory the rules apply to.
 const _widgetDir = 'lib/src/widgets';
 
-/// Where the per-file allowances live.
-const _baselineFile = 'tool/literal_baseline.txt';
+/// One ratchet: a named rule, its patterns, and where its allowances live.
+class _Rule {
+  const _Rule(this.noun, this.baselineFile, this.patterns);
+
+  /// What the rule counts, for messages ('colour literal', 'dimension').
+  final String noun;
+
+  /// Per-file allowances for this rule.
+  final String baselineFile;
+
+  /// Anything matching is a violation.
+  final List<RegExp> patterns;
+}
 
 /// Raw `Color(0x…)` constructions.
 final _hexLiteral = RegExp(r'Color\(\s*0x[0-9a-fA-F]{6,8}');
@@ -35,6 +50,49 @@ final _hexLiteral = RegExp(r'Color\(\s*0x[0-9a-fA-F]{6,8}');
 /// there is nothing for a token to say about "no colour at all".
 final _namedColor = RegExp(r'\bColors\.(?!transparent\b)[a-zA-Z]');
 
+/// Raw numbers given to the constructors that carry a design decision.
+///
+/// Deliberately narrow. A bare number in widget code is not automatically a
+/// token violation — `_selectedHour12 < 10`, `i * 30`, `maxLines: 2` and
+/// `alpha: 0.4` are all arithmetic or semantics, not spacing. What §2 is about
+/// is the values a designer owns: padding, gaps, sizes, radii and stroke
+/// widths. Matching those constructors by name keeps the signal high enough
+/// that the number is worth acting on.
+///
+/// `0` is excluded throughout: zero padding is the absence of a value, and
+/// there is nothing for a token to say about it.
+final _dimensionLiterals = <RegExp>[
+  // EdgeInsets.all(12), .symmetric(horizontal: 8), .only(top: 4), …
+  //
+  // The lookbehind keeps `EdgeInsets.all(dimensions.space8 * 2)` clean: the
+  // multiplier is arithmetic on a token, not a hardcoded inset. Only a number
+  // that is not preceded by an identifier or an operator counts.
+  RegExp(
+    r'EdgeInsets(?:Directional)?\.\w+\([^)]*?'
+    r'(?<![.\w])(?<![*+/\-]\s)(?<![*+/\-])\b[1-9][\d.]*',
+  ),
+  // BorderRadius.circular(20), Radius.circular(8)
+  RegExp(r'(?:BorderRadius|Radius)\.circular\(\s*[1-9][\d.]*'),
+  // SizedBox(width: 12, height: 8) — but not SizedBox.shrink() or expand()
+  RegExp(r'SizedBox\([^)]*\b(?:width|height):\s*[1-9][\d.]*'),
+  // width: on a border side or container stroke
+  RegExp(r'\bwidth:\s*[1-9][\d.]*\s*[,)]'),
+  // Explicit sizes on icons and gaps
+  RegExp(r'\bsize:\s*[1-9][\d.]*\s*[,)]'),
+  RegExp(r'\b(?:blurRadius|spreadRadius|elevation):\s*[1-9][\d.]*'),
+  // Duration(milliseconds: 300) — §2 names durations alongside sizes and
+  // radii. `Duration.zero` and a bare `Duration()` carry no design decision.
+  RegExp(r'Duration\(\s*\w+:\s*[1-9][\d.]*'),
+];
+
+final _rules = <_Rule>[
+  _Rule('colour literal', 'tool/literal_baseline.txt', [
+    _hexLiteral,
+    _namedColor,
+  ]),
+  _Rule('dimension', 'tool/dimension_baseline.txt', _dimensionLiterals),
+];
+
 void main(List<String> args) {
   final dir = Directory(_widgetDir);
   if (!dir.existsSync()) {
@@ -42,7 +100,16 @@ void main(List<String> args) {
     exit(2);
   }
 
-  final baseline = _readBaseline();
+  var failed = false;
+  for (final rule in _rules) {
+    if (!_check(dir, rule)) failed = true;
+  }
+  if (failed) exit(1);
+}
+
+/// Runs one rule over [dir]. Returns whether it passed.
+bool _check(Directory dir, _Rule rule) {
+  final baseline = _readBaseline(rule.baselineFile);
   final counts = <String, int>{};
   final examples = <String, List<String>>{};
 
@@ -58,8 +125,7 @@ void main(List<String> args) {
       if (_isComment(line)) continue;
 
       for (final match in [
-        ..._hexLiteral.allMatches(line),
-        ..._namedColor.allMatches(line),
+        for (final pattern in rule.patterns) ...pattern.allMatches(line),
       ]) {
         count++;
         if (found.length < 3) {
@@ -83,12 +149,12 @@ void main(List<String> args) {
     final allowed = baseline[file];
     if (allowed == null) {
       failures.add(
-        '  $file has $count colour literal(s) but is not in the baseline.\n'
+        '  $file has $count ${rule.noun}(s) but is not in the baseline.\n'
         '${examples[file]!.join('\n')}',
       );
     } else if (count > allowed) {
       failures.add(
-        '  $file has $count colour literal(s), baseline allows $allowed.\n'
+        '  $file has $count ${rule.noun}(s), baseline allows $allowed.\n'
         '${examples[file]!.join('\n')}',
       );
     } else if (count < allowed) {
@@ -108,19 +174,20 @@ void main(List<String> args) {
   final allowedTotal = baseline.values.fold(0, (a, b) => a + b);
 
   if (failures.isNotEmpty) {
-    stderr.writeln('Colour literals are not allowed in widget code (§2).');
-    stderr.writeln('Resolve the colour from a token instead.\n');
+    stderr.writeln('Raw ${rule.noun}s are not allowed in widget code (§2).');
+    stderr.writeln('Resolve the value from a token instead.\n');
     stderr.writeln(failures.join('\n\n'));
-    stderr.writeln('\n$total literal(s) found, baseline allows $allowedTotal.');
-    exit(1);
+    stderr.writeln('\n$total found, baseline allows $allowedTotal.');
+    return false;
   }
 
-  stdout.writeln('Colour literals: $total (baseline $allowedTotal).');
+  stdout.writeln('${rule.noun}s: $total (baseline $allowedTotal).');
   if (improvements.isNotEmpty) {
-    stdout.writeln('\nBaseline can be lowered:');
+    stdout.writeln('  baseline can be lowered:');
     stdout.writeln(improvements.join('\n'));
-    stdout.writeln('\nUpdate $_baselineFile to lock in the improvement.');
+    stdout.writeln('  update ${rule.baselineFile} to lock it in.');
   }
+  return true;
 }
 
 /// Whether [line] is entirely a comment, and so exempt.
@@ -132,8 +199,8 @@ bool _isComment(String line) {
   return trimmed.startsWith('//') || trimmed.startsWith('*');
 }
 
-Map<String, int> _readBaseline() {
-  final file = File(_baselineFile);
+Map<String, int> _readBaseline(String path) {
+  final file = File(path);
   if (!file.existsSync()) return {};
 
   final result = <String, int>{};

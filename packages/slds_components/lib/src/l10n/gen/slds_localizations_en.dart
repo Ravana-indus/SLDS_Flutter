@@ -81,6 +81,16 @@ class SldsLocalizationsEn extends SldsLocalizations {
   }
 
   @override
+  String sensitiveValue(String label) {
+    return '$label: hidden. Double tap to reveal.';
+  }
+
+  @override
+  String sensitiveValueRevealed(String label, String value) {
+    return '$label: $value. Double tap to hide.';
+  }
+
+  @override
   String get setYourTime => 'Set Your Time';
 
   @override

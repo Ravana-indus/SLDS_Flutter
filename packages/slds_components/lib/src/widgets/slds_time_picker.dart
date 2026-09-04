@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/format/slds_format.dart';
 import 'package:slds_components/src/l10n/slds_strings.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
@@ -65,8 +66,6 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
   late int _selectedMinute;
   late DayPeriod _period;
   SldsTimePickerUnit _activeUnit = SldsTimePickerUnit.hour;
-
-  static const Color _defaultLightYellow = Color(0xFFFFF7D6);
 
   @override
   void initState() {
@@ -196,7 +195,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                     height: 44,
                     decoration: BoxDecoration(
                       color: _activeUnit == SldsTimePickerUnit.hour
-                          ? _defaultLightYellow
+                          ? colors.datePickerRangeHighlight
                           : colors.surfaceCard,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
@@ -246,7 +245,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                     height: 44,
                     decoration: BoxDecoration(
                       color: _activeUnit == SldsTimePickerUnit.minute
-                          ? _defaultLightYellow
+                          ? colors.datePickerRangeHighlight
                           : colors.surfaceCard,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
@@ -297,9 +296,15 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                           context.sldsStrings.timePeriodAm,
                           style: tokens.typography.body1.copyWith(
                             fontWeight: FontWeight.bold,
+                            // The gold accent measures 1.56:1 on the card, so
+                            // painting the *selected* period in it made the
+                            // active option the unreadable one. Selection is
+                            // carried by weight and text colour instead; the
+                            // unselected option drops the 0.6 alpha that put
+                            // it at 2.93:1 (WCAG 1.4.3).
                             color: _period == DayPeriod.am
-                                ? primaryAccent
-                                : colors.textSecondary.withValues(alpha: 0.6),
+                                ? colors.textPrimary
+                                : colors.textSecondary,
                           ),
                         ),
                       ),
@@ -325,8 +330,8 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                           style: tokens.typography.body1.copyWith(
                             fontWeight: FontWeight.bold,
                             color: _period == DayPeriod.pm
-                                ? primaryAccent
-                                : colors.textSecondary.withValues(alpha: 0.6),
+                                ? colors.textPrimary
+                                : colors.textSecondary,
                           ),
                         ),
                       ),
@@ -354,7 +359,10 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                   borderColor: colors.borderDefault,
                   textColor: colors.textPrimary,
                 ),
-                child: _buildInteractiveClockOverlay(primaryAccent),
+                child: _buildInteractiveClockOverlay(
+                  primaryAccent,
+                  colors.textStaticBlack,
+                ),
               ),
             ),
           ),
@@ -401,7 +409,10 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
     );
   }
 
-  Widget _buildInteractiveClockOverlay(Color primaryAccent) {
+  Widget _buildInteractiveClockOverlay(
+    Color primaryAccent,
+    Color numeralColor,
+  ) {
     final isHour = _activeUnit == SldsTimePickerUnit.hour;
     final totalItems = isHour ? 12 : 12; // 12 numbers on clock face
 
@@ -462,9 +473,10 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                       fontWeight: isSelected
                           ? FontWeight.bold
                           : FontWeight.w500,
-                      color: isSelected
-                          ? const Color(0xFF1C1B1F)
-                          : const Color(0xFF1C1B1F),
+                      // Both dial numerals sit on the clock face, which keeps
+                      // its colour across palettes; selection is signalled by
+                      // weight and the accent circle, not by colour.
+                      color: numeralColor,
                     ),
                   ),
                 ),
@@ -637,11 +649,14 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
     if (time == null) return '';
     final strings = context.sldsStrings;
     final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
+    // Numeric H:mm goes through the shared intl-backed formatter (§6)
+    // rather than hand-built padding; the AM/PM marker stays the library's
+    // own reviewed string (see SldsFormat.timeOfDay12 dartdoc).
+    final numeric = context.sldsFormat.timeOfDay12(hour, time.minute);
     final period = time.period == DayPeriod.am
         ? strings.timePeriodAm
         : strings.timePeriodPm;
-    return '$hour:$minute $period';
+    return '$numeric $period';
   }
 
   Future<void> _showTimePicker(BuildContext context) async {

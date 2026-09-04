@@ -67,6 +67,10 @@ class SldsRawColorTokens {
     required this.badgeArchivedText,
     required this.listBackground,
     required this.listBackgroundHover,
+    required this.surfaceInverse,
+    required this.textInverse,
+    required this.datePickerRangeHighlight,
+    required this.serviceCardSelectedBackground,
     required this.inputLabel,
     required this.inputPlaceholder,
     required this.inputHelper,
@@ -143,6 +147,36 @@ class SldsRawColorTokens {
   ///                       spec at any tier (nearest is Maroon/700 #7A1240),
   ///                       so it is a brand decision that needs design to
   ///                       either ratify it or replace it.
+  /// PENDING DESIGN SIGN-OFF — two roles new to the palette, not adjusted
+  /// ones. `datePickerRangeHighlight` and `serviceCardSelectedBackground`
+  /// were previously hardcoded inside the widgets, which is why the date
+  /// picker, time picker and service card could not render in the
+  /// high-contrast palette at all. The light values below are the literals
+  /// those widgets already used, so light is unchanged; the dark and
+  /// high-contrast values are engineering proposals with no Figma source.
+  ///
+  /// Each fill has two competing requirements — text on it must clear 4.5:1,
+  /// and the fill itself must be distinguishable from the surface behind it,
+  /// or the selection it signifies is invisible. Values chosen to maximise
+  /// the second without dropping the first:
+  ///
+  ///                                  text on fill   fill vs surface
+  ///   datePickerRangeHighlight
+  ///     light  #FFF7D6 (unchanged)      14.79            1.08 on card
+  ///     dark   #6B5600                   7.10            1.37 on card
+  ///     hc     #FFC700                  13.42            1.56 on page
+  ///   serviceCardSelectedBackground
+  ///     light  #E3EDFF (unchanged)      13.50            1.18 on card
+  ///     dark   #1E3A5F                  11.50            1.18 on card
+  ///     hc     #A9C7FF                  12.30            1.71 on page
+  ///
+  /// The high-contrast range fill reuses buttonPrimaryBackground (#FFC700)
+  /// rather than a paler yellow: in a palette whose page and card are both
+  /// white, a #FFE680-class fill reads at 1.24 against the surface, which is
+  /// too faint to mark a selected range for the users the palette exists for.
+  ///
+  /// Dark #24466F was rejected for the service card at 1.01 against the
+  /// #444444 card — indistinguishable from an unselected one.
   factory SldsRawColorTokens.light() => const SldsRawColorTokens(
     textPrimary: 0xff222222,
     textSecondary: 0xff717171,
@@ -198,6 +232,10 @@ class SldsRawColorTokens {
     badgeArchivedText: 0xffbcbcbc,
     listBackground: 0xfff7f7f7,
     listBackgroundHover: 0xffeeeeee,
+    surfaceInverse: 0xff000000,
+    textInverse: 0xffffffff,
+    datePickerRangeHighlight: 0xfffff7d6,
+    serviceCardSelectedBackground: 0xffe3edff,
     inputLabel: 0xff222222,
     inputPlaceholder: 0xffbcbcbc,
     inputHelper: 0xff717171,
@@ -324,6 +362,10 @@ class SldsRawColorTokens {
     badgeArchivedText: 0xff898989,
     listBackground: 0xff111111,
     listBackgroundHover: 0xff444444,
+    surfaceInverse: 0xff000000,
+    textInverse: 0xffffffff,
+    datePickerRangeHighlight: 0xff6b5600,
+    serviceCardSelectedBackground: 0xff1e3a5f,
     inputLabel: 0xffffffff,
     inputPlaceholder: 0xff898989,
     inputHelper: 0xffbcbcbc,
@@ -340,7 +382,7 @@ class SldsRawColorTokens {
     badgeSuccessBackground: 0xff062b1a,
     badgePendingText: 0xffffe880,
     badgePendingBackground: 0xff2e2200,
-    badgeErrorText: 0xfff47272,
+    badgeErrorText: 0xffff9191,
     badgeErrorBackground: 0xff330d0d,
     badgeInfoText: 0xff93c5fd,
     badgeInfoBackground: 0xff0a1733,
@@ -416,6 +458,10 @@ class SldsRawColorTokens {
     badgeArchivedText: 0xff565656,
     listBackground: 0xffffffff,
     listBackgroundHover: 0xffe8e8e8,
+    surfaceInverse: 0xff000000,
+    textInverse: 0xffffffff,
+    datePickerRangeHighlight: 0xffffc700,
+    serviceCardSelectedBackground: 0xffa9c7ff,
     inputLabel: 0xff000000,
     inputPlaceholder: 0xff787878,
     inputHelper: 0xff000000,
@@ -614,6 +660,32 @@ class SldsRawColorTokens {
   /// Figma List/Background/Hover.
   final int listBackgroundHover;
 
+  /// Background for a component variant that deliberately inverts the page —
+  /// the dark top nav, bottom nav, tab strip and pull-to-refresh indicator.
+  ///
+  /// These variants are a Figma style choice, not the app's brightness, so
+  /// they cannot read `surfaceCard`. They previously hardcoded
+  /// `Colors.black`/`Colors.white`, which meant the high-contrast palette
+  /// could not reach them at all — the one palette whose users most need it.
+  final int surfaceInverse;
+
+  /// Foreground for [surfaceInverse]. Must clear 4.5:1 against it in every
+  /// palette; `slds_theme_test.dart` asserts that.
+  final int textInverse;
+
+  /// Fill behind the in-between cells of a date or time range selection.
+  ///
+  /// Read by `SldsDatePicker` and `SldsTimePicker`. Text sits directly on this
+  /// fill, so it is contrast-checked against the palette's primary text rather
+  /// than treated as decorative.
+  final int datePickerRangeHighlight;
+
+  /// Resting fill of a service card in its selected state.
+  ///
+  /// Distinct from [listBackgroundHover]: hover is transient feedback, whereas
+  /// selection persists and must stay legible in every palette.
+  final int serviceCardSelectedBackground;
+
   /// Input label.
   final int inputLabel;
 
@@ -772,6 +844,10 @@ class SldsRawColorTokens {
     int? badgeArchivedText,
     int? listBackground,
     int? listBackgroundHover,
+    int? surfaceInverse,
+    int? textInverse,
+    int? datePickerRangeHighlight,
+    int? serviceCardSelectedBackground,
     int? inputLabel,
     int? inputPlaceholder,
     int? inputHelper,
@@ -872,6 +948,12 @@ class SldsRawColorTokens {
       badgeArchivedText: badgeArchivedText ?? this.badgeArchivedText,
       listBackground: listBackground ?? this.listBackground,
       listBackgroundHover: listBackgroundHover ?? this.listBackgroundHover,
+      surfaceInverse: surfaceInverse ?? this.surfaceInverse,
+      textInverse: textInverse ?? this.textInverse,
+      datePickerRangeHighlight:
+          datePickerRangeHighlight ?? this.datePickerRangeHighlight,
+      serviceCardSelectedBackground:
+          serviceCardSelectedBackground ?? this.serviceCardSelectedBackground,
       inputLabel: inputLabel ?? this.inputLabel,
       inputPlaceholder: inputPlaceholder ?? this.inputPlaceholder,
       inputHelper: inputHelper ?? this.inputHelper,
@@ -1067,9 +1149,21 @@ class SldsRawColorTokens {
       ),
       badgeArchivedText: lerpArgb(a.badgeArchivedText, b.badgeArchivedText, t),
       listBackground: lerpArgb(a.listBackground, b.listBackground, t),
+      surfaceInverse: lerpArgb(a.surfaceInverse, b.surfaceInverse, t),
+      textInverse: lerpArgb(a.textInverse, b.textInverse, t),
       listBackgroundHover: lerpArgb(
         a.listBackgroundHover,
         b.listBackgroundHover,
+        t,
+      ),
+      datePickerRangeHighlight: lerpArgb(
+        a.datePickerRangeHighlight,
+        b.datePickerRangeHighlight,
+        t,
+      ),
+      serviceCardSelectedBackground: lerpArgb(
+        a.serviceCardSelectedBackground,
+        b.serviceCardSelectedBackground,
         t,
       ),
       inputLabel: lerpArgb(a.inputLabel, b.inputLabel, t),
@@ -1227,6 +1321,10 @@ class SldsRawColorTokens {
         other.badgeArchivedText == badgeArchivedText &&
         other.listBackground == listBackground &&
         other.listBackgroundHover == listBackgroundHover &&
+        other.surfaceInverse == surfaceInverse &&
+        other.textInverse == textInverse &&
+        other.datePickerRangeHighlight == datePickerRangeHighlight &&
+        other.serviceCardSelectedBackground == serviceCardSelectedBackground &&
         other.inputLabel == inputLabel &&
         other.inputPlaceholder == inputPlaceholder &&
         other.inputHelper == inputHelper &&
@@ -1321,6 +1419,10 @@ class SldsRawColorTokens {
     badgeArchivedText,
     listBackground,
     listBackgroundHover,
+    surfaceInverse,
+    textInverse,
+    datePickerRangeHighlight,
+    serviceCardSelectedBackground,
     inputLabel,
     inputPlaceholder,
     inputHelper,

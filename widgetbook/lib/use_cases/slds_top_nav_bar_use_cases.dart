@@ -3,20 +3,25 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsTopNavBar,
   path: '[Navigation]',
 )
 Widget buildSldsTopNavBarUseCase(BuildContext context) {
+  final copy = DemoCopy.of(context);
   final showProgress = context.knobs.boolean(
     label: 'Show progress steps',
     initialValue: false,
   );
-  final title = context.knobs.string(
+  final titleOverride = context.knobs.string(
     label: 'Title',
-    initialValue: 'Page Title',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
   );
+  final title = titleOverride.isEmpty ? copy['Page Title'] : titleOverride;
   final currentStep = context.knobs.int.slider(
     label: 'Current step',
     initialValue: 3,

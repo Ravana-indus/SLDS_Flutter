@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// SLDS checkbox sizes.
 enum SldsCheckboxSize {
@@ -132,51 +133,56 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
       enabled: _enabled,
       label: widget.semanticLabel,
       onTap: _enabled ? _toggle : null,
+      // The inner GestureDetector would otherwise surface as a second,
+      // unlabelled tappable node beside this one.
+      excludeSemantics: true,
       child: Focus(
         focusNode: _focusNode,
-        child: GestureDetector(
-          onTap: _toggle,
-          child: Container(
-            width: widget.size.box,
-            height: widget.size.box,
-            padding: _focused
-                ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
-                : EdgeInsets.zero,
-            // focusRing, not the accent: only the former is contrast-checked
-            // against every surface the control can sit on (WCAG 1.4.11).
-            decoration: _focused
-                ? BoxDecoration(
-                    border: Border.all(
-                      color: context.slds.colors.focusRing,
-                      width: dimensions.emphasizedBorderWidth,
-                    ),
-                    borderRadius: BorderRadius.circular(
-                      radius + dimensions.controlBorderWidth * 2,
-                    ),
-                  )
-                : null,
-            child: AnimatedContainer(
-              duration: tokens.motion.fast,
-              decoration: BoxDecoration(
-                color: boxColor,
-                borderRadius: BorderRadius.circular(radius),
-                border: Border.all(color: borderColor, width: 1.5),
-              ),
-              child: widget.value == null
-                  ? Center(
-                      child: Container(
-                        width: widget.size.icon * 0.7,
-                        height: 2,
-                        color: iconColor,
+        child: SldsTapTarget(
+          child: GestureDetector(
+            onTap: _toggle,
+            child: Container(
+              width: widget.size.box,
+              height: widget.size.box,
+              padding: _focused
+                  ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+                  : EdgeInsets.zero,
+              // focusRing, not the accent: only the former is contrast-checked
+              // against every surface the control can sit on (WCAG 1.4.11).
+              decoration: _focused
+                  ? BoxDecoration(
+                      border: Border.all(
+                        color: context.slds.colors.focusRing,
+                        width: dimensions.emphasizedBorderWidth,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        radius + dimensions.controlBorderWidth * 2,
                       ),
                     )
-                  : (widget.value ?? false
-                        ? Icon(
-                            Icons.check,
-                            size: widget.size.icon,
-                            color: iconColor,
-                          )
-                        : null),
+                  : null,
+              child: AnimatedContainer(
+                duration: tokens.motion.fast,
+                decoration: BoxDecoration(
+                  color: boxColor,
+                  borderRadius: BorderRadius.circular(radius),
+                  border: Border.all(color: borderColor, width: 1.5),
+                ),
+                child: widget.value == null
+                    ? Center(
+                        child: Container(
+                          width: widget.size.icon * 0.7,
+                          height: 2,
+                          color: iconColor,
+                        ),
+                      )
+                    : (widget.value ?? false
+                          ? Icon(
+                              Icons.check,
+                              size: widget.size.icon,
+                              color: iconColor,
+                            )
+                          : null),
+              ),
             ),
           ),
         ),

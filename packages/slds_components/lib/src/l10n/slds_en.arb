@@ -105,6 +105,27 @@
       }
     }
   },
+  "sensitiveValue": "{label}: hidden. Double tap to reveal.",
+  "@sensitiveValue": {
+    "description": "Screen-reader label for a summary row whose value is a credential or personal identifier. The value itself is deliberately not announced.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "sensitiveValueRevealed": "{label}: {value}. Double tap to hide.",
+  "@sensitiveValueRevealed": {
+    "description": "Screen-reader label for a sensitive summary row the user has chosen to reveal.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "setYourTime": "Set Your Time",
   "@setYourTime": {
     "description": "Title of the time picker dialog."

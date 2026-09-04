@@ -81,7 +81,7 @@ class SldsBottomNav extends StatelessWidget {
         vertical: dimensions.space8,
       ),
       decoration: BoxDecoration(
-        color: dark ? Colors.black : colors.surfaceCard,
+        color: dark ? colors.surfaceInverse : colors.surfaceCard,
         border: dark
             ? null
             : Border(top: BorderSide(color: colors.borderDefault)),
@@ -144,10 +144,10 @@ class _NavItem extends StatelessWidget {
     if (!item.enabled) {
       iconColor = colors.disabledForeground;
       labelColor = colors.disabledForeground;
-      pillColor = dark ? colors.disabledBackground : Colors.white;
+      pillColor = dark ? colors.disabledBackground : colors.textInverse;
     } else if (dark) {
-      iconColor = selected ? colors.textStaticBlack : Colors.white;
-      labelColor = Colors.white;
+      iconColor = selected ? colors.textStaticBlack : colors.textInverse;
+      labelColor = colors.textInverse;
       pillColor = selected ? accent : Colors.transparent;
     } else {
       iconColor = selected ? colors.textStaticBlack : colors.textTertiary;

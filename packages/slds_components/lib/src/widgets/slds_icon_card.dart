@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:slds_components/slds_components.dart'
-    show SldsCard, SldsServiceCard;
+import 'package:slds_components/slds_components.dart' show SldsCard;
 import 'package:slds_components/src/theme/slds_tokens.dart';
 
 /// Fixed footprint for [SldsIconCard]. [small] is the compact grid tile
@@ -15,10 +14,10 @@ enum SldsIconCardSize {
   large,
 }
 
-/// Visual state for [SldsIconCard] — mirrors [SldsServiceCard]'s state
-/// pattern. [state] forces one for previews; leave it null to let the
-/// widget derive [hover] from pointer tracking and [disabled] from
-/// [onTap] being null.
+/// Visual state for [SldsIconCard] — mirrors `SldsServiceCard`'s state
+/// pattern. `state` forces one for previews; leave it null to let the
+/// widget derive `hover` from pointer tracking and `disabled` from
+/// `onTap` being null.
 enum SldsIconCardState {
   /// At rest.
   defaultState,
@@ -29,6 +28,14 @@ enum SldsIconCardState {
   /// Not interactive.
   disabled,
 }
+
+/// Lines [SldsIconCard] renders its title in — mirrors the `maxLines` on the
+/// title `Text`, and drives how much the tile grows with the text scale.
+const _titleLines = 1;
+
+/// Lines [SldsIconCard] renders its description in — mirrors the `maxLines`
+/// on the description `Text`.
+const _descriptionLines = 2;
 
 /// SLDS icon card — a fixed-size mobile service-category grid tile: an
 /// icon/image slot over a left-aligned title/description, with an optional
@@ -108,10 +115,30 @@ class _SldsIconCardState extends State<SldsIconCard> {
     final descriptionColor = disabled
         ? colors.disabledForeground
         : colors.textSecondary;
-    final (double height, double iconSize) = switch (widget.size) {
+    final (double baseHeight, double iconSize) = switch (widget.size) {
       SldsIconCardSize.small => (158.0, 40.0),
       SldsIconCardSize.large => (220.0, 64.0),
     };
+
+    // The tile is a fixed-height card by design, but a fixed height cannot
+    // hold text the user has scaled up: at 200% the title and description
+    // overflow the bottom. Grow the box by whatever the text actually gains,
+    // so the tile keeps its proportions at 100% and stops clipping above it.
+    // The icon is unaffected — only the text block expands.
+    final typography = tokens.typography;
+    final titleSize = typography.body1.fontSize ?? 16.0;
+    final descriptionSize = typography.caption1.fontSize ?? 12.0;
+    final scaler = MediaQuery.textScalerOf(context);
+
+    // The maxLines the text below actually renders at: one title line, plus
+    // two description lines when a description is given.
+    final growth =
+        (scaler.scale(titleSize) - titleSize) * _titleLines +
+        (widget.description == null
+            ? 0.0
+            : (scaler.scale(descriptionSize) - descriptionSize) *
+                  _descriptionLines);
+    final height = baseHeight + growth;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),

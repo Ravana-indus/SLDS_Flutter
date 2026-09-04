@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_focus.dart';
 
@@ -147,7 +148,14 @@ class _SldsComboBoxState extends State<SldsComboBox> {
         widget.visualState == SldsComboBoxState.filling ||
         widget.visualState == SldsComboBoxState.inputExpanded;
     final displayChips = widget.multiple && widget.selectedValues.isNotEmpty;
-    final fieldHeight = expanded ? null : dimensions.inputHeight;
+    // The collapsed field holds the trailing toggle, which is a tap target:
+    // clamp up to the 48dp floor so the button is not squeezed under it
+    // (WCAG 2.5.8).
+    final fieldHeight = expanded
+        ? null
+        : (dimensions.inputHeight < dimensions.tapTargetMin
+              ? dimensions.tapTargetMin
+              : dimensions.inputHeight);
     final query = _controller.text.toLowerCase();
     final filtered = widget.options
         .where((option) => option.toLowerCase().contains(query))
@@ -188,9 +196,13 @@ class _SldsComboBoxState extends State<SldsComboBox> {
               SizedBox(height: dimensions.space4),
               Container(
                 constraints: fieldHeight == null
-                    ? const BoxConstraints(minHeight: 52)
+                    ? const BoxConstraints(minHeight: 56)
                     : BoxConstraints.tightFor(height: fieldHeight),
-                padding: const EdgeInsetsDirectional.fromSTEB(4, 8, 8, 8),
+                // No vertical padding: the 52dp field minus a 1dp border top
+                // and bottom leaves exactly the 48dp the trailing toggle
+                // needs as a tap target (WCAG 2.5.8). Children inset
+                // themselves.
+                padding: const EdgeInsetsDirectional.fromSTEB(4, 0, 8, 0),
                 decoration: BoxDecoration(
                   color: colors.surfaceCard,
                   border: Border.all(
@@ -205,6 +217,10 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                   boxShadow: focused ? sldsFocusRing(tokens) : null,
                 ),
                 child: Row(
+                  // The field's 8dp vertical padding would otherwise squeeze
+                  // the trailing toggle below the 48dp tap-target floor; the
+                  // button manages its own inset instead.
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
                       child: displayChips
@@ -220,14 +236,24 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                                     onRemove: () => _remove(value),
                                   ),
                                 SizedBox(
-                                  width: expanded ? 48 : 28,
+                                  // The inline field is itself a tap target,
+                                  // so its collapsed width cannot drop below
+                                  // the 48dp floor (WCAG 2.5.8).
+                                  width: dimensions.tapTargetMin,
                                   child: TextField(
                                     controller: _controller,
                                     focusNode: _focusNode,
                                     onTap: () => setState(() => _open = true),
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       border: InputBorder.none,
                                       isDense: true,
+                                      // The decorated field paints
+                                      // taller, but the text node is the
+                                      // tappable target and must clear
+                                      // the 48dp floor (WCAG 2.5.8).
+                                      constraints: BoxConstraints(
+                                        minHeight: dimensions.tapTargetMin,
+                                      ),
                                       contentPadding: EdgeInsets.zero,
                                     ),
                                   ),
@@ -245,6 +271,12 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   isDense: true,
+                                  // The decorated field paints taller, but the
+                                  // text node itself is the tappable target and
+                                  // must clear the 48dp floor (WCAG 2.5.8).
+                                  constraints: BoxConstraints(
+                                    minHeight: dimensions.tapTargetMin,
+                                  ),
                                   contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 8,
                                   ),
@@ -258,17 +290,28 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                               ),
                             ),
                     ),
+                    // Icon-only, so it needs its own name: the field's label
+                    // sits on a different node and a screen reader landing
+                    // here would otherwise announce nothing. Sized to the
+                    // 48dp tap-target floor (WCAG 2.5.8) rather than 36.
                     IconButton(
                       onPressed: () => setState(() => _open = !_open),
+                      tooltip: [
+                        widget.semanticLabel ?? widget.label,
+                        if (_open || forcedOpen)
+                          context.sldsStrings.expanded
+                        else
+                          context.sldsStrings.collapsed,
+                      ].join(', '),
                       icon: Icon(
                         _open || forcedOpen
                             ? Icons.keyboard_arrow_up
                             : Icons.keyboard_arrow_down,
                       ),
                       iconSize: 20,
-                      constraints: const BoxConstraints.tightFor(
-                        width: 36,
-                        height: 36,
+                      constraints: BoxConstraints(
+                        minWidth: dimensions.tapTargetMin,
+                        minHeight: dimensions.tapTargetMin,
                       ),
                       padding: EdgeInsets.zero,
                     ),
@@ -366,12 +409,16 @@ class _SelectionChip extends StatelessWidget {
           excludeSemantics: true,
           button: true,
           label: semanticLabel == null ? value : '$semanticLabel $value',
-          child: InkWell(
-            onTap: onRemove,
-            child: const SizedBox(
-              width: 20,
-              height: 20,
-              child: Icon(Icons.close, size: 16),
+          // The glyph stays 20x20; SldsTapTarget expands only the hit area
+          // to the 48dp floor (WCAG 2.5.8) without changing the chip's look.
+          child: SldsTapTarget(
+            child: InkWell(
+              onTap: onRemove,
+              child: const SizedBox(
+                width: 20,
+                height: 20,
+                child: Icon(Icons.close, size: 16),
+              ),
             ),
           ),
         ),

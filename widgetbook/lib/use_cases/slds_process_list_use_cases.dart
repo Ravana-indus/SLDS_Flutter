@@ -2,35 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/demo_copy.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsProcessList,
   path: '[Display & Data]',
 )
 Widget buildSldsProcessListUseCase(BuildContext context) {
+  final copy = DemoCopy.of(context);
   return Padding(
-    padding: const EdgeInsets.all(16),
+    padding: EdgeInsets.all(16),
     child: SldsProcessList(
-      steps: const [
+      steps: [
         SldsProcessStep(
-          title: 'Prepare documents',
+          title: copy['Prepare documents'],
           description:
-              'Gather all required identification and supporting files',
+              copy['Gather all required identification and supporting files'],
           status: SldsProcessStepStatus.done,
         ),
         SldsProcessStep(
-          title: 'Submit application',
-          description: 'Upload documents through the online portal',
+          title: copy['Submit application'],
+          description: copy['Upload documents through the online portal'],
           status: SldsProcessStepStatus.done,
         ),
         SldsProcessStep(
-          title: 'Verification in progress',
-          description: 'Our team reviews your documents (2–5 business days)',
+          title: copy['Verification in progress'],
+          description:
+              copy['Our team reviews your documents (2–5 business days)'],
           status: SldsProcessStepStatus.current,
         ),
         SldsProcessStep(
-          title: 'Receive approval',
-          description: 'Notification sent via email and SMS',
+          title: copy['Receive approval'],
+          description: copy['Notification sent via email and SMS'],
         ),
       ],
     ),

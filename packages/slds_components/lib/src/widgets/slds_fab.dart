@@ -17,7 +17,7 @@ import 'package:slds_components/src/widgets/slds_button.dart';
 /// meaningful FAB rendering. Passing either asserts in debug.
 ///
 /// Pass [badgeCount] to overlay a numeric badge (for example an unread
-/// count). The badge announces its meaning through [SldsLocalizations], not
+/// count). The badge announces its meaning through `SldsLocalizations`, not
 /// as a bare number, so a screen reader says "3 unread notifications" rather
 /// than "3".
 class SldsFab extends StatelessWidget {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// SLDS radio sizes.
 enum SldsRadioSize {
@@ -124,40 +125,46 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
       enabled: _enabled,
       label: widget.semanticLabel,
       onTap: _enabled ? _select : null,
+      // The inner GestureDetector would otherwise surface as a second,
+      // unlabelled tappable node beside this one.
+      excludeSemantics: true,
       child: Focus(
         focusNode: _focusNode,
-        child: GestureDetector(
-          onTap: _select,
-          child: Container(
-            width: widget.size.circle,
-            height: widget.size.circle,
-            padding: _focused
-                ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
-                : EdgeInsets.zero,
-            // The focus stroke reads from focusRing, which is contrast-checked
-            // against every surface; the accent gold is not (1.4.11).
-            decoration: _focused
-                ? BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: context.slds.colors.focusRing,
-                      width: dimensions.emphasizedBorderWidth,
-                    ),
-                  )
-                : null,
+        child: SldsTapTarget(
+          child: GestureDetector(
+            onTap: _select,
             child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: ringColor, width: 1.5),
-              ),
-              child: Center(
-                child: AnimatedContainer(
-                  duration: tokens.motion.fast,
-                  width: _selected ? widget.size.dot : 0,
-                  height: _selected ? widget.size.dot : 0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: dotColor,
+              width: widget.size.circle,
+              height: widget.size.circle,
+              padding: _focused
+                  ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
+                  : EdgeInsets.zero,
+              // The focus stroke reads from focusRing, which is
+              // contrast-checked
+              // against every surface; the accent gold is not (1.4.11).
+              decoration: _focused
+                  ? BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: context.slds.colors.focusRing,
+                        width: dimensions.emphasizedBorderWidth,
+                      ),
+                    )
+                  : null,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: ringColor, width: 1.5),
+                ),
+                child: Center(
+                  child: AnimatedContainer(
+                    duration: tokens.motion.fast,
+                    width: _selected ? widget.size.dot : 0,
+                    height: _selected ? widget.size.dot : 0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: dotColor,
+                    ),
                   ),
                 ),
               ),

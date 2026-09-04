@@ -4,6 +4,7 @@ import 'package:slds_components/src/format/slds_format.dart';
 import 'package:slds_components/src/l10n/slds_strings.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 
 /// Selection mode for [SldsDatePicker].
@@ -247,51 +248,67 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Month Navigator Pill
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                decoration: BoxDecoration(
-                  border: Border.all(color: colors.borderDefault),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Semantics(
-                      button: true,
-                      label: context.sldsStrings.previousMonth,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: _previousMonth,
-                        child: const Padding(
-                          padding: EdgeInsets.all(4),
-                          child: Icon(Icons.chevron_left, size: 18),
+              // Month Navigator Pill.
+              //
+              // Flexible so the header survives the 320dp floor at 200% text:
+              // both pills are intrinsically sized, and the 48dp tap targets
+              // on the arrows leave the month name nothing to give back.
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: colors.borderDefault),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Semantics(
+                        button: true,
+                        label: context.sldsStrings.previousMonth,
+                        child: SldsTapTarget(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: _previousMonth,
+                            child: const Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Icon(Icons.chevron_left, size: 18),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Text(
-                        _monthNames[_displayedMonth.month - 1],
-                        style: tokens.typography.body1.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: colors.textPrimary,
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Text(
+                            _monthNames[_displayedMonth.month - 1],
+                            overflow: TextOverflow.ellipsis,
+                            style: tokens.typography.body1.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: colors.textPrimary,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    Semantics(
-                      button: true,
-                      label: context.sldsStrings.nextMonth,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: _nextMonth,
-                        child: const Padding(
-                          padding: EdgeInsets.all(4),
-                          child: Icon(Icons.chevron_right, size: 18),
+                      Semantics(
+                        button: true,
+                        label: context.sldsStrings.nextMonth,
+                        child: SldsTapTarget(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: _nextMonth,
+                            child: const Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Icon(Icons.chevron_right, size: 18),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 
@@ -311,28 +328,30 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                     return PopupMenuItem<int>(value: y, child: Text('$y'));
                   }).toList();
                 },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: colors.borderDefault),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '${_displayedMonth.year}',
-                        style: tokens.typography.body1.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: colors.textPrimary,
+                child: SldsTapTarget(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: colors.borderDefault),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${_displayedMonth.year}',
+                          style: tokens.typography.body1.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: colors.textPrimary,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 2),
-                      const Icon(Icons.keyboard_arrow_down, size: 16),
-                    ],
+                        const SizedBox(width: 2),
+                        const Icon(Icons.keyboard_arrow_down, size: 16),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -573,9 +592,11 @@ class _SldsBaseDateCell extends StatelessWidget {
       return Center(
         child: Text(
           dayText,
-          style: tokens.typography.body2.copyWith(
-            color: colors.textTertiary.withValues(alpha: 0.4),
-          ),
+          // No alpha: textTertiary is already the "de-emphasised" token and
+          // clears 4.5:1 on its own. Compositing it at 40% dropped an
+          // adjacent-month date to 1.74:1 — a real date, still selectable,
+          // that a low-vision user could not read (WCAG 1.4.3).
+          style: tokens.typography.body2.copyWith(color: colors.textTertiary),
         ),
       );
     }

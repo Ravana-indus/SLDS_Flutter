@@ -328,6 +328,12 @@ class _SldsInputMaskState extends State<SldsInputMask> {
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               isDense: true,
+                              // The decorated field paints taller, but the
+                              // text node itself is the tappable target and
+                              // must clear the 48dp floor (WCAG 2.5.8).
+                              constraints: BoxConstraints(
+                                minHeight: dimensions.tapTargetMin,
+                              ),
                               contentPadding: EdgeInsets.zero,
                               hintText: widget.hintText,
                               hintStyle: tokens.typography.body1.copyWith(

@@ -81,6 +81,13 @@ jobs:
 
       # Behaviour, semantics and accessibility-guideline tests. Goldens are
       # excluded here — see the note on the `goldens` job below.
+      # Named separately from the suite below so a red build says "the
+      # accessibility gate failed" rather than "a test failed". Runs every
+      # matcher against every component in sldsFixtures().
+      - name: Accessibility gate — all components (§5, §8)
+        run: flutter test test/slds_accessibility_coverage_test.dart
+        working-directory: packages/slds_components
+
       - name: Tests
         run: flutter test --exclude-tags golden
         working-directory: packages/slds_components

@@ -68,14 +68,40 @@ class SldsErrorSummary extends StatelessWidget {
             for (final error in errors)
               Padding(
                 padding: EdgeInsets.only(bottom: dimensions.space8),
-                child: GestureDetector(
+                // The tap target is expanded with padding rather than a
+                // wrapper box: an SldsTapTarget here makes the *semantics
+                // node* 48dp tall, and textContrastGuideline then averages
+                // 22dp of text against 26dp of card and reports a diluted
+                // ratio for text that is actually 4.98:1. Padding grows the
+                // hit area while the node stays the size of its text.
+                child: Semantics(
+                  container: true,
+                  button: error.onTap != null,
+                  label: error.message,
+                  excludeSemantics: true,
                   onTap: error.onTap,
-                  child: Text(
-                    error.message,
-                    style: tokens.typography.body2.copyWith(
-                      color: colors.error,
-                      decoration: TextDecoration.underline,
-                      decorationColor: colors.error,
+                  child: GestureDetector(
+                    onTap: error.onTap,
+                    behavior: HitTestBehavior.opaque,
+                    // Height driven off the tap-target token rather than a
+                    // spacing constant, so the row cannot drift back under
+                    // the floor if the type scale changes (WCAG 2.5.8).
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: dimensions.tapTargetMin,
+                      ),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          error.message,
+                          style: tokens.typography.body2.copyWith(
+                            color: colors.badgeErrorText,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                            decorationColor: colors.badgeErrorText,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

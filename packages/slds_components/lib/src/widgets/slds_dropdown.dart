@@ -263,6 +263,12 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                           color: scheme.onSurface.withValues(alpha: 0.5),
                         ),
                         isDense: true,
+                        // The decorated field paints taller, but the
+                        // text node itself is the tappable target and
+                        // must clear the 48dp floor (WCAG 2.5.8).
+                        constraints: BoxConstraints(
+                          minHeight: dimensions.tapTargetMin,
+                        ),
                         filled: true,
                         fillColor: scheme.surface,
                         contentPadding: EdgeInsets.symmetric(

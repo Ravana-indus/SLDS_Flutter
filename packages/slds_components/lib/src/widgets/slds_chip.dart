@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/slds_components.dart' show SldsAvatar;
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 import 'package:slds_components/src/widgets/slds_avatar.dart' show SldsAvatar;
 
 /// SLDS chip — a pill-shaped label with an optional leading [avatar]/[icon]
@@ -45,61 +46,65 @@ class SldsChip extends StatelessWidget {
     final dimensions = tokens.dimensions;
     final background = colors.surfaceHover;
 
-    return Semantics(
-      container: true,
-      explicitChildNodes: true,
-      button: onTap != null,
-      label: label,
-      child: Material(
-        color: background,
-        borderRadius: BorderRadius.circular(dimensions.radiusFull),
-        child: InkWell(
-          onTap: onTap,
+    return SldsTapTarget(
+      child: Semantics(
+        container: true,
+        explicitChildNodes: true,
+        button: onTap != null,
+        label: label,
+        child: Material(
+          color: background,
           borderRadius: BorderRadius.circular(dimensions.radiusFull),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: dimensions.space12,
-              vertical: dimensions.space8,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (avatar != null) ...[
-                  avatar!,
-                  SizedBox(width: dimensions.space8),
-                ] else if (icon != null) ...[
-                  Icon(
-                    icon,
-                    size: dimensions.iconSizeMedium,
-                    color: colors.textPrimary,
-                  ),
-                  SizedBox(width: dimensions.space8),
-                ],
-                Text(
-                  label,
-                  style: tokens.typography.body1.copyWith(
-                    color: colors.textPrimary,
-                  ),
-                ),
-                if (onDeleted != null) ...[
-                  SizedBox(width: dimensions.space8),
-                  Semantics(
-                    button: true,
-                    label: context.sldsStrings.removeItem(label),
-                    child: InkWell(
-                      onTap: onDeleted,
-                      borderRadius: BorderRadius.circular(
-                        dimensions.radiusFull,
-                      ),
-                      child: Icon(
-                        Icons.close,
-                        size: dimensions.iconSizeMedium,
-                        color: colors.textPrimary,
-                      ),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(dimensions.radiusFull),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: dimensions.space12,
+                vertical: dimensions.space8,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (avatar != null) ...[
+                    avatar!,
+                    SizedBox(width: dimensions.space8),
+                  ] else if (icon != null) ...[
+                    Icon(
+                      icon,
+                      size: dimensions.iconSizeMedium,
+                      color: colors.textPrimary,
+                    ),
+                    SizedBox(width: dimensions.space8),
+                  ],
+                  Text(
+                    label,
+                    style: tokens.typography.body1.copyWith(
+                      color: colors.textPrimary,
                     ),
                   ),
+                  if (onDeleted != null) ...[
+                    SizedBox(width: dimensions.space8),
+                    SldsTapTarget(
+                      child: Semantics(
+                        button: true,
+                        label: context.sldsStrings.removeItem(label),
+                        child: InkWell(
+                          onTap: onDeleted,
+                          borderRadius: BorderRadius.circular(
+                            dimensions.radiusFull,
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: dimensions.iconSizeMedium,
+                            color: colors.textPrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),

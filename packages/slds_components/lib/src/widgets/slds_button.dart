@@ -360,9 +360,17 @@ class _SldsButtonState extends State<SldsButton> {
     if (metrics.height >= target) return ringed;
     // A minimum rather than a fixed height, for the same reason as the style
     // above: a 2x text scale must be free to grow past the tap target.
-    return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: target),
-      child: Center(heightFactor: 1, child: ringed),
+    //
+    // MergeSemantics lifts the button's semantics onto this full-height box
+    // rather than the shorter painted one — without it the a11y tree (and
+    // every assistive tech reading it) reports only the painted height, so
+    // a 28px small button fails the 48x48 check despite being tappable
+    // across the whole area.
+    return MergeSemantics(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: target),
+        child: Center(heightFactor: 1, child: ringed),
+      ),
     );
   }
 

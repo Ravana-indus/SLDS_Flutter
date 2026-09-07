@@ -92,6 +92,24 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
     buildLocalized: null, // label is localized internally, not caller text
   ),
   (
+    name: 'banner',
+    width: 452,
+    build: () => SldsBanner(
+      message: 'Your changes have been saved successfully.',
+      severity: SldsBannerSeverity.success,
+      actionLabel: 'View details',
+      onAction: () {},
+      onDismiss: () {},
+    ),
+    buildLocalized: (locale) => SldsBanner(
+      message: _text(locale),
+      severity: SldsBannerSeverity.success,
+      actionLabel: _text(locale),
+      onAction: () {},
+      onDismiss: () {},
+    ),
+  ),
+  (
     name: 'bottom_sheet',
     width: 340,
     build: () => Builder(
@@ -442,6 +460,18 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       actionLabel: _text(locale),
       onAction: () {},
     ),
+  ),
+  (
+    name: 'notification_icon',
+    width: 340,
+    build: () => Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        for (final type in SldsNotificationType.values)
+          SldsNotificationIcon(type: type),
+      ],
+    ),
+    buildLocalized: null, // icon only, no visible text
   ),
   (
     name: 'otp_input',

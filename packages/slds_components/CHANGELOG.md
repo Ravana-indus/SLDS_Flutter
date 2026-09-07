@@ -89,6 +89,13 @@ SldsDatePicker(onApply: _apply)
 
 ### Added
 
+- `SldsBanner` and `SldsBannerSeverity` (success/warning/error/info) — the
+  inline, non-transient counterpart to `SldsSnackBar`, with an optional
+  inline action and dismiss button. The severity tints reuse the existing
+  status badge token pairs rather than adding a parallel `banner/*` palette:
+  Figma's banner backgrounds are already the badge backgrounds exactly, and
+  its borders read the semantic `success`/`warning`/`error`/`info` tokens so
+  the AA adjustment made to `success` (#1FAA63 -> #00833C) is not undone.
 - `SldsTheme.highContrast`, and `context.slds` honours
   `MediaQuery.highContrast`. The high-contrast palette existed but was
   unreachable, so no component could render in it (§4, §11).

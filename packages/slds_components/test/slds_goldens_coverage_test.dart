@@ -7,10 +7,12 @@
 //
 // This file closes that gap at a deliberately shallower depth: one image per
 // component per theme (light, dark, high contrast), plus a 200% text-scale
-// image in light. That is enough to catch the regressions goldens actually
-// catch here — a token that stopped resolving, a surface that went
-// transparent in dark, a control that clips when the user doubles their text
-// size — without multiplying 47 components by every variant they own.
+// image in light, plus si/ta at 200% for components with visible label text
+// (§6 — taller Sinhala/Tamil glyphs are the highest-risk clipping case).
+// That is enough to catch the regressions goldens actually catch here — a
+// token that stopped resolving, a surface that went transparent in dark, a
+// control that clips when the user doubles their text size or switches
+// script — without multiplying 47 components by every variant they own.
 //
 // Deepen a component's coverage by moving it into the matrix file when its
 // variants start carrying real visual meaning, not by widening this one.
@@ -58,6 +60,29 @@ void main() {
           '${fixture.name}_light_x2.0',
         );
       }, skip: goldenSkipReason != null);
+
+      // si/ta at 200%: taller Sinhala/Tamil glyphs are the highest-risk
+      // clipping case (§6), and only run where the fixture actually renders
+      // localized text — a fixture with no visible label proves nothing
+      // under a different Locale.
+      final buildLocalized = fixture.buildLocalized;
+      if (buildLocalized != null) {
+        for (final locale in const ['si', 'ta']) {
+          testWidgets('$locale x2.0', (tester) async {
+            await tester.pumpWidget(
+              wrap(
+                _boundedWith(fixture, buildLocalized(Locale(locale))),
+                locale: Locale(locale),
+                textScale: 2,
+              ),
+            );
+            await expectGolden(
+              find.byType(_Frame),
+              '${fixture.name}_light_x2.0_$locale',
+            );
+          }, skip: goldenSkipReason != null);
+        }
+      }
     });
   }
 }
@@ -67,10 +92,14 @@ void main() {
 /// Capturing a shared marker type rather than each component's own type keeps
 /// one code path here; capturing the component directly would miss the width
 /// bound that frames it.
-Widget _bounded(SldsFixture fixture) => _Frame(
+Widget _bounded(SldsFixture fixture) => _boundedWith(fixture, fixture.build());
+
+/// As [_bounded], but frames an already-built [child] (e.g. a localized
+/// variant from `fixture.buildLocalized`) instead of calling `fixture.build`.
+Widget _boundedWith(SldsFixture fixture, Widget child) => _Frame(
   child: fixture.width == null
-      ? fixture.build()
-      : SizedBox(width: fixture.width, child: fixture.build()),
+      ? child
+      : SizedBox(width: fixture.width, child: child),
 );
 
 /// Marker widget giving every coverage golden the same capture boundary.

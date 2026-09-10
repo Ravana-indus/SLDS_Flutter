@@ -416,18 +416,24 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
               ],
             )
           else
+            // Flexible so a long/translated action label shrinks and
+            // ellipsizes instead of overflowing this fixed-width dialog.
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                SldsButton(
-                  label: widget.cancelText ?? context.sldsStrings.cancel,
-                  onPressed: widget.onCancel,
-                  variant: SldsButtonVariant.secondary,
+                Flexible(
+                  child: SldsButton(
+                    label: widget.cancelText ?? context.sldsStrings.cancel,
+                    onPressed: widget.onCancel,
+                    variant: SldsButtonVariant.secondary,
+                  ),
                 ),
                 const SizedBox(width: 12),
-                SldsButton(
-                  label: widget.applyText ?? context.sldsStrings.apply,
-                  onPressed: _handleApply,
+                Flexible(
+                  child: SldsButton(
+                    label: widget.applyText ?? context.sldsStrings.apply,
+                    onPressed: _handleApply,
+                  ),
                 ),
               ],
             ),

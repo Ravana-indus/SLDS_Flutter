@@ -245,9 +245,11 @@ void main() {
 
     expect(find.text('Button'), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsNothing);
+    // Only the trailing icon and its gap are lost; the label keeps its own
+    // 6px Text Container pad on both sides in either state.
     expect(
       defaultWidth - loadingWidth,
-      moreOrLessEquals(d.iconSizeLarge + d.space4 + d.space6, epsilon: 0.01),
+      moreOrLessEquals(d.iconSizeLarge + d.space4, epsilon: 0.01),
     );
   });
 

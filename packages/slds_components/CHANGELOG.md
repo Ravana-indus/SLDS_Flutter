@@ -159,9 +159,16 @@ SldsDatePicker(onApply: _apply)
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,
   shifting the row by 8px.
 - `SldsButton`'s loading state replaced the whole label with a spinner. The
-  Figma loading variants (node `213:2006`) keep the label and swap only the
-  leading slot, so the label now stays and the trailing icon is hidden
-  instead — SLDS-UI-002.
+  Figma loading variants (nodes `213:2006`, `215:2889`) keep the label and
+  swap only the leading slot, so the label now stays and the trailing icon
+  is hidden instead — SLDS-UI-002 / SLDS-UI-004.
+- `SldsButton` folded Figma's 6px Text Container pad into the icon gap, so
+  the pad vanished on any side without an icon — the loading state came out
+  6px narrow. It is now real padding on the label, and all four Figma
+  frames (148/124 at large, 156/128 at extra large) match.
+- `SldsDatePicker` and `SldsTimePicker` laid their Cancel/Apply footers out
+  in an unflexed `Row`, which overflowed the fixed-width dialog once the
+  buttons carried their correct padding. Both actions are now `Flexible`.
 
 ### Notes
 

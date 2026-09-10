@@ -130,7 +130,7 @@ class SldsNotificationCard extends StatelessWidget {
                         // falls back to content-sized — while still passing
                         // vertical constraints through, which keeps the
                         // button's invisible 48px WCAG 2.5.5 tap area intact
-                        // (an UnconstrainedBox would collapse it to 30px).
+                        // (an UnconstrainedBox would collapse it to 28px).
                         // IntrinsicWidth doesn't work here: SldsButton has
                         // its own LayoutBuilder inside, and LayoutBuilder
                         // can't answer intrinsic-size queries.

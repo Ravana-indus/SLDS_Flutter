@@ -166,6 +166,13 @@ SldsDatePicker(onApply: _apply)
   the pad vanished on any side without an icon — the loading state came out
   6px narrow. It is now real padding on the label, and all four Figma
   frames (148/124 at large, 156/128 at extra large) match.
+- `SldsButton`'s small and medium sizes rendered 2px taller than their
+  height tokens (30 and 38 against 28 and 36). Both are content-height, and
+  the shared `body1` / `body2` tokens carry the type scale's other platform
+  line height (Mobile Body 1 is 16/20, Desktop Body 2 is 14/22) where the
+  Figma button variants want 16/24 and 14/20. The button now pins the line
+  height its variant specifies rather than changing the shared tokens, which
+  60+ other widgets read — SLDS-UI-007.
 - `SldsDatePicker` and `SldsTimePicker` laid their Cancel/Apply footers out
   in an unflexed `Row`, which overflowed the fixed-width dialog once the
   buttons carried their correct padding. Both actions are now `Flexible`.

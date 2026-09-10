@@ -65,6 +65,15 @@ class _SldsButtonMetrics {
     // the gap loses it on any side with no icon (the loading state, or a
     // label with only one icon), which is a real 6px width difference.
     final textPad = d.space6;
+    // The shared body1/body2 tokens carry the type scale's *other* platform
+    // line height (Mobile Body 1 is 16/20, Desktop Body 2 is 14/22), while
+    // the Figma button variants specify Mobile Body 1 at 16/24 and Mobile
+    // Body 2 at 14/20. Small and medium are content-height, so the wrong
+    // line box pushes them past their height token — 28 renders 30, 36
+    // renders 38. Pin the line height the button spec asks for rather than
+    // editing the shared tokens, which 60+ other widgets read.
+    TextStyle lineHeight(TextStyle style, double height) =>
+        style.copyWith(height: height / style.fontSize!);
     return switch (size) {
       SldsButtonSize.small => _SldsButtonMetrics(
         height: d.buttonHeightSmall,
@@ -76,7 +85,7 @@ class _SldsButtonMetrics {
         gap: d.space0,
         textPad: textPad,
         iconSize: d.iconSizeSmall,
-        textStyle: t.body2,
+        textStyle: lineHeight(t.body2, 20),
       ),
       SldsButtonSize.medium => _SldsButtonMetrics(
         height: d.buttonHeightMedium,
@@ -85,7 +94,7 @@ class _SldsButtonMetrics {
         gap: d.space0,
         textPad: textPad,
         iconSize: d.iconSizeMedium,
-        textStyle: t.body1,
+        textStyle: lineHeight(t.body1, 24),
       ),
       SldsButtonSize.large => _SldsButtonMetrics(
         height: d.buttonHeightLarge,

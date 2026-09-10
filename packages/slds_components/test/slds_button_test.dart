@@ -300,14 +300,15 @@ void main() {
       // The painted box, not SldsButton: the small and medium sizes wrap
       // themselves in a taller invisible tap area to meet the 48px floor.
       //
-      // greaterThanOrEqualTo, not equals: the height is a floor so a large
-      // text scale can grow the button rather than clip its label. Small and
-      // medium currently sit 2px over their Figma height because the body_2 /
-      // body_1 line-height tokens disagree with Figma (22 vs 14, 20 vs 24) —
-      // see the note in the review; fixing those tokens lands them exactly.
+      // Exact at the default text scale: the button pins the line height its
+      // Figma variant specifies, so small and medium land on their height
+      // token instead of the 2px overshoot the shared body_1 / body_2 tokens
+      // used to cause (SLDS-UI-007). The height is still only a floor — at a
+      // large text scale the label grows the button rather than being
+      // clipped, which the text-scale test below covers.
       expect(
         tester.getSize(find.byType(FilledButton)).height,
-        greaterThanOrEqualTo(height),
+        height,
         reason: '${entry.key} height',
       );
 

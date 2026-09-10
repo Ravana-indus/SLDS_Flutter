@@ -169,7 +169,10 @@ class SldsButton extends StatefulWidget {
   /// Optional icon shown after the label.
   final IconData? trailingIcon;
 
-  /// Whether to replace the label with a loading indicator.
+  /// Whether to show a loading spinner in place of the leading icon.
+  ///
+  /// The label stays visible and the trailing icon is hidden, per the Figma
+  /// loading variants. The button is non-interactive while this is true.
   final bool isLoading;
 
   @override
@@ -192,7 +195,10 @@ class _SldsButtonState extends State<SldsButton> {
   @override
   Widget build(BuildContext context) {
     final metrics = _SldsButtonMetrics.of(context, widget._size(context));
-    final content = widget.isLoading
+    // Loading keeps the label and swaps only the leading slot for a spinner,
+    // per the Figma loading variants — the trailing icon drops out, so the
+    // button narrows rather than changing what it says.
+    final leading = widget.isLoading
         ? Semantics(
             // liveRegion so the switch into the loading state is announced
             // as it happens, rather than only when focus next lands here.
@@ -202,28 +208,28 @@ class _SldsButtonState extends State<SldsButton> {
               width: metrics.iconSize,
               height: metrics.iconSize,
               child: CupertinoActivityIndicator(
+                radius: metrics.iconSize / 2,
                 color: _foreground(context, selected: true),
               ),
             ),
           )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (widget.leadingIcon != null) ...[
-                Icon(widget.leadingIcon, size: metrics.iconSize),
-                SizedBox(width: metrics.gap),
-              ],
-              // Flexible so a long/translated label ellipsizes instead of
-              // overflowing past the button on a narrow phone.
-              Flexible(
-                child: Text(widget.label, overflow: TextOverflow.ellipsis),
-              ),
-              if (widget.trailingIcon != null) ...[
-                SizedBox(width: metrics.gap),
-                Icon(widget.trailingIcon, size: metrics.iconSize),
-              ],
-            ],
-          );
+        : widget.leadingIcon != null
+        ? Icon(widget.leadingIcon, size: metrics.iconSize)
+        : null;
+
+    final content = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (leading != null) ...[leading, SizedBox(width: metrics.gap)],
+        // Flexible so a long/translated label ellipsizes instead of
+        // overflowing past the button on a narrow phone.
+        Flexible(child: Text(widget.label, overflow: TextOverflow.ellipsis)),
+        if (widget.trailingIcon != null && !widget.isLoading) ...[
+          SizedBox(width: metrics.gap),
+          Icon(widget.trailingIcon, size: metrics.iconSize),
+        ],
+      ],
+    );
 
     return _styledButton(context, content, metrics);
   }

@@ -158,6 +158,10 @@ SldsDatePicker(onApply: _apply)
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,
   shifting the row by 8px.
+- `SldsButton`'s loading state replaced the whole label with a spinner. The
+  Figma loading variants (node `213:2006`) keep the label and swap only the
+  leading slot, so the label now stays and the trailing icon is hidden
+  instead — SLDS-UI-002.
 
 ### Notes
 

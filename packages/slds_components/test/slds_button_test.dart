@@ -68,7 +68,9 @@ void main() {
     );
 
     expect(find.byType(CupertinoActivityIndicator), findsOneWidget);
-    expect(find.text('Continue'), findsNothing);
+    // The label stays visible in the loading state (Figma loading variants);
+    // only the leading slot becomes the spinner.
+    expect(find.text('Continue'), findsOneWidget);
 
     await tester.tap(find.byType(FilledButton), warnIfMissed: false);
     expect(tapped, isFalse);
@@ -208,6 +210,46 @@ void main() {
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
   }
+
+  testWidgets('loading hides the trailing icon but keeps the label width', (
+    tester,
+  ) async {
+    // Figma node 213:2006 (Loading/Primary/Extra Large) is 128 wide against
+    // 156 for the same button in its default state: the spinner takes the
+    // leading slot and the trailing icon drops out, so the gap between the
+    // two is exactly one icon plus one gap.
+    await setViewSize(tester, const Size(1024, 800));
+
+    Future<double> widthOf({required bool loading}) async {
+      await pump(
+        tester,
+        Center(
+          child: SldsButton(
+            label: 'Button',
+            size: SldsButtonSize.extraLarge,
+            leadingIcon: Icons.chevron_left,
+            trailingIcon: Icons.chevron_right,
+            isLoading: loading,
+            onPressed: () {},
+          ),
+        ),
+      );
+      // Not pumpAndSettle: the loading spinner animates forever.
+      await tester.pump();
+      return tester.getSize(find.byType(SldsButton)).width;
+    }
+
+    const d = SldsDimensionTokens.standard;
+    final defaultWidth = await widthOf(loading: false);
+    final loadingWidth = await widthOf(loading: true);
+
+    expect(find.text('Button'), findsOneWidget);
+    expect(find.byIcon(Icons.chevron_right), findsNothing);
+    expect(
+      defaultWidth - loadingWidth,
+      moreOrLessEquals(d.iconSizeLarge + d.space4 + d.space6, epsilon: 0.01),
+    );
+  });
 
   testWidgets('is full-width below the mobile breakpoint', (tester) async {
     await setViewSize(tester, const Size(360, 800));

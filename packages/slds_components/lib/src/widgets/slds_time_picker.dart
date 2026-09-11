@@ -672,17 +672,25 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
         return Dialog(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          child: SldsTimePickerDialog(
-            initialTime: _selectedTime ?? const TimeOfDay(hour: 7, minute: 0),
-            titleText: widget.titleText,
-            cancelText: widget.cancelText ?? context.sldsStrings.cancel,
-            applyText: widget.applyText ?? context.sldsStrings.apply,
-            onApply: (TimeOfDay time) {
-              Navigator.of(context).pop(time);
-            },
-            onCancel: () {
-              Navigator.of(context).pop();
-            },
+          // The dialog is a fixed ~500px column (header, digital row, 210px
+          // dial, footer). On a short viewport — a landscape phone, or any
+          // Widgetbook device preset under ~500px tall — that overflows the
+          // screen and the RenderFlex throws. Scroll instead of clipping:
+          // the dial must keep its size to stay tappable, so the content
+          // cannot shrink to fit.
+          child: SingleChildScrollView(
+            child: SldsTimePickerDialog(
+              initialTime: _selectedTime ?? const TimeOfDay(hour: 7, minute: 0),
+              titleText: widget.titleText,
+              cancelText: widget.cancelText ?? context.sldsStrings.cancel,
+              applyText: widget.applyText ?? context.sldsStrings.apply,
+              onApply: (TimeOfDay time) {
+                Navigator.of(context).pop(time);
+              },
+              onCancel: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ),
         );
       },

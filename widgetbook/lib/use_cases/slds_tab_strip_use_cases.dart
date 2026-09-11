@@ -25,18 +25,27 @@ Widget buildSldsTabStripUseCase(BuildContext context) {
     max: 3,
   );
 
-  return Padding(
-    padding: EdgeInsets.all(24),
-    child: SldsTabStrip(
-      style: style,
-      currentIndex: currentIndex,
-      onTap: (_) {},
-      items: [
-        SldsTabStripItem(label: copy['Label'], count: 2),
-        SldsTabStripItem(label: copy['Label']),
-        SldsTabStripItem(label: copy['Label'], indicatorLeading: false),
-        SldsTabStripItem(label: copy['Label'], count: 2),
-      ],
+  // The four-tab composition of the Figma spec (node 346:487): badge only,
+  // leading icon, trailing icon, then leading icon + badge.
+  return Center(
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.all(context.slds.dimensions.space16),
+      child: SldsTabStrip(
+        style: style,
+        currentIndex: currentIndex,
+        onTap: (_) {},
+        items: [
+          SldsTabStripItem(label: copy['Label'], count: 2),
+          SldsTabStripItem(label: copy['Label'], leadingIcon: true),
+          SldsTabStripItem(label: copy['Label'], trailingIcon: true),
+          SldsTabStripItem(
+            label: copy['Label'],
+            leadingIcon: true,
+            count: 2,
+          ),
+        ],
+      ),
     ),
   );
 }

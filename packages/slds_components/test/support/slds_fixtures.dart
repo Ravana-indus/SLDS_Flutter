@@ -625,7 +625,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       items: const [
         SldsTabStripItem(label: 'All'),
         SldsTabStripItem(label: 'Open', count: 3),
-        SldsTabStripItem(label: 'Closed'),
+        SldsTabStripItem(label: 'Closed', trailingIcon: true),
       ],
       currentIndex: 1,
       onTap: (_) {},

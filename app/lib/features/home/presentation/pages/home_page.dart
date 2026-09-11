@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slds_components/slds_components.dart';
 
+import '../../../gallery/presentation/pages/gallery_page.dart';
 import '../bloc/theme_mode_cubit.dart';
 
 /// Example screen showing how a feature composes SLDS components with a
@@ -30,6 +31,15 @@ class HomePage extends StatelessWidget {
                     'SLDS component library is wired up.',
                     style: Theme.of(context).textTheme.titleMedium,
                     textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: context.slds.dimensions.space12),
+                  SldsButton(
+                    label: 'Browse all components',
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const GalleryPage(),
+                      ),
+                    ),
                   ),
                   SizedBox(height: context.slds.dimensions.space12),
                   BlocBuilder<ThemeModeCubit, ThemeMode>(

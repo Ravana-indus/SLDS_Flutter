@@ -356,8 +356,13 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                             borderRadius: BorderRadius.circular(
                               dimensions.radius2xl,
                             ),
+                            // Figma Search Bar: the input border tokens, not
+                            // the decorative one that outlines the panel, and
+                            // it turns gold in the Typing state.
                             border: Border.all(
-                              color: colors.borderDecorative,
+                              color: _controller.text.isEmpty
+                                  ? colors.inputBorderDefault
+                                  : colors.inputBorderFocused,
                               width: dimensions.emphasizedBorderWidth,
                             ),
                           ),
@@ -383,7 +388,12 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                                     constraints: BoxConstraints(
                                       minHeight: dimensions.tapTargetMin,
                                     ),
-                                    contentPadding: EdgeInsets.zero,
+                                    // Vertical padding centres the line inside
+                                    // that 48dp box; EdgeInsets.zero
+                                    // top-aligns it.
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: dimensions.space12,
+                                    ),
                                     hintText:
                                         widget.searchPlaceholder ??
                                         context.sldsStrings.search,
@@ -393,6 +403,32 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                                   ),
                                 ),
                               ),
+                              // Figma Typing state: a 28px secondary-styled
+                              // circle that clears the query. Only present
+                              // once there is something to clear.
+                              if (_controller.text.isNotEmpty)
+                                IconButton(
+                                  onPressed: _controller.clear,
+                                  tooltip: context.sldsStrings.clearSearch,
+                                  icon: Icon(
+                                    Icons.close,
+                                    size: dimensions.iconSizeSmall,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    backgroundColor:
+                                        colors.buttonSecondaryBackground,
+                                    side: BorderSide(
+                                      color: colors.buttonSecondaryBorder,
+                                      width: dimensions.controlBorderWidth,
+                                    ),
+                                    // The glyph circle stays 28dp as drawn;
+                                    // the tap target below expands the hit
+                                    // area to the 48dp floor (WCAG 2.5.8).
+                                    fixedSize: const Size.square(28),
+                                    minimumSize: const Size.square(28),
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ),
                             ],
                           ),
                         ),

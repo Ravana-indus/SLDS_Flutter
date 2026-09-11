@@ -51,7 +51,7 @@ Widget buildSldsComboBoxUseCase(BuildContext context) {
   final helperText = helperTextOverride.isEmpty
       ? copy['Help Text']
       : helperTextOverride;
-  final searchPlaceholderOverride = context.knobs.string(
+  final searchHint = context.knobs.string(
     label: 'Search placeholder',
     initialValue: '',
     description: 'Blank follows the Locale addon; type to override.',
@@ -75,9 +75,7 @@ Widget buildSldsComboBoxUseCase(BuildContext context) {
       helperText: helperText,
       // Blank means "no override" — the widget then falls back to the
       // localized "Search", which is what the Locale addon exercises.
-      searchPlaceholder: searchPlaceholderOverride.isEmpty
-          ? null
-          : searchPlaceholderOverride,
+      searchPlaceholder: searchHint.isEmpty ? null : searchHint,
       isRequired: isRequired,
       multiple: multiple,
       visualState: _toVisualState(forcedState),

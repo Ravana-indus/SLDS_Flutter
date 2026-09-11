@@ -337,7 +337,13 @@ class _SldsInputMaskState extends State<SldsInputMask> {
                               constraints: BoxConstraints(
                                 minHeight: dimensions.tapTargetMin,
                               ),
-                              contentPadding: EdgeInsets.zero,
+                              // Vertical padding centres the line inside that
+                              // 48dp box. EdgeInsets.zero top-aligns it, which
+                              // left the value sitting against the field's top
+                              // edge instead of on its centre line.
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: dimensions.space12,
+                              ),
                               hintText: widget.hintText,
                               hintStyle: tokens.typography.body1.copyWith(
                                 color: colors.inputPlaceholder,

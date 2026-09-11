@@ -75,9 +75,13 @@ class SldsTabStrip extends StatelessWidget {
     final dimensions = tokens.dimensions;
     final dark = style == SldsTabStripStyle.dark;
     final track = dark ? colors.surfaceInverse : colors.surfaceSunken;
-    // ponytail: dark pill approximates Figma #010102 with pure black; a
-    // dedicated tab-bar/background token would carry the exact 1-unit delta.
-    final pill = dark ? colors.surfaceInverse : colors.surfacePage;
+    // The selected pill must read as raised *above* the track, so it is the
+    // lighter of the two in both styles. No token carries Figma's dark
+    // tab-bar/background, so it is spelled out here rather than borrowed
+    // from a surface token that would invert the relationship.
+    // ponytail: literal #010102, promote to a tab-bar token if a second
+    // component needs it.
+    final pill = dark ? const Color(0xff010102) : colors.surfacePage;
     final labelColor = dark ? colors.textInverse : colors.textPrimary;
 
     return Container(

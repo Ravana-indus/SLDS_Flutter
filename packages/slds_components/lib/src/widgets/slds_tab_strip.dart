@@ -11,7 +11,8 @@ class SldsTabStripItem {
   const SldsTabStripItem({
     required this.label,
     this.count,
-    this.indicatorLeading = true,
+    this.leadingIcon = false,
+    this.trailingIcon = false,
   });
 
   /// The tab's visible text, and its accessible name.
@@ -21,11 +22,12 @@ class SldsTabStripItem {
   /// for that tab). Null hides the badge.
   final int? count;
 
-  /// While unselected, an empty radio-outline indicator is shown beside the
-  /// label — before it when true, after it when false. Purely a layout
-  /// choice (the Figma spec alternates it per tab); it carries no
-  /// selection state itself, [SldsTabStrip.currentIndex] does.
-  final bool indicatorLeading;
+  /// Shows the circle glyph before the label. Decorative and independent of
+  /// selection — Figma draws it on active and default tabs alike.
+  final bool leadingIcon;
+
+  /// Shows the circle glyph after the label. See [leadingIcon].
+  final bool trailingIcon;
 }
 
 /// Visual container styles for [SldsTabStrip] — mirrors [SldsBottomNav]'s
@@ -39,11 +41,11 @@ enum SldsTabStripStyle {
 }
 
 /// SLDS tab strip / segmented control — a row of [items], the selected one
-/// shown as a raised pill over a track background. Responsive: tabs share
-/// the strip's width equally via [Expanded] and each label ellipsizes, so
-/// it reflows to any width without a fixed per-tab size; wrap in a
-/// horizontally scrolling parent yourself if you need un-shrunk labels on
-/// narrow screens instead.
+/// shown as a raised pill over a sunken track. Each tab is sized to its own
+/// content, as in the Figma spec, rather than to an equal share of the
+/// strip: equal shares squeezed long labels down to an ellipsis on narrow
+/// viewports. Labels still ellipsize if the strip itself is too narrow, so
+/// wrap it in a horizontally scrolling parent when the tabs cannot fit.
 class SldsTabStrip extends StatelessWidget {
   /// Creates a tab strip.
   const SldsTabStrip({
@@ -72,35 +74,54 @@ class SldsTabStrip extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final dark = style == SldsTabStripStyle.dark;
-    final track = (dark ? colors.surfaceInverse : colors.surfaceCard);
-    final pill = dark
-        ? colors.surfaceHover.withValues(alpha: 0.16)
-        : colors.surfaceHover;
-    final unselectedText = dark ? colors.textInverse : colors.textPrimary;
+    final track = dark ? colors.surfaceInverse : colors.surfaceSunken;
+    // The selected pill must read as raised *above* the track, so it is the
+    // lighter of the two in both styles. No token carries Figma's dark
+    // tab-bar/background, so it is spelled out here rather than borrowed
+    // from a surface token that would invert the relationship.
+    // ponytail: literal #010102, promote to a tab-bar token if a second
+    // component needs it.
+    final pill = dark ? const Color(0xff010102) : colors.surfacePage;
+    final labelColor = dark ? colors.textInverse : colors.textPrimary;
 
     return Container(
       padding: EdgeInsets.all(dimensions.space4),
       decoration: BoxDecoration(
         color: track,
-        borderRadius: BorderRadius.circular(dimensions.radiusFull),
+        borderRadius: BorderRadius.circular(dimensions.radius3xl),
       ),
-      child: Row(
+      // The strip hugs its content vertically: a decorated Container in a
+      // height-unbounded parent (a Center, a Column) would otherwise stretch
+      // to the full available height and drag every tab with it.
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          for (var i = 0; i < items.length; i++)
-            Expanded(
-              child: _Tab(
-                item: items[i],
-                selected: i == currentIndex,
-                pillColor: pill,
-                textColor: unselectedText,
-                onTap: onTap == null ? null : () => onTap!(i),
-              ),
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < items.length; i++) ...[
+                if (i > 0) SizedBox(width: dimensions.space8),
+                Flexible(
+                  child: _Tab(
+                    item: items[i],
+                    selected: i == currentIndex,
+                    pillColor: pill,
+                    textColor: labelColor,
+                    onTap: onTap == null ? null : () => onTap!(i),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ],
       ),
     );
   }
 }
+
+/// Figma's inner gap between a tab's icon, label and badge. Off the
+/// spacing scale (3px), so it is not a spacing token.
+const double _gap = 3;
 
 class _Tab extends StatelessWidget {
   const _Tab({
@@ -143,61 +164,72 @@ class _Tab extends StatelessWidget {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(
               horizontal: dimensions.space12,
-              vertical: dimensions.space8,
+              vertical: dimensions.space4,
             ),
             decoration: BoxDecoration(
               color: selected ? pillColor : Colors.transparent,
-              borderRadius: BorderRadius.circular(dimensions.radiusFull),
+              borderRadius: BorderRadius.circular(dimensions.radius2xl),
+              // Figma Elevation/1 - Raised, on the selected tab only.
+              boxShadow: selected
+                  ? const [
+                      BoxShadow(
+                        color: Color(0x0d000000),
+                        offset: Offset(0, 1),
+                        blurRadius: 2,
+                      ),
+                    ]
+                  : null,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (!selected && item.indicatorLeading) ...[
+                if (item.leadingIcon) ...[
                   Icon(
-                    Icons.radio_button_unchecked,
+                    Icons.circle_outlined,
                     size: dimensions.iconSizeMedium,
                     color: textColor,
                   ),
-                  SizedBox(width: dimensions.space8),
+                  const SizedBox(width: _gap),
                 ],
                 Flexible(
                   child: Text(
                     item.label,
                     overflow: TextOverflow.ellipsis,
-                    style: tokens.typography.body2.copyWith(
-                      color: textColor,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                    ),
+                    style: tokens.typography.body2.copyWith(color: textColor),
                   ),
                 ),
-                if (!selected && !item.indicatorLeading) ...[
-                  SizedBox(width: dimensions.space8),
+                if (item.trailingIcon) ...[
+                  const SizedBox(width: _gap),
                   Icon(
-                    Icons.radio_button_unchecked,
+                    Icons.circle_outlined,
                     size: dimensions.iconSizeMedium,
                     color: textColor,
                   ),
                 ],
                 if (item.count != null) ...[
-                  SizedBox(width: dimensions.space8),
+                  const SizedBox(width: _gap),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                      vertical: 1,
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      maxWidth: 34,
+                    ),
+                    alignment: Alignment.center,
+                    height: 16,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: dimensions.space8,
                     ),
                     decoration: BoxDecoration(
-                      color: colors.badgeInfoBackground,
+                      color: colors.badgeInReviewBackground,
                       borderRadius: BorderRadius.circular(
                         dimensions.radiusFull,
                       ),
                     ),
                     child: Text(
                       '${item.count}',
-                      style: TextStyle(
-                        color: colors.badgeInfoText,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                      textAlign: TextAlign.center,
+                      style: tokens.typography.caption2.copyWith(
+                        color: colors.badgeInReviewText,
                       ),
                     ),
                   ),

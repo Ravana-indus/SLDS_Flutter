@@ -348,10 +348,15 @@ void main() {
     testWidgets('SldsIconCard badge sits at the leading edge', (tester) async {
       await expectRtl(
         tester,
+        // defaultCard, not the quickAction default: only the non-quickAction
+        // variants put the badge at the leading edge, which is what this
+        // golden exists to pin. Quick Action centres it, so it is
+        // mirror-invariant and proves nothing about RTL.
         SldsIconCard(
           title: 'Vehicle',
           icon: const Icon(Icons.directions_car),
           badgeLabel: 'New',
+          variant: SldsIconCardVariant.defaultCard,
           onTap: () {},
         ),
         find.byType(SldsIconCard),

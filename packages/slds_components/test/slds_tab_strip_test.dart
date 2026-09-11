@@ -61,27 +61,32 @@ void main() {
     );
   });
 
-  testWidgets('unselected tabs show the radio indicator, selected does not', (
-    tester,
-  ) async {
-    await pump(
-      tester,
-      SldsTabStrip(items: items, currentIndex: 0, onTap: (_) {}),
-    );
-
-    // Overview is selected (index 0) so it gets no indicator; Details is
-    // unselected and defaults to a leading indicator.
-    expect(find.byIcon(Icons.radio_button_unchecked), findsOneWidget);
-  });
-
-  testWidgets('indicatorLeading places the radio after the label instead', (
+  testWidgets('icons are independent of selection, not an unselected marker', (
     tester,
   ) async {
     await pump(
       tester,
       SldsTabStrip(
         items: const [
-          SldsTabStripItem(label: 'Overview', indicatorLeading: false),
+          SldsTabStripItem(label: 'Overview', leadingIcon: true),
+          SldsTabStripItem(label: 'Details'),
+        ],
+        currentIndex: 0,
+        onTap: (_) {},
+      ),
+    );
+
+    // Overview is selected and still shows its icon; Details is unselected
+    // and asked for none, so exactly one icon is on screen.
+    expect(find.byIcon(Icons.circle_outlined), findsOneWidget);
+  });
+
+  testWidgets('trailingIcon places the glyph after the label', (tester) async {
+    await pump(
+      tester,
+      SldsTabStrip(
+        items: const [
+          SldsTabStripItem(label: 'Overview', trailingIcon: true),
         ],
         currentIndex: -1,
         onTap: (_) {},

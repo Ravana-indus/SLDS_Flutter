@@ -76,15 +76,19 @@ class SldsSnackBar extends StatelessWidget {
       liveRegion: true,
       container: true,
       child: Container(
-        padding: EdgeInsets.all(dimensions.space16),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimensions.space16,
+          vertical: dimensions.space12,
+        ),
         decoration: BoxDecoration(
           color: colors.surfaceCard,
-          borderRadius: BorderRadius.circular(dimensions.radius2xl),
+          borderRadius: BorderRadius.circular(dimensions.radius3xl),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
+              blurRadius: dimensions.elevationBlur,
+              spreadRadius: dimensions.elevationSpread,
+              offset: Offset(0, dimensions.elevationOffsetY),
             ),
           ],
         ),
@@ -97,7 +101,7 @@ class SldsSnackBar extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: tokens.typography.body1.copyWith(
+                    style: tokens.typography.body2.copyWith(
                       color: colors.textPrimary,
                     ),
                   ),
@@ -105,7 +109,7 @@ class SldsSnackBar extends StatelessWidget {
                     SizedBox(height: dimensions.space4),
                     Text(
                       message!,
-                      style: tokens.typography.body2.copyWith(
+                      style: tokens.typography.caption1.copyWith(
                         color: colors.textSecondary,
                       ),
                     ),

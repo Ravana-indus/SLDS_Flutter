@@ -89,6 +89,13 @@ SldsDatePicker(onApply: _apply)
 
 ### Added
 
+- `SldsBanner` and `SldsBannerSeverity` (success/warning/error/info) — the
+  inline, non-transient counterpart to `SldsSnackBar`, with an optional
+  inline action and dismiss button. The severity tints reuse the existing
+  status badge token pairs rather than adding a parallel `banner/*` palette:
+  Figma's banner backgrounds are already the badge backgrounds exactly, and
+  its borders read the semantic `success`/`warning`/`error`/`info` tokens so
+  the AA adjustment made to `success` (#1FAA63 -> #00833C) is not undone.
 - `SldsTheme.highContrast`, and `context.slds` honours
   `MediaQuery.highContrast`. The high-contrast palette existed but was
   unreachable, so no component could render in it (§4, §11).
@@ -151,6 +158,24 @@ SldsDatePicker(onApply: _apply)
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,
   shifting the row by 8px.
+- `SldsButton`'s loading state replaced the whole label with a spinner. The
+  Figma loading variants (nodes `213:2006`, `215:2889`) keep the label and
+  swap only the leading slot, so the label now stays and the trailing icon
+  is hidden instead — SLDS-UI-002 / SLDS-UI-004.
+- `SldsButton` folded Figma's 6px Text Container pad into the icon gap, so
+  the pad vanished on any side without an icon — the loading state came out
+  6px narrow. It is now real padding on the label, and all four Figma
+  frames (148/124 at large, 156/128 at extra large) match.
+- `SldsButton`'s small and medium sizes rendered 2px taller than their
+  height tokens (30 and 38 against 28 and 36). Both are content-height, and
+  the shared `body1` / `body2` tokens carry the type scale's other platform
+  line height (Mobile Body 1 is 16/20, Desktop Body 2 is 14/22) where the
+  Figma button variants want 16/24 and 14/20. The button now pins the line
+  height its variant specifies rather than changing the shared tokens, which
+  60+ other widgets read — SLDS-UI-007.
+- `SldsDatePicker` and `SldsTimePicker` laid their Cancel/Apply footers out
+  in an unflexed `Row`, which overflowed the fixed-width dialog once the
+  buttons carried their correct padding. Both actions are now `Flexible`.
 
 ### Notes
 

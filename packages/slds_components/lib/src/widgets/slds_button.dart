@@ -50,6 +50,7 @@ class _SldsButtonMetrics {
     required this.radius,
     required this.padding,
     required this.gap,
+    required this.textPad,
     required this.iconSize,
     required this.textStyle,
   });
@@ -59,9 +60,20 @@ class _SldsButtonMetrics {
     final tokens = context.slds;
     final d = tokens.dimensions;
     final t = tokens.typography;
-    // The text container carries a 6px horizontal pad of its own in Figma,
-    // which is folded into the gap here rather than modelled as a second box.
+    // Figma wraps the label in a Text Container carrying a 6px pad on *both*
+    // sides. That pad is its own box, not part of the gap: folding it into
+    // the gap loses it on any side with no icon (the loading state, or a
+    // label with only one icon), which is a real 6px width difference.
     final textPad = d.space6;
+    // The shared body1/body2 tokens carry the type scale's *other* platform
+    // line height (Mobile Body 1 is 16/20, Desktop Body 2 is 14/22), while
+    // the Figma button variants specify Mobile Body 1 at 16/24 and Mobile
+    // Body 2 at 14/20. Small and medium are content-height, so the wrong
+    // line box pushes them past their height token — 28 renders 30, 36
+    // renders 38. Pin the line height the button spec asks for rather than
+    // editing the shared tokens, which 60+ other widgets read.
+    TextStyle lineHeight(TextStyle style, double height) =>
+        style.copyWith(height: height / style.fontSize!);
     return switch (size) {
       SldsButtonSize.small => _SldsButtonMetrics(
         height: d.buttonHeightSmall,
@@ -70,17 +82,19 @@ class _SldsButtonMetrics {
           horizontal: d.space8,
           vertical: d.space4,
         ),
-        gap: d.space0 + textPad,
+        gap: d.space0,
+        textPad: textPad,
         iconSize: d.iconSizeSmall,
-        textStyle: t.body2,
+        textStyle: lineHeight(t.body2, 20),
       ),
       SldsButtonSize.medium => _SldsButtonMetrics(
         height: d.buttonHeightMedium,
         radius: d.radiusXl,
         padding: EdgeInsetsDirectional.all(d.space8),
-        gap: d.space0 + textPad,
+        gap: d.space0,
+        textPad: textPad,
         iconSize: d.iconSizeMedium,
-        textStyle: t.body1,
+        textStyle: lineHeight(t.body1, 24),
       ),
       SldsButtonSize.large => _SldsButtonMetrics(
         height: d.buttonHeightLarge,
@@ -89,7 +103,8 @@ class _SldsButtonMetrics {
           horizontal: d.space16,
           vertical: d.space12,
         ),
-        gap: d.space4 + textPad,
+        gap: d.space4,
+        textPad: textPad,
         iconSize: d.iconSizeMedium,
         textStyle: t.title1,
       ),
@@ -97,7 +112,8 @@ class _SldsButtonMetrics {
         height: d.buttonHeightExtraLarge,
         radius: d.radius2xl,
         padding: EdgeInsetsDirectional.all(d.space16),
-        gap: d.space4 + textPad,
+        gap: d.space4,
+        textPad: textPad,
         iconSize: d.iconSizeLarge,
         textStyle: t.title1,
       ),
@@ -108,6 +124,9 @@ class _SldsButtonMetrics {
   final double radius;
   final EdgeInsetsGeometry padding;
   final double gap;
+
+  /// Figma's Text Container pad, applied to both sides of the label.
+  final double textPad;
   final double iconSize;
   final TextStyle textStyle;
 }
@@ -169,7 +188,10 @@ class SldsButton extends StatefulWidget {
   /// Optional icon shown after the label.
   final IconData? trailingIcon;
 
-  /// Whether to replace the label with a loading indicator.
+  /// Whether to show a loading spinner in place of the leading icon.
+  ///
+  /// The label stays visible and the trailing icon is hidden, per the Figma
+  /// loading variants. The button is non-interactive while this is true.
   final bool isLoading;
 
   @override
@@ -192,7 +214,10 @@ class _SldsButtonState extends State<SldsButton> {
   @override
   Widget build(BuildContext context) {
     final metrics = _SldsButtonMetrics.of(context, widget._size(context));
-    final content = widget.isLoading
+    // Loading keeps the label and swaps only the leading slot for a spinner,
+    // per the Figma loading variants — the trailing icon drops out, so the
+    // button narrows rather than changing what it says.
+    final leading = widget.isLoading
         ? Semantics(
             // liveRegion so the switch into the loading state is announced
             // as it happens, rather than only when focus next lands here.
@@ -202,28 +227,33 @@ class _SldsButtonState extends State<SldsButton> {
               width: metrics.iconSize,
               height: metrics.iconSize,
               child: CupertinoActivityIndicator(
+                radius: metrics.iconSize / 2,
                 color: _foreground(context, selected: true),
               ),
             ),
           )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (widget.leadingIcon != null) ...[
-                Icon(widget.leadingIcon, size: metrics.iconSize),
-                SizedBox(width: metrics.gap),
-              ],
-              // Flexible so a long/translated label ellipsizes instead of
-              // overflowing past the button on a narrow phone.
-              Flexible(
-                child: Text(widget.label, overflow: TextOverflow.ellipsis),
-              ),
-              if (widget.trailingIcon != null) ...[
-                SizedBox(width: metrics.gap),
-                Icon(widget.trailingIcon, size: metrics.iconSize),
-              ],
-            ],
-          );
+        : widget.leadingIcon != null
+        ? Icon(widget.leadingIcon, size: metrics.iconSize)
+        : null;
+
+    final content = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (leading != null) ...[leading, SizedBox(width: metrics.gap)],
+        // Flexible so a long/translated label ellipsizes instead of
+        // overflowing past the button on a narrow phone.
+        Flexible(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: metrics.textPad),
+            child: Text(widget.label, overflow: TextOverflow.ellipsis),
+          ),
+        ),
+        if (widget.trailingIcon != null && !widget.isLoading) ...[
+          SizedBox(width: metrics.gap),
+          Icon(widget.trailingIcon, size: metrics.iconSize),
+        ],
+      ],
+    );
 
     return _styledButton(context, content, metrics);
   }
@@ -360,9 +390,17 @@ class _SldsButtonState extends State<SldsButton> {
     if (metrics.height >= target) return ringed;
     // A minimum rather than a fixed height, for the same reason as the style
     // above: a 2x text scale must be free to grow past the tap target.
-    return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: target),
-      child: Center(heightFactor: 1, child: ringed),
+    //
+    // MergeSemantics lifts the button's semantics onto this full-height box
+    // rather than the shorter painted one — without it the a11y tree (and
+    // every assistive tech reading it) reports only the painted height, so
+    // a 28px small button fails the 48x48 check despite being tappable
+    // across the whole area.
+    return MergeSemantics(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: target),
+        child: Center(heightFactor: 1, child: ringed),
+      ),
     );
   }
 

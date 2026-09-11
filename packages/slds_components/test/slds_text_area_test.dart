@@ -173,16 +173,30 @@ void main() {
       );
     });
 
-    testWidgets('uses the 12px radius and the 1.6px stroke in every state', (
+    testWidgets('uses the 12px radius and a per-state stroke width', (
       tester,
     ) async {
       const dimensions = SldsDimensionTokens.standard;
 
-      for (final widget in [
-        const SldsTextArea(label: 'Description'),
-        const SldsTextArea(label: 'Description', errorText: 'Error'),
-        const SldsTextArea(label: 'Description', enabled: false),
-      ]) {
+      // Figma draws 1px at rest, thickens to 1.5px when the state needs
+      // emphasis (error, focus), and keeps the disabled field at its own
+      // width. One stroke for every state would erase that distinction.
+      final cases = <(SldsTextArea, double)>[
+        (
+          const SldsTextArea(label: 'Description'),
+          dimensions.controlBorderWidth,
+        ),
+        (
+          const SldsTextArea(label: 'Description', errorText: 'Error'),
+          dimensions.emphasizedBorderWidth,
+        ),
+        (
+          const SldsTextArea(label: 'Description', enabled: false),
+          dimensions.inputDisabledBorderWidth,
+        ),
+      ];
+
+      for (final (widget, expectedWidth) in cases) {
         await pump(tester, widget);
         final border =
             tester
@@ -194,10 +208,7 @@ void main() {
           border.borderRadius,
           BorderRadius.circular(dimensions.radius2xl),
         );
-        expect(
-          border.borderSide.width,
-          dimensions.inputDisabledBorderWidth,
-        );
+        expect(border.borderSide.width, expectedWidth);
       }
     });
 

@@ -170,15 +170,23 @@ class SldsFilterDropdown extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    SldsButton(
-                      label: cancelText ?? context.sldsStrings.cancel,
-                      onPressed: onCancel,
-                      variant: SldsButtonVariant.text,
+                    // Flexible, not a bare SldsButton: at 200% text scale a
+                    // longer localized Cancel/Apply label (§6) can exceed
+                    // the space two unconstrained buttons leave in a narrow
+                    // panel, overflowing this Row.
+                    Flexible(
+                      child: SldsButton(
+                        label: cancelText ?? context.sldsStrings.cancel,
+                        onPressed: onCancel,
+                        variant: SldsButtonVariant.text,
+                      ),
                     ),
                     SizedBox(width: dimensions.space8),
-                    SldsButton(
-                      label: applyText ?? context.sldsStrings.apply,
-                      onPressed: () => onApply?.call(selectedValues),
+                    Flexible(
+                      child: SldsButton(
+                        label: applyText ?? context.sldsStrings.apply,
+                        onPressed: () => onApply?.call(selectedValues),
+                      ),
                     ),
                   ],
                 ),

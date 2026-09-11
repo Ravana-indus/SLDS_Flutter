@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
-import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma visual states for [SldsMobileNumberInput], matching node `510:3072`.
 enum SldsMobileNumberInputState {
@@ -202,11 +201,14 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
         : focused
         ? colors.inputBorderFocused
         : colors.inputBorderDefault;
-    // Figma carries the state in the border colour alone; no state thickens
-    // the stroke. (This frame's Default node exports a one-off 1.6px, but its
-    // Focused node declares no width at all and the rest of the Input family
-    // is a plain 1px, so the ramp is normalised here.)
-    final borderWidth = dimensions.controlBorderWidth;
+    // Figma node 510:3072 thickens the stroke on the two states that need to
+    // stand out: Focused and Error are 1.5px, Default is 1px, Disabled 1.6px.
+    // Same ramp as SldsInput/SldsInputMask.
+    final borderWidth = disabled
+        ? dimensions.inputDisabledBorderWidth
+        : error || focused
+        ? dimensions.emphasizedBorderWidth
+        : dimensions.controlBorderWidth;
     final labelColor = disabled ? colors.disabledForeground : colors.inputLabel;
     final supportText = error ? widget.errorText : widget.helperText;
     final supportColor = disabled
@@ -250,7 +252,6 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                       : colors.surfaceCard,
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(dimensions.radius2xl),
-                  boxShadow: focused ? sldsFocusRing(tokens) : null,
                 ),
                 child: Row(
                   children: [
@@ -294,7 +295,13 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                             constraints: BoxConstraints(
                               minHeight: dimensions.tapTargetMin,
                             ),
-                            contentPadding: EdgeInsets.zero,
+                            // Vertical padding centres the line inside that
+                            // 48dp box. EdgeInsets.zero top-aligns it, which
+                            // left the value sitting against the field's top
+                            // edge instead of on its centre line.
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: dimensions.space12,
+                            ),
                             hintText: widget.placeholder,
                             hintStyle: tokens.typography.body1.copyWith(
                               color: colors.inputPlaceholder,

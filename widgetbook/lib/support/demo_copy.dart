@@ -163,6 +163,19 @@ const Map<String, String> _en = {
   'Item 3': 'Item 3',
   'All statuses': 'All statuses',
   'Recent searches': 'Recent searches',
+  // Notification banner (SldsBanner) — one message and action per severity.
+  'Your changes have been saved successfully.':
+      'Your changes have been saved successfully.',
+  'Your session will expire soon. Please save your work.':
+      'Your session will expire soon. Please save your work.',
+  'Something went wrong. Please try again later.':
+      'Something went wrong. Please try again later.',
+  'New updates are available. Refresh to see changes.':
+      'New updates are available. Refresh to see changes.',
+  'View details': 'View details',
+  'Save now': 'Save now',
+  'Try again': 'Try again',
+  'Refresh': 'Refresh',
 };
 
 const Map<String, String> _si = {
@@ -282,6 +295,19 @@ const Map<String, String> _si = {
   'Item 3': 'අයිතමය 3',
   'All statuses': 'සියලු තත්ත්ව',
   'Recent searches': 'මෑත සෙවීම්',
+  // Notification banner (SldsBanner) — one message and action per severity.
+  'Your changes have been saved successfully.':
+      'ඔබගේ වෙනස්කම් සාර්ථකව සුරකින ලදී.',
+  'Your session will expire soon. Please save your work.':
+      'ඔබගේ සැසිය ඉක්මනින් අවසන් වේ. කරුණාකර ඔබගේ වැඩ සුරකින්න.',
+  'Something went wrong. Please try again later.':
+      'යම් දෝෂයක් ඇති විය. කරුණාකර පසුව නැවත උත්සාහ කරන්න.',
+  'New updates are available. Refresh to see changes.':
+      'නව යාවත්කාලීන තිබේ. වෙනස්කම් බැලීමට නැවුම් කරන්න.',
+  'View details': 'විස්තර බලන්න',
+  'Save now': 'දැන් සුරකින්න',
+  'Try again': 'නැවත උත්සාහ කරන්න',
+  'Refresh': 'නැවුම් කරන්න',
 };
 
 const Map<String, String> _ta = {
@@ -402,4 +428,17 @@ const Map<String, String> _ta = {
   'Item 3': 'உருப்படி 3',
   'All statuses': 'அனைத்து நிலைகளும்',
   'Recent searches': 'சமீபத்திய தேடல்கள்',
+  // Notification banner (SldsBanner) — one message and action per severity.
+  'Your changes have been saved successfully.':
+      'உங்கள் மாற்றங்கள் வெற்றிகரமாகச் சேமிக்கப்பட்டன.',
+  'Your session will expire soon. Please save your work.':
+      'உங்கள் அமர்வு விரைவில் முடிவடையும். உங்கள் வேலையைச் சேமிக்கவும்.',
+  'Something went wrong. Please try again later.':
+      'ஏதோ தவறு நடந்தது. பின்னர் மீண்டும் முயற்சிக்கவும்.',
+  'New updates are available. Refresh to see changes.':
+      'புதிய புதுப்பிப்புகள் உள்ளன. மாற்றங்களைக் காண புதுப்பிக்கவும்.',
+  'View details': 'விவரங்களைக் காண்க',
+  'Save now': 'இப்போது சேமி',
+  'Try again': 'மீண்டும் முயற்சிக்கவும்',
+  'Refresh': 'புதுப்பி',
 };

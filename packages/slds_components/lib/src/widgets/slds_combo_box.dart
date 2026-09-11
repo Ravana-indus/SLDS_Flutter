@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_checkbox.dart';
 import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma states for [SldsComboBox], matching node `543:5821`.
@@ -33,6 +34,7 @@ class SldsComboBox extends StatefulWidget {
     required this.onSelectionChanged,
     super.key,
     this.helperText,
+    this.searchPlaceholder,
     this.required = true,
     this.multiple = false,
     this.visualState,
@@ -58,6 +60,9 @@ class SldsComboBox extends StatefulWidget {
 
   /// Optional supporting guidance.
   final String? helperText;
+
+  /// Hint for the in-panel search field. Defaults to the localized "Search".
+  final String? searchPlaceholder;
 
   /// Whether to display the required marker.
   final bool required;
@@ -195,9 +200,9 @@ class _SldsComboBoxState extends State<SldsComboBox> {
               ),
               SizedBox(height: dimensions.space4),
               Container(
-                constraints: fieldHeight == null
-                    ? const BoxConstraints(minHeight: 56)
-                    : BoxConstraints.tightFor(height: fieldHeight),
+                // minHeight, not a tight height: chips wrap to a second row
+                // once they no longer fit, and a tight height clipped them.
+                constraints: BoxConstraints(minHeight: fieldHeight ?? 56),
                 // No vertical padding: the 52dp field minus a 1dp border top
                 // and bottom leaves exactly the 48dp the trailing toggle
                 // needs as a tap target (WCAG 2.5.8). Children inset
@@ -217,74 +222,55 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                   boxShadow: focused ? sldsFocusRing(tokens) : null,
                 ),
                 child: Row(
-                  // The field's 8dp vertical padding would otherwise squeeze
-                  // the trailing toggle below the 48dp tap-target floor; the
-                  // button manages its own inset instead.
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  // Default centre alignment, not stretch: the field now grows
+                  // with wrapped chips, and stretch made the trailing toggle
+                  // span every row.
                   children: [
                     Expanded(
                       child: displayChips
-                          ? Wrap(
-                              spacing: 10,
-                              runSpacing: 6,
-                              children: [
-                                for (final value in widget.selectedValues)
-                                  _SelectionChip(
-                                    value: value,
-                                    semanticLabel:
-                                        widget.clearSelectionSemanticLabel,
-                                    onRemove: () => _remove(value),
-                                  ),
-                                SizedBox(
-                                  // The inline field is itself a tap target,
-                                  // so its collapsed width cannot drop below
-                                  // the 48dp floor (WCAG 2.5.8).
-                                  width: dimensions.tapTargetMin,
-                                  child: TextField(
-                                    controller: _controller,
-                                    focusNode: _focusNode,
-                                    onTap: () => setState(() => _open = true),
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      // The decorated field paints
-                                      // taller, but the text node is the
-                                      // tappable target and must clear
-                                      // the 48dp floor (WCAG 2.5.8).
-                                      constraints: BoxConstraints(
-                                        minHeight: dimensions.tapTargetMin,
-                                      ),
-                                      contentPadding: EdgeInsets.zero,
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: dimensions.space8,
+                              ),
+                              child: Wrap(
+                                spacing: dimensions.space4,
+                                runSpacing: dimensions.space4,
+                                children: [
+                                  for (final value in widget.selectedValues)
+                                    _SelectionChip(
+                                      value: value,
+                                      semanticLabel:
+                                          widget.clearSelectionSemanticLabel,
+                                      onRemove: () => _remove(value),
                                     ),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             )
+                          // Display-only: the panel's search bar owns the
+                          // filter text, so the collapsed field just shows the
+                          // selection or the placeholder and opens the panel.
                           : Semantics(
-                              textField: true,
+                              button: true,
                               label: widget.semanticLabel ?? widget.label,
-                              child: TextField(
-                                controller: _controller,
-                                focusNode: _focusNode,
+                              child: InkWell(
                                 onTap: () => setState(() => _open = true),
-                                style: tokens.typography.body1,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                  // The decorated field paints taller, but the
-                                  // text node itself is the tappable target and
-                                  // must clear the 48dp floor (WCAG 2.5.8).
+                                child: Container(
+                                  alignment: AlignmentDirectional.centerStart,
                                   constraints: BoxConstraints(
                                     minHeight: dimensions.tapTargetMin,
                                   ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: dimensions.space8,
                                   ),
-                                  hintText: widget.selectedValues.isEmpty
-                                      ? widget.placeholder
-                                      : widget.selectedValues.first,
-                                  hintStyle: tokens.typography.body1.copyWith(
-                                    color: colors.inputPlaceholder,
+                                  child: Text(
+                                    widget.selectedValues.isEmpty
+                                        ? widget.placeholder
+                                        : widget.selectedValues.first,
+                                    style: tokens.typography.body1.copyWith(
+                                      color: widget.selectedValues.isEmpty
+                                          ? colors.inputPlaceholder
+                                          : colors.inputLabel,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -328,49 +314,175 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                 ),
               ],
               if (_open || forcedOpen) ...[
-                const SizedBox(height: 4),
-                Material(
-                  color: colors.surfacePage,
-                  borderRadius: BorderRadius.circular(dimensions.radius3xl),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 240),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      itemCount: filtered.length,
-                      itemBuilder: (context, index) {
-                        final option = filtered[index];
-                        final selected = widget.selectedValues.contains(option);
-                        return Semantics(
-                          button: true,
-                          selected: selected,
-                          label: option,
-                          child: InkWell(
-                            onTap: () => _select(option),
-                            child: SizedBox(
-                              height: 38,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        option,
-                                        style: tokens.typography.body2,
-                                      ),
-                                    ),
-                                    if (selected)
-                                      const Icon(Icons.check, size: 16),
-                                  ],
-                                ),
-                              ),
+                SizedBox(height: dimensions.space4),
+                Container(
+                  decoration: BoxDecoration(
+                    color: colors.surfacePage,
+                    borderRadius: BorderRadius.circular(dimensions.radius3xl),
+                    border: Border.all(
+                      color: colors.borderDecorative,
+                      width: dimensions.controlBorderWidth,
+                    ),
+                    // Figma "Elevation/3 · Floating": the panel overlaps the
+                    // content beneath it, so it carries the elevation tokens
+                    // rather than sitting flat on the page.
+                    boxShadow: [
+                      BoxShadow(
+                        color: colors.shadowColor,
+                        blurRadius: dimensions.elevationBlur,
+                        offset: Offset(0, dimensions.elevationOffsetY),
+                        spreadRadius: -dimensions.elevationSpread,
+                      ),
+                    ],
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: dimensions.space8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: dimensions.space8,
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: dimensions.space12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colors.surfacePage,
+                            borderRadius: BorderRadius.circular(
+                              dimensions.radius2xl,
+                            ),
+                            // Figma Search Bar: the input border tokens, not
+                            // the decorative one that outlines the panel, and
+                            // it turns gold in the Typing state.
+                            border: Border.all(
+                              color: _controller.text.isEmpty
+                                  ? colors.inputBorderDefault
+                                  : colors.inputBorderFocused,
+                              width: dimensions.emphasizedBorderWidth,
                             ),
                           ),
-                        );
-                      },
-                    ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.search,
+                                size: dimensions.iconSizeMedium,
+                                color: colors.inputIcon,
+                              ),
+                              SizedBox(width: dimensions.space8),
+                              Expanded(
+                                child: TextField(
+                                  controller: _controller,
+                                  focusNode: _focusNode,
+                                  style: tokens.typography.body2,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    // The decorated field paints taller, but
+                                    // the text node is the tap target and must
+                                    // clear the 48dp floor (WCAG 2.5.8).
+                                    constraints: BoxConstraints(
+                                      minHeight: dimensions.tapTargetMin,
+                                    ),
+                                    // Vertical padding centres the line inside
+                                    // that 48dp box; EdgeInsets.zero
+                                    // top-aligns it.
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: dimensions.space12,
+                                    ),
+                                    hintText:
+                                        widget.searchPlaceholder ??
+                                        context.sldsStrings.search,
+                                    hintStyle: tokens.typography.body2.copyWith(
+                                      color: colors.inputPlaceholder,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Figma Typing state: a 28px secondary-styled
+                              // circle that clears the query. Only present
+                              // once there is something to clear.
+                              if (_controller.text.isNotEmpty)
+                                IconButton(
+                                  onPressed: _controller.clear,
+                                  tooltip: context.sldsStrings.clearSearch,
+                                  icon: Icon(
+                                    Icons.close,
+                                    size: dimensions.iconSizeSmall,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    backgroundColor:
+                                        colors.buttonSecondaryBackground,
+                                    side: BorderSide(
+                                      color: colors.buttonSecondaryBorder,
+                                      width: dimensions.controlBorderWidth,
+                                    ),
+                                    // The glyph circle stays 28dp as drawn;
+                                    // the tap target below expands the hit
+                                    // area to the 48dp floor (WCAG 2.5.8).
+                                    fixedSize: const Size.square(28),
+                                    minimumSize: const Size.square(28),
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: dimensions.space4),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 240),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: filtered.length,
+                          itemBuilder: (context, index) {
+                            final option = filtered[index];
+                            final selected = widget.selectedValues.contains(
+                              option,
+                            );
+                            // The row already carries the option name and its
+                            // selected state, so the checkbox inside it is
+                            // decorative to assistive tech.
+                            return MergeSemantics(
+                              child: Semantics(
+                                selected: selected,
+                                child: InkWell(
+                                  onTap: () => _select(option),
+                                  borderRadius: BorderRadius.circular(
+                                    dimensions.radiusXl,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(dimensions.space8),
+                                    child: Row(
+                                      children: [
+                                        ExcludeSemantics(
+                                          child: SldsCheckbox(
+                                            value: selected,
+                                            size: SldsCheckboxSize.small,
+                                            onChanged: (_) => _select(option),
+                                          ),
+                                        ),
+                                        SizedBox(width: dimensions.space8),
+                                        Expanded(
+                                          child: Text(
+                                            option,
+                                            style: tokens.typography.body2
+                                                .copyWith(
+                                                  color: colors.inputLabel,
+                                                ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -394,35 +506,49 @@ class _SelectionChip extends StatelessWidget {
   final VoidCallback onRemove;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 4, 4),
-    decoration: BoxDecoration(
-      color: context.slds.colors.badgeNeutralBackground,
-      borderRadius: BorderRadius.circular(9999),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(value, style: context.slds.typography.body1),
-        Semantics(
-          container: true,
-          excludeSemantics: true,
-          button: true,
-          label: semanticLabel == null ? value : '$semanticLabel $value',
-          // The glyph stays 20x20; SldsTapTarget expands only the hit area
-          // to the 48dp floor (WCAG 2.5.8) without changing the chip's look.
-          child: SldsTapTarget(
-            child: InkWell(
-              onTap: onRemove,
-              child: const SizedBox(
-                width: 20,
-                height: 20,
-                child: Icon(Icons.close, size: 16),
+  Widget build(BuildContext context) {
+    final tokens = context.slds;
+    final dimensions = tokens.dimensions;
+    return Container(
+      // Figma Chips: space-8 inline, space-4 block, gap space-4, radius-full.
+      padding: EdgeInsets.symmetric(
+        horizontal: dimensions.space8,
+        vertical: dimensions.space4,
+      ),
+      decoration: BoxDecoration(
+        color: tokens.colors.badgeNeutralBackground,
+        borderRadius: BorderRadius.circular(dimensions.radiusFull),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Text(
+              value,
+              style: tokens.typography.body1.copyWith(
+                color: tokens.colors.textPrimary,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-        ),
-      ],
-    ),
-  );
+          SizedBox(width: dimensions.space4),
+          Semantics(
+            container: true,
+            excludeSemantics: true,
+            button: true,
+            label: semanticLabel == null ? value : '$semanticLabel $value',
+            // No SldsTapTarget here: its 48dp floor is wider than the whole
+            // chip, so several chips overflowed the field and clipped. These
+            // sit inside a field that is itself a tap target opening the same
+            // panel, so the glyph keeps Figma's 16dp.
+            child: InkWell(
+              onTap: onRemove,
+              borderRadius: BorderRadius.circular(dimensions.radiusFull),
+              child: Icon(Icons.close, size: dimensions.iconSizeSmall),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

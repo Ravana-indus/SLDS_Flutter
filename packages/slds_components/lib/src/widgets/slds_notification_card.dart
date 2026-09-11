@@ -2,24 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
-
-/// Icon-tone for [SldsNotificationCard.type] — drives the leading circle's
-/// color pairing. [document] is a neutral file icon on a plain white
-/// circle; the rest reuse the matching badge token pair (e.g. [error] uses
-/// `badgeErrorBackground`/`Text`).
-enum SldsNotificationType {
-  /// A neutral file/document notice.
-  document,
-
-  /// Something needing attention.
-  warning,
-
-  /// Something that completed successfully.
-  success,
-
-  /// Something that failed.
-  error,
-}
+import 'package:slds_components/src/widgets/slds_notification_icon.dart';
 
 /// SLDS mobile notification card — leading type icon, title, body, a
 /// timestamp, and an optional primary action button. Swipe left to reveal
@@ -89,7 +72,14 @@ class SldsNotificationCard extends StatelessWidget {
 
         return Container(
           width: resolvedWidth,
-          padding: EdgeInsets.all(dimensions.space16),
+          // Asymmetric by spec: the trailing edge carries half the padding
+          // because the unread indicator supplies its own 8px of inset.
+          padding: EdgeInsetsDirectional.fromSTEB(
+            dimensions.space16,
+            dimensions.space16,
+            dimensions.space8,
+            dimensions.space16,
+          ),
           decoration: BoxDecoration(
             color: colors.surfaceCard,
             border: Border.all(color: colors.borderDecorative),
@@ -98,68 +88,80 @@ class SldsNotificationCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _TypeIcon(type: type),
-              SizedBox(width: dimensions.space12),
+              SldsNotificationIcon(type: type),
+              SizedBox(width: dimensions.space16),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      title,
-                      style: tokens.typography.body1.copyWith(
-                        color: colors.textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: dimensions.space4),
-                    Text(
-                      body,
-                      style: tokens.typography.body2.copyWith(
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                    if (timestamp != null) ...[
-                      SizedBox(height: dimensions.space8),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: dimensions.space4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Text(
-                        timestamp!,
-                        style: tokens.typography.caption1.copyWith(
-                          color: colors.textTertiary,
+                        title,
+                        style: tokens.typography.body2.copyWith(
+                          color: colors.textPrimary,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ],
-                    if (actionLabel != null) ...[
-                      SizedBox(height: dimensions.space12),
-                      // SldsButton is deliberately full-width below the
-                      // mobile breakpoint (its own spec) when its parent
-                      // gives it bounded width — Wrap hands it unbounded
-                      // width instead (like a Row would), so it falls back
-                      // to content-sized. IntrinsicWidth doesn't work here:
-                      // SldsButton has its own LayoutBuilder inside, and
-                      // LayoutBuilder can't answer intrinsic-size queries.
-                      Wrap(
-                        children: [
-                          SldsButton(
-                            label: actionLabel!,
-                            onPressed: onAction,
-                          ),
-                        ],
+                      SizedBox(height: dimensions.space2),
+                      Text(
+                        body,
+                        style: tokens.typography.body2.copyWith(
+                          color: colors.textSecondary,
+                        ),
                       ),
+                      if (timestamp != null) ...[
+                        SizedBox(height: dimensions.space2),
+                        Text(
+                          timestamp!,
+                          style: tokens.typography.caption1.copyWith(
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                      ],
+                      if (actionLabel != null) ...[
+                        SizedBox(height: dimensions.space8),
+                        // SldsButton is deliberately full-width below the
+                        // mobile breakpoint (its own spec) when its parent
+                        // gives it bounded width, but this card's CTA is
+                        // content-sized at every width per the spec. A Row
+                        // hands its child unbounded width, so the button
+                        // falls back to content-sized — while still passing
+                        // vertical constraints through, which keeps the
+                        // button's invisible 48px WCAG 2.5.5 tap area intact
+                        // (an UnconstrainedBox would collapse it to 28px).
+                        // IntrinsicWidth doesn't work here: SldsButton has
+                        // its own LayoutBuilder inside, and LayoutBuilder
+                        // can't answer intrinsic-size queries.
+                        Row(
+                          children: [
+                            SldsButton(
+                              label: actionLabel!,
+                              onPressed: onAction,
+                              size: SldsButtonSize.small,
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-              ),
-              if (unread) ...[
-                SizedBox(width: dimensions.space8),
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: colors.info,
-                    shape: BoxShape.circle,
                   ),
                 ),
-              ],
+              ),
+              if (unread)
+                Padding(
+                  padding: EdgeInsets.all(dimensions.space8),
+                  child: Container(
+                    // ponytail: literal 14 — no spacing token for it; add
+                    // one if a second component needs this dot size.
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: colors.info,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
             ],
           ),
         );
@@ -177,63 +179,25 @@ class SldsNotificationCard extends StatelessWidget {
         // end edge — pinning it right would reveal it on the wrong side of
         // an RTL card, opposite the direction the finger moved.
         alignment: AlignmentDirectional.centerEnd,
-        padding: EdgeInsets.symmetric(horizontal: dimensions.space20),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimensions.space20,
+          vertical: dimensions.space16,
+        ),
         decoration: BoxDecoration(
           color: colors.error,
           borderRadius: BorderRadius.circular(dimensions.radius2xl),
         ),
-        child: const Icon(Icons.delete_outline, color: Colors.white),
+        child: SizedBox(
+          width: dimensions.tapTargetMin,
+          height: dimensions.tapTargetMin,
+          child: Icon(
+            Icons.delete_outline,
+            size: dimensions.iconSizeLarge,
+            color: colors.textInverse,
+          ),
+        ),
       ),
       child: content,
-    );
-  }
-}
-
-class _TypeIcon extends StatelessWidget {
-  const _TypeIcon({required this.type});
-
-  final SldsNotificationType type;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.slds;
-    final colors = tokens.colors;
-
-    final (Color background, Color foreground, IconData icon) = switch (type) {
-      SldsNotificationType.document => (
-        colors.surfaceCard,
-        colors.textPrimary,
-        Icons.description_outlined,
-      ),
-      SldsNotificationType.warning => (
-        colors.badgePendingBackground,
-        colors.badgePendingText,
-        Icons.warning_amber_rounded,
-      ),
-      SldsNotificationType.success => (
-        colors.badgeSuccessBackground,
-        colors.badgeSuccessText,
-        Icons.check_circle_outline,
-      ),
-      SldsNotificationType.error => (
-        colors.badgeErrorBackground,
-        colors.badgeErrorText,
-        Icons.cancel_outlined,
-      ),
-    };
-
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: background,
-        shape: BoxShape.circle,
-        border: type == SldsNotificationType.document
-            ? Border.all(color: colors.borderDecorative)
-            : null,
-      ),
-      alignment: Alignment.center,
-      child: Icon(icon, size: 20, color: foreground),
     );
   }
 }

@@ -241,99 +241,29 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Header: Month Navigator & Year Dropdown
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Month Navigator Pill.
-              //
-              // Flexible so the header survives the 320dp floor at 200% text:
-              // both pills are intrinsically sized, and the 48dp tap targets
-              // on the arrows leave the month name nothing to give back.
-              Flexible(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: colors.borderDefault),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Semantics(
-                        button: true,
-                        label: context.sldsStrings.previousMonth,
-                        child: SldsTapTarget(
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(20),
-                            onTap: _previousMonth,
-                            child: const Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Icon(Icons.chevron_left, size: 18),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Text(
-                            _monthNames[_displayedMonth.month - 1],
-                            overflow: TextOverflow.ellipsis,
-                            style: tokens.typography.body1.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: colors.textPrimary,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Semantics(
-                        button: true,
-                        label: context.sldsStrings.nextMonth,
-                        child: SldsTapTarget(
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(20),
-                            onTap: _nextMonth,
-                            child: const Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Icon(Icons.chevron_right, size: 18),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Year Selector Pill
-              PopupMenuButton<int>(
-                initialValue: _displayedMonth.year,
-                onSelected: (year) {
-                  setState(() {
-                    _displayedMonth = DateTime(year, _displayedMonth.month);
-                  });
-                },
-                itemBuilder: (context) {
-                  final currentYear = DateTime.now().year;
-                  return List.generate(20, (i) => currentYear - 10 + i).map((
-                    y,
-                  ) {
-                    return PopupMenuItem<int>(value: y, child: Text('$y'));
-                  }).toList();
-                },
-                child: SldsTapTarget(
+      // Same fixed-height problem as the time picker: header, weekday row,
+      // 6-week grid and footer come to ~500px, so any viewport shorter than
+      // that overflows and the RenderFlex throws. The grid's cells must keep
+      // their size to stay tappable, so scroll rather than shrink to fit.
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Header: Month Navigator & Year Dropdown
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Month Navigator Pill.
+                //
+                // Flexible so the header survives the 320dp floor at 200% text:
+                // both pills are intrinsically sized, and the 48dp tap targets
+                // on the arrows leave the month name nothing to give back.
+                Flexible(
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
+                      horizontal: 4,
+                      vertical: 2,
                     ),
                     decoration: BoxDecoration(
                       border: Border.all(color: colors.borderDefault),
@@ -342,96 +272,178 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          '${_displayedMonth.year}',
-                          style: tokens.typography.body1.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: colors.textPrimary,
+                        Semantics(
+                          button: true,
+                          label: context.sldsStrings.previousMonth,
+                          child: SldsTapTarget(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: _previousMonth,
+                              child: const Padding(
+                                padding: EdgeInsets.all(4),
+                                child: Icon(Icons.chevron_left, size: 18),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 2),
-                        const Icon(Icons.keyboard_arrow_down, size: 16),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Text(
+                              _monthNames[_displayedMonth.month - 1],
+                              overflow: TextOverflow.ellipsis,
+                              style: tokens.typography.body1.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: colors.textPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Semantics(
+                          button: true,
+                          label: context.sldsStrings.nextMonth,
+                          child: SldsTapTarget(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: _nextMonth,
+                              child: const Padding(
+                                padding: EdgeInsets.all(4),
+                                child: Icon(Icons.chevron_right, size: 18),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
 
-          const SizedBox(height: 20),
-
-          // Weekdays Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: _weekdayNames
-                .map(
-                  (day) => Expanded(
-                    child: Center(
-                      child: Text(
-                        day,
-                        style: tokens.typography.caption1.copyWith(
-                          color: colors.textSecondary,
-                          fontWeight: FontWeight.w500,
-                        ),
+                // Year Selector Pill
+                PopupMenuButton<int>(
+                  initialValue: _displayedMonth.year,
+                  onSelected: (year) {
+                    setState(() {
+                      _displayedMonth = DateTime(year, _displayedMonth.month);
+                    });
+                  },
+                  itemBuilder: (context) {
+                    final currentYear = DateTime.now().year;
+                    return List.generate(20, (i) => currentYear - 10 + i).map((
+                      y,
+                    ) {
+                      return PopupMenuItem<int>(value: y, child: Text('$y'));
+                    }).toList();
+                  },
+                  child: SldsTapTarget(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: colors.borderDefault),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${_displayedMonth.year}',
+                            style: tokens.typography.body1.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: colors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          const Icon(Icons.keyboard_arrow_down, size: 16),
+                        ],
                       ),
                     ),
                   ),
-                )
-                .toList(),
-          ),
-
-          const SizedBox(height: 12),
-
-          // Days Grid
-          _buildDaysGrid(context, primaryAccent, rangeHighlight, colors),
-
-          const SizedBox(height: 16),
-
-          // Horizontal Divider
-          Divider(
-            color: colors.borderDefault.withValues(alpha: 0.6),
-            height: 1,
-          ),
-
-          const SizedBox(height: 16),
-
-          // Footer Action Bar — SldsButton goes full-width below the
-          // SldsBreakpoints.mobile screen width, so the row would overflow;
-          // stack Cancel/Apply instead on mobile, matching the button's own
-          // responsive behavior rather than fighting it.
-          if (context.sldsIsMobile)
-            Column(
-              children: [
-                SldsButton(
-                  label: widget.applyText ?? context.sldsStrings.apply,
-                  onPressed: _handleApply,
-                ),
-                const SizedBox(height: 12),
-                SldsButton(
-                  label: widget.cancelText ?? context.sldsStrings.cancel,
-                  onPressed: widget.onCancel,
-                  variant: SldsButtonVariant.secondary,
-                ),
-              ],
-            )
-          else
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SldsButton(
-                  label: widget.cancelText ?? context.sldsStrings.cancel,
-                  onPressed: widget.onCancel,
-                  variant: SldsButtonVariant.secondary,
-                ),
-                const SizedBox(width: 12),
-                SldsButton(
-                  label: widget.applyText ?? context.sldsStrings.apply,
-                  onPressed: _handleApply,
                 ),
               ],
             ),
-        ],
+
+            const SizedBox(height: 20),
+
+            // Weekdays Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: _weekdayNames
+                  .map(
+                    (day) => Expanded(
+                      child: Center(
+                        child: Text(
+                          day,
+                          style: tokens.typography.caption1.copyWith(
+                            color: colors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Days Grid
+            _buildDaysGrid(context, primaryAccent, rangeHighlight, colors),
+
+            const SizedBox(height: 16),
+
+            // Horizontal Divider
+            Divider(
+              color: colors.borderDefault.withValues(alpha: 0.6),
+              height: 1,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Footer Action Bar — SldsButton goes full-width below the
+            // SldsBreakpoints.mobile screen width, so the row would overflow;
+            // stack Cancel/Apply instead on mobile, matching the button's own
+            // responsive behavior rather than fighting it.
+            if (context.sldsIsMobile)
+              Column(
+                children: [
+                  SldsButton(
+                    label: widget.applyText ?? context.sldsStrings.apply,
+                    onPressed: _handleApply,
+                  ),
+                  const SizedBox(height: 12),
+                  SldsButton(
+                    label: widget.cancelText ?? context.sldsStrings.cancel,
+                    onPressed: widget.onCancel,
+                    variant: SldsButtonVariant.secondary,
+                  ),
+                ],
+              )
+            else
+              // Flexible so a long/translated action label shrinks and
+              // ellipsizes instead of overflowing this fixed-width dialog.
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: SldsButton(
+                      label: widget.cancelText ?? context.sldsStrings.cancel,
+                      onPressed: widget.onCancel,
+                      variant: SldsButtonVariant.secondary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: SldsButton(
+                      label: widget.applyText ?? context.sldsStrings.apply,
+                      onPressed: _handleApply,
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }

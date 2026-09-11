@@ -15,7 +15,36 @@ import 'package:slds_components/slds_components.dart';
 /// `width` bounds the widget where it would otherwise take all the space the
 /// test surface offers, so the image frames the component rather than a
 /// full-bleed rectangle.
-typedef SldsFixture = ({String name, Widget Function() build, double? width});
+///
+/// `buildLocalized` is set only for fixtures with visible label text — the
+/// §6/§8 si/ta clipping risk does not apply to a component whose only text
+/// is a semantics label. Where set, it swaps the English label for
+/// [_localizedText] so the golden actually exercises taller Sinhala/Tamil
+/// glyphs rather than re-rendering the same English string under a
+/// different [Locale].
+typedef SldsFixture = ({
+  String name,
+  Widget Function() build,
+  Widget Function(Locale)? buildLocalized,
+  double? width,
+});
+
+/// Generic synthetic label used to localize fixtures for the si/ta x2.0
+/// goldens (§6, §8). Not a semantic match for each component — these two
+/// strings exist purely to exercise glyph height and clipping, same as the
+/// pair already used for SldsButton/SldsTextField in slds_goldens_test.dart.
+/// Machine-drafted, not reviewed by a speaker (see CLAUDE.md).
+const _localizedText = <String, String>{
+  'si': 'ඉදිරියට',
+  'ta': 'தொடரவும்',
+};
+
+/// Looks up [_localizedText] for [locale], falling back to the si string.
+/// A plain function (rather than repeating the map index inline) keeps each
+/// builder's repeated lookups from tripping the analyzer's
+/// unnecessary_null_checks info on the second identical expression.
+String _text(Locale locale) =>
+    _localizedText[locale.languageCode] ?? _localizedText['si']!;
 
 /// Builds the fixture list.
 ///
@@ -37,6 +66,14 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         ),
       ],
     ),
+    buildLocalized: (locale) => SldsAccordion(
+      items: [
+        SldsAccordionItem(
+          title: _text(locale),
+          body: Text(_text(locale)),
+        ),
+      ],
+    ),
   ),
   (
     name: 'avatar',
@@ -46,11 +83,31 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       size: SldsAvatarSize.large,
       semanticLabel: 'Lakmal Perera',
     ),
+    buildLocalized: null, // initials only; no visible sentence text
   ),
   (
     name: 'badge',
     width: null,
     build: () => SldsBadge.status(SldsBadgeStatus.inReview),
+    buildLocalized: null, // label is localized internally, not caller text
+  ),
+  (
+    name: 'banner',
+    width: 452,
+    build: () => SldsBanner(
+      message: 'Your changes have been saved successfully.',
+      severity: SldsBannerSeverity.success,
+      actionLabel: 'View details',
+      onAction: () {},
+      onDismiss: () {},
+    ),
+    buildLocalized: (locale) => SldsBanner(
+      message: _text(locale),
+      severity: SldsBannerSeverity.success,
+      actionLabel: _text(locale),
+      onAction: () {},
+      onDismiss: () {},
+    ),
   ),
   (
     name: 'bottom_sheet',
@@ -72,12 +129,29 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         ),
       ),
     ),
+    buildLocalized: (locale) => Builder(
+      builder: (context) => SldsBottomSheet(
+        title: _text(locale),
+        child: Align(
+          alignment: AlignmentDirectional.topStart,
+          child: Text(
+            _text(locale),
+            style: TextStyle(color: context.slds.colors.textPrimary),
+          ),
+        ),
+      ),
+    ),
   ),
   (
     name: 'check_button',
     width: null,
     build: () => SldsCheckButton(
       label: 'I agree to the terms',
+      selected: true,
+      onChanged: (_) {},
+    ),
+    buildLocalized: (locale) => SldsCheckButton(
+      label: _text(locale),
       selected: true,
       onChanged: (_) {},
     ),
@@ -90,11 +164,16 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       onChanged: (_) {},
       semanticLabel: 'Subscribe to updates',
     ),
+    buildLocalized: null, // semanticLabel only; no visible text
   ),
   (
     name: 'chip',
     width: null,
     build: () => SldsChip(label: 'Colombo', onDeleted: () {}),
+    buildLocalized: (locale) => SldsChip(
+      label: _text(locale),
+      onDeleted: () {},
+    ),
   ),
   (
     name: 'combo_box',
@@ -107,6 +186,14 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       multiple: true,
       onSelectionChanged: (_) {},
     ),
+    buildLocalized: (locale) => SldsComboBox(
+      label: _text(locale),
+      placeholder: _text(locale),
+      options: [_text(locale)],
+      selectedValues: [_text(locale)],
+      multiple: true,
+      onSelectionChanged: (_) {},
+    ),
   ),
   (
     name: 'date_picker',
@@ -116,6 +203,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       mode: SldsDatePickerMode.single,
       onDateSelected: (_) {},
     ),
+    buildLocalized: null, // dates format through intl, not a caller label
   ),
   (
     name: 'dialog',
@@ -128,11 +216,20 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       onCancel: () {},
       onConfirm: () {},
     ),
+    buildLocalized: (locale) => SldsDialog(
+      title: _text(locale),
+      message: _text(locale),
+      cancelLabel: _text(locale),
+      confirmLabel: _text(locale),
+      onCancel: () {},
+      onConfirm: () {},
+    ),
   ),
   (
     name: 'divider',
     width: 280,
     build: () => const SldsDivider(child: Text('or')),
+    buildLocalized: (locale) => SldsDivider(child: Text(_text(locale))),
   ),
   (
     name: 'dropdown',
@@ -142,6 +239,13 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       items: const ['Western', 'Central', 'Southern'],
       itemLabel: (item) => item,
       value: 'Western',
+      onChanged: (_) {},
+    ),
+    buildLocalized: (locale) => SldsDropdown<String>(
+      label: _text(locale),
+      items: [_text(locale)],
+      itemLabel: (item) => item,
+      value: _text(locale),
       onChanged: (_) {},
     ),
   ),
@@ -155,6 +259,13 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       actionLabel: 'Upload a document',
       onAction: () {},
     ),
+    buildLocalized: (locale) => SldsEmptyState(
+      illustration: const Icon(Icons.inbox_outlined, size: 48),
+      title: _text(locale),
+      description: _text(locale),
+      actionLabel: _text(locale),
+      onAction: () {},
+    ),
   ),
   (
     name: 'error_summary',
@@ -163,6 +274,14 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       errors: [
         SldsErrorSummaryItem('Enter your full name', onTap: () {}),
         SldsErrorSummaryItem('Enter a valid date of birth', onTap: () {}),
+      ],
+    ),
+    buildLocalized: (locale) => SldsErrorSummary(
+      errors: [
+        SldsErrorSummaryItem(
+          _text(locale),
+          onTap: () {},
+        ),
       ],
     ),
   ),
@@ -177,11 +296,21 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         SldsTextField(label: 'Phone'),
       ],
     ),
+    buildLocalized: (locale) => SldsFieldset(
+      legend: _text(locale),
+      helperText: _text(locale),
+      children: [SldsTextField(label: _text(locale))],
+    ),
   ),
   (
     name: 'filter_button',
     width: null,
     build: () => SldsFilterButton(label: 'Filters', count: 2, onTap: () {}),
+    buildLocalized: (locale) => SldsFilterButton(
+      label: _text(locale),
+      count: 2,
+      onTap: () {},
+    ),
   ),
   (
     name: 'filter_dropdown',
@@ -189,6 +318,11 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
     build: () => SldsFilterDropdown(
       options: const ['Approved', 'Pending', 'Rejected'],
       selectedValues: const ['Pending'],
+      onSelectionChanged: (_) {},
+    ),
+    buildLocalized: (locale) => SldsFilterDropdown(
+      options: [_text(locale)],
+      selectedValues: [_text(locale)],
       onSelectionChanged: (_) {},
     ),
   ),
@@ -213,6 +347,24 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       ],
       onClose: () {},
     ),
+    buildLocalized: (locale) => SldsFlyoutMenu(
+      items: [
+        SldsFlyoutMenuItem(
+          label: _text(locale),
+          groups: [
+            SldsFlyoutMenuGroup(
+              header: _text(locale),
+              entries: [
+                SldsFlyoutMenuEntry(
+                  label: _text(locale),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+      onClose: () {},
+    ),
   ),
   (
     name: 'icon_button',
@@ -222,6 +374,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       tooltip: 'Share',
       onPressed: () {},
     ),
+    buildLocalized: null, // tooltip only, no rendered-visible label
   ),
   (
     name: 'input',
@@ -231,17 +384,30 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       hintText: 'As it appears on your ID',
       onChanged: (_) {},
     ),
+    buildLocalized: (locale) => SldsInput(
+      label: _text(locale),
+      hintText: _text(locale),
+      onChanged: (_) {},
+    ),
   ),
   (
     name: 'input_mask',
     width: 340,
     build: () =>
         const SldsInputMask(label: 'Date of birth', hintText: 'DD/MM/YYYY'),
+    buildLocalized: (locale) => SldsInputMask(
+      label: _text(locale),
+      hintText: 'DD/MM/YYYY',
+    ),
   ),
   (
     name: 'link_button',
     width: null,
     build: () => SldsLinkButton(label: 'Read the guidance', onPressed: () {}),
+    buildLocalized: (locale) => SldsLinkButton(
+      label: _text(locale),
+      onPressed: () {},
+    ),
   ),
   (
     name: 'mobile_menu_block',
@@ -253,12 +419,23 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       count: '3',
       onTap: () {},
     ),
+    buildLocalized: (locale) => SldsMobileMenuBlock(
+      title: _text(locale),
+      subtitle: _text(locale),
+      leadingIcon: Icons.assignment_outlined,
+      count: '3',
+      onTap: () {},
+    ),
   ),
   (
     name: 'mobile_number_input',
     width: 340,
     build: () => SldsMobileNumberInput(
       label: 'Mobile number',
+      onChanged: (_) {},
+    ),
+    buildLocalized: (locale) => SldsMobileNumberInput(
+      label: _text(locale),
       onChanged: (_) {},
     ),
   ),
@@ -274,16 +451,42 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       actionLabel: 'Download',
       onAction: () {},
     ),
+    buildLocalized: (locale) => SldsNotificationCard(
+      title: _text(locale),
+      body: _text(locale),
+      timestamp: 'Today, 12:00pm',
+      type: SldsNotificationType.success,
+      unread: true,
+      actionLabel: _text(locale),
+      onAction: () {},
+    ),
+  ),
+  (
+    name: 'notification_icon',
+    width: 340,
+    build: () => Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        for (final type in SldsNotificationType.values)
+          SldsNotificationIcon(type: type),
+      ],
+    ),
+    buildLocalized: null, // icon only, no visible text
   ),
   (
     name: 'otp_input',
     width: 340,
     build: () => SldsOtpInput(length: 4, onChanged: (_) {}),
+    buildLocalized: null, // digit cells only, no visible label text
   ),
   (
     name: 'password_field',
     width: 340,
     build: () => SldsPasswordField(label: 'Password', onChanged: (_) {}),
+    buildLocalized: (locale) => SldsPasswordField(
+      label: _text(locale),
+      onChanged: (_) {},
+    ),
   ),
   (
     name: 'process_list',
@@ -306,11 +509,21 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         ),
       ],
     ),
+    buildLocalized: (locale) => SldsProcessList(
+      steps: [
+        SldsProcessStep(
+          title: _text(locale),
+          description: _text(locale),
+          status: SldsProcessStepStatus.current,
+        ),
+      ],
+    ),
   ),
   (
     name: 'progress_bar',
     width: 280,
     build: () => const SldsProgressBar(value: 0.4),
+    buildLocalized: null, // numeric percentage only, no label text
   ),
   (
     name: 'radio',
@@ -321,6 +534,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       onChanged: (_) {},
       semanticLabel: 'Yes',
     ),
+    buildLocalized: null, // semanticLabel only; no visible text
   ),
   (
     name: 'range_slider',
@@ -330,11 +544,16 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       onChanged: (_) {},
       semanticLabel: 'Maximum fee',
     ),
+    buildLocalized: null, // semanticLabel only; no visible text
   ),
   (
     name: 'search_bar',
     width: 340,
     build: () => SldsSearchBar(hintText: 'Search services', onChanged: (_) {}),
+    buildLocalized: (locale) => SldsSearchBar(
+      hintText: _text(locale),
+      onChanged: (_) {},
+    ),
   ),
   (
     name: 'service_card',
@@ -344,6 +563,13 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       title: 'Licence renewal',
       description: 'Renew online in minutes',
       badgeText: 'Popular',
+      onTap: () {},
+    ),
+    buildLocalized: (locale) => SldsServiceCard(
+      icon: const Icon(Icons.description_outlined),
+      title: _text(locale),
+      description: _text(locale),
+      badgeText: _text(locale),
       onTap: () {},
     ),
   ),
@@ -356,11 +582,18 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       actionLabel: 'Undo',
       onAction: () {},
     ),
+    buildLocalized: (locale) => SldsSnackBar(
+      title: _text(locale),
+      message: _text(locale),
+      actionLabel: _text(locale),
+      onAction: () {},
+    ),
   ),
   (
     name: 'step_indicator',
     width: 280,
     build: () => const SldsStepIndicator(totalSteps: 4, currentStep: 2),
+    buildLocalized: null, // step dots only, no label text
   ),
   (
     name: 'summary_list',
@@ -376,6 +609,14 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         ),
       ],
     ),
+    buildLocalized: (locale) => SldsSummaryList(
+      rows: [
+        SldsSummaryRow(
+          label: _text(locale),
+          value: _text(locale),
+        ),
+      ],
+    ),
   ),
   (
     name: 'tab_strip',
@@ -384,7 +625,15 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       items: const [
         SldsTabStripItem(label: 'All'),
         SldsTabStripItem(label: 'Open', count: 3),
-        SldsTabStripItem(label: 'Closed'),
+        SldsTabStripItem(label: 'Closed', trailingIcon: true),
+      ],
+      currentIndex: 1,
+      onTap: (_) {},
+    ),
+    buildLocalized: (locale) => SldsTabStrip(
+      items: [
+        SldsTabStripItem(label: _text(locale)),
+        SldsTabStripItem(label: _text(locale), count: 3),
       ],
       currentIndex: 1,
       onTap: (_) {},
@@ -398,11 +647,17 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       hintText: 'Describe your request',
       onChanged: (_) {},
     ),
+    buildLocalized: (locale) => SldsTextArea(
+      label: _text(locale),
+      hintText: _text(locale),
+      onChanged: (_) {},
+    ),
   ),
   (
     name: 'time_picker_dialog',
     width: 340,
     build: () => SldsTimePickerDialog(onTimeChanged: (_) {}),
+    buildLocalized: null, // time digits only, formatted through intl
   ),
   (
     name: 'tooltip',
@@ -414,6 +669,13 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       actionLabel: 'Next',
       onAction: () {},
     ),
+    buildLocalized: (locale) => SldsTooltip(
+      title: _text(locale),
+      description: _text(locale),
+      stepLabel: '1 of 3',
+      actionLabel: _text(locale),
+      onAction: () {},
+    ),
   ),
   (
     name: 'top_nav_bar',
@@ -423,12 +685,22 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       onBack: () {},
       onMenu: () {},
     ),
+    buildLocalized: (locale) => SldsTopNavBar(
+      title: _text(locale),
+      onBack: () {},
+      onMenu: () {},
+    ),
   ),
   (
     name: 'upload_field',
     width: 340,
     build: () => SldsUploadField(
       label: 'Proof of address',
+      hintText: 'PDF, JPEG or PNG less than 5MB',
+      onTap: () {},
+    ),
+    buildLocalized: (locale) => SldsUploadField(
+      label: _text(locale),
       hintText: 'PDF, JPEG or PNG less than 5MB',
       onTap: () {},
     ),
@@ -449,11 +721,30 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         SldsBottomNavItem(icon: Icons.person_outline, label: 'Profile'),
       ],
     ),
+    buildLocalized: (locale) => SldsBottomNav(
+      currentIndex: 0,
+      onTap: (_) {},
+      items: [
+        SldsBottomNavItem(
+          icon: Icons.home_outlined,
+          label: _text(locale),
+        ),
+        SldsBottomNavItem(
+          icon: Icons.notifications_outlined,
+          label: _text(locale),
+          badgeCount: 3,
+        ),
+      ],
+    ),
   ),
   (
     name: 'button',
     width: null,
     build: () => SldsButton(label: 'Continue', onPressed: () {}),
+    buildLocalized: (locale) => SldsButton(
+      label: _text(locale),
+      onPressed: () {},
+    ),
   ),
   (
     name: 'card',
@@ -461,6 +752,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
     build: () => const SldsCard(
       child: Text('Renew your revenue licence online to avoid a queue.'),
     ),
+    buildLocalized: (locale) => SldsCard(child: Text(_text(locale))),
   ),
   (
     name: 'error_state',
@@ -470,11 +762,17 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       actionLabel: 'Go back',
       onAction: () {},
     ),
+    buildLocalized: (locale) => SldsErrorState.forKind(
+      SldsErrorKind.notFound,
+      actionLabel: _text(locale),
+      onAction: () {},
+    ),
   ),
   (
     name: 'fab',
     width: null,
     build: () => SldsFab(icon: Icons.add, tooltip: 'Add', onPressed: () {}),
+    buildLocalized: null, // tooltip only, no rendered-visible label
   ),
   (
     name: 'focus',
@@ -482,6 +780,10 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
     build: () => const SldsFocusRing(
       focused: true,
       child: SldsCard(child: Text('Focused')),
+    ),
+    buildLocalized: (locale) => SldsFocusRing(
+      focused: true,
+      child: SldsCard(child: Text(_text(locale))),
     ),
   ),
   (
@@ -491,6 +793,14 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       title: 'Vehicle services',
       icon: const Icon(Icons.directions_car_outlined),
       description: 'Licence renewal, transfers and registration.',
+      variant: SldsIconCardVariant.defaultCard,
+      onTap: () {},
+    ),
+    buildLocalized: (locale) => SldsIconCard(
+      title: _text(locale),
+      icon: const Icon(Icons.directions_car_outlined),
+      description: _text(locale),
+      variant: SldsIconCardVariant.defaultCard,
       onTap: () {},
     ),
   ),
@@ -506,6 +816,15 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         ],
       ),
     ),
+    buildLocalized: (locale) => SldsPullToRefresh(
+      onRefresh: () async {},
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          SldsCard(child: Text(_text(locale))),
+        ],
+      ),
+    ),
   ),
   (
     name: 'text_field',
@@ -514,11 +833,16 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       label: 'Licence number',
       helpText: 'As printed on the top right of your licence',
     ),
+    buildLocalized: (locale) => SldsTextField(
+      label: _text(locale),
+      helpText: _text(locale),
+    ),
   ),
   (
     name: 'time_picker',
     width: 340,
     build: () => const SldsTimePicker(label: 'Appointment time'),
+    buildLocalized: (locale) => SldsTimePicker(label: _text(locale)),
   ),
   (
     name: 'toggle',
@@ -528,5 +852,6 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       onChanged: (_) {},
       semanticLabel: 'Email notifications',
     ),
+    buildLocalized: null, // semanticLabel only; no visible text
   ),
 ];

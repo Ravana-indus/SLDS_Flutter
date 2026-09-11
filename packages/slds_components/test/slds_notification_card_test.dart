@@ -103,7 +103,7 @@ void main() {
     );
     expect(
       find.byWidgetPredicate(
-        (w) => w is Container && w.constraints?.maxWidth == 8,
+        (w) => w is Container && w.constraints?.maxWidth == 14,
       ),
       findsNothing,
     );
@@ -112,11 +112,11 @@ void main() {
       tester,
       const SldsNotificationCard(title: 'Title', body: 'Body', unread: true),
     );
-    // Presence check via the widget tree: a Container sized 8x8 (the dot).
+    // Presence check via the widget tree: a Container sized 14x14 (the dot).
     final dot = find.byWidgetPredicate(
       (w) =>
           w is Container &&
-          w.constraints == const BoxConstraints.tightFor(width: 8, height: 8),
+          w.constraints == const BoxConstraints.tightFor(width: 14, height: 14),
     );
     expect(dot, findsOneWidget);
   });

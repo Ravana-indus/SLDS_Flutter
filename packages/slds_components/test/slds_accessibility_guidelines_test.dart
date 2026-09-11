@@ -123,16 +123,17 @@ void main() {
         host(SldsButton(label: 'Continue', isLoading: true, onPressed: () {})),
       );
 
+      // The label stays visible while loading, so the button's semantics
+      // merge to "Loading\nContinue" — match the substring rather than the
+      // whole label, which would pin the announcement's word order.
+      final loading = find.bySemanticsLabel(RegExp('Loading'));
       expect(
-        find.bySemanticsLabel('Loading'),
+        loading,
         findsOneWidget,
         reason: 'the spinner must carry a localized label',
       );
       expect(
-        tester
-            .getSemantics(find.bySemanticsLabel('Loading'))
-            .flagsCollection
-            .isLiveRegion,
+        tester.getSemantics(loading).flagsCollection.isLiveRegion,
         isTrue,
         reason: 'entering the loading state must be announced as it happens',
       );
@@ -159,8 +160,8 @@ void main() {
         ),
       );
 
-      expect(find.bySemanticsLabel('Loading'), findsNothing);
-      expect(find.bySemanticsLabel('පූරණය වෙමින්'), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('Loading')), findsNothing);
+      expect(find.bySemanticsLabel(RegExp('පූරණය වෙමින්')), findsOneWidget);
       handle.dispose();
     });
   });

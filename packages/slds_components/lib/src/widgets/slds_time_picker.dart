@@ -389,18 +389,24 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
               ],
             )
           else
+            // Flexible so a long/translated action label shrinks and
+            // ellipsizes instead of overflowing this fixed-width dialog.
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                SldsButton(
-                  label: widget.cancelText ?? context.sldsStrings.cancel,
-                  onPressed: widget.onCancel,
-                  variant: SldsButtonVariant.secondary,
+                Flexible(
+                  child: SldsButton(
+                    label: widget.cancelText ?? context.sldsStrings.cancel,
+                    onPressed: widget.onCancel,
+                    variant: SldsButtonVariant.secondary,
+                  ),
                 ),
                 const SizedBox(width: 12),
-                SldsButton(
-                  label: widget.applyText ?? context.sldsStrings.apply,
-                  onPressed: () => widget.onApply?.call(_currentTimeOfDay),
+                Flexible(
+                  child: SldsButton(
+                    label: widget.applyText ?? context.sldsStrings.apply,
+                    onPressed: () => widget.onApply?.call(_currentTimeOfDay),
+                  ),
                 ),
               ],
             ),
@@ -660,23 +666,39 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
   }
 
   Future<void> _showTimePicker(BuildContext context) async {
+    // Resolved here, from this State's own context, rather than inside the
+    // builder below: the builder runs against the dialog route's context,
+    // where SldsLocalizations is not reliably in scope (Widgetbook installs
+    // its delegates below the Navigator, so reading them there throws).
+    final strings = context.sldsStrings;
+    final cancelLabel = widget.cancelText ?? strings.cancel;
+    final applyLabel = widget.applyText ?? strings.apply;
+
     final picked = await showDialog<TimeOfDay>(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          child: SldsTimePickerDialog(
-            initialTime: _selectedTime ?? const TimeOfDay(hour: 7, minute: 0),
-            titleText: widget.titleText,
-            cancelText: widget.cancelText ?? context.sldsStrings.cancel,
-            applyText: widget.applyText ?? context.sldsStrings.apply,
-            onApply: (TimeOfDay time) {
-              Navigator.of(context).pop(time);
-            },
-            onCancel: () {
-              Navigator.of(context).pop();
-            },
+          // The dialog is a fixed ~500px column (header, digital row, 210px
+          // dial, footer). On a short viewport — a landscape phone, or any
+          // Widgetbook device preset under ~500px tall — that overflows the
+          // screen and the RenderFlex throws. Scroll instead of clipping:
+          // the dial must keep its size to stay tappable, so the content
+          // cannot shrink to fit.
+          child: SingleChildScrollView(
+            child: SldsTimePickerDialog(
+              initialTime: _selectedTime ?? const TimeOfDay(hour: 7, minute: 0),
+              titleText: widget.titleText,
+              cancelText: cancelLabel,
+              applyText: applyLabel,
+              onApply: (TimeOfDay time) {
+                Navigator.of(context).pop(time);
+              },
+              onCancel: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ),
         );
       },

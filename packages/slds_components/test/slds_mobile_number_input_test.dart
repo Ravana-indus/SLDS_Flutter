@@ -141,9 +141,16 @@ void main() {
   testWidgets('field geometry matches the Figma spec in every state', (
     tester,
   ) async {
-    // Pinned against Figma node 510:3072: a 52px box with a 12px radius and
-    // a plain 1px border whose colour — never its width — carries the state.
+    // Pinned against Figma node 510:3072: a 52px box with a 12px radius, and a
+    // border whose colour and width both carry the state — Focused and Error
+    // are emphasised to 1.5px, Disabled to 1.6px, everything else 1px.
     const d = SldsDimensionTokens.standard;
+    double expectedWidth(SldsMobileNumberInputState state) => switch (state) {
+      SldsMobileNumberInputState.disabled => d.inputDisabledBorderWidth,
+      SldsMobileNumberInputState.error ||
+      SldsMobileNumberInputState.focused => d.emphasizedBorderWidth,
+      _ => d.controlBorderWidth,
+    };
 
     for (final state in SldsMobileNumberInputState.values) {
       await pump(
@@ -172,7 +179,7 @@ void main() {
       );
       expect(
         (decoration.border! as Border).top.width,
-        d.controlBorderWidth,
+        expectedWidth(state),
         reason: '$state border width',
       );
     }

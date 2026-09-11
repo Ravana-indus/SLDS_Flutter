@@ -151,26 +151,28 @@ class _SldsTextAreaState extends State<SldsTextArea> {
     final dimensions = tokens.dimensions;
     final typography = tokens.typography;
 
-    // Figma draws the same 1.6px stroke in every state — unlike the
-    // single-line field, the text area never thickens on focus, so the
-    // state is carried by colour alone.
-    OutlineInputBorder border(Color borderColor) => OutlineInputBorder(
-      borderRadius: BorderRadius.circular(dimensions.radius2xl),
-      borderSide: BorderSide(
-        color: borderColor,
-        width: dimensions.inputDisabledBorderWidth,
-      ),
-    );
+    // Figma thickens the stroke to 1.5px on focus and error and leaves it
+    // at 1px otherwise — the same ladder SldsInput and SldsInputMask use.
+    OutlineInputBorder border(Color borderColor, double borderWidth) =>
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(dimensions.radius2xl),
+          borderSide: BorderSide(color: borderColor, width: borderWidth),
+        );
 
     final Color borderColor;
+    final double borderWidth;
     if (!widget.enabled) {
       borderColor = colors.disabledBorder;
+      borderWidth = dimensions.inputDisabledBorderWidth;
     } else if (_hasError) {
       borderColor = colors.inputBorderError;
+      borderWidth = dimensions.emphasizedBorderWidth;
     } else if (_focused) {
       borderColor = colors.inputBorderFocused;
+      borderWidth = dimensions.emphasizedBorderWidth;
     } else {
       borderColor = colors.inputBorderDefault;
+      borderWidth = dimensions.controlBorderWidth;
     }
 
     final helperColor = widget.enabled
@@ -257,12 +259,12 @@ class _SldsTextAreaState extends State<SldsTextArea> {
                       // Reserve room for the counter drawn over the box.
                       dimensions.space8 + counterHeight,
                     ),
-                    border: border(borderColor),
-                    enabledBorder: border(borderColor),
-                    focusedBorder: border(borderColor),
-                    errorBorder: border(borderColor),
-                    focusedErrorBorder: border(borderColor),
-                    disabledBorder: border(borderColor),
+                    border: border(borderColor, borderWidth),
+                    enabledBorder: border(borderColor, borderWidth),
+                    focusedBorder: border(borderColor, borderWidth),
+                    errorBorder: border(borderColor, borderWidth),
+                    focusedErrorBorder: border(borderColor, borderWidth),
+                    disabledBorder: border(borderColor, borderWidth),
                     // Figma puts the counter inside the box; Flutter's own
                     // counter renders below the decorator, so it is suppressed
                     // and drawn by the Stack instead.

@@ -666,6 +666,14 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
   }
 
   Future<void> _showTimePicker(BuildContext context) async {
+    // Resolved here, from this State's own context, rather than inside the
+    // builder below: the builder runs against the dialog route's context,
+    // where SldsLocalizations is not reliably in scope (Widgetbook installs
+    // its delegates below the Navigator, so reading them there throws).
+    final strings = context.sldsStrings;
+    final cancelLabel = widget.cancelText ?? strings.cancel;
+    final applyLabel = widget.applyText ?? strings.apply;
+
     final picked = await showDialog<TimeOfDay>(
       context: context,
       builder: (BuildContext context) {
@@ -682,8 +690,8 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
             child: SldsTimePickerDialog(
               initialTime: _selectedTime ?? const TimeOfDay(hour: 7, minute: 0),
               titleText: widget.titleText,
-              cancelText: widget.cancelText ?? context.sldsStrings.cancel,
-              applyText: widget.applyText ?? context.sldsStrings.apply,
+              cancelText: cancelLabel,
+              applyText: applyLabel,
               onApply: (TimeOfDay time) {
                 Navigator.of(context).pop(time);
               },

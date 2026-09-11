@@ -17,6 +17,13 @@ enum _ForcedState { auto, defaultState, hover, disabled }
 )
 Widget buildSldsIconCardUseCase(BuildContext context) {
   final copy = DemoCopy.of(context);
+  final variant = context.knobs.object.dropdown(
+    label: 'Variant',
+    options: SldsIconCardVariant.values,
+    labelBuilder: (v) => v.name,
+    initialOption: SldsIconCardVariant.quickAction,
+    description: 'The three Figma variants (node 533:2742).',
+  );
   final titleOverride = context.knobs.string(
     label: 'Title',
     initialValue: '',
@@ -26,7 +33,7 @@ Widget buildSldsIconCardUseCase(BuildContext context) {
   final descriptionOverride = context.knobs.string(
     label: 'Description',
     initialValue: '',
-    description: 'Blank follows the Locale addon; type to override.',
+    description: 'Blank follows the Locale addon. Quick Action ignores it.',
   );
   final description = descriptionOverride.isEmpty
       ? copy['Apply for a fuel quota pass']
@@ -39,12 +46,6 @@ Widget buildSldsIconCardUseCase(BuildContext context) {
   final badgeLabel = badgeLabelOverride.isEmpty
       ? copy['NEW']
       : badgeLabelOverride;
-  final size = context.knobs.object.dropdown(
-    label: 'Size',
-    options: SldsIconCardSize.values,
-    labelBuilder: (s) => s.name,
-    initialOption: SldsIconCardSize.small,
-  );
   final forced = context.knobs.object.dropdown(
     label: 'Force state',
     options: _ForcedState.values,
@@ -59,7 +60,7 @@ Widget buildSldsIconCardUseCase(BuildContext context) {
       description: description.isEmpty ? null : description,
       badgeLabel: badgeLabel.isEmpty ? null : badgeLabel,
       icon: const Icon(Icons.local_gas_station, color: Colors.green),
-      size: size,
+      variant: variant,
       state: switch (forced) {
         _ForcedState.auto => null,
         _ForcedState.defaultState => SldsIconCardState.defaultState,
@@ -67,6 +68,40 @@ Widget buildSldsIconCardUseCase(BuildContext context) {
         _ForcedState.disabled => SldsIconCardState.disabled,
       },
       onTap: forced == _ForcedState.disabled ? null : () {},
+    ),
+  );
+}
+
+@widgetbook.UseCase(
+  name: 'All variants',
+  type: SldsIconCard,
+  path: '[Display & Data]',
+)
+Widget buildSldsIconCardVariantsUseCase(BuildContext context) {
+  return const SingleChildScrollView(
+    padding: EdgeInsets.all(16),
+    child: Wrap(
+      spacing: 16,
+      runSpacing: 16,
+      children: [
+        SldsIconCard(
+          title: 'Name',
+          description: 'Description',
+          icon: Icon(Icons.description_outlined),
+          variant: SldsIconCardVariant.defaultCard,
+        ),
+        SldsIconCard(
+          title: 'Fuel Pass',
+          badgeLabel: 'NEW',
+          icon: Icon(Icons.local_gas_station, color: Colors.green),
+        ),
+        SldsIconCard(
+          title: 'Apply for Passport',
+          description: 'Begin your passport request online.',
+          icon: Icon(Icons.public),
+          variant: SldsIconCardVariant.featuredServices,
+        ),
+      ],
     ),
   );
 }

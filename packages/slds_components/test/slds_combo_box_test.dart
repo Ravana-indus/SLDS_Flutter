@@ -147,13 +147,15 @@ void main() {
     expect(selected, ['Jaffna']);
   });
 
-  testWidgets('typing in the filter field narrows the option list', (
+  testWidgets('typing in the panel search bar narrows the option list', (
     tester,
   ) async {
     await pump(tester, build());
 
     await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
     await tester.pump();
+    // The search bar inside the open panel is the only text field; the
+    // collapsed field is display-only.
     await tester.enterText(find.byType(TextField), 'Colo');
     await tester.pump();
 

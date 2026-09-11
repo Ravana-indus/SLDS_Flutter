@@ -51,6 +51,11 @@ Widget buildSldsComboBoxUseCase(BuildContext context) {
   final helperText = helperTextOverride.isEmpty
       ? copy['Help Text']
       : helperTextOverride;
+  final searchPlaceholderOverride = context.knobs.string(
+    label: 'Search placeholder',
+    initialValue: '',
+    description: 'Blank follows the Locale addon; type to override.',
+  );
   final isRequired = context.knobs.boolean(
     label: 'Required',
     initialValue: true,
@@ -68,6 +73,11 @@ Widget buildSldsComboBoxUseCase(BuildContext context) {
     child: _ComboBoxDemo(
       label: label,
       helperText: helperText,
+      // Blank means "no override" — the widget then falls back to the
+      // localized "Search", which is what the Locale addon exercises.
+      searchPlaceholder: searchPlaceholderOverride.isEmpty
+          ? null
+          : searchPlaceholderOverride,
       isRequired: isRequired,
       multiple: multiple,
       visualState: _toVisualState(forcedState),
@@ -81,6 +91,7 @@ class _ComboBoxDemo extends StatefulWidget {
   const _ComboBoxDemo({
     required this.label,
     required this.helperText,
+    required this.searchPlaceholder,
     required this.isRequired,
     required this.multiple,
     required this.visualState,
@@ -88,6 +99,7 @@ class _ComboBoxDemo extends StatefulWidget {
 
   final String label;
   final String helperText;
+  final String? searchPlaceholder;
   final bool isRequired;
   final bool multiple;
   final SldsComboBoxState? visualState;
@@ -105,6 +117,7 @@ class _ComboBoxDemoState extends State<_ComboBoxDemo> {
       label: widget.label,
       placeholder: 'Select district',
       helperText: widget.helperText,
+      searchPlaceholder: widget.searchPlaceholder,
       required: widget.isRequired,
       multiple: widget.multiple,
       visualState: widget.visualState,

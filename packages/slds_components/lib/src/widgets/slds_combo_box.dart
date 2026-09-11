@@ -200,9 +200,9 @@ class _SldsComboBoxState extends State<SldsComboBox> {
               ),
               SizedBox(height: dimensions.space4),
               Container(
-                constraints: fieldHeight == null
-                    ? const BoxConstraints(minHeight: 56)
-                    : BoxConstraints.tightFor(height: fieldHeight),
+                // minHeight, not a tight height: chips wrap to a second row
+                // once they no longer fit, and a tight height clipped them.
+                constraints: BoxConstraints(minHeight: fieldHeight ?? 56),
                 // No vertical padding: the 52dp field minus a 1dp border top
                 // and bottom leaves exactly the 48dp the trailing toggle
                 // needs as a tap target (WCAG 2.5.8). Children inset
@@ -222,33 +222,29 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                   boxShadow: focused ? sldsFocusRing(tokens) : null,
                 ),
                 child: Row(
-                  // The field's 8dp vertical padding would otherwise squeeze
-                  // the trailing toggle below the 48dp tap-target floor; the
-                  // button manages its own inset instead.
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  // Default centre alignment, not stretch: the field now grows
+                  // with wrapped chips, and stretch made the trailing toggle
+                  // span every row.
                   children: [
                     Expanded(
                       child: displayChips
-                          ? Wrap(
-                              spacing: 10,
-                              runSpacing: 6,
-                              children: [
-                                for (final value in widget.selectedValues)
-                                  _SelectionChip(
-                                    value: value,
-                                    semanticLabel:
-                                        widget.clearSelectionSemanticLabel,
-                                    onRemove: () => _remove(value),
-                                  ),
-                                // Filtering moved into the panel's search bar,
-                                // so the chip row keeps only a tappable gap
-                                // that opens the panel — no second TextField
-                                // sharing this state's controller.
-                                SizedBox(
-                                  width: dimensions.tapTargetMin,
-                                  height: dimensions.tapTargetMin,
-                                ),
-                              ],
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: dimensions.space8,
+                              ),
+                              child: Wrap(
+                                spacing: dimensions.space4,
+                                runSpacing: dimensions.space4,
+                                children: [
+                                  for (final value in widget.selectedValues)
+                                    _SelectionChip(
+                                      value: value,
+                                      semanticLabel:
+                                          widget.clearSelectionSemanticLabel,
+                                      onRemove: () => _remove(value),
+                                    ),
+                                ],
+                              ),
                             )
                           // Display-only: the panel's search bar owns the
                           // filter text, so the collapsed field just shows the
@@ -510,35 +506,49 @@ class _SelectionChip extends StatelessWidget {
   final VoidCallback onRemove;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 4, 4),
-    decoration: BoxDecoration(
-      color: context.slds.colors.badgeNeutralBackground,
-      borderRadius: BorderRadius.circular(9999),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(value, style: context.slds.typography.body1),
-        Semantics(
-          container: true,
-          excludeSemantics: true,
-          button: true,
-          label: semanticLabel == null ? value : '$semanticLabel $value',
-          // The glyph stays 20x20; SldsTapTarget expands only the hit area
-          // to the 48dp floor (WCAG 2.5.8) without changing the chip's look.
-          child: SldsTapTarget(
-            child: InkWell(
-              onTap: onRemove,
-              child: const SizedBox(
-                width: 20,
-                height: 20,
-                child: Icon(Icons.close, size: 16),
+  Widget build(BuildContext context) {
+    final tokens = context.slds;
+    final dimensions = tokens.dimensions;
+    return Container(
+      // Figma Chips: space-8 inline, space-4 block, gap space-4, radius-full.
+      padding: EdgeInsets.symmetric(
+        horizontal: dimensions.space8,
+        vertical: dimensions.space4,
+      ),
+      decoration: BoxDecoration(
+        color: tokens.colors.badgeNeutralBackground,
+        borderRadius: BorderRadius.circular(dimensions.radiusFull),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Text(
+              value,
+              style: tokens.typography.body1.copyWith(
+                color: tokens.colors.textPrimary,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-        ),
-      ],
-    ),
-  );
+          SizedBox(width: dimensions.space4),
+          Semantics(
+            container: true,
+            excludeSemantics: true,
+            button: true,
+            label: semanticLabel == null ? value : '$semanticLabel $value',
+            // No SldsTapTarget here: its 48dp floor is wider than the whole
+            // chip, so several chips overflowed the field and clipped. These
+            // sit inside a field that is itself a tap target opening the same
+            // panel, so the glyph keeps Figma's 16dp.
+            child: InkWell(
+              onTap: onRemove,
+              borderRadius: BorderRadius.circular(dimensions.radiusFull),
+              child: Icon(Icons.close, size: dimensions.iconSizeSmall),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

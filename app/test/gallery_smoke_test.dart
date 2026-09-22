@@ -59,6 +59,11 @@ void main() {
     }
     expect(find.text('Dialog'), findsOneWidget);
 
+    // The scroll loop stops as soon as the row exists in the tree, which can
+    // still leave it outside the viewport — then the tap misses. Bring it
+    // fully into view so this doesn't depend on the gallery's row count.
+    await t.ensureVisible(find.text('Dialog'));
+    await t.pump();
     await t.tap(find.text('Dialog'));
     await t.pump(const Duration(milliseconds: 500));
     expect(find.text('Confirm submission'), findsOneWidget);

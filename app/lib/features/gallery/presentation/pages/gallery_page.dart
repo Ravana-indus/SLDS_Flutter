@@ -134,13 +134,7 @@ final _sections = <(String, Widget)>[
   ),
   (
     'SldsFab',
-    Wrap(
-      spacing: 12,
-      children: [
-        SldsFab(icon: Icons.add, onPressed: () {}),
-        SldsFab(icon: Icons.edit, badgeCount: 3, onPressed: () {}),
-      ],
-    ),
+    SldsFab(icon: Icons.add, onPressed: () {}),
   ),
   (
     'SldsCheckButton',
@@ -227,14 +221,18 @@ final _sections = <(String, Widget)>[
   ('SldsTextField', const SldsTextField(label: 'Full name', hintText: 'Name')),
   (
     'SldsTextArea',
-    const SldsTextArea(label: 'Comments', hintText: 'Tell us more'),
+    // Mirrors the Figma Text Area frame: required label, its placeholder,
+    // and the help text that occupies the strip under the box.
+    const SldsTextArea(
+      label: 'Description',
+      isRequired: true,
+      hintText: 'Description placeholder',
+      helpText: 'Help Text',
+    ),
   ),
   ('SldsPasswordField', const SldsPasswordField(label: 'Password')),
   ('SldsInput', const SldsInput(label: 'Amount', prefixText: 'LKR')),
-  (
-    'SldsInputMask',
-    const SldsInputMask(label: 'NIC', hintText: '000000000V'),
-  ),
+  ('SldsInputMask', const SldsInputMask(label: 'NIC', hintText: '000000000V')),
   ('SldsMobileNumberInput', const SldsMobileNumberInput(label: 'Mobile')),
   ('SldsOtpInput', const SldsOtpInput()),
   (
@@ -294,10 +292,7 @@ final _sections = <(String, Widget)>[
     ),
   ),
   ('SldsSearchBar', const SldsSearchBar(hintText: 'Search services')),
-  (
-    'SldsDatePicker',
-    const SldsDatePicker(mode: SldsDatePickerMode.single),
-  ),
+  ('SldsDatePicker', const SldsDatePicker(mode: SldsDatePickerMode.single)),
   ('SldsTimePicker', const SldsTimePicker(label: 'Appointment time')),
   (
     'SldsFieldset',
@@ -316,7 +311,6 @@ final _sections = <(String, Widget)>[
       ],
     ),
   ),
-  ('SldsCard', const SldsCard(child: Text('Card content'))),
   (
     'SldsIconCard',
     // featuredServices has no fixed height (it grows with content), so its
@@ -435,11 +429,7 @@ final _sections = <(String, Widget)>[
     const SldsSummaryList(
       rows: [
         SldsSummaryRow(label: 'Application ID', value: 'APP-2024-001'),
-        SldsSummaryRow(
-          label: 'NIC',
-          value: '199012345678',
-          isSensitive: true,
-        ),
+        SldsSummaryRow(label: 'NIC', value: '199012345678', isSensitive: true),
         SldsSummaryRow(
           label: 'Status',
           value: 'Approved',

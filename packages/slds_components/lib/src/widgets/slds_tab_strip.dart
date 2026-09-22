@@ -123,6 +123,11 @@ class SldsTabStrip extends StatelessWidget {
 /// spacing scale (3px), so it is not a spacing token.
 const double _gap = 3;
 
+/// The tab label's line height. Figma's Text Container pins this to
+/// Line Height/caption_1 (18) rather than body_2's own 22, so the label is
+/// set from the token scale and only its leading is overridden here.
+const double _labelLineHeight = 18;
+
 class _Tab extends StatelessWidget {
   const _Tab({
     required this.item,
@@ -192,11 +197,28 @@ class _Tab extends StatelessWidget {
                   ),
                   const SizedBox(width: _gap),
                 ],
+                // Figma wraps the label in a "Text Container" (346:220) that
+                // carries space-4 on all four sides, and pins the line height
+                // to caption_1 (18) rather than body_2's own 22.
+                //
+                // Vertical only: Figma's tabs size to their own content, but
+                // here the strip is width-constrained and the label already
+                // ellipsizes. Adding the horizontal 4px either side cost the
+                // label the width it needed and collapsed "Open" to an empty
+                // ellipsis — the padding is not worth losing the word.
                 Flexible(
-                  child: Text(
-                    item.label,
-                    overflow: TextOverflow.ellipsis,
-                    style: tokens.typography.body2.copyWith(color: textColor),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: dimensions.space4,
+                    ),
+                    child: Text(
+                      item.label,
+                      overflow: TextOverflow.ellipsis,
+                      style: tokens.typography.body2.copyWith(
+                        color: textColor,
+                        height: _labelLineHeight / 14,
+                      ),
+                    ),
                   ),
                 ),
                 if (item.trailingIcon) ...[

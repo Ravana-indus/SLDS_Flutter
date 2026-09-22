@@ -256,11 +256,10 @@ class _SldsTextAreaState extends State<SldsTextArea> {
                     enabled: widget.enabled,
                     // expands fills the fixed frame above, which is what keeps
                     // the painted border and the counter on the same bounds.
-                    // It requires maxLines/minLines to be null, so a caller's
-                    // maxLines instead caps the frame's height (see _boxHeight).
+                    // It requires maxLines to be null, so a caller's maxLines
+                    // instead sizes the frame (see boxHeight).
                     expands: true,
                     maxLines: null,
-                    minLines: null,
                     textAlignVertical: TextAlignVertical.top,
                     inputFormatters: widget.maxLength != null
                         ? [LengthLimitingTextInputFormatter(widget.maxLength)]
@@ -274,8 +273,9 @@ class _SldsTextAreaState extends State<SldsTextArea> {
                         color: colors.inputPlaceholder,
                       ),
                       filled: true,
-                      // Figma's `Input/Background` is the card surface in every
-                      // state: disabled fades the border and text, not the fill.
+                      // Figma's `Input/Background` is the card surface in
+                      // every state: disabled fades the border and text,
+                      // not the fill.
                       fillColor: colors.surfaceCard,
                       // Figma's Content box is a fixed 128px; the frame
                       // above owns that height now.

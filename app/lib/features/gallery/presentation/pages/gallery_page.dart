@@ -234,7 +234,19 @@ final _sections = <(String, Widget)>[
   ('SldsInput', const SldsInput(label: 'Amount', prefixText: 'LKR')),
   ('SldsInputMask', const SldsInputMask(label: 'NIC', hintText: '000000000V')),
   ('SldsMobileNumberInput', const SldsMobileNumberInput(label: 'Mobile')),
-  ('SldsOtpInput', const SldsOtpInput()),
+  (
+    'SldsOtpInput',
+    const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SldsOtpInput(),
+        SizedBox(height: 12),
+        SldsOtpInput(size: SldsOtpInputSize.medium),
+        SizedBox(height: 12),
+        SldsOtpInput(size: SldsOtpInputSize.small),
+      ],
+    ),
+  ),
   (
     'SldsUploadField',
     Column(

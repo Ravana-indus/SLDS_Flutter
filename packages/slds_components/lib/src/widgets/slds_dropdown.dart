@@ -133,15 +133,18 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final dimensions = context.slds.dimensions;
-    final accent = scheme.primary;
+    final tokens = context.slds;
+    final colors = tokens.colors;
+    final dimensions = tokens.dimensions;
 
+    // Figma's open/"Filling" state (node 543:6451) keeps the field on its
+    // plain default border — opening the panel isn't focus, so unlike
+    // SldsInput/SldsTextField it never turns gold just for being open.
     final borderColor = !widget.enabled
-        ? scheme.outline.withValues(alpha: context.slds.opacities.disabled)
+        ? colors.inputBorderDisabled
         : _hasError
-        ? scheme.error
-        : (_open ? accent : scheme.outline);
+        ? colors.inputBorderError
+        : colors.inputBorderDefault;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,15 +152,15 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
       children: [
         Text.rich(
           TextSpan(
-            style: Theme.of(
-              context,
-            ).textTheme.labelLarge?.copyWith(color: scheme.onSurface),
+            style: tokens.typography.fieldLabel.copyWith(
+              color: colors.inputLabel,
+            ),
             children: [
               TextSpan(text: widget.label),
               if (widget.isRequired)
                 TextSpan(
                   text: ' *',
-                  style: TextStyle(color: scheme.error),
+                  style: TextStyle(color: colors.inputBorderError),
                 ),
             ],
           ),
@@ -182,22 +185,24 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
           excludeSemantics: true,
           child: InkWell(
             onTap: _toggle,
-            borderRadius: BorderRadius.circular(dimensions.space8),
+            borderRadius: BorderRadius.circular(dimensions.radius2xl),
             child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: dimensions.space12,
-                vertical: dimensions.space12,
-              ),
+              // Figma's Content node (543:6445) is a fixed 52px — matches
+              // every other SLDS field (SldsInput/SldsTextField).
+              height: dimensions.inputHeight,
+              padding: EdgeInsets.symmetric(horizontal: dimensions.space12),
               decoration: BoxDecoration(
                 color: widget.enabled
-                    ? scheme.surface
-                    : scheme.onSurface.withValues(alpha: 0.04),
-                borderRadius: BorderRadius.circular(dimensions.space8),
-                // 1.5 matches every other field's focused-border weight
-                // (SldsInput/SldsMobileNumberInput/SldsSearchBar's
-                // emphasizedBorderWidth token) — this widget predates that
-                // token system, so it's hardcoded here to stay in lockstep.
-                border: Border.all(color: borderColor, width: _open ? 1.5 : 1),
+                    ? colors.surfaceCard
+                    : colors.disabledBackground,
+                // Figma: radius-2xl (12px), not 8.
+                borderRadius: BorderRadius.circular(dimensions.radius2xl),
+                border: Border.all(
+                  color: borderColor,
+                  width: widget.enabled
+                      ? dimensions.controlBorderWidth
+                      : dimensions.inputDisabledBorderWidth,
+                ),
               ),
               child: Row(
                 children: [
@@ -207,14 +212,12 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                           ? widget.itemLabel(widget.value as T)
                           : widget.hintText ??
                                 context.sldsStrings.selectAnOption,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      style: tokens.typography.body1.copyWith(
                         color: widget.value != null
                             ? (widget.enabled
-                                  ? scheme.onSurface
-                                  : scheme.onSurface.withValues(
-                                      alpha: context.slds.opacities.disabled,
-                                    ))
-                            : scheme.onSurface.withValues(alpha: 0.5),
+                                  ? colors.textPrimary
+                                  : colors.disabledForeground)
+                            : colors.inputPlaceholder,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -223,10 +226,8 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                     _open ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     size: 20,
                     color: widget.enabled
-                        ? scheme.onSurface
-                        : scheme.onSurface.withValues(
-                            alpha: context.slds.opacities.disabled,
-                          ),
+                        ? colors.textSecondary
+                        : colors.disabledForeground,
                   ),
                 ],
               ),
@@ -236,16 +237,21 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
         if (_open) ...[
           SizedBox(height: dimensions.space8),
           Container(
+            // Figma's "Open" panel (543:6460): surface/page bg,
+            // border/decorative border, radius-3xl (16px) corner.
             decoration: BoxDecoration(
-              color: scheme.surface,
-              borderRadius: BorderRadius.circular(dimensions.space8),
-              border: Border.all(color: scheme.outline),
+              color: colors.surfacePage,
+              borderRadius: BorderRadius.circular(dimensions.radius3xl),
+              border: Border.all(color: colors.borderDecorative),
             ),
+            padding: EdgeInsets.symmetric(vertical: dimensions.space8),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: EdgeInsets.all(dimensions.space8),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: dimensions.space8,
+                  ),
                   child: Semantics(
                     textField: true,
                     label: widget.searchHintText ?? context.sldsStrings.search,
@@ -253,14 +259,16 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                       controller: _searchController,
                       autofocus: true,
                       onChanged: (v) => setState(() => _query = v),
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: tokens.typography.body2.copyWith(
+                        color: colors.textPrimary,
+                      ),
                       decoration: InputDecoration(
                         hintText:
                             widget.searchHintText ?? context.sldsStrings.search,
                         prefixIcon: Icon(
                           Icons.search,
                           size: 20,
-                          color: scheme.onSurface.withValues(alpha: 0.5),
+                          color: colors.inputPlaceholder,
                         ),
                         isDense: true,
                         // The decorated field paints taller, but the
@@ -270,29 +278,21 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                           minHeight: dimensions.tapTargetMin,
                         ),
                         filled: true,
-                        fillColor: scheme.surface,
+                        // Figma's Search Bar (node 543:6462) is
+                        // surface/page — the same tone as the panel behind
+                        // it, not a brighter card — with a plain
+                        // border/decorative border throughout; it never
+                        // turns gold, autofocus notwithstanding.
+                        fillColor: colors.surfacePage,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: dimensions.space12,
                           vertical: dimensions.space8,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            dimensions.space8,
-                          ),
-                          borderSide: BorderSide(color: scheme.outline),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            dimensions.space8,
-                          ),
-                          borderSide: BorderSide(color: scheme.outline),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            dimensions.space8,
-                          ),
-                          borderSide: BorderSide(color: accent),
-                        ),
+                        // Same border in every state — Figma's search bar
+                        // never shows a distinct focused style.
+                        border: _searchBorder(dimensions, colors),
+                        enabledBorder: _searchBorder(dimensions, colors),
+                        focusedBorder: _searchBorder(dimensions, colors),
                       ),
                     ),
                   ),
@@ -304,12 +304,9 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                           padding: EdgeInsets.all(dimensions.space16),
                           child: Text(
                             context.sldsStrings.noResults,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: scheme.onSurface.withValues(
-                                    alpha: 0.5,
-                                  ),
-                                ),
+                            style: tokens.typography.body2.copyWith(
+                              color: colors.textSecondary,
+                            ),
                           ),
                         )
                       : ListView.builder(
@@ -331,19 +328,35 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
                                 onTap: () => _select(item),
                                 child: Container(
                                   width: double.infinity,
+                                  // Figma's list item (535:2487) is 44px
+                                  // tall (h-[38px] row + 6px vertical
+                                  // padding via py-12 on the 12px-lineheight
+                                  // text) — match with a min height rather
+                                  // than a hardcoded number.
+                                  constraints: BoxConstraints(
+                                    minHeight: dimensions.tapTargetMin,
+                                  ),
+                                  alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.symmetric(
                                     horizontal: dimensions.space12,
-                                    vertical: dimensions.space12,
+                                    vertical: dimensions.space8,
                                   ),
-                                  color: selected
-                                      ? scheme.onSurface.withValues(alpha: 0.06)
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: dimensions.space8,
+                                  ),
+                                  decoration: selected
+                                      ? BoxDecoration(
+                                          color: colors.buttonGhostHover,
+                                          borderRadius: BorderRadius.circular(
+                                            dimensions.radiusXl,
+                                          ),
+                                        )
                                       : null,
                                   child: Text(
                                     widget.itemLabel(item),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(color: scheme.onSurface),
+                                    style: tokens.typography.body2.copyWith(
+                                      color: colors.textPrimary,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -360,18 +373,20 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
           SizedBox(height: dimensions.space4),
           Text(
             _hasError ? widget.errorText! : widget.helpText!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: _hasError
-                  ? scheme.error
-                  : scheme.onSurface.withValues(
-                      alpha: widget.enabled
-                          ? 0.6
-                          : context.slds.opacities.disabled,
-                    ),
+            style: tokens.typography.caption1.copyWith(
+              color: _hasError ? colors.error : colors.inputHelper,
             ),
           ),
         ],
       ],
     );
   }
+
+  OutlineInputBorder _searchBorder(
+    SldsDimensionTokens dimensions,
+    SldsColorTokens colors,
+  ) => OutlineInputBorder(
+    borderRadius: BorderRadius.circular(dimensions.radius2xl),
+    borderSide: BorderSide(color: colors.borderDecorative),
+  );
 }

@@ -85,6 +85,43 @@ class _StatefulState extends State<_Stateful> {
   Widget build(BuildContext context) => widget.builder(context, setState);
 }
 
+/// A minimal Sri Lanka flag, painted rather than an emoji glyph or an
+/// asset — demo-only stand-in for the countryFlag a real app supplies.
+class _LkFlagSwatch extends StatelessWidget {
+  const _LkFlagSwatch();
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: SizedBox(
+        width: 24,
+        height: 16,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: ColoredBox(color: const Color(0xFFFFB700)),
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(child: ColoredBox(color: const Color(0xFF00534E))),
+                  Expanded(child: ColoredBox(color: const Color(0xFFEA1B26))),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: ColoredBox(color: const Color(0xFF8D153A)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // Mutable demo state, kept module-level so the list below stays declarative.
 // ponytail: shared across page instances; lift into a Cubit if the gallery
 // ever needs more than one live copy.
@@ -233,19 +270,26 @@ final _sections = <(String, Widget)>[
   ('SldsPasswordField', const SldsPasswordField(label: 'Password')),
   ('SldsInput', const SldsInput(label: 'Amount', prefixText: 'LKR')),
   ('SldsInputMask', const SldsInputMask(label: 'NIC', hintText: '000000000V')),
-  ('SldsMobileNumberInput', const SldsMobileNumberInput(label: 'Mobile')),
+  // countryFlag is deliberately left to the caller (SLDS bakes in no flag
+  // asset). Flag emoji don't reliably render as a glyph (shows as a missing-
+  // character box on some platforms), so paint a small swatch instead of
+  // adding a flag-icon package for one demo.
   (
-    'SldsOtpInput',
-    const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SldsOtpInput(),
-        SizedBox(height: 12),
-        SldsOtpInput(size: SldsOtpInputSize.medium),
-        SizedBox(height: 12),
-        SldsOtpInput(size: SldsOtpInputSize.small),
-      ],
+    'SldsMobileNumberInput',
+    const SldsMobileNumberInput(
+      label: 'Mobile',
+      countryFlag: _LkFlagSwatch(),
     ),
+  ),
+  (
+    // SldsOtpInput boxes are fixed-size, not stretchy (large is 56x80).
+    // 6 of them at `large` (376px) don't fit a phone's content width, so
+    // Wrap drops the last 2 to a second, shorter-looking row — that's Wrap
+    // doing its job, not a component bug. `small` is the size actually
+    // meant for this width; showing large/medium too, but at a shorter
+    // length, so the gallery demonstrates all three without wrapping.
+    'SldsOtpInput',
+    const SldsOtpInput(size: SldsOtpInputSize.small),
   ),
   (
     'SldsUploadField',

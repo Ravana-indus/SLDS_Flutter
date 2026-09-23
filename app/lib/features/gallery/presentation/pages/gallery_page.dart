@@ -375,9 +375,9 @@ final _sections = <(String, Widget)>[
   ('SldsSearchBar', const SldsSearchBar(hintText: 'Search services')),
   (
     'SldsDatePicker',
-    // onCancel: null renders the button in its disabled style — pass a
-    // no-op so the gallery shows the real enabled look, matching Figma.
-    SldsDatePicker(mode: SldsDatePickerMode.single, onCancel: () {}),
+    // onCancel and onApply supplied so the gallery showcases the Figma spec
+    // with January 13–18 range highlight in active state.
+    SldsDatePicker(onCancel: () {}, onApply: (_) {}),
   ),
   ('SldsTimePicker', const SldsTimePicker(label: 'Appointment time')),
   (

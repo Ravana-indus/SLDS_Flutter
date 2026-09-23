@@ -126,22 +126,31 @@ class SldsSummaryList extends StatelessWidget {
             ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
 
+        final radius = BorderRadius.circular(dimensions.radius2xl);
         return Container(
           width: resolvedWidth,
           decoration: BoxDecoration(
             color: colors.surfaceCard,
             border: Border.all(color: colors.borderDecorative),
-            borderRadius: BorderRadius.circular(dimensions.radius2xl),
+            borderRadius: radius,
           ),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < rows.length; i++) ...[
-                if (i > 0) Divider(height: 1, color: colors.borderDecorative),
-                _SummaryRowTile(row: rows[i]),
+          // Container's own clipBehavior clips to the border's *inner* edge
+          // but paints the border as a separate stroke on top — at higher
+          // device pixel ratios the two don't quite line up, leaving a
+          // jagged notch at each corner. Clipping the content explicitly
+          // with ClipRRect, then letting the border paint over an
+          // unclipped edge, avoids the seam.
+          child: ClipRRect(
+            borderRadius: radius,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < rows.length; i++) ...[
+                  if (i > 0) Divider(height: 1, color: colors.borderDecorative),
+                  _SummaryRowTile(row: rows[i]),
+                ],
               ],
-            ],
+            ),
           ),
         );
       },
@@ -199,7 +208,11 @@ class _SummaryRowTileState extends State<_SummaryRowTile> {
       width: double.infinity,
       // Figma's Summary List row (533:3083) is a fixed 72px tall.
       height: 72,
-      color: colors.surfacePage,
+      // Figma: `list/background` (white/surfaceCard), not surfacePage
+      // (off-white grey) — the mismatch left a sliver of the card's own
+      // white background showing through at the corners, where clipping to
+      // the outer border radius cuts each row's square corner back.
+      color: colors.surfaceCard,
       padding: EdgeInsets.symmetric(
         horizontal: dimensions.space12,
         vertical: dimensions.space8,

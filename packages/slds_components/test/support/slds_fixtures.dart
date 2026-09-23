@@ -202,6 +202,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       initialDate: DateTime(2026, 3, 14),
       mode: SldsDatePickerMode.single,
       onDateSelected: (_) {},
+      onCancel: () {},
     ),
     buildLocalized: null, // dates format through intl, not a caller label
   ),

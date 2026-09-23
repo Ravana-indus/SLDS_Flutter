@@ -6,6 +6,7 @@ import 'package:slds_components/src/l10n/slds_strings.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 import 'package:slds_components/src/widgets/slds_text_field.dart';
 
 /// Which unit is currently being edited in [SldsTimePickerDialog].
@@ -120,11 +121,15 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
     final primaryAccent = context.slds.colors.buttonPrimaryBackground;
 
     return Container(
-      width: widget.width ?? 320,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      // Figma's dialog (node 1093:12338) is a fixed 258px card — not a
+      // 320px one; the widget's own default only applies when the caller
+      // doesn't size it explicitly.
+      width: widget.width ?? 258,
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colors.surfaceCard,
-        borderRadius: BorderRadius.circular(24),
+        // Figma: radius-3xl (16px), not a hardcoded 24.
+        borderRadius: BorderRadius.circular(tokens.dimensions.radius3xl),
         border: Border.all(color: colors.borderDefault.withValues(alpha: 0.8)),
         boxShadow: [
           BoxShadow(
@@ -138,27 +143,18 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header: Clock Icon + Title
+          // Header: Clock Icon + Title. Figma's "Titel" row (1093:10789) is
+          // a plain 24px clock glyph next to body_1 (16px) text, both
+          // sitting on the border-bottom divider's padding — no circular
+          // ring around the icon, and no separate heading-scale type.
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: colors.textPrimary, width: 1.5),
-                ),
-                child: Icon(
-                  Icons.access_time,
-                  size: 18,
-                  color: colors.textPrimary,
-                ),
-              ),
+              Icon(Icons.access_time, size: 24, color: colors.textPrimary),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   widget.titleText ?? context.sldsStrings.setYourTime,
-                  style: tokens.typography.title1.copyWith(
-                    fontWeight: FontWeight.w600,
+                  style: tokens.typography.body1.copyWith(
                     color: colors.textPrimary,
                   ),
                 ),
@@ -166,7 +162,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           // Divider
           Divider(
@@ -176,9 +172,12 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
 
           const SizedBox(height: 16),
 
-          // Digital Time Input & AM/PM Row
+          // Digital Time Input & AM/PM Row — Figma's Time row (1093:10792)
+          // is a full-width Row: the hour/minute frame takes its intrinsic
+          // width (4px between its boxes and the colon), and the AM/PM
+          // group is flex-1 with justify-end, so it fills the rest and sits
+          // hard against the card's right edge.
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Hour Box
               Semantics(
@@ -190,37 +189,18 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                 child: GestureDetector(
                   onTap: () =>
                       setState(() => _activeUnit = SldsTimePickerUnit.hour),
-                  child: Container(
-                    width: 54,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: _activeUnit == SldsTimePickerUnit.hour
-                          ? colors.datePickerRangeHighlight
-                          : colors.surfaceCard,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _activeUnit == SldsTimePickerUnit.hour
-                            ? primaryAccent
-                            : colors.borderDefault,
-                        width: _activeUnit == SldsTimePickerUnit.hour
-                            ? 1.5
-                            : 1.0,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        _selectedHour12 < 10
-                            ? '0$_selectedHour12'
-                            : '$_selectedHour12',
-                        style: tokens.typography.heading4.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: colors.textPrimary,
-                        ),
-                      ),
-                    ),
+                  child: _buildTimeUnitBox(
+                    tokens,
+                    colors,
+                    selected: _activeUnit == SldsTimePickerUnit.hour,
+                    text: _selectedHour12 < 10
+                        ? '0$_selectedHour12'
+                        : '$_selectedHour12',
                   ),
                 ),
               ),
+
+              const SizedBox(width: 4),
 
               Text(
                 ':',
@@ -229,6 +209,8 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                   color: colors.textPrimary,
                 ),
               ),
+
+              const SizedBox(width: 4),
 
               // Minute Box
               Semantics(
@@ -240,115 +222,103 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                 child: GestureDetector(
                   onTap: () =>
                       setState(() => _activeUnit = SldsTimePickerUnit.minute),
-                  child: Container(
-                    width: 54,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: _activeUnit == SldsTimePickerUnit.minute
-                          ? colors.datePickerRangeHighlight
-                          : colors.surfaceCard,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _activeUnit == SldsTimePickerUnit.minute
-                            ? primaryAccent
-                            : colors.borderDefault,
-                        width: _activeUnit == SldsTimePickerUnit.minute
-                            ? 1.5
-                            : 1.0,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        _selectedMinute < 10
-                            ? '0$_selectedMinute'
-                            : '$_selectedMinute',
-                        style: tokens.typography.heading4.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: colors.textPrimary,
-                        ),
-                      ),
-                    ),
+                  child: _buildTimeUnitBox(
+                    tokens,
+                    colors,
+                    selected: _activeUnit == SldsTimePickerUnit.minute,
+                    text: _selectedMinute < 10
+                        ? '0$_selectedMinute'
+                        : '$_selectedMinute',
                   ),
                 ),
               ),
 
-              const SizedBox(width: 8),
-
-              // AM/PM Segmented Control
-              Row(
-                children: [
-                  Semantics(
-                    // A segmented control: the reader must hear which of the
-                    // two is active, which the design shows only in colour.
-                    inMutuallyExclusiveGroup: true,
-                    selected: _period == DayPeriod.am,
-                    button: true,
-                    label: context.sldsStrings.timePeriodAm,
-                    excludeSemantics: true,
-                    child: GestureDetector(
-                      onTap: () => _setPeriod(DayPeriod.am),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 4,
-                        ),
-                        child: Text(
-                          context.sldsStrings.timePeriodAm,
-                          style: tokens.typography.body1.copyWith(
-                            fontWeight: FontWeight.bold,
-                            // The gold accent measures 1.56:1 on the card, so
-                            // painting the *selected* period in it made the
-                            // active option the unreadable one. Selection is
-                            // carried by weight and text colour instead; the
-                            // unselected option drops the 0.6 alpha that put
-                            // it at 2.93:1 (WCAG 1.4.3).
-                            color: _period == DayPeriod.am
-                                ? colors.textPrimary
-                                : colors.textSecondary,
+              // AM/PM Segmented Control — Expanded + right alignment is
+              // Figma's flex-1/justify-end. A tight 10px sits between the
+              // two words, with no padding around them: the tap area comes
+              // from SldsOverflowTapTarget, which meets the WCAG 2.5.8
+              // floor invisibly instead of pushing AM and PM apart.
+              //
+              // FittedBox so the pair scales down rather than overflowing
+              // this fixed 258px card once a 200% text scale (or a longer
+              // localized marker) outgrows the space left beside the boxes.
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Semantics(
+                          // A segmented control: the reader must hear which
+                          // of the two is active, which the design shows
+                          // only in colour.
+                          inMutuallyExclusiveGroup: true,
+                          selected: _period == DayPeriod.am,
+                          button: true,
+                          label: context.sldsStrings.timePeriodAm,
+                          excludeSemantics: true,
+                          child: SldsOverflowTapTarget(
+                            onTap: () => _setPeriod(DayPeriod.am),
+                            child: Text(
+                              context.sldsStrings.timePeriodAm,
+                              style: tokens.typography.title1.copyWith(
+                                // Figma (1093:10797) paints the selected
+                                // period in the gold accent directly —
+                                // 1.56:1 against this white card, below WCAG
+                                // 1.4.3's 3:1 floor even at this size and
+                                // weight. Matched to spec on explicit
+                                // design-system-owner sign-off; a colour
+                                // vision or low-vision user relying on
+                                // contrast alone won't be able to tell AM
+                                // from PM here.
+                                color: _period == DayPeriod.am
+                                    ? colors.buttonPrimaryBackground
+                                    : colors.textSecondary,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Semantics(
-                    // A segmented control: the reader must hear which of the
-                    // two is active, which the design shows only in colour.
-                    inMutuallyExclusiveGroup: true,
-                    selected: _period == DayPeriod.pm,
-                    button: true,
-                    label: context.sldsStrings.timePeriodPm,
-                    excludeSemantics: true,
-                    child: GestureDetector(
-                      onTap: () => _setPeriod(DayPeriod.pm),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 4,
-                        ),
-                        child: Text(
-                          context.sldsStrings.timePeriodPm,
-                          style: tokens.typography.body1.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: _period == DayPeriod.pm
-                                ? colors.textPrimary
-                                : colors.textSecondary,
+                        const SizedBox(width: 10),
+                        Semantics(
+                          // A segmented control: the reader must hear which
+                          // of the two is active, which the design shows
+                          // only in colour.
+                          inMutuallyExclusiveGroup: true,
+                          selected: _period == DayPeriod.pm,
+                          button: true,
+                          label: context.sldsStrings.timePeriodPm,
+                          excludeSemantics: true,
+                          child: SldsOverflowTapTarget(
+                            onTap: () => _setPeriod(DayPeriod.pm),
+                            child: Text(
+                              context.sldsStrings.timePeriodPm,
+                              style: tokens.typography.title1.copyWith(
+                                color: _period == DayPeriod.pm
+                                    ? colors.buttonPrimaryBackground
+                                    : colors.textSecondary,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ],
           ),
 
           const SizedBox(height: 20),
 
-          // Analog Radial Clock Dial
+          // Analog Radial Clock Dial — Figma's Clock frame (1093:10800) is
+          // 204x204.
           Center(
             child: SizedBox(
-              width: 210,
-              height: 210,
+              width: 204,
+              height: 204,
               child: CustomPaint(
                 painter: _RadialClockDialPainter(
                   activeUnit: _activeUnit,
@@ -362,6 +332,7 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
                 child: _buildInteractiveClockOverlay(
                   primaryAccent,
                   colors.textStaticBlack,
+                  dialSize: 204,
                 ),
               ),
             ),
@@ -369,67 +340,84 @@ class _SldsTimePickerDialogState extends State<SldsTimePickerDialog> {
 
           const SizedBox(height: 20),
 
-          // Footer Action Bar — SldsButton goes full-width below the
-          // SldsBreakpoints.mobile screen width, so the row would overflow;
-          // stack Cancel/Apply instead on mobile, matching the button's own
-          // responsive behavior rather than fighting it.
-          if (context.sldsIsMobile)
-            Column(
-              children: [
-                SldsButton(
-                  label: widget.applyText ?? context.sldsStrings.apply,
-                  onPressed: () => widget.onApply?.call(_currentTimeOfDay),
-                ),
-                const SizedBox(height: 12),
-                SldsButton(
+          // Footer Action Bar — Figma (1093:10906) has one layout at every
+          // width: Cancel then Apply, side by side, each flex-[1_0_0] (equal
+          // width, filling the row). Small button scale (28px tall,
+          // radius-xl, body_2 text) matches this compact card rather than
+          // SldsButton's own responsive full-width default.
+          Row(
+            children: [
+              Expanded(
+                child: SldsButton(
                   label: widget.cancelText ?? context.sldsStrings.cancel,
                   onPressed: widget.onCancel,
                   variant: SldsButtonVariant.secondary,
+                  size: SldsButtonSize.small,
                 ),
-              ],
-            )
-          else
-            // Flexible so a long/translated action label shrinks and
-            // ellipsizes instead of overflowing this fixed-width dialog.
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: SldsButton(
-                    label: widget.cancelText ?? context.sldsStrings.cancel,
-                    onPressed: widget.onCancel,
-                    variant: SldsButtonVariant.secondary,
-                  ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SldsButton(
+                  label: widget.applyText ?? context.sldsStrings.apply,
+                  onPressed: () => widget.onApply?.call(_currentTimeOfDay),
+                  size: SldsButtonSize.small,
                 ),
-                const SizedBox(width: 12),
-                Flexible(
-                  child: SldsButton(
-                    label: widget.applyText ?? context.sldsStrings.apply,
-                    onPressed: () => widget.onApply?.call(_currentTimeOfDay),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  /// The hour/minute digit box (Figma node 1093:10960/1093:10973): selected
+  /// is a gold-tinted fill with no border, unselected is a plain white fill
+  /// with a 1px default border — both share the same radius, padding and
+  /// text style, content-sized rather than a fixed box.
+  Widget _buildTimeUnitBox(
+    SldsTokenSet tokens,
+    SldsColorTokens colors, {
+    required bool selected,
+    required String text,
+  }) {
+    return Container(
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: 14,
+        vertical: 8,
+      ),
+      decoration: BoxDecoration(
+        color: selected ? colors.badgePendingBackground : colors.surfaceCard,
+        borderRadius: BorderRadius.circular(tokens.dimensions.radiusXl),
+        border: selected ? null : Border.all(color: colors.borderDefault),
+      ),
+      child: Text(
+        text,
+        style: tokens.typography.body2.copyWith(
+          color: selected ? colors.buttonPrimaryBackground : colors.textPrimary,
+        ),
       ),
     );
   }
 
   Widget _buildInteractiveClockOverlay(
     Color primaryAccent,
-    Color numeralColor,
-  ) {
+    Color numeralColor, {
+    required double dialSize,
+  }) {
     final isHour = _activeUnit == SldsTimePickerUnit.hour;
     final totalItems = isHour ? 12 : 12; // 12 numbers on clock face
+    final center = dialSize / 2;
+    // Matches _RadialClockDialPainter's hand length (outerRadius - 23), so
+    // the tap targets land on the same ring the hand's numerals sit on.
+    final labelRadius = center - 23;
 
     return Stack(
       children: List.generate(totalItems, (i) {
         final val = isHour ? (i == 0 ? 12 : i) : (i * 5);
         final angle = (i * 30 - 90) * (math.pi / 180);
-        const radius = 82.0;
 
-        final cx = 105.0 + radius * math.cos(angle);
-        final cy = 105.0 + radius * math.sin(angle);
+        final cx = center + labelRadius * math.cos(angle);
+        final cy = center + labelRadius * math.sin(angle);
 
         final isSelected = isHour
             ? (_selectedHour12 == val)

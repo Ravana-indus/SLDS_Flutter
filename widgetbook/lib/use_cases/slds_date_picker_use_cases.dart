@@ -24,6 +24,7 @@ Widget buildSldsDatePickerUseCase(BuildContext context) {
         onDateSelected: (date) {},
         onRangeSelected: (range) {},
         onApply: (val) {},
+        onCancel: () {},
       ),
     ),
   );

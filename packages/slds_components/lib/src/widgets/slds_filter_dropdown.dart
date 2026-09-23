@@ -194,6 +194,7 @@ class SldsFilterDropdown extends StatelessWidget {
                           label: cancelText ?? context.sldsStrings.cancel,
                           onPressed: onCancel,
                           variant: SldsButtonVariant.text,
+                          size: SldsButtonSize.small,
                         ),
                       ),
                     ),
@@ -204,6 +205,7 @@ class SldsFilterDropdown extends StatelessWidget {
                         child: SldsButton(
                           label: applyText ?? context.sldsStrings.apply,
                           onPressed: () => onApply?.call(selectedValues),
+                          size: SldsButtonSize.small,
                         ),
                       ),
                     ),

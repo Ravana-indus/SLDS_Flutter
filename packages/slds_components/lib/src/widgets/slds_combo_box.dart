@@ -328,10 +328,10 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                     // rather than sitting flat on the page.
                     boxShadow: [
                       BoxShadow(
-                        color: colors.shadowColor,
+                        color: colors.shadowColor.withValues(alpha: 0.12),
                         blurRadius: dimensions.elevationBlur,
                         offset: Offset(0, dimensions.elevationOffsetY),
-                        spreadRadius: -dimensions.elevationSpread,
+                        spreadRadius: dimensions.elevationSpread,
                       ),
                     ],
                   ),
@@ -452,7 +452,18 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                                   borderRadius: BorderRadius.circular(
                                     dimensions.radiusXl,
                                   ),
-                                  child: Padding(
+                                  child: Container(
+                                    // Figma highlights a selected/hovered row
+                                    // with a filled background behind the
+                                    // whole row, not just the checkbox.
+                                    decoration: BoxDecoration(
+                                      color: selected
+                                          ? colors.badgeNeutralBackground
+                                          : null,
+                                      borderRadius: BorderRadius.circular(
+                                        dimensions.radiusXl,
+                                      ),
+                                    ),
                                     padding: EdgeInsets.all(dimensions.space8),
                                     child: Row(
                                       children: [

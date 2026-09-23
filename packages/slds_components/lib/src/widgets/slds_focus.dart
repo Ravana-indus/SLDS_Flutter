@@ -107,3 +107,49 @@ class SldsTapTarget extends StatelessWidget {
     );
   }
 }
+
+/// Expands a small, tightly-packed control's hit area to the WCAG 2.5.8
+/// 48dp floor *without* affecting the layout footprint its parent sees.
+///
+/// [SldsTapTarget] reserves 48dp of actual layout space, which is right for
+/// a control that owns its row, but wrong for something like a compact
+/// segmented control or a date-picker month pill: several of them side by
+/// side, each padded out to 48dp, balloon the whole row far past a tight
+/// Figma spec width. This instead lays out at exactly [child]'s size — what
+/// the parent sees and reserves space for — while a same-size [Stack]
+/// sibling, clipped off, paints an invisible 48dp [InkWell] centered on top,
+/// so only the *hit-test* area grows.
+class SldsOverflowTapTarget extends StatelessWidget {
+  /// Wraps [child] with an invisible, oversized tap target around [onTap].
+  const SldsOverflowTapTarget({
+    required this.child,
+    required this.onTap,
+    super.key,
+  });
+
+  /// The small visual control this tap target sits over.
+  final Widget child;
+
+  /// Called when the (invisible, oversized) hit area is tapped.
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final min = context.slds.dimensions.tapTargetMin;
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        child,
+        Positioned(
+          width: min,
+          height: min,
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(customBorder: const CircleBorder(), onTap: onTap),
+          ),
+        ),
+      ],
+    );
+  }
+}

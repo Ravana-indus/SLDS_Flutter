@@ -109,6 +109,40 @@ void main() {
     },
   );
 
+  testWidgets('selected option row gets a highlighted background', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      build(multiple: true, selectedValues: const ['Colombo']),
+    );
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+    await tester.pump();
+
+    final row = tester.widget<Container>(
+      find
+          .ancestor(
+            of: find.text('Colombo'),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    final decoration = row.decoration! as BoxDecoration;
+    final tokens = SldsTheme.light.extension<SldsTokenSet>()!;
+    expect(decoration.color, tokens.colors.badgeNeutralBackground);
+
+    final unselectedRow = tester.widget<Container>(
+      find
+          .ancestor(
+            of: find.text('Batticaloa'),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    final unselectedDecoration = unselectedRow.decoration! as BoxDecoration;
+    expect(unselectedDecoration.color, isNull);
+  });
+
   testWidgets('multi-select: tapping a selected option again removes it', (
     tester,
   ) async {

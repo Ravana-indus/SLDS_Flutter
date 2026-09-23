@@ -356,15 +356,29 @@ final _sections = <(String, Widget)>[
   (
     'SldsFilterDropdown',
     _Stateful(
-      (context, setState) => SldsFilterDropdown(
-        options: const ['Open', 'Closed', 'Pending'],
-        selectedValues: _filters,
-        onSelectionChanged: (v) => setState(() => _filters = v),
+      // Figma spec is a fixed 250px popover card, not a full-width banner
+      // — Align+SizedBox keeps it that size instead of stretching to the
+      // device width like a bare Wrap/Column child would.
+      (context, setState) => Align(
+        alignment: Alignment.centerLeft,
+        child: SizedBox(
+          width: 250,
+          child: SldsFilterDropdown(
+            options: const ['Open', 'Closed', 'Pending'],
+            selectedValues: _filters,
+            onSelectionChanged: (v) => setState(() => _filters = v),
+          ),
+        ),
       ),
     ),
   ),
   ('SldsSearchBar', const SldsSearchBar(hintText: 'Search services')),
-  ('SldsDatePicker', const SldsDatePicker(mode: SldsDatePickerMode.single)),
+  (
+    'SldsDatePicker',
+    // onCancel: null renders the button in its disabled style — pass a
+    // no-op so the gallery shows the real enabled look, matching Figma.
+    SldsDatePicker(mode: SldsDatePickerMode.single, onCancel: () {}),
+  ),
   ('SldsTimePicker', const SldsTimePicker(label: 'Appointment time')),
   (
     'SldsFieldset',

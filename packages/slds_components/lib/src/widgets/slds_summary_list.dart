@@ -197,11 +197,16 @@ class _SummaryRowTileState extends State<_SummaryRowTile> {
 
     Widget tile = Container(
       width: double.infinity,
+      // Figma's Summary List row (533:3083) is a fixed 72px tall.
+      height: 72,
       color: colors.surfacePage,
       padding: EdgeInsets.symmetric(
-        horizontal: dimensions.space16,
+        horizontal: dimensions.space12,
         vertical: dimensions.space8,
       ),
+      // Figma centers the label/value pair vertically within the fixed
+      // 72px row (justify-center on the Text Container), not top-aligned.
+      alignment: Alignment.centerLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

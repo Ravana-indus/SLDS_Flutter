@@ -44,71 +44,87 @@ class SldsChip extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final background = colors.surfaceHover;
+    // Figma's chip (512:1016) reads badge/neutral/background explicitly —
+    // the same hex as surfaceHover in light mode, but they diverge in dark
+    // and high-contrast, where surfaceHover would have painted the wrong
+    // colour.
+    final background = colors.badgeNeutralBackground;
 
-    return SldsTapTarget(
-      child: Semantics(
-        container: true,
-        explicitChildNodes: true,
-        button: onTap != null,
-        label: label,
-        child: Material(
-          color: background,
+    Widget chip = Semantics(
+      container: true,
+      explicitChildNodes: true,
+      button: onTap != null,
+      label: label,
+      child: Material(
+        color: background,
+        borderRadius: BorderRadius.circular(dimensions.radiusFull),
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(dimensions.radiusFull),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(dimensions.radiusFull),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: dimensions.space12,
-                vertical: dimensions.space8,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (avatar != null) ...[
-                    avatar!,
-                    SizedBox(width: dimensions.space8),
-                  ] else if (icon != null) ...[
-                    Icon(
-                      icon,
-                      size: dimensions.iconSizeMedium,
-                      color: colors.textPrimary,
-                    ),
-                    SizedBox(width: dimensions.space8),
-                  ],
-                  Text(
-                    label,
-                    style: tokens.typography.body1.copyWith(
-                      color: colors.textPrimary,
-                    ),
+          child: Padding(
+            // Figma's chip is pl:4 pr:8 py:4 — tighter on the leading
+            // edge, where the icon already carries some visual padding
+            // inside its own 20px box, than on the trailing edge.
+            padding: EdgeInsetsDirectional.fromSTEB(
+              dimensions.space4,
+              dimensions.space4,
+              dimensions.space8,
+              dimensions.space4,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (avatar != null) ...[
+                  avatar!,
+                  SizedBox(width: dimensions.space4),
+                ] else if (icon != null) ...[
+                  Icon(
+                    icon,
+                    size: dimensions.iconSizeMedium,
+                    color: colors.textPrimary,
                   ),
-                  if (onDeleted != null) ...[
-                    SizedBox(width: dimensions.space8),
-                    SldsTapTarget(
-                      child: Semantics(
-                        button: true,
-                        label: context.sldsStrings.removeItem(label),
-                        child: InkWell(
-                          onTap: onDeleted,
-                          borderRadius: BorderRadius.circular(
-                            dimensions.radiusFull,
-                          ),
-                          child: Icon(
-                            Icons.close,
-                            size: dimensions.iconSizeMedium,
-                            color: colors.textPrimary,
-                          ),
-                        ),
+                  SizedBox(width: dimensions.space4),
+                ],
+                Text(
+                  label,
+                  style: tokens.typography.body1.copyWith(
+                    color: colors.textPrimary,
+                  ),
+                ),
+                if (onDeleted != null) ...[
+                  SizedBox(width: dimensions.space8),
+                  SldsOverflowTapTarget(
+                    onTap: onDeleted!,
+                    child: Semantics(
+                      button: true,
+                      label: context.sldsStrings.removeItem(label),
+                      child: Icon(
+                        Icons.close,
+                        // Figma's trailing × is 16px, not the 20px the
+                        // leading icon uses.
+                        size: dimensions.iconSizeSmall,
+                        color: colors.textPrimary,
                       ),
                     ),
-                  ],
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),
       ),
     );
+
+    // Figma's pill hugs its content (28-32px tall) at every variant. The
+    // blanket SldsTapTarget this used to wrap *every* chip in stretched
+    // even a purely informational, non-interactive one — with nothing to
+    // tap — up to the 48dp WCAG 2.5.8 floor, which is what made an
+    // icon-less, onDeleted-only chip visibly balloon next to its siblings.
+    // Only a chip whose body is actually tappable needs that floor at all.
+    if (onTap != null) {
+      chip = SldsTapTarget(child: chip);
+    }
+
+    return chip;
   }
 }

@@ -207,14 +207,19 @@ class SldsBanner extends StatelessWidget {
             final messageRoom =
                 constraints.maxWidth -
                 leading -
-                dimensions.space8 -
+                dimensions.space24 -
                 actionsWidth;
             final fitsOneRow =
                 messageRoom >= messageWidth ||
                 messageRoom >= constraints.maxWidth / 3;
 
             final messageRow = Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              // Figma's banner (459:3223) is items-center end to end — the
+              // icon, message and actions all sit on the row's vertical
+              // centre, even when the message wraps to two lines. Aligning
+              // the icon to start instead pinned it to the first line only.
+              // ignore: avoid_redundant_argument_values
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 // The icon repeats the severity the colour already carries,
@@ -263,8 +268,17 @@ class SldsBanner extends StatelessWidget {
             if (fitsOneRow) {
               return Row(
                 children: [
-                  Flexible(child: messageRow),
-                  SizedBox(width: dimensions.space8),
+                  // Expanded, not Flexible: Figma's message container is
+                  // flex-[1_0_0] (tight fit) — it always claims the rest of
+                  // the row, pushing the actions to the card's right edge
+                  // even when the message is short. Flexible's loose fit let
+                  // the whole row shrink-wrap instead, leaving Action/×
+                  // stranded right after the text with empty space beyond.
+                  Expanded(child: messageRow),
+                  // Figma's banner (459:3223) puts a 24px gap between the
+                  // message and the button container, not 8 — 8 is the
+                  // tighter icon-to-text gap inside the message itself.
+                  SizedBox(width: dimensions.space24),
                   actions,
                 ],
               );

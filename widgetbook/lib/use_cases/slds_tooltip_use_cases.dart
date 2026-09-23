@@ -63,7 +63,7 @@ Widget buildSldsTooltipUseCase(BuildContext context) {
         SizedBox(height: 32),
         SldsTooltip(
           title: copy['Title'],
-          tailAlignment: SldsTooltipTailAlignment.center,
+          tailAlignment: SldsTooltipTailAlignment.end,
         ),
       ],
     ),

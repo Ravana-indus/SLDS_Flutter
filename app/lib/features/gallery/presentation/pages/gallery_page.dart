@@ -642,11 +642,30 @@ final _sections = <(String, Widget)>[
   ),
   (
     'SldsTooltip',
-    const SldsTooltip(
-      title: 'Tooltip title',
-      description: 'Extra guidance for this field.',
-      stepLabel: '1 of 3',
-      actionLabel: 'Next',
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SldsTooltip(
+          title: 'Tooltip Title',
+          description: 'Enter the description text',
+          stepLabel: '1 of 5',
+          actionLabel: 'Action',
+          onAction: () {},
+          onClose: () {},
+          tailAlignment: SldsTooltipTailAlignment.end,
+        ),
+        const SizedBox(height: 16),
+        const SldsTooltip(
+          title: 'Tooltip Title',
+          description: 'Enter the description text',
+          tailAlignment: SldsTooltipTailAlignment.end,
+        ),
+        const SizedBox(height: 16),
+        const SldsTooltip(
+          title: 'Title',
+          tailAlignment: SldsTooltipTailAlignment.end,
+        ),
+      ],
     ),
   ),
   // Both are full-screen states — SldsErrorState sizes itself to

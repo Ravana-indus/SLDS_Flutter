@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
     show SldsBottomNav;
-import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// One tab in an [SldsTabStrip].
 class SldsTabStripItem {

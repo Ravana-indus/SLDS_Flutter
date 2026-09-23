@@ -133,6 +133,35 @@ void main() {
     expect(cancelled, isTrue);
   });
 
+  testWidgets('onClose null hides the dismiss button; set, it fires', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsFilterDropdown(
+        options: options,
+        selectedValues: const [],
+        onSelectionChanged: (_) {},
+      ),
+    );
+    expect(find.byIcon(Icons.close), findsNothing);
+
+    var closed = false;
+    await pump(
+      tester,
+      SldsFilterDropdown(
+        options: options,
+        selectedValues: const [],
+        onSelectionChanged: (_) {},
+        onClose: () => closed = true,
+      ),
+    );
+    expect(find.byIcon(Icons.close), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.close));
+    expect(closed, isTrue);
+  });
+
   testWidgets('cancelText/applyText override the default footer labels', (
     tester,
   ) async {

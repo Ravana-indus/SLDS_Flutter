@@ -269,7 +269,23 @@ final _sections = <(String, Widget)>[
   ),
   ('SldsPasswordField', const SldsPasswordField(label: 'Password')),
   ('SldsInput', const SldsInput(label: 'Amount', prefixText: 'LKR')),
-  ('SldsInputMask', const SldsInputMask(label: 'NIC', hintText: '000000000V')),
+  (
+    'SldsInputMask',
+    const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SldsInputMask(label: 'NIC', hintText: '000000000V'),
+        SizedBox(height: 12),
+        // Prefix + suffix demo — the field's other supported shape.
+        SldsInputMask(
+          label: 'Website',
+          prefixText: 'http://',
+          suffixText: '.com',
+          hintText: 'slds',
+        ),
+      ],
+    ),
+  ),
   // countryFlag is deliberately left to the caller (SLDS bakes in no flag
   // asset). Flag emoji don't reliably render as a glyph (shows as a missing-
   // character box on some platforms), so paint a small swatch instead of

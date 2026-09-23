@@ -7,6 +7,7 @@ import 'package:slds_components/src/widgets/slds_button.dart';
 import 'package:slds_components/src/widgets/slds_checkbox.dart';
 import 'package:slds_components/src/widgets/slds_filter_button.dart'
     show SldsFilterButton;
+import 'package:slds_components/src/widgets/slds_icon_button.dart';
 import 'package:slds_components/src/widgets/slds_radio.dart';
 
 /// SLDS filter dropdown panel — a standalone option list (checkboxes for
@@ -31,6 +32,7 @@ class SldsFilterDropdown extends StatelessWidget {
     this.cancelText,
     this.applyText,
     this.width,
+    this.onClose,
   });
 
   /// The selectable options, in display order.
@@ -62,6 +64,12 @@ class SldsFilterDropdown extends StatelessWidget {
   /// Preferred width, clamped to the available parent width.
   final double? width;
 
+  /// Fires when the top-right dismiss (×) button is tapped. Null hides the
+  /// button — per Figma it's an always-present dismiss affordance separate
+  /// from the footer Cancel, but callers without a dedicated close action
+  /// (e.g. an inline, non-overlay panel) can opt out.
+  final VoidCallback? onClose;
+
   void _toggle(String option) {
     final next = List<String>.of(selectedValues);
     if (multiple) {
@@ -86,7 +94,7 @@ class SldsFilterDropdown extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        const figmaReferenceWidth = 280.0;
+        const figmaReferenceWidth = 250.0;
         final requestedWidth =
             width ??
             (constraints.hasBoundedWidth
@@ -96,7 +104,7 @@ class SldsFilterDropdown extends StatelessWidget {
             ? requestedWidth.clamp(0.0, constraints.maxWidth)
             : requestedWidth;
 
-        return Container(
+        final panel = Container(
           width: resolvedWidth,
           decoration: BoxDecoration(
             color: colors.surfaceCard,
@@ -147,7 +155,7 @@ class SldsFilterDropdown extends StatelessWidget {
                                   size: SldsRadioSize.small,
                                   onChanged: (_) => _toggle(option),
                                 ),
-                              SizedBox(width: dimensions.space12),
+                              SizedBox(width: dimensions.space8),
                               Expanded(
                                 child: Text(
                                   option,
@@ -166,26 +174,37 @@ class SldsFilterDropdown extends StatelessWidget {
               ),
               Divider(height: 1, color: colors.borderDefault),
               Padding(
-                padding: EdgeInsets.all(dimensions.space12),
+                padding: EdgeInsets.only(
+                  left: dimensions.space32,
+                  right: dimensions.space12,
+                  top: dimensions.space12,
+                  bottom: dimensions.space12,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // Flexible, not a bare SldsButton: at 200% text scale a
-                    // longer localized Cancel/Apply label (§6) can exceed
-                    // the space two unconstrained buttons leave in a narrow
-                    // panel, overflowing this Row.
+                    // Flexible, not a bare fixed-width SldsButton: at 200%
+                    // text scale a longer localized Cancel/Apply label (§6)
+                    // can exceed the 100px Figma spec width, overflowing
+                    // this Row — Flexible lets it grow past spec instead.
                     Flexible(
-                      child: SldsButton(
-                        label: cancelText ?? context.sldsStrings.cancel,
-                        onPressed: onCancel,
-                        variant: SldsButtonVariant.text,
+                      child: SizedBox(
+                        width: 100,
+                        child: SldsButton(
+                          label: cancelText ?? context.sldsStrings.cancel,
+                          onPressed: onCancel,
+                          variant: SldsButtonVariant.text,
+                        ),
                       ),
                     ),
                     SizedBox(width: dimensions.space8),
                     Flexible(
-                      child: SldsButton(
-                        label: applyText ?? context.sldsStrings.apply,
-                        onPressed: () => onApply?.call(selectedValues),
+                      child: SizedBox(
+                        width: 100,
+                        child: SldsButton(
+                          label: applyText ?? context.sldsStrings.apply,
+                          onPressed: () => onApply?.call(selectedValues),
+                        ),
                       ),
                     ),
                   ],
@@ -193,6 +212,28 @@ class SldsFilterDropdown extends StatelessWidget {
               ),
             ],
           ),
+        );
+
+        if (onClose == null) return panel;
+
+        // Figma pins the × 1px outside the top-right corner, overlapping
+        // the border — a Stack lets it sit above the rounded panel instead
+        // of pushing the header content down.
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            panel,
+            Positioned(
+              top: -1,
+              right: -1,
+              child: SldsIconButton(
+                icon: Icons.close,
+                variant: SldsButtonVariant.text,
+                tooltip: context.sldsStrings.close,
+                onPressed: onClose,
+              ),
+            ),
+          ],
         );
       },
     );

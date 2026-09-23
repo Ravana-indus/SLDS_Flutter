@@ -49,7 +49,7 @@ class _FilterDropdownDemoState extends State<_FilterDropdownDemo> {
         Text('Applied: ${_applied.isEmpty ? '(none)' : _applied.join(', ')}'),
         const SizedBox(height: 12),
         SizedBox(
-          width: 280,
+          width: 250,
           child: SldsFilterDropdown(
             options: _options,
             selectedValues: _pending,
@@ -57,6 +57,7 @@ class _FilterDropdownDemoState extends State<_FilterDropdownDemo> {
             onSelectionChanged: (v) => setState(() => _pending = v),
             onApply: (v) => setState(() => _applied = v),
             onCancel: () => setState(() => _pending = _applied),
+            onClose: () => setState(() => _pending = _applied),
           ),
         ),
       ],

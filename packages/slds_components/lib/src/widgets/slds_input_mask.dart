@@ -242,10 +242,11 @@ class _SldsInputMaskState extends State<SldsInputMask> {
         : error
         ? colors.error
         : colors.inputHelper;
-    // Boxier corners than SldsInput's pill-ish radius2xl — matches the
-    // reference's segmented-cell look (radiusLg is Figma's compact-field
-    // radius).
-    final radius = dimensions.radiusLg;
+    // Same radius2xl (12px) as SldsInput — confirmed against the Figma
+    // source (node 877:3628: rounded-[var(--radius-2xl,12px)]). The
+    // segmented-cell look comes from the divider borders between cells,
+    // not a tighter outer corner.
+    final radius = dimensions.radius2xl;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -289,9 +290,11 @@ class _SldsInputMaskState extends State<SldsInputMask> {
               Container(
                 height: dimensions.inputHeight,
                 decoration: BoxDecoration(
-                  color: disabled
-                      ? colors.disabledBackground
-                      : colors.surfaceCard,
+                  // Figma's disabled variant (node 877:3771) keeps the same
+                  // white input/background as every other state — only the
+                  // border and text dim. A flat grey fill (disabledBackground)
+                  // doesn't match the reference for this component.
+                  color: colors.surfaceCard,
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(radius),
                 ),

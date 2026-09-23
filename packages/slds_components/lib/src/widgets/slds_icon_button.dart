@@ -269,10 +269,33 @@ class _SldsIconButtonState extends State<SldsIconButton> {
     // tap area around the painted box instead of by inflating it.
     final target = context.slds.dimensions.tapTargetMin;
     if (metrics.box >= target) return ringed;
-    return SizedBox(
-      width: target,
-      height: target,
-      child: Center(child: ringed),
+    return MergeSemantics(
+      child: SizedBox(
+        width: target,
+        height: target,
+        // A plain SizedBox has no semantics of its own, so without this
+        // filler the accessibility tree still reports IconButton's small
+        // inner geometry, not this box's real 48x48 — invisible to a
+        // sighted user (the hit area genuinely is 48px), but exactly what
+        // an automated WCAG 2.5.8 tap-target scan reads, and it read
+        // wrong. A bare Semantics(container: true) gives this box its own
+        // (empty) node at the full 48x48 rect; IgnorePointer keeps it out
+        // of the button's own tap handling; MergeSemantics then folds it
+        // and the button's node together into one sized to their union.
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Semantics(
+                  container: true,
+                  child: const SizedBox(),
+                ),
+              ),
+            ),
+            Center(child: ringed),
+          ],
+        ),
+      ),
     );
   }
 }

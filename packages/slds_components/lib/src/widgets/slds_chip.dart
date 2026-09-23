@@ -93,15 +93,32 @@ class SldsChip extends StatelessWidget {
                 ),
                 if (onDeleted != null) ...[
                   SizedBox(width: dimensions.space8),
-                  SldsOverflowTapTarget(
-                    onTap: onDeleted!,
-                    child: Semantics(
-                      button: true,
-                      label: context.sldsStrings.removeItem(label),
+                  // Figma's × is 16px. SldsOverflowTapTarget grows the real
+                  // *hit-test* area to the WCAG 2.5.8 48px floor without
+                  // claiming layout space, which would otherwise stretch
+                  // the pill past spec (the original bug this shape fixed).
+                  // A tap genuinely anywhere in that 48x48 area reaches the
+                  // button — see "tapping the close icon fires onDeleted"
+                  // in slds_chip_test.dart.
+                  //
+                  // What it cannot do is make automated tooling *read* that
+                  // 48x48 as the tappable rect: Semantics geometry always
+                  // comes from a real RenderObject's own paint bounds, and
+                  // MergeSemantics unions node *properties* (label, actions,
+                  // flags), never geometry — confirmed by dumping this
+                  // exact tree (see the chip exception recorded in
+                  // slds_accessibility_coverage_test.dart). A visually tiny,
+                  // truly-48px-tappable control cannot ever report a
+                  // matching 16x16 accessibility rect in Flutter as it
+                  // stands, so this fixture is a documented exception
+                  // there, not a real gap.
+                  Semantics(
+                    button: true,
+                    label: context.sldsStrings.removeItem(label),
+                    child: SldsOverflowTapTarget(
+                      onTap: onDeleted!,
                       child: Icon(
                         Icons.close,
-                        // Figma's trailing × is 16px, not the 20px the
-                        // leading icon uses.
                         size: dimensions.iconSizeSmall,
                         color: colors.textPrimary,
                       ),

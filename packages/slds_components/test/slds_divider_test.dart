@@ -33,4 +33,27 @@ void main() {
     );
     expect(tester.getSize(find.byType(SldsDivider)).width, 300);
   });
+
+  testWidgets('withButton builds a ghost, Small-scale + button and wires '
+      'the tap', (tester) async {
+    var tapped = false;
+    await pump(
+      tester,
+      SldsDivider.withButton(
+        buttonLabel: 'Add item',
+        onButtonPressed: () => tapped = true,
+      ),
+    );
+
+    expect(find.byType(Divider), findsNWidgets(2));
+    expect(find.text('Add item'), findsOneWidget);
+    expect(find.byIcon(Icons.add), findsOneWidget);
+
+    final button = tester.widget<SldsButton>(find.byType(SldsButton));
+    expect(button.variant, SldsButtonVariant.tertiary);
+    expect(button.size, SldsButtonSize.small);
+
+    await tester.tap(find.byType(SldsButton));
+    expect(tapped, isTrue);
+  });
 }

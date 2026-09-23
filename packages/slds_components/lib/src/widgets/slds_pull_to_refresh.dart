@@ -86,53 +86,41 @@ class SldsPullToRefresh extends StatelessWidget {
                   return const SizedBox.shrink();
                 }
 
+                // Figma's "State=Loading" (342:826) is a flat, full-bleed
+                // bar on surface/sunken — no margin, border or rounding.
+                // Those all read as a floating card, which is a different
+                // component (a toast); this one sits flush edge to edge.
                 return Align(
                   alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: tokens.dimensions.space16,
-                      vertical: tokens.dimensions.space8,
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        vertical: tokens.dimensions.space12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: dark
-                            ? colors.surfaceInverse.withValues(alpha: 0.85)
-                            : colors.surfaceCard,
-                        borderRadius: BorderRadius.circular(
-                          tokens.dimensions.radius2xl,
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(tokens.dimensions.space16),
+                    color: dark
+                        ? colors.surfaceInverse.withValues(alpha: 0.85)
+                        : colors.surfaceSunken,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: tokens.dimensions.iconSizeLarge,
+                          height: tokens.dimensions.iconSizeLarge,
+                          child: CupertinoActivityIndicator(
+                            color: dark
+                                ? colors.textInverse
+                                : colors.textSecondary,
+                          ),
                         ),
-                        border: dark
-                            ? null
-                            : Border.all(color: colors.borderDefault),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CupertinoActivityIndicator(
-                              color: dark
-                                  ? colors.textInverse
-                                  : colors.textSecondary,
-                            ),
+                        SizedBox(width: tokens.dimensions.space4),
+                        Text(
+                          loadingText ?? context.sldsStrings.loadingEllipsis,
+                          style: tokens.typography.body1.copyWith(
+                            color: dark
+                                ? colors.textInverse
+                                : colors.textSecondary,
                           ),
-                          SizedBox(width: tokens.dimensions.space8),
-                          Text(
-                            loadingText ?? context.sldsStrings.loadingEllipsis,
-                            style: tokens.typography.body2.copyWith(
-                              color: dark
-                                  ? colors.textInverse
-                                  : colors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );

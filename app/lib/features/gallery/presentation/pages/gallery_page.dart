@@ -130,6 +130,7 @@ var _toggled = true;
 var _radio = 'a';
 var _range = 40.0;
 var _tab = 0;
+var _tabDark = 0;
 var _nav = 0;
 var _chips = <String>['Colombo'];
 var _filters = <String>['Open'];
@@ -169,10 +170,7 @@ final _sections = <(String, Widget)>[
       ],
     ),
   ),
-  (
-    'SldsFab',
-    SldsFab(icon: Icons.add, onPressed: () {}),
-  ),
+  ('SldsFab', SldsFab(icon: Icons.add, onPressed: () {})),
   (
     'SldsCheckButton',
     _Stateful(
@@ -292,10 +290,7 @@ final _sections = <(String, Widget)>[
   // adding a flag-icon package for one demo.
   (
     'SldsMobileNumberInput',
-    const SldsMobileNumberInput(
-      label: 'Mobile',
-      countryFlag: _LkFlagSwatch(),
-    ),
+    const SldsMobileNumberInput(label: 'Mobile', countryFlag: _LkFlagSwatch()),
   ),
   (
     // SldsOtpInput boxes are fixed-size, not stretchy (large is 56x80).
@@ -545,15 +540,37 @@ final _sections = <(String, Widget)>[
   (
     'SldsTabStrip',
     _Stateful(
-      (context, setState) => SldsTabStrip(
-        currentIndex: _tab,
-        onTap: (i) => setState(() => _tab = i),
-        items: const [
-          SldsTabStripItem(label: 'All'),
-          SldsTabStripItem(label: 'Open', count: 3),
-          SldsTabStripItem(label: 'Closed'),
-        ],
-      ),
+      (context, setState) {
+        const figmaItems = [
+          SldsTabStripItem(label: 'Label', count: 2),
+          SldsTabStripItem(label: 'Label', leadingIcon: true),
+          SldsTabStripItem(label: 'Label', trailingIcon: true),
+          SldsTabStripItem(label: 'Label', leadingIcon: true, count: 2),
+        ];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SldsTabStrip(
+                currentIndex: _tab,
+                onTap: (i) => setState(() => _tab = i),
+                items: figmaItems,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SldsTabStrip(
+                style: SldsTabStripStyle.dark,
+                currentIndex: _tabDark,
+                onTap: (i) => setState(() => _tabDark = i),
+                items: figmaItems,
+              ),
+            ),
+          ],
+        );
+      },
     ),
   ),
   (
@@ -608,6 +625,18 @@ final _sections = <(String, Widget)>[
           label: 'With avatar',
           avatar: SldsAvatar(initials: 'LK', size: SldsAvatarSize.small),
         ),
+      ],
+    ),
+  ),
+  (
+    'SldsDivider',
+    Column(
+      children: [
+        const SldsDivider(),
+        const SizedBox(height: 24),
+        const SldsDivider(child: Text('or')),
+        const SizedBox(height: 24),
+        SldsDivider.withButton(buttonLabel: 'Button', onButtonPressed: () {}),
       ],
     ),
   ),

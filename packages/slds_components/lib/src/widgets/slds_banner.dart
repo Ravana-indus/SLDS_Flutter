@@ -4,7 +4,6 @@ import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 import 'package:slds_components/src/widgets/slds_icon_button.dart';
-import 'package:slds_components/src/widgets/slds_link_button.dart';
 
 /// Severity of an [SldsBanner] — drives the icon, the border and the tinted
 /// background as one set.
@@ -131,9 +130,10 @@ class SldsBanner extends StatelessWidget {
           _textWidth(context, actionLabel!, tokens.typography.body1) +
           d.space4 * 2;
     }
-    // Figma's dismiss (459:3194) is the Small icon-button scale (28px),
-    // not Large (48px) — this banner is a compact inline card, not a form.
-    if (onDismiss != null) width += d.buttonHeightSmall;
+    // Figma's dismiss (459:3194) paints at the Small icon-button scale
+    // (28px), but SldsIconButton itself reserves the WCAG 2.5.8 floor
+    // around anything below it, so that's the real width this row claims.
+    if (onDismiss != null) width += d.tapTargetMin;
     return width;
   }
 
@@ -250,8 +250,22 @@ class SldsBanner extends StatelessWidget {
                 // Figma's "Action" (LinkButton, node 248:2292) is a plain
                 // underlined link, not a button — SldsButton's chrome (a
                 // filled/outlined box) was visually far heavier than spec.
+                //
+                // Not SldsLinkButton: its default grey (colors.linkLabel) is
+                // tuned for AA on the plain page background, and only
+                // clears 4.2:1 / 4.3:1 on the success/error tints here —
+                // under WCAG 1.4.3's 4.5:1 floor. messageColor already
+                // carries the right colour per severity (textPrimary, or
+                // the warning-specific dark brown), so the action reuses it
+                // rather than SldsLinkButton reaching for architecture
+                // sign-off to add a colour override this is the only
+                // caller of.
                 if (showAction)
-                  SldsLinkButton(label: actionLabel!, onPressed: onAction),
+                  _BannerActionLink(
+                    label: actionLabel!,
+                    onPressed: onAction,
+                    color: messageColor,
+                  ),
                 if (onDismiss != null)
                   SldsIconButton(
                     icon: Icons.close,
@@ -300,6 +314,52 @@ class SldsBanner extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+/// [SldsBanner]'s inline action — the same underlined-link recipe the
+/// library's own link button uses, but with an explicit [color] rather than
+/// that widget's own token, since the right colour here must track the
+/// banner's severity/tint (see the call site's comment for why).
+class _BannerActionLink extends StatelessWidget {
+  const _BannerActionLink({
+    required this.label,
+    required this.onPressed,
+    required this.color,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.slds;
+
+    return TextButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        padding: WidgetStatePropertyAll(
+          EdgeInsetsDirectional.symmetric(horizontal: tokens.dimensions.space4),
+        ),
+        // Height, not width: a link is as wide as its text, but must still
+        // be tall enough to hit. Material's own tapTargetSize is left in
+        // place rather than shrink-wrapped away.
+        minimumSize: WidgetStatePropertyAll(
+          Size(0, tokens.dimensions.tapTargetMin),
+        ),
+        // Figma gives a link no surface in any state, so Material's state
+        // layer is suppressed and the feedback lives in the label colour.
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        textStyle: WidgetStatePropertyAll(tokens.typography.body1),
+        foregroundColor: WidgetStatePropertyAll(color),
+      ),
+      child: Text(
+        label,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(decoration: TextDecoration.underline),
       ),
     );
   }

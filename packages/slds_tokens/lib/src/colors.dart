@@ -122,7 +122,6 @@ class SldsRawColorTokens {
   ///   focusRingError     0xfff47272 -> 0xffe86666  (2.80 -> 3.00 on page)
   ///   textSecondary      0xff898989 -> 0xff717171  (3.27 -> 4.56 on page)
   ///   inputHelper        0xff898989 -> 0xff717171  (3.50 -> 4.56 on card)
-  ///   linkLabel          0xff898989 -> 0xff717171  (3.27 -> 4.56 on page)
   ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
   ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
   ///   badge *Text (x7)                             (2.42-4.35 -> >=4.50)
@@ -215,7 +214,7 @@ class SldsRawColorTokens {
     buttonGhostLabel: 0xff222222,
     buttonGhostHover: 0xffeeeeee,
     buttonGhostPressed: 0xffffffff,
-    linkLabel: 0xff717171,
+    linkLabel: 0xff676767,
     linkLabelHover: 0xff222222,
     linkDestructiveLabel: 0xffd32f2f,
     linkDestructiveLabelHover: 0xffb91c1c,
@@ -340,7 +339,7 @@ class SldsRawColorTokens {
     buttonGhostLabel: 0xffffffff,
     buttonGhostHover: 0xff444444,
     buttonGhostPressed: 0xff222222,
-    linkLabel: 0xffbcbcbc,
+    linkLabel: 0xffcdcdcd,
     linkLabelHover: 0xffffffff,
     linkDestructiveLabel: 0xfffca5a5,
     // Brighter, not darker. Figma pairs its rest colour with a #b91c1c

@@ -180,6 +180,9 @@ SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel
 - `SldsFab` showed Material's ripple, translucent hover tint and hover/press
   elevation lift. It now uses the Figma hover and pressed background tokens
   (the same ones `SldsButton` uses), with no ripple and a constant shadow.
+- `SldsLinkButton` primary label colour follows Figma's updated
+  `Text/Secondary`: `#676767` light (was `#717171`), `#CDCDCD` dark (was
+  `#BCBCBC`). Both clear WCAG AA (5.28:1 and 11.88:1 on the page).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

@@ -539,39 +539,37 @@ final _sections = <(String, Widget)>[
   ),
   (
     'SldsTabStrip',
-    _Stateful(
-      (context, setState) {
-        const figmaItems = [
-          SldsTabStripItem(label: 'Label', count: 2),
-          SldsTabStripItem(label: 'Label', leadingIcon: true),
-          SldsTabStripItem(label: 'Label', trailingIcon: true),
-          SldsTabStripItem(label: 'Label', leadingIcon: true, count: 2),
-        ];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SldsTabStrip(
-                currentIndex: _tab,
-                onTap: (i) => setState(() => _tab = i),
-                items: figmaItems,
-              ),
+    _Stateful((context, setState) {
+      const figmaItems = [
+        SldsTabStripItem(label: 'Label', count: 2),
+        SldsTabStripItem(label: 'Label', leadingIcon: true),
+        SldsTabStripItem(label: 'Label', trailingIcon: true),
+        SldsTabStripItem(label: 'Label', leadingIcon: true, count: 2),
+      ];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SldsTabStrip(
+              currentIndex: _tab,
+              onTap: (i) => setState(() => _tab = i),
+              items: figmaItems,
             ),
-            const SizedBox(height: 16),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SldsTabStrip(
-                style: SldsTabStripStyle.dark,
-                currentIndex: _tabDark,
-                onTap: (i) => setState(() => _tabDark = i),
-                items: figmaItems,
-              ),
+          ),
+          const SizedBox(height: 16),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SldsTabStrip(
+              style: SldsTabStripStyle.dark,
+              currentIndex: _tabDark,
+              onTap: (i) => setState(() => _tabDark = i),
+              items: figmaItems,
             ),
-          ],
-        );
-      },
-    ),
+          ),
+        ],
+      );
+    }),
   ),
   (
     'SldsBottomNav',

@@ -47,14 +47,67 @@ Widget buildSldsButtonUseCase(BuildContext context) {
     initialValue: false,
   );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
-
-  return SldsButton(
-    label: label,
-    variant: variant,
-    size: size,
-    isLoading: isLoading,
-    leadingIcon: showLeadingIcon ? Icons.chevron_left : null,
-    trailingIcon: showTrailingIcon ? Icons.chevron_right : null,
-    onPressed: isEnabled ? () {} : null,
+  // Flutter buttons take focus from the keyboard, not from a click, and
+  // tabbing to the canvas means tabbing through the whole Widgetbook UI
+  // first — so this knob moves focus onto the button directly.
+  final isFocused = context.knobs.boolean(
+    label: 'Focused',
+    initialValue: false,
   );
+
+  return _FocusedButton(
+    focused: isFocused,
+    builder: (focusNode) => SldsButton(
+      focusNode: focusNode,
+      label: label,
+      variant: variant,
+      size: size,
+      isLoading: isLoading,
+      leadingIcon: showLeadingIcon ? Icons.chevron_left : null,
+      trailingIcon: showTrailingIcon ? Icons.chevron_right : null,
+      onPressed: isEnabled ? () {} : null,
+    ),
+  );
+}
+
+/// Owns the button's [FocusNode] and keeps its focus in step with [focused].
+class _FocusedButton extends StatefulWidget {
+  const _FocusedButton({required this.focused, required this.builder});
+
+  final bool focused;
+  final Widget Function(FocusNode focusNode) builder;
+
+  @override
+  State<_FocusedButton> createState() => _FocusedButtonState();
+}
+
+class _FocusedButtonState extends State<_FocusedButton> {
+  final _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _sync();
+  }
+
+  @override
+  void didUpdateWidget(_FocusedButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.focused != widget.focused) _sync();
+  }
+
+  // After the frame, so the node is attached to the button before focusing.
+  void _sync() => WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!mounted) return;
+    widget.focused ? _focusNode.requestFocus() : _focusNode.unfocus();
+  });
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(_focusNode);
 }

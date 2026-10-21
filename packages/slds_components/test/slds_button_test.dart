@@ -434,4 +434,26 @@ void main() {
 
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('focusNode moves focus to the button and shows the ring', (
+    tester,
+  ) async {
+    final focusNode = FocusNode();
+    addTearDown(focusNode.dispose);
+    await pump(
+      tester,
+      SldsButton(label: 'Continue', focusNode: focusNode, onPressed: () {}),
+    );
+    bool ringShown() =>
+        tester.widget<SldsFocusRing>(find.byType(SldsFocusRing)).focused;
+    expect(ringShown(), isFalse);
+
+    focusNode.requestFocus();
+    await tester.pump();
+    expect(ringShown(), isTrue);
+
+    focusNode.unfocus();
+    await tester.pumpAndSettle();
+    expect(ringShown(), isFalse);
+  });
 }

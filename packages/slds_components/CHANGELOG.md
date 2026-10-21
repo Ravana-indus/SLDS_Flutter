@@ -119,6 +119,9 @@ SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel
   exception at runtime (§7).
 - `SldsFocusRing` widget and an exported `sldsFocusRing`, so controls do not
   each reimplement WCAG 2.2 Focus Appearance.
+- `SldsButton.focusNode`, to move keyboard focus to a button
+  programmatically. The Widgetbook playground's new **Focused** knob uses it
+  to show the Focus state.
 - Library strings `close`, `retry`, `error`, `dismiss` and the plural
   `unreadCount`, in en/si/ta. Previously only `loading` existed (§6).
 - Golden test harness and matrix: variant × theme × text scale, plus si/ta at

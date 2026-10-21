@@ -156,6 +156,7 @@ class SldsButton extends StatefulWidget {
     this.leadingIcon,
     this.trailingIcon,
     this.isLoading = false,
+    this.focusNode,
   });
 
   /// The button's text label.
@@ -190,6 +191,10 @@ class SldsButton extends StatefulWidget {
   /// The label stays visible and the trailing icon is hidden, per the Figma
   /// loading variants. The button is non-interactive while this is true.
   final bool isLoading;
+
+  /// Optional focus node, to move keyboard focus to the button
+  /// programmatically (e.g. the default action of a form step).
+  final FocusNode? focusNode;
 
   @override
   State<SldsButton> createState() => _SldsButtonState();
@@ -353,18 +358,21 @@ class _SldsButtonState extends State<SldsButton> {
       SldsButtonVariant.destructive => FilledButton(
         onPressed: _enabled ? widget.onPressed : null,
         onFocusChange: _handleFocusChange,
+        focusNode: widget.focusNode,
         style: style,
         child: content,
       ),
       SldsButtonVariant.secondary => OutlinedButton(
         onPressed: _enabled ? widget.onPressed : null,
         onFocusChange: _handleFocusChange,
+        focusNode: widget.focusNode,
         style: style,
         child: content,
       ),
       SldsButtonVariant.ghost => TextButton(
         onPressed: _enabled ? widget.onPressed : null,
         onFocusChange: _handleFocusChange,
+        focusNode: widget.focusNode,
         style: style,
         child: content,
       ),

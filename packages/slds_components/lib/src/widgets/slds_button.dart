@@ -265,6 +265,11 @@ class _SldsButtonState extends State<SldsButton> {
     required _SldsButtonMetrics metrics,
     required double minWidth,
   }) {
+    // Loading nulls onPressed to block taps, which Material reports as
+    // disabled — but the Figma loading variants keep their resting colours,
+    // so the disabled state is dropped before the colours resolve.
+    Set<WidgetState> visual(Set<WidgetState> states) =>
+        widget.isLoading ? states.difference({WidgetState.disabled}) : states;
     return ButtonStyle(
       padding: WidgetStatePropertyAll(metrics.padding),
       textStyle: WidgetStatePropertyAll(metrics.textStyle),
@@ -274,16 +279,16 @@ class _SldsButtonState extends State<SldsButton> {
         ),
       ),
       backgroundColor: WidgetStateProperty.resolveWith(
-        (states) => _background(context, states),
+        (states) => _background(context, visual(states)),
       ),
       foregroundColor: WidgetStateProperty.resolveWith(
         (states) => _foreground(
           context,
-          selected: !states.contains(WidgetState.disabled),
+          selected: !visual(states).contains(WidgetState.disabled),
         ),
       ),
       side: WidgetStateProperty.resolveWith(
-        (states) => _border(context, states),
+        (states) => _border(context, visual(states)),
       ),
       // The per-state backgrounds in [_background] already carry hover, focus
       // and pressed feedback, so Material's own state layer is suppressed

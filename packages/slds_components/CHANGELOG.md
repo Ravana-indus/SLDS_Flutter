@@ -171,6 +171,10 @@ SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel
   cancel and a confirm button were present.
 - `SldsFab` accepted the full `SldsButtonVariant` enum but rendered
   `tertiary` and `text` as a filled primary; it now asserts on them.
+- `SldsButton`'s loading state rendered in the grey disabled colours for
+  every variant (most visibly Destructive, which lost its red). Loading
+  blocks taps by nulling `onPressed`, which Material reports as disabled;
+  the Figma loading variants keep their resting colours, so it now does too.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

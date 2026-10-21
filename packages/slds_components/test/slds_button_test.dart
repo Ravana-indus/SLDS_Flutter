@@ -80,6 +80,32 @@ void main() {
     expect(tapped, isFalse);
   });
 
+  testWidgets('loading keeps the variant colours, not the disabled ones', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsButton(
+        label: 'Delete',
+        variant: SldsButtonVariant.destructive,
+        isLoading: true,
+        onPressed: () {},
+      ),
+    );
+    final style = tester.widget<FilledButton>(find.byType(FilledButton)).style!;
+    final colors = SldsColorTokens.light();
+    // Material reports the loading button as disabled, since taps are blocked.
+    const states = {WidgetState.disabled};
+    expect(
+      style.backgroundColor!.resolve(states),
+      colors.buttonDestructiveBackground,
+    );
+    expect(
+      style.foregroundColor!.resolve(states),
+      colors.buttonDestructiveLabel,
+    );
+  });
+
   testWidgets('null onPressed disables the button', (tester) async {
     await pump(tester, const SldsButton(label: 'Continue', onPressed: null));
     final button = tester.widget<FilledButton>(find.byType(FilledButton));

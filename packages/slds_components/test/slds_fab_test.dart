@@ -74,4 +74,45 @@ void main() {
     );
     expect(fab.onPressed, isNull);
   });
+
+  testWidgets('hover and press use the Figma tokens, with no ripple', (
+    tester,
+  ) async {
+    final colors = SldsColorTokens.light();
+    final expected = {
+      SldsButtonVariant.primary: (
+        colors.buttonPrimaryHover,
+        colors.buttonPrimaryPressed,
+      ),
+      SldsButtonVariant.secondary: (
+        colors.buttonSecondaryHover,
+        colors.buttonSecondaryPressed,
+      ),
+      SldsButtonVariant.destructive: (
+        colors.buttonDestructiveHover,
+        colors.buttonDestructivePressed,
+      ),
+    };
+    for (final MapEntry(key: variant, value: (hover, pressed))
+        in expected.entries) {
+      await pump(
+        tester,
+        SldsFab(icon: Icons.add, variant: variant, onPressed: () {}),
+      );
+      final fab = tester.widget<FloatingActionButton>(
+        find.byType(FloatingActionButton),
+      );
+      expect(fab.hoverColor, hover, reason: '$variant hover');
+      expect(fab.splashColor, Colors.transparent, reason: '$variant ripple');
+      expect(fab.hoverElevation, fab.elevation, reason: '$variant lift');
+      expect(fab.highlightElevation, fab.elevation, reason: '$variant lift');
+      expect(
+        Theme.of(
+          tester.element(find.byType(FloatingActionButton)),
+        ).highlightColor,
+        pressed,
+        reason: '$variant pressed',
+      );
+    }
+  });
 }

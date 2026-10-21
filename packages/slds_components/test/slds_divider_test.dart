@@ -50,7 +50,7 @@ void main() {
     expect(find.byIcon(Icons.add), findsOneWidget);
 
     final button = tester.widget<SldsButton>(find.byType(SldsButton));
-    expect(button.variant, SldsButtonVariant.tertiary);
+    expect(button.variant, SldsButtonVariant.ghost);
     expect(button.size, SldsButtonSize.small);
 
     await tester.tap(find.byType(SldsButton));

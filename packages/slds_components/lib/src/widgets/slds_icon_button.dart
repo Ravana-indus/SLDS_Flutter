@@ -145,8 +145,7 @@ class _SldsIconButtonState extends State<SldsIconButton> {
 
     // Ghost variants are transparent at rest; their feedback comes from the
     // ghost overlay tokens.
-    if (variant == SldsButtonVariant.text ||
-        variant == SldsButtonVariant.tertiary) {
+    if (variant == SldsButtonVariant.ghost) {
       if (states.contains(WidgetState.disabled)) return null;
       if (states.contains(WidgetState.pressed)) {
         return colors.buttonGhostPressed;
@@ -188,8 +187,7 @@ class _SldsIconButtonState extends State<SldsIconButton> {
     return switch (variant) {
       SldsButtonVariant.destructive => colors.buttonDestructiveLabel,
       SldsButtonVariant.secondary => colors.buttonSecondaryLabel,
-      SldsButtonVariant.tertiary ||
-      SldsButtonVariant.text => colors.buttonGhostLabel,
+      SldsButtonVariant.ghost => colors.buttonGhostLabel,
       SldsButtonVariant.primary => colors.buttonPrimaryLabel,
     };
   }

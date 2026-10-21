@@ -193,7 +193,7 @@ class SldsFilterDropdown extends StatelessWidget {
                         child: SldsButton(
                           label: cancelText ?? context.sldsStrings.cancel,
                           onPressed: onCancel,
-                          variant: SldsButtonVariant.text,
+                          variant: SldsButtonVariant.ghost,
                           size: SldsButtonSize.small,
                         ),
                       ),
@@ -230,7 +230,7 @@ class SldsFilterDropdown extends StatelessWidget {
               right: -1,
               child: SldsIconButton(
                 icon: Icons.close,
-                variant: SldsButtonVariant.text,
+                variant: SldsButtonVariant.ghost,
                 tooltip: context.sldsStrings.close,
                 onPressed: onClose,
               ),

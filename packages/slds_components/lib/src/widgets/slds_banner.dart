@@ -270,7 +270,7 @@ class SldsBanner extends StatelessWidget {
                   SldsIconButton(
                     icon: Icons.close,
                     onPressed: onDismiss,
-                    variant: SldsButtonVariant.text,
+                    variant: SldsButtonVariant.ghost,
                     size: SldsButtonSize.small,
                     tooltip: context.sldsStrings.close,
                   ),

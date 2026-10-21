@@ -87,6 +87,20 @@ SldsDatePicker(rangeColor: const Color(0xFFFFF7D6), onApply: _apply)
 SldsDatePicker(onApply: _apply)
 ```
 
+**`SldsButtonVariant.tertiary` and `.text` are replaced by `.ghost`**, to
+match the Figma Button set (Primary / Secondary / Ghost / Destructive).
+Ghost is borderless and transparent at rest — what `text` already rendered,
+pixel for pixel. `tertiary` drew a border Figma never specified, so
+`SldsDivider.withButton` (now ghost) loses that stray border.
+
+```dart
+// Before
+SldsButton(label: 'Cancel', variant: SldsButtonVariant.text, onPressed: _cancel)
+
+// After
+SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel)
+```
+
 ### Added
 
 - `SldsBanner` and `SldsBannerSeverity` (success/warning/error/info) — the

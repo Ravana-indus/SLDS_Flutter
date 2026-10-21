@@ -30,7 +30,7 @@ void main() {
     expect(find.byType(FilledButton), findsOneWidget);
   });
 
-  testWidgets('secondary and tertiary variants render as outlined buttons', (
+  testWidgets('secondary variant renders as an outlined button', (
     tester,
   ) async {
     await pump(
@@ -44,16 +44,20 @@ void main() {
     expect(find.byType(OutlinedButton), findsOneWidget);
   });
 
-  testWidgets('text variant renders as a text button', (tester) async {
+  testWidgets('ghost variant renders as a borderless text button', (
+    tester,
+  ) async {
     await pump(
       tester,
       SldsButton(
         label: 'Continue',
-        variant: SldsButtonVariant.text,
+        variant: SldsButtonVariant.ghost,
         onPressed: () {},
       ),
     );
     expect(find.byType(TextButton), findsOneWidget);
+    final style = tester.widget<TextButton>(find.byType(TextButton)).style!;
+    expect(style.side!.resolve({}), isNull);
   });
 
   testWidgets('loading state shows a spinner and blocks taps', (tester) async {
@@ -121,30 +125,40 @@ void main() {
     );
   });
 
-  for (final variant in [
-    SldsButtonVariant.secondary,
-    SldsButtonVariant.tertiary,
-  ]) {
-    testWidgets('$variant resting background comes from its token', (
+  testWidgets('secondary resting background comes from its token', (
+    tester,
+  ) async {
+    await pump(
       tester,
-    ) async {
-      await pump(
-        tester,
-        SldsButton(label: 'Continue', variant: variant, onPressed: () {}),
-      );
-      final style = tester
-          .widget<OutlinedButton>(find.byType(OutlinedButton))
-          .style!;
-      // Tertiary is a ghost variant — transparent at rest. Secondary carries
-      // its own designed fill rather than borrowing a surface tone.
-      expect(
-        style.backgroundColor!.resolve({}),
-        variant == SldsButtonVariant.tertiary
-            ? isNull
-            : SldsColorTokens.light().buttonSecondaryBackground,
-      );
-    });
+      SldsButton(
+        label: 'Continue',
+        variant: SldsButtonVariant.secondary,
+        onPressed: () {},
+      ),
+    );
+    final style = tester
+        .widget<OutlinedButton>(find.byType(OutlinedButton))
+        .style!;
+    // Secondary carries its own designed fill rather than borrowing a
+    // surface tone.
+    expect(
+      style.backgroundColor!.resolve({}),
+      SldsColorTokens.light().buttonSecondaryBackground,
+    );
+  });
 
+  for (final (variant, buttonType, label) in [
+    (
+      SldsButtonVariant.secondary,
+      OutlinedButton,
+      SldsColorTokens.dark().buttonSecondaryLabel,
+    ),
+    (
+      SldsButtonVariant.ghost,
+      TextButton,
+      SldsColorTokens.dark().buttonGhostLabel,
+    ),
+  ]) {
     testWidgets('$variant resolves against the dark palette in dark mode', (
       tester,
     ) async {
@@ -163,14 +177,9 @@ void main() {
         ),
       );
       final style = tester
-          .widget<OutlinedButton>(find.byType(OutlinedButton))
+          .widget<ButtonStyleButton>(find.byType(buttonType))
           .style!;
-      expect(
-        style.foregroundColor!.resolve({}),
-        variant == SldsButtonVariant.tertiary
-            ? SldsColorTokens.dark().buttonGhostLabel
-            : SldsColorTokens.dark().buttonSecondaryLabel,
-      );
+      expect(style.foregroundColor!.resolve({}), label);
     });
   }
 
@@ -415,7 +424,7 @@ void main() {
           SldsButton(
             label: 'Cancel',
             onPressed: () {},
-            variant: SldsButtonVariant.text,
+            variant: SldsButtonVariant.ghost,
           ),
           const SizedBox(width: 8),
           SldsButton(label: 'Apply', onPressed: () {}),

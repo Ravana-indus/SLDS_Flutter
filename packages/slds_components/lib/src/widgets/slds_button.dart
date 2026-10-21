@@ -13,11 +13,8 @@ enum SldsButtonVariant {
   /// Outlined, paired with primary.
   secondary,
 
-  /// Outlined, low-emphasis / ghost.
-  tertiary,
-
-  /// No border, no background.
-  text,
+  /// Low emphasis: no border, transparent at rest.
+  ghost,
 
   /// Filled, for delete/reject actions.
   destructive,
@@ -131,7 +128,7 @@ class _SldsButtonMetrics {
   final TextStyle textStyle;
 }
 
-/// SLDS action button — covers the Primary / Secondary / Tertiary / Text /
+/// SLDS action button — covers the Primary / Secondary / Ghost /
 /// Destructive variants, with hover, focus, and pressed states handled
 /// natively via [WidgetStateProperty], plus an explicit loading state
 /// (Flutter buttons have no built-in equivalent).
@@ -359,14 +356,13 @@ class _SldsButtonState extends State<SldsButton> {
         style: style,
         child: content,
       ),
-      SldsButtonVariant.secondary ||
-      SldsButtonVariant.tertiary => OutlinedButton(
+      SldsButtonVariant.secondary => OutlinedButton(
         onPressed: _enabled ? widget.onPressed : null,
         onFocusChange: _handleFocusChange,
         style: style,
         child: content,
       ),
-      SldsButtonVariant.text => TextButton(
+      SldsButtonVariant.ghost => TextButton(
         onPressed: _enabled ? widget.onPressed : null,
         onFocusChange: _handleFocusChange,
         style: style,
@@ -412,10 +408,9 @@ class _SldsButtonState extends State<SldsButton> {
   Color? _background(BuildContext context, Set<WidgetState> states) {
     final colors = context.slds.colors;
 
-    // Text and tertiary are borderless/transparent at rest; their feedback
-    // comes from the ghost overlay tokens.
-    if (variant == SldsButtonVariant.text ||
-        variant == SldsButtonVariant.tertiary) {
+    // Ghost is transparent at rest; its feedback comes from the ghost
+    // overlay tokens.
+    if (variant == SldsButtonVariant.ghost) {
       if (states.contains(WidgetState.disabled)) return null;
       if (states.contains(WidgetState.pressed)) {
         return colors.buttonGhostPressed;
@@ -458,26 +453,18 @@ class _SldsButtonState extends State<SldsButton> {
       SldsButtonVariant.primary => colors.buttonPrimaryLabel,
       SldsButtonVariant.destructive => colors.buttonDestructiveLabel,
       SldsButtonVariant.secondary => colors.buttonSecondaryLabel,
-      SldsButtonVariant.tertiary ||
-      SldsButtonVariant.text => colors.buttonGhostLabel,
+      SldsButtonVariant.ghost => colors.buttonGhostLabel,
     };
   }
 
   BorderSide? _border(BuildContext context, Set<WidgetState> states) {
-    if (variant != SldsButtonVariant.secondary &&
-        variant != SldsButtonVariant.tertiary) {
-      return null;
-    }
+    // Only the secondary variant is outlined — Figma's Ghost has no border.
+    if (variant != SldsButtonVariant.secondary) return null;
     final colors = context.slds.colors;
     final width = context.slds.dimensions.controlBorderWidth;
     if (states.contains(WidgetState.disabled)) {
       return BorderSide(color: colors.disabledBorder, width: width);
     }
-    return BorderSide(
-      color: variant == SldsButtonVariant.tertiary
-          ? colors.borderDefault
-          : colors.buttonSecondaryBorder,
-      width: width,
-    );
+    return BorderSide(color: colors.buttonSecondaryBorder, width: width);
   }
 }

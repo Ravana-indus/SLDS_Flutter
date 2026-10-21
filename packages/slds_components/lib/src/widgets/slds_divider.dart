@@ -35,7 +35,7 @@ class SldsDivider extends StatelessWidget {
     child: SldsButton(
       label: buttonLabel,
       onPressed: onButtonPressed,
-      variant: SldsButtonVariant.tertiary,
+      variant: SldsButtonVariant.ghost,
       size: SldsButtonSize.small,
       leadingIcon: Icons.add,
     ),

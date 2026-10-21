@@ -290,11 +290,6 @@ class SldsRawColorTokens {
   ///                 #F47272 (6.74:1), which is Figma's own Red/300 and the
   ///                 value its Border/Error dark already uses.
   ///   focusRing     0xffffd740 -> 0xffffffff  (invisible -> 18.88 on page)
-  ///   linkDestructiveLabel
-  ///                 Figma Feedback/Error Text #F47272 clears the page
-  ///                 (6.74:1) but is only 3.48:1 on the #444444 card, and an
-  ///                 inline link sits in body copy on either. Held at #FCA5A5
-  ///                 (9.95 page / 5.13 card).
   ///   linkDestructiveLabelHover
   ///                 Figma Feedback/Error Hover #B91C1C is 2.92:1 on the
   ///                 #111111 page — a light-theme value reused unchanged, so
@@ -341,7 +336,9 @@ class SldsRawColorTokens {
     buttonGhostPressed: 0xff222222,
     linkLabel: 0xffcdcdcd,
     linkLabelHover: 0xffffffff,
-    linkDestructiveLabel: 0xfffca5a5,
+    // Figma Feedback/Error Text, matched exactly (issue #16). Clears the page
+    // (6.74:1) but is 3.48:1 on the #444444 card — pending design review.
+    linkDestructiveLabel: 0xfff47272,
     // Brighter, not darker. Figma pairs its rest colour with a #b91c1c
     // hover, but that is a light-theme value: on the dark page it measures
     // 2.92:1, so the hover state would drop below AA precisely when the user

@@ -183,6 +183,10 @@ SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel
 - `SldsLinkButton` primary label colour follows Figma's updated
   `Text/Secondary`: `#676767` light (was `#717171`), `#CDCDCD` dark (was
   `#BCBCBC`). Both clear WCAG AA (5.28:1 and 11.88:1 on the page).
+- `SldsLinkButton` destructive label in dark mode matches Figma
+  `Feedback/Error Text` exactly: `#F47272` (was `#FCA5A5`). It clears the
+  page but is 3.48:1 on the `#444444` card, so that one pairing is exempted
+  in the contrast test pending design review.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

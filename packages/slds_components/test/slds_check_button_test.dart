@@ -99,4 +99,28 @@ void main() {
     );
     await tester.tap(find.byType(SldsCheckButton)); // must not throw
   });
+
+  testWidgets('has square corners, per Figma', (tester) async {
+    for (final selected in [true, false]) {
+      await pump(
+        tester,
+        SldsCheckButton(
+          label: 'Option One',
+          selected: selected,
+          onChanged: (_) {},
+        ),
+      );
+      final box = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(SldsCheckButton),
+          matching: find.byType(Container),
+        ),
+      );
+      expect(
+        (box.decoration! as BoxDecoration).borderRadius,
+        isNull,
+        reason: 'selected: $selected',
+      );
+    }
+  });
 }

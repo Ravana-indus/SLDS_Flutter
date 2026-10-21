@@ -175,6 +175,8 @@ SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel
   every variant (most visibly Destructive, which lost its red). Loading
   blocks taps by nulling `onPressed`, which Material reports as disabled;
   the Figma loading variants keep their resting colours, so it now does too.
+- `SldsCheckButton` had 6px rounded corners; Figma's Check Button
+  (`1164:7065`) is square-cornered, so the radius is removed.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

@@ -66,7 +66,6 @@ class SldsCheckButton extends StatelessWidget {
       excludeSemantics: true,
       child: InkWell(
         onTap: _interactive ? () => onChanged!.call(!selected) : null,
-        borderRadius: BorderRadius.circular(dimensions.radiusLg),
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(
@@ -75,8 +74,8 @@ class SldsCheckButton extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: background,
+            // Square corners, per Figma Check Button (1164:7065).
             border: Border.all(color: borderColor),
-            borderRadius: BorderRadius.circular(dimensions.radiusLg),
           ),
           child: Text(
             label,

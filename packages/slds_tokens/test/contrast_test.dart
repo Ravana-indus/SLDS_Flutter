@@ -92,6 +92,14 @@ final _pairs = <_Pair>[
     (c) => c.buttonGhostPressed,
   ),
 
+  // Tooltip copy on its own surface. The painted check cannot cover it (see
+  // _knownTextContrastExceptions in slds_accessibility_coverage_test.dart).
+  _Pair(
+    'tooltip text on tooltip background',
+    (c) => c.tooltipText,
+    (c) => c.tooltipBackground,
+  ),
+
   // Inline text links. Body-sized interactive text, so the 4.5:1 floor
   // applies at rest as well as on hover.
   _Pair('link on page', (c) => c.linkLabel, (c) => c.surfacePage),

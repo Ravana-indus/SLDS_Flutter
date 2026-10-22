@@ -224,6 +224,11 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   painted-contrast check.
 - `SldsBadge` Escalated label is Figma's `Badge/Escalated/Text` `#F57C00`
   (was `#C04700`), #29. 2.42:1 on `#FEF0E3`, exempted pending design review.
+- `SldsTooltip`'s action was a hand-built Material `InkWell` button (ripple,
+  card-surface colours). Figma's action is a Button instance (Secondary,
+  Small), so it is now an `SldsButton` of that variant and size: Secondary
+  colours in every theme (dark: `#444444` fill, `#565656` border, white
+  label) and no ripple (#32).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

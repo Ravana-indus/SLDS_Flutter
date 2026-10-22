@@ -61,7 +61,13 @@ const _knownTapTargetExceptions = {'chip'};
 // to Figma Badge/Approved/Text #059669 (issue #27): 3.24:1 on #E0F2EC.
 // Pending design review — the same exemption as 'light: approved badge' in
 // slds_tokens/test/contrast_test.dart.
-const _knownTextContrastExceptions = {'process_list'};
+//
+// SldsTooltip's action is an SldsButton (Secondary, Small) per Figma. Its
+// semantics rect is the 48px tap target, so the guideline samples the
+// tooltip surface around the 28px button rather than the button fill
+// (1.59:1 measured; painted label is 15.9:1 light, 9.74:1 dark). Tooltip
+// copy is covered by 'tooltip text on tooltip background' in contrast_test.
+const _knownTextContrastExceptions = {'process_list', 'tooltip'};
 
 void main() {
   for (final fixture in sldsFixtures()) {

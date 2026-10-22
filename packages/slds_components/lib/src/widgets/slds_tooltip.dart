@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Which edge of [SldsTooltip] the pointer tail sticks out of — point it at
@@ -314,35 +315,13 @@ class _FullCard extends StatelessWidget {
                 else
                   const Spacer(),
                 if (actionLabel != null)
-                  Semantics(
-                    button: true,
-                    child: SldsTapTarget(
-                      child: Material(
-                        color: colors.surfaceCard,
-                        borderRadius: BorderRadius.circular(
-                          dimensions.radiusXl,
-                        ),
-                        child: InkWell(
-                          onTap: onAction,
-                          borderRadius: BorderRadius.circular(
-                            dimensions.radiusXl,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: dimensions.space16,
-                              vertical: dimensions.space8,
-                            ),
-                            child: Text(
-                              actionLabel!,
-                              style: tokens.typography.body2.copyWith(
-                                color: colors.textPrimary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  // Figma's action is a Button instance (Secondary, Small),
+                  // so it takes that component's colours in every theme.
+                  SldsButton(
+                    label: actionLabel!,
+                    onPressed: onAction,
+                    variant: SldsButtonVariant.secondary,
+                    size: SldsButtonSize.small,
                   ),
               ],
             ),

@@ -187,6 +187,9 @@ SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel
   `Feedback/Error Text` exactly: `#F47272` (was `#FCA5A5`). It clears the
   page but is 3.48:1 on the `#444444` card, so that one pairing is exempted
   in the contrast test pending design review.
+- `SldsFlyoutMenu` rows showed Material's ripple and pressed overlay. Figma's
+  flyout defines neither; rows now hover with `Surface/Hover` (`#EEEEEE`),
+  the fill Figma uses for list and dropdown item hover.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

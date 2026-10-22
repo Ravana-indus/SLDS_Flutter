@@ -159,6 +159,11 @@ class _FlyoutItem extends StatelessWidget {
           excludeSemantics: true,
           child: InkWell(
             onTap: onTap,
+            // Figma's flyout has no ripple; rows take the Surface/Hover fill
+            // that Figma gives menu options and list items.
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
+            hoverColor: colors.surfaceHover,
             child: Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: dimensions.space20,
@@ -214,6 +219,9 @@ class _FlyoutItem extends StatelessWidget {
                       excludeSemantics: true,
                       child: InkWell(
                         onTap: entry.onTap,
+                        splashFactory: NoSplash.splashFactory,
+                        highlightColor: Colors.transparent,
+                        hoverColor: colors.surfaceHover,
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: dimensions.space20,

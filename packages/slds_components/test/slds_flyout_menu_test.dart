@@ -179,4 +179,21 @@ void main() {
       expect(find.text('Data Integrations'), findsOneWidget);
     },
   );
+
+  testWidgets('rows hover with Surface/Hover and show no ripple', (
+    tester,
+  ) async {
+    await pump(tester, const SldsFlyoutMenu(items: items));
+    await tester.tap(find.text('Navigation 01'));
+    await tester.pumpAndSettle();
+
+    // Both top-level rows plus the revealed sub-entry.
+    final rows = tester.widgetList<InkWell>(find.byType(InkWell));
+    expect(rows, hasLength(3));
+    for (final row in rows) {
+      expect(row.splashFactory, NoSplash.splashFactory);
+      expect(row.highlightColor, Colors.transparent);
+      expect(row.hoverColor, SldsColorTokens.light().surfaceHover);
+    }
+  });
 }

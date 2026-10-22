@@ -49,6 +49,9 @@ const _exemptions = <String, String>{
   'light: approved badge':
       'Matches Figma Badge/Approved/Label #059669 exactly (issue #27): '
       '3.24:1 on #E0F2EC. Pending design review.',
+  'light: escalated badge':
+      'Matches Figma Badge/Escalated/Label #F57C00 exactly (issue #29): '
+      '2.42:1 on #FEF0E3. Pending design review.',
   'dark: destructive link on card':
       'Matches Figma Feedback/Error Text #F47272 exactly (issue #16): 3.48:1 '
       'on the #444444 card. Pending design review; still checked on the page.',

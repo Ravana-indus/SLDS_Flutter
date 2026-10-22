@@ -125,7 +125,6 @@ class SldsRawColorTokens {
   ///   inputHelper        0xff898989 -> 0xff717171  (3.50 -> 4.56 on card)
   ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
   ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
-  ///   badgeEscalatedText                           (2.42-4.35 -> >=4.50)
   ///
   /// focusRing is the significant one: the previous pale yellow measured
   /// 1.30:1 against the page, so the focus indicator was effectively
@@ -269,7 +268,8 @@ class SldsRawColorTokens {
     badgeInReviewBackground: 0xffe3edff,
     badgeApprovedText: 0xff059669,
     badgeApprovedBackground: 0xffe0f2ec,
-    badgeEscalatedText: 0xffc04700,
+    // Figma Badge/Escalated/Label (issue #29).
+    badgeEscalatedText: 0xfff57c00,
     badgeEscalatedBackground: 0xfffef0e3,
     badgeOnHoldText: 0xff6747c7,
     badgeOnHoldBackground: 0xffede9ff,

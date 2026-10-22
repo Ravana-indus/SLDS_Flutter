@@ -222,6 +222,8 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   fall below AA on their backgrounds and are exempted pending design review;
   the Approved pair also exempts `SldsProcessList`'s done step from the
   painted-contrast check.
+- `SldsBadge` Escalated label is Figma's `Badge/Escalated/Label` `#F57C00`
+  (was `#C04700`), #29. 2.42:1 on `#FEF0E3`, exempted pending design review.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

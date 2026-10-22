@@ -181,7 +181,7 @@ void main() {
     );
   });
 
-  testWidgets('label and background colours match Figma (#21-#27)', (
+  testWidgets('label and background colours match Figma (#21-#31)', (
     tester,
   ) async {
     // (status, Figma label, Figma background) from Badge set 459:1448.
@@ -192,6 +192,10 @@ void main() {
       (SldsBadgeStatus.draft, 0xFF898989, 0xFFEEEEEE),
       (SldsBadgeStatus.submitted, 0xFF0E9DB0, 0xFFD0F0F5),
       (SldsBadgeStatus.approved, 0xFF059669, 0xFFE0F2EC),
+      (SldsBadgeStatus.rejected, 0xFFD32F2F, 0xFFFDECEA),
+      (SldsBadgeStatus.escalated, 0xFFF57C00, 0xFFFEF0E3),
+      (SldsBadgeStatus.onHold, 0xFF6747C7, 0xFFEDE9FF),
+      (SldsBadgeStatus.archived, 0xFFBCBCBC, 0xFFEEEEEE),
     ];
     for (final (status, label, background) in figma) {
       await pump(tester, SldsBadge(label: 'Label', status: status));

@@ -209,6 +209,10 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   Success notification icon and the `SldsServiceCard` badge, which Figma
   also draws in `#1FAA63`. It measures 2.59:1 on the `#E0F2EC` background,
   so that pairing is exempted in the contrast test pending design review.
+- `SldsBadge` Pending label is Figma's `Badge/Pending/Label` `#503D00` (was
+  `#946B00`). The same token colours the Pending notification icon and the
+  `SldsProcessList` current step, which Figma also draws in `#503D00`.
+  9.78:1 on `#FFF8D6`.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

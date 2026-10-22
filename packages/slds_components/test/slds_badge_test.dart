@@ -169,4 +169,15 @@ void main() {
       const Color(0xFF1FAA63),
     );
   });
+
+  testWidgets('Pending label matches Figma #503D00', (tester) async {
+    await pump(
+      tester,
+      const SldsBadge(label: 'Pending', status: SldsBadgeStatus.pending),
+    );
+    expect(
+      tester.widget<Text>(find.text('Pending')).style!.color,
+      const Color(0xFF503D00),
+    );
+  });
 }

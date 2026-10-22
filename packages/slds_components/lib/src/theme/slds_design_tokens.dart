@@ -233,8 +233,11 @@ class SldsColorTokens {
   /// Figma Banner/Warning/Title — darker than the warning icon/border.
   Color get bannerWarningTitle => Color(tokens.bannerWarningTitle);
 
-  /// Figma Badge/Archived/Text — lighter than the shared Neutral/Draft text.
+  /// Figma Badge/Archived/Text — lighter than the Neutral text.
   Color get badgeArchivedText => Color(tokens.badgeArchivedText);
+
+  /// Figma Badge/Draft/Label — lighter than the Neutral text.
+  Color get badgeDraftText => Color(tokens.badgeDraftText);
 
   /// Figma List/Background — Service Card and List Item resting fill.
   Color get listBackground => Color(tokens.listBackground);

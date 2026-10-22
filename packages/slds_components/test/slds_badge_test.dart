@@ -180,4 +180,27 @@ void main() {
       const Color(0xFF503D00),
     );
   });
+
+  testWidgets('label and background colours match Figma (#21-#27)', (
+    tester,
+  ) async {
+    // (status, Figma label, Figma background) from Badge set 459:1448.
+    const figma = [
+      (SldsBadgeStatus.error, 0xFFD32F2F, 0xFFFDECEA),
+      (SldsBadgeStatus.info, 0xFF0D6B7B, 0xFFFFFFFF),
+      (SldsBadgeStatus.neutral, 0xFF676767, 0xFFEEEEEE),
+      (SldsBadgeStatus.draft, 0xFF898989, 0xFFEEEEEE),
+      (SldsBadgeStatus.submitted, 0xFF0E9DB0, 0xFFD0F0F5),
+      (SldsBadgeStatus.approved, 0xFF059669, 0xFFE0F2EC),
+    ];
+    for (final (status, label, background) in figma) {
+      await pump(tester, SldsBadge(label: 'Label', status: status));
+      expect(
+        tester.widget<Text>(find.text('Label')).style!.color,
+        Color(label),
+        reason: '$status label',
+      );
+      expect(backgroundOf(tester), Color(background), reason: '$status bg');
+    }
+  });
 }

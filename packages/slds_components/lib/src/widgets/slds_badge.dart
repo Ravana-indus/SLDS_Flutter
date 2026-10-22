@@ -6,9 +6,8 @@ import 'package:slds_components/src/widgets/slds_chip.dart' show SldsChip;
 /// Status conveyed by an [SldsBadge] — each maps to a dedicated
 /// [SldsColorTokens] text/background pair.
 ///
-/// [draft] shares the Neutral pair, and [archived] is that same neutral
-/// background with the lighter `badgeArchivedText` on top (per the Figma
-/// token notes) — the two are distinct statuses, not aliases.
+/// [draft] and [archived] sit on the Neutral background with their own
+/// lighter text (`badgeDraftText`, `badgeArchivedText`), per Figma.
 enum SldsBadgeStatus {
   /// Completed successfully.
   success,
@@ -123,7 +122,7 @@ class SldsBadge extends StatelessWidget {
       ),
       SldsBadgeStatus.draft => (
         colors.badgeNeutralBackground,
-        colors.badgeNeutralText,
+        colors.badgeDraftText,
       ),
       SldsBadgeStatus.submitted => (
         colors.badgeSubmittedBackground,

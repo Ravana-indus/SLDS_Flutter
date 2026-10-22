@@ -213,6 +213,15 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   `#946B00`). The same token colours the Pending notification icon and the
   `SldsProcessList` current step, which Figma also draws in `#503D00`.
   9.78:1 on `#FFF8D6`.
+- `SldsBadge` light colours match the live Figma Badge set (#21–#27): Error
+  label `#D32F2F` (was `#D02C2C`), Info background `#FFFFFF` (was
+  `#E3EDFF`), Neutral label `#676767` (was `#6C6C6C`), Draft label `#898989`
+  via a new `badgeDraftText` token (Draft previously borrowed the Neutral
+  text), Submitted label `#0E9DB0` (was `#007487`), Approved label `#059669`
+  (was `#007C4F`). Error (4.35:1), Submitted (2.70:1) and Approved (3.24:1)
+  fall below AA on their backgrounds and are exempted pending design review;
+  the Approved pair also exempts `SldsProcessList`'s done step from the
+  painted-contrast check.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

@@ -65,6 +65,7 @@ class SldsRawColorTokens {
     required this.notificationBadgeBackground,
     required this.bannerWarningTitle,
     required this.badgeArchivedText,
+    required this.badgeDraftText,
     required this.listBackground,
     required this.listBackgroundHover,
     required this.surfaceInverse,
@@ -124,7 +125,7 @@ class SldsRawColorTokens {
   ///   inputHelper        0xff898989 -> 0xff717171  (3.50 -> 4.56 on card)
   ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
   ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
-  ///   badge *Text (x5)                             (2.42-4.35 -> >=4.50)
+  ///   badgeEscalatedText                           (2.42-4.35 -> >=4.50)
   ///
   /// focusRing is the significant one: the previous pale yellow measured
   /// 1.30:1 against the page, so the focus indicator was effectively
@@ -229,6 +230,8 @@ class SldsRawColorTokens {
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xff503d00,
     badgeArchivedText: 0xffbcbcbc,
+    // Figma Badge/Draft/Label (issue #24).
+    badgeDraftText: 0xff898989,
     listBackground: 0xfff7f7f7,
     listBackgroundHover: 0xffeeeeee,
     surfaceInverse: 0xff000000,
@@ -254,17 +257,17 @@ class SldsRawColorTokens {
     // Figma Badge/Pending/Label (issue #20).
     badgePendingText: 0xff503d00,
     badgePendingBackground: 0xfffff8d6,
-    badgeErrorText: 0xffd02c2c,
+    badgeErrorText: 0xffd32f2f,
     badgeErrorBackground: 0xfffdecea,
     badgeInfoText: 0xff0d6b7b,
-    badgeInfoBackground: 0xffe3edff,
-    badgeNeutralText: 0xff6c6c6c,
+    badgeInfoBackground: 0xffffffff,
+    badgeNeutralText: 0xff676767,
     badgeNeutralBackground: 0xffeeeeee,
-    badgeSubmittedText: 0xff007487,
+    badgeSubmittedText: 0xff0e9db0,
     badgeSubmittedBackground: 0xffd0f0f5,
     badgeInReviewText: 0xff1a56d6,
     badgeInReviewBackground: 0xffe3edff,
-    badgeApprovedText: 0xff007c4f,
+    badgeApprovedText: 0xff059669,
     badgeApprovedBackground: 0xffe0f2ec,
     badgeEscalatedText: 0xffc04700,
     badgeEscalatedBackground: 0xfffef0e3,
@@ -359,6 +362,7 @@ class SldsRawColorTokens {
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xffffe880,
     badgeArchivedText: 0xff898989,
+    badgeDraftText: 0xffbcbcbc,
     listBackground: 0xff111111,
     listBackgroundHover: 0xff444444,
     surfaceInverse: 0xff000000,
@@ -455,6 +459,7 @@ class SldsRawColorTokens {
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xff503d00,
     badgeArchivedText: 0xff565656,
+    badgeDraftText: 0xff565656,
     listBackground: 0xffffffff,
     listBackgroundHover: 0xffe8e8e8,
     surfaceInverse: 0xff000000,
@@ -650,8 +655,11 @@ class SldsRawColorTokens {
   /// Figma Banner/Warning/Title — darker than the warning icon/border.
   final int bannerWarningTitle;
 
-  /// Figma Badge/Archived/Text — lighter than the shared Neutral/Draft text.
+  /// Figma Badge/Archived/Text — lighter than the Neutral text.
   final int badgeArchivedText;
+
+  /// Figma Badge/Draft/Label — lighter than the Neutral text.
+  final int badgeDraftText;
 
   /// Figma List/Background — Service Card and List Item resting fill.
   final int listBackground;
@@ -841,6 +849,7 @@ class SldsRawColorTokens {
     int? notificationBadgeBackground,
     int? bannerWarningTitle,
     int? badgeArchivedText,
+    int? badgeDraftText,
     int? listBackground,
     int? listBackgroundHover,
     int? surfaceInverse,
@@ -945,6 +954,7 @@ class SldsRawColorTokens {
           notificationBadgeBackground ?? this.notificationBadgeBackground,
       bannerWarningTitle: bannerWarningTitle ?? this.bannerWarningTitle,
       badgeArchivedText: badgeArchivedText ?? this.badgeArchivedText,
+      badgeDraftText: badgeDraftText ?? this.badgeDraftText,
       listBackground: listBackground ?? this.listBackground,
       listBackgroundHover: listBackgroundHover ?? this.listBackgroundHover,
       surfaceInverse: surfaceInverse ?? this.surfaceInverse,
@@ -1147,6 +1157,7 @@ class SldsRawColorTokens {
         t,
       ),
       badgeArchivedText: lerpArgb(a.badgeArchivedText, b.badgeArchivedText, t),
+      badgeDraftText: lerpArgb(a.badgeDraftText, b.badgeDraftText, t),
       listBackground: lerpArgb(a.listBackground, b.listBackground, t),
       surfaceInverse: lerpArgb(a.surfaceInverse, b.surfaceInverse, t),
       textInverse: lerpArgb(a.textInverse, b.textInverse, t),
@@ -1318,6 +1329,7 @@ class SldsRawColorTokens {
         other.notificationBadgeBackground == notificationBadgeBackground &&
         other.bannerWarningTitle == bannerWarningTitle &&
         other.badgeArchivedText == badgeArchivedText &&
+        other.badgeDraftText == badgeDraftText &&
         other.listBackground == listBackground &&
         other.listBackgroundHover == listBackgroundHover &&
         other.surfaceInverse == surfaceInverse &&
@@ -1416,6 +1428,7 @@ class SldsRawColorTokens {
     notificationBadgeBackground,
     bannerWarningTitle,
     badgeArchivedText,
+    badgeDraftText,
     listBackground,
     listBackgroundHover,
     surfaceInverse,

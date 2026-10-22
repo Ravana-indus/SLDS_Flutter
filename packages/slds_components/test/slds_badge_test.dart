@@ -150,4 +150,23 @@ void main() {
     expect(find.text('Awaiting payment'), findsOneWidget);
     expect(find.text('Pending'), findsNothing);
   });
+
+  testWidgets('text matches Figma: weight 500, Success label #1FAA63', (
+    tester,
+  ) async {
+    for (final status in SldsBadgeStatus.values) {
+      await pump(tester, SldsBadge(label: 'Label', status: status));
+      final text = tester.widget<Text>(find.text('Label'));
+      expect(text.style!.fontWeight, FontWeight.w500, reason: '$status');
+    }
+
+    await pump(
+      tester,
+      const SldsBadge(label: 'Success', status: SldsBadgeStatus.success),
+    );
+    expect(
+      tester.widget<Text>(find.text('Success')).style!.color,
+      const Color(0xFF1FAA63),
+    );
+  });
 }

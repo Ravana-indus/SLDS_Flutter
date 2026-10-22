@@ -203,6 +203,12 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsFlyoutMenu` rows showed Material's ripple and pressed overlay. Figma's
   flyout defines neither; rows now hover with `Surface/Hover` (`#EEEEEE`),
   the fill Figma uses for list and dropdown item hover.
+- `SldsBadge` text now uses Figma's `Mobile/Caption 1 Strong` weight (500,
+  was 400) for every status, and the Success label is Figma's
+  `Badge/Success/Label` `#1FAA63` (was `#007D36`). The same token colours the
+  Success notification icon and the `SldsServiceCard` badge, which Figma
+  also draws in `#1FAA63`. It measures 2.59:1 on the `#E0F2EC` background,
+  so that pairing is exempted in the contrast test pending design review.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

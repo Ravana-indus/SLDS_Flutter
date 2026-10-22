@@ -37,6 +37,9 @@ const _exemptions = <String, String>{
   'decorative border on page':
       'Non-text decorative divider, not a UI component boundary (1.4.11).',
   // Theme-scoped: '<theme>: <pair>' skips the pairing in that theme only.
+  'light: success badge':
+      'Matches Figma Badge/Success/Label #1FAA63 exactly (issue #19): 2.59:1 '
+      'on #E0F2EC. Pending design review.',
   'dark: destructive link on card':
       'Matches Figma Feedback/Error Text #F47272 exactly (issue #16): 3.48:1 '
       'on the #444444 card. Pending design review; still checked on the page.',

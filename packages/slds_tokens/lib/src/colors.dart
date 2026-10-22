@@ -124,7 +124,7 @@ class SldsRawColorTokens {
   ///   inputHelper        0xff898989 -> 0xff717171  (3.50 -> 4.56 on card)
   ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
   ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
-  ///   badge *Text (x7)                             (2.42-4.35 -> >=4.50)
+  ///   badge *Text (x6)                             (2.42-4.35 -> >=4.50)
   ///
   /// focusRing is the significant one: the previous pale yellow measured
   /// 1.30:1 against the page, so the focus indicator was effectively
@@ -247,7 +247,9 @@ class SldsRawColorTokens {
     success: 0xff00833c,
     warning: 0xffb38a00,
     info: 0xff0d6b7b,
-    badgeSuccessText: 0xff007d36,
+    // Figma Badge/Success/Label, matched exactly (issue #19): 2.59:1 on the
+    // badge background — pending design review.
+    badgeSuccessText: 0xff1faa63,
     badgeSuccessBackground: 0xffe0f2ec,
     badgePendingText: 0xff946b00,
     badgePendingBackground: 0xfffff8d6,

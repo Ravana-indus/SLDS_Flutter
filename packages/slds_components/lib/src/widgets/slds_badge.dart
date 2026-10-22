@@ -168,7 +168,11 @@ class SldsBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: tokens.typography.caption1.copyWith(color: foreground),
+        // Figma's badge text is Mobile/Caption 1 Strong: caption1 at 500.
+        style: tokens.typography.caption1.copyWith(
+          color: foreground,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

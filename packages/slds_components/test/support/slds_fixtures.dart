@@ -606,7 +606,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         SldsSummaryRow(
           label: 'Status',
           value: 'In Review',
-          badgeStatus: SldsSummaryBadgeStatus.inReview,
+          badgeStatus: SldsBadgeStatus.inReview,
         ),
       ],
     ),

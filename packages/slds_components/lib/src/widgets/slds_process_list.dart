@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:slds_components/slds_components.dart'
-    show SldsSummaryBadgeStatus, SldsSummaryList;
+    show SldsBadgeStatus, SldsSummaryList;
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
-import 'package:slds_components/src/widgets/slds_summary_list.dart'
-    show SldsSummaryBadgeStatus, SldsSummaryList;
 
 /// Status of one [SldsProcessStep] — drives the numbered badge's color.
-/// Reuses the same tone pairing as [SldsSummaryBadgeStatus] (approved/green
+/// Reuses the same tone pairing as [SldsBadgeStatus] (approved/green
 /// for done, pending/yellow for current, neutral/gray for upcoming).
 enum SldsProcessStepStatus {
   /// Completed.

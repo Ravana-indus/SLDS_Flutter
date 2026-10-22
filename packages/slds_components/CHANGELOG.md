@@ -101,6 +101,19 @@ SldsButton(label: 'Cancel', variant: SldsButtonVariant.text, onPressed: _cancel)
 SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel)
 ```
 
+**`SldsSummaryBadgeStatus` is removed; `SldsSummaryRow.badgeStatus` takes
+`SldsBadgeStatus`.** Figma's Summary List renders its status as an instance
+of the Badge component, so the row now renders the shared `SldsBadge`
+instead of a private copy of it. Rendering is unchanged.
+
+```dart
+// Before
+SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsSummaryBadgeStatus.approved)
+
+// After
+SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.approved)
+```
+
 ### Added
 
 - `SldsBanner` and `SldsBannerSeverity` (success/warning/error/info) — the

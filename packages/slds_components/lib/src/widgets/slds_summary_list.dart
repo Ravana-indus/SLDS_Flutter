@@ -2,39 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
-
-/// Visual tone for [SldsSummaryRow.badgeStatus] — maps 1:1 onto
-/// [SldsColorTokens]'s dedicated status-badge pairs (e.g. [inReview] uses
-/// `badgeInReviewText`/`Background`, matching the reference's blue
-/// "In Review" pill).
-enum SldsSummaryBadgeStatus {
-  /// Awaiting action.
-  pending,
-
-  /// Failed, or blocked by a problem.
-  error,
-
-  /// Submitted and awaiting processing.
-  submitted,
-
-  /// Being assessed by a reviewer.
-  inReview,
-
-  /// Accepted.
-  approved,
-
-  /// Raised to a higher authority.
-  escalated,
-
-  /// Paused, pending something external.
-  onHold,
-
-  /// No particular status.
-  neutral,
-}
+import 'package:slds_components/src/widgets/slds_badge.dart';
 
 /// One label/value row inside [SldsSummaryList]. Pass [badgeStatus] to
-/// render [value] as a status pill instead of plain text.
+/// render [value] as an [SldsBadge] instead of plain text.
 class SldsSummaryRow {
   /// Creates a label/value row.
   const SldsSummaryRow({
@@ -47,12 +18,13 @@ class SldsSummaryRow {
   /// What the row describes, e.g. "Application ID".
   final String label;
 
-  /// The value shown against [label]. Rendered as a status pill when
+  /// The value shown against [label]. Rendered as an [SldsBadge] when
   /// [badgeStatus] is set, otherwise as plain text.
   final String value;
 
-  /// Null renders [value] as plain text; set to render it as a badge.
-  final SldsSummaryBadgeStatus? badgeStatus;
+  /// Null renders [value] as plain text; set to render it as an
+  /// [SldsBadge] of this status, as Figma's Summary List does.
+  final SldsBadgeStatus? badgeStatus;
 
   /// Whether [value] is a credential or personal identifier — an NIC, a
   /// licence or passport number, an account number, a date of birth.
@@ -79,7 +51,7 @@ class SldsSummaryRow {
 /// SLDS summary list — read-only label/value pairs for review screens
 /// (e.g. "Application ID", "Submitted date", "Current status"). Rows stack
 /// with 1px dividers inside a bordered card; a row's value can be plain
-/// text or a status badge via [SldsSummaryRow.badgeStatus].
+/// text or an [SldsBadge] via [SldsSummaryRow.badgeStatus].
 class SldsSummaryList extends StatelessWidget {
   /// Creates a summary list of [rows].
   const SldsSummaryList({
@@ -232,7 +204,7 @@ class _SummaryRowTileState extends State<_SummaryRowTile> {
           ),
           SizedBox(height: dimensions.space4),
           if (row.badgeStatus != null)
-            _StatusBadge(text: row.value, status: row.badgeStatus!)
+            SldsBadge(label: row.value, status: row.badgeStatus!)
           else
             Row(
               children: [
@@ -281,70 +253,6 @@ class _SummaryRowTileState extends State<_SummaryRowTile> {
           ? () => setState(() => _revealed = !_revealed)
           : null,
       child: tile,
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.text, required this.status});
-
-  final String text;
-  final SldsSummaryBadgeStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.slds;
-    final colors = tokens.colors;
-    final dimensions = tokens.dimensions;
-
-    final (Color background, Color foreground) = switch (status) {
-      SldsSummaryBadgeStatus.pending => (
-        colors.badgePendingBackground,
-        colors.badgePendingText,
-      ),
-      SldsSummaryBadgeStatus.error => (
-        colors.badgeErrorBackground,
-        colors.badgeErrorText,
-      ),
-      SldsSummaryBadgeStatus.submitted => (
-        colors.badgeSubmittedBackground,
-        colors.badgeSubmittedText,
-      ),
-      SldsSummaryBadgeStatus.inReview => (
-        colors.badgeInReviewBackground,
-        colors.badgeInReviewText,
-      ),
-      SldsSummaryBadgeStatus.approved => (
-        colors.badgeApprovedBackground,
-        colors.badgeApprovedText,
-      ),
-      SldsSummaryBadgeStatus.escalated => (
-        colors.badgeEscalatedBackground,
-        colors.badgeEscalatedText,
-      ),
-      SldsSummaryBadgeStatus.onHold => (
-        colors.badgeOnHoldBackground,
-        colors.badgeOnHoldText,
-      ),
-      SldsSummaryBadgeStatus.neutral => (
-        colors.badgeNeutralBackground,
-        colors.badgeNeutralText,
-      ),
-    };
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: dimensions.space12,
-        vertical: dimensions.space4,
-      ),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(dimensions.radiusFull),
-      ),
-      child: Text(
-        text,
-        style: tokens.typography.caption1.copyWith(color: foreground),
-      ),
     );
   }
 }

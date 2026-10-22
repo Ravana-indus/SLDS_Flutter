@@ -514,7 +514,7 @@ final _sections = <(String, Widget)>[
         SldsSummaryRow(
           label: 'Status',
           value: 'Approved',
-          badgeStatus: SldsSummaryBadgeStatus.approved,
+          badgeStatus: SldsBadgeStatus.approved,
         ),
       ],
     ),

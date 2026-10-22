@@ -18,7 +18,7 @@ void main() {
     SldsSummaryRow(
       label: 'Current status',
       value: 'In Review',
-      badgeStatus: SldsSummaryBadgeStatus.inReview,
+      badgeStatus: SldsBadgeStatus.inReview,
     ),
   ];
 
@@ -29,6 +29,16 @@ void main() {
     expect(find.text('APP-2026-001234'), findsOneWidget);
     expect(find.text('Submitted date'), findsOneWidget);
     expect(find.text('28th June 2026'), findsOneWidget);
+  });
+
+  testWidgets('a status row renders the shared SldsBadge, per Figma', (
+    tester,
+  ) async {
+    await pump(tester, const SldsSummaryList(rows: rows));
+
+    final badge = tester.widget<SldsBadge>(find.byType(SldsBadge));
+    expect(badge.label, 'In Review');
+    expect(badge.status, SldsBadgeStatus.inReview);
   });
 
   testWidgets('renders a status row value as a badge with the right colors', (

@@ -44,13 +44,13 @@ const _exemptions = <String, String>{
       'Matches Figma Badge/Error/Label #D32F2F exactly (issue #21): 4.35:1 '
       'on #FDECEA. Pending design review.',
   'light: submitted badge':
-      'Matches Figma Badge/Submitted/Label #0E9DB0 exactly (issue #25): '
+      'Matches Figma Badge/Submitted/Text #0E9DB0 exactly (issue #25): '
       '2.70:1 on #D0F0F5. Pending design review.',
   'light: approved badge':
-      'Matches Figma Badge/Approved/Label #059669 exactly (issue #27): '
+      'Matches Figma Badge/Approved/Text #059669 exactly (issue #27): '
       '3.24:1 on #E0F2EC. Pending design review.',
   'light: escalated badge':
-      'Matches Figma Badge/Escalated/Label #F57C00 exactly (issue #29): '
+      'Matches Figma Badge/Escalated/Text #F57C00 exactly (issue #29): '
       '2.42:1 on #FEF0E3. Pending design review.',
   'dark: destructive link on card':
       'Matches Figma Feedback/Error Text #F47272 exactly (issue #16): 3.48:1 '

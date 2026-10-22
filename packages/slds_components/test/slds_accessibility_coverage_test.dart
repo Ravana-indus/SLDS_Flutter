@@ -58,7 +58,7 @@ Widget _host(SldsFixture fixture, ThemeData theme) => MaterialApp(
 const _knownTapTargetExceptions = {'chip'};
 
 // SldsProcessList's done step uses the Approved badge pair, matched exactly
-// to Figma Badge/Approved/Label #059669 (issue #27): 3.24:1 on #E0F2EC.
+// to Figma Badge/Approved/Text #059669 (issue #27): 3.24:1 on #E0F2EC.
 // Pending design review — the same exemption as 'light: approved badge' in
 // slds_tokens/test/contrast_test.dart.
 const _knownTextContrastExceptions = {'process_list'};

@@ -229,7 +229,7 @@ class SldsRawColorTokens {
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xff503d00,
     badgeArchivedText: 0xffbcbcbc,
-    // Figma Badge/Draft/Label (issue #24).
+    // Figma Badge/Draft/Text (issue #24).
     badgeDraftText: 0xff898989,
     listBackground: 0xfff7f7f7,
     listBackgroundHover: 0xffeeeeee,
@@ -268,7 +268,7 @@ class SldsRawColorTokens {
     badgeInReviewBackground: 0xffe3edff,
     badgeApprovedText: 0xff059669,
     badgeApprovedBackground: 0xffe0f2ec,
-    // Figma Badge/Escalated/Label (issue #29).
+    // Figma Badge/Escalated/Text (issue #29).
     badgeEscalatedText: 0xfff57c00,
     badgeEscalatedBackground: 0xfffef0e3,
     badgeOnHoldText: 0xff6747c7,
@@ -658,7 +658,7 @@ class SldsRawColorTokens {
   /// Figma Badge/Archived/Text — lighter than the Neutral text.
   final int badgeArchivedText;
 
-  /// Figma Badge/Draft/Label — lighter than the Neutral text.
+  /// Figma Badge/Draft/Text — lighter than the Neutral text.
   final int badgeDraftText;
 
   /// Figma List/Background — Service Card and List Item resting fill.

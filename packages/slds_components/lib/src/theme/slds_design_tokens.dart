@@ -236,7 +236,7 @@ class SldsColorTokens {
   /// Figma Badge/Archived/Text — lighter than the Neutral text.
   Color get badgeArchivedText => Color(tokens.badgeArchivedText);
 
-  /// Figma Badge/Draft/Label — lighter than the Neutral text.
+  /// Figma Badge/Draft/Text — lighter than the Neutral text.
   Color get badgeDraftText => Color(tokens.badgeDraftText);
 
   /// Figma List/Background — Service Card and List Item resting fill.

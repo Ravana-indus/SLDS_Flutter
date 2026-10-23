@@ -243,6 +243,16 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsAccordion` content inherits Figma's `Desktop/Body 2` in
   `Text/Secondary`, so plain `Text` bodies no longer render in the default
   colour (#35, #36).
+- `SldsDivider` line uses Figma's `List/Divider` (`borderDecorative`,
+  `#DDDDDD` light; was `borderDefault` `#8F8F8F`), 1px (#37).
+- `buttonGhostLabel` (light) is Figma's `Button/Ghost/Label` `#17171A` (was
+  `#222222`), so the `SldsDivider.withButton` label matches (#38). Every ghost
+  button and icon button uses it.
+- `SldsProgressBar` uses Figma's `Progress/Track` `#FFFFFF` (was `#EEEEEE`)
+  and `Progress/Fill` `#1FAA63` (was `#00833C`) via new `progressTrack` and
+  `progressFill` tokens, leaving the shared `surfaceHover`/`success` as they
+  were (#39, #40). The label slot now reserves the width of "100%", so 100%
+  no longer wraps onto two lines (#41).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

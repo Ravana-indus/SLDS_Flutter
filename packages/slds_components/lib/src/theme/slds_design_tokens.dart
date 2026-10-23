@@ -242,6 +242,12 @@ class SldsColorTokens {
   /// Figma Error State status code (404/500/401) — Text/Tertiary.
   Color get errorStateCode => Color(tokens.errorStateCode);
 
+  /// Figma Progress/Track — the unfilled bar.
+  Color get progressTrack => Color(tokens.progressTrack);
+
+  /// Figma Progress/Fill — the filled bar.
+  Color get progressFill => Color(tokens.progressFill);
+
   /// Figma List/Background — Service Card and List Item resting fill.
   Color get listBackground => Color(tokens.listBackground);
 

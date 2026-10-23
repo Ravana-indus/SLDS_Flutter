@@ -177,7 +177,7 @@ class SldsErrorState extends StatelessWidget {
                 textAlign: TextAlign.center,
                 // Figma: Mobile/Caption 2 (11/12, no tracking), Text/Secondary.
                 style: tokens.typography.caption2.copyWith(
-                  color: colors.errorStateDescription,
+                  color: colors.textSecondary,
                   height: 12 / 11,
                   letterSpacing: 0,
                 ),

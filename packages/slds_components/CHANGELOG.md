@@ -232,10 +232,17 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsErrorState` matches Figma's Error State: the status code is
   `Mobile/Display 1` (36px, 500; was 44px, 700) in `Text/Tertiary` `#BCBCBC`
   (was `#6C6C6C`), and the description is `Mobile/Caption 2` (11px; was
-  14px) in `Text/Secondary` `#676767` (was `#717171`) (#33, #34). New
-  `errorStateCode`/`errorStateDescription` tokens carry the colours so the
-  shared `textTertiary`/`textSecondary` are unchanged. The code measures
-  1.77:1 on the page, exempted pending design review.
+  14px) in `Text/Secondary` `#676767` (was `#717171`) (#33, #34). A new
+  `errorStateCode` token carries the code colour so the shared
+  `textTertiary` is unchanged. The code measures 1.77:1 on the page,
+  exempted pending design review.
+- `textPrimary` and `textSecondary` (light) now follow Figma's `Text/Primary`
+  `#17171A` (was `#222222`) and `Text/Secondary` `#676767` (was `#717171`).
+  `#717171` was an AA workaround for the old `#898989`; Figma's current value
+  passes (5.28:1 on the page). This restyles every widget using them.
+- `SldsAccordion` content inherits Figma's `Desktop/Body 2` in
+  `Text/Secondary`, so plain `Text` bodies no longer render in the default
+  colour (#35, #36).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

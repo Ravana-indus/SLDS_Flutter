@@ -103,17 +103,12 @@ final _pairs = <_Pair>[
     (c) => c.tooltipBackground,
   ),
 
-  // Error State: the 36px status code is large text; the description is not.
+  // Error State: the 36px status code is large text.
   _Pair(
     'error state code on page',
     (c) => c.errorStateCode,
     (c) => c.surfacePage,
     largeText: true,
-  ),
-  _Pair(
-    'error state description on page',
-    (c) => c.errorStateDescription,
-    (c) => c.surfacePage,
   ),
 
   // Inline text links. Body-sized interactive text, so the 4.5:1 floor

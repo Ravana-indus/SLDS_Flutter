@@ -134,4 +134,30 @@ void main() {
     expect(find.byIcon(Icons.error_outline), findsOneWidget);
     expect(find.byIcon(Icons.search), findsNothing);
   });
+
+  testWidgets('code and description match Figma (#33, #34)', (tester) async {
+    await pump(
+      tester,
+      const SldsErrorState(
+        illustration: illustration,
+        code: '404',
+        title: 'Page not found',
+        description: 'Sorry we were unable to find that page',
+      ),
+    );
+
+    // Mobile/Display 1, Text/Tertiary.
+    final code = tester.widget<Text>(find.text('404')).style!;
+    expect(code.fontSize, 36);
+    expect(code.fontWeight, FontWeight.w500);
+    expect(code.color, const Color(0xFFBCBCBC));
+
+    // Mobile/Caption 2, Text/Secondary.
+    final description = tester
+        .widget<Text>(find.text('Sorry we were unable to find that page'))
+        .style!;
+    expect(description.fontSize, 11);
+    expect(description.fontWeight, FontWeight.w400);
+    expect(description.color, const Color(0xFF676767));
+  });
 }

@@ -67,7 +67,12 @@ const _knownTapTargetExceptions = {'chip'};
 // tooltip surface around the 28px button rather than the button fill
 // (1.59:1 measured; painted label is 15.9:1 light, 9.74:1 dark). Tooltip
 // copy is covered by 'tooltip text on tooltip background' in contrast_test.
-const _knownTextContrastExceptions = {'process_list', 'tooltip'};
+//
+// SldsErrorState's status code (404/500/401) is Figma Text/Tertiary #BCBCBC
+// exactly (issue #34): 1.77:1 on the page, below 3:1 for large text. Pending
+// design review — same exemption as 'light: error state code on page' in
+// contrast_test; the description is covered by its own token pairing.
+const _knownTextContrastExceptions = {'process_list', 'tooltip', 'error_state'};
 
 void main() {
   for (final fixture in sldsFixtures()) {

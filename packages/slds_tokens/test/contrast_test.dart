@@ -52,6 +52,9 @@ const _exemptions = <String, String>{
   'light: escalated badge':
       'Matches Figma Badge/Escalated/Text #F57C00 exactly (issue #29): '
       '2.42:1 on #FEF0E3. Pending design review.',
+  'light: error state code on page':
+      'Matches Figma Text/Tertiary #BCBCBC exactly (issue #34): 1.77:1 on '
+      '#F7F7F7, below 3:1 for large text. Pending design review.',
   'dark: destructive link on card':
       'Matches Figma Feedback/Error Text #F47272 exactly (issue #16): 3.48:1 '
       'on the #444444 card. Pending design review; still checked on the page.',
@@ -98,6 +101,19 @@ final _pairs = <_Pair>[
     'tooltip text on tooltip background',
     (c) => c.tooltipText,
     (c) => c.tooltipBackground,
+  ),
+
+  // Error State: the 36px status code is large text; the description is not.
+  _Pair(
+    'error state code on page',
+    (c) => c.errorStateCode,
+    (c) => c.surfacePage,
+    largeText: true,
+  ),
+  _Pair(
+    'error state description on page',
+    (c) => c.errorStateDescription,
+    (c) => c.surfacePage,
   ),
 
   // Inline text links. Body-sized interactive text, so the 4.5:1 floor

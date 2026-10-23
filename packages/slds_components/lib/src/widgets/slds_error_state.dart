@@ -156,8 +156,9 @@ class SldsErrorState extends StatelessWidget {
               Text(
                 code!,
                 textAlign: TextAlign.center,
-                style: tokens.typography.display2.copyWith(
-                  color: colors.textTertiary,
+                // Figma: Mobile/Display 1, Text/Tertiary.
+                style: tokens.typography.mobileDisplay1.copyWith(
+                  color: colors.errorStateCode,
                 ),
               ),
               SizedBox(height: dimensions.space8),
@@ -174,8 +175,11 @@ class SldsErrorState extends StatelessWidget {
               Text(
                 description!,
                 textAlign: TextAlign.center,
-                style: tokens.typography.body2.copyWith(
-                  color: colors.textSecondary,
+                // Figma: Mobile/Caption 2 (11/12, no tracking), Text/Secondary.
+                style: tokens.typography.caption2.copyWith(
+                  color: colors.errorStateDescription,
+                  height: 12 / 11,
+                  letterSpacing: 0,
                 ),
               ),
             ],

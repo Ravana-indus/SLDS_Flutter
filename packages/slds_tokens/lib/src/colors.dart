@@ -66,6 +66,8 @@ class SldsRawColorTokens {
     required this.bannerWarningTitle,
     required this.badgeArchivedText,
     required this.badgeDraftText,
+    required this.errorStateCode,
+    required this.errorStateDescription,
     required this.listBackground,
     required this.listBackgroundHover,
     required this.surfaceInverse,
@@ -231,6 +233,10 @@ class SldsRawColorTokens {
     badgeArchivedText: 0xffbcbcbc,
     // Figma Badge/Draft/Text (issue #24).
     badgeDraftText: 0xff898989,
+    // Figma Error State: code is Text/Tertiary (#34), description is
+    // Text/Secondary (#33).
+    errorStateCode: 0xffbcbcbc,
+    errorStateDescription: 0xff676767,
     listBackground: 0xfff7f7f7,
     listBackgroundHover: 0xffeeeeee,
     surfaceInverse: 0xff000000,
@@ -363,6 +369,8 @@ class SldsRawColorTokens {
     bannerWarningTitle: 0xffffe880,
     badgeArchivedText: 0xff898989,
     badgeDraftText: 0xffbcbcbc,
+    errorStateCode: 0xffbcbcbc,
+    errorStateDescription: 0xffbcbcbc,
     listBackground: 0xff111111,
     listBackgroundHover: 0xff444444,
     surfaceInverse: 0xff000000,
@@ -460,6 +468,8 @@ class SldsRawColorTokens {
     bannerWarningTitle: 0xff503d00,
     badgeArchivedText: 0xff565656,
     badgeDraftText: 0xff565656,
+    errorStateCode: 0xff000000,
+    errorStateDescription: 0xff000000,
     listBackground: 0xffffffff,
     listBackgroundHover: 0xffe8e8e8,
     surfaceInverse: 0xff000000,
@@ -661,6 +671,12 @@ class SldsRawColorTokens {
   /// Figma Badge/Draft/Text — lighter than the Neutral text.
   final int badgeDraftText;
 
+  /// Figma Error State status code (404/500/401) — Text/Tertiary.
+  final int errorStateCode;
+
+  /// Figma Error State description — Text/Secondary.
+  final int errorStateDescription;
+
   /// Figma List/Background — Service Card and List Item resting fill.
   final int listBackground;
 
@@ -850,6 +866,8 @@ class SldsRawColorTokens {
     int? bannerWarningTitle,
     int? badgeArchivedText,
     int? badgeDraftText,
+    int? errorStateCode,
+    int? errorStateDescription,
     int? listBackground,
     int? listBackgroundHover,
     int? surfaceInverse,
@@ -955,6 +973,9 @@ class SldsRawColorTokens {
       bannerWarningTitle: bannerWarningTitle ?? this.bannerWarningTitle,
       badgeArchivedText: badgeArchivedText ?? this.badgeArchivedText,
       badgeDraftText: badgeDraftText ?? this.badgeDraftText,
+      errorStateCode: errorStateCode ?? this.errorStateCode,
+      errorStateDescription:
+          errorStateDescription ?? this.errorStateDescription,
       listBackground: listBackground ?? this.listBackground,
       listBackgroundHover: listBackgroundHover ?? this.listBackgroundHover,
       surfaceInverse: surfaceInverse ?? this.surfaceInverse,
@@ -1158,6 +1179,12 @@ class SldsRawColorTokens {
       ),
       badgeArchivedText: lerpArgb(a.badgeArchivedText, b.badgeArchivedText, t),
       badgeDraftText: lerpArgb(a.badgeDraftText, b.badgeDraftText, t),
+      errorStateCode: lerpArgb(a.errorStateCode, b.errorStateCode, t),
+      errorStateDescription: lerpArgb(
+        a.errorStateDescription,
+        b.errorStateDescription,
+        t,
+      ),
       listBackground: lerpArgb(a.listBackground, b.listBackground, t),
       surfaceInverse: lerpArgb(a.surfaceInverse, b.surfaceInverse, t),
       textInverse: lerpArgb(a.textInverse, b.textInverse, t),
@@ -1330,6 +1357,8 @@ class SldsRawColorTokens {
         other.bannerWarningTitle == bannerWarningTitle &&
         other.badgeArchivedText == badgeArchivedText &&
         other.badgeDraftText == badgeDraftText &&
+        other.errorStateCode == errorStateCode &&
+        other.errorStateDescription == errorStateDescription &&
         other.listBackground == listBackground &&
         other.listBackgroundHover == listBackgroundHover &&
         other.surfaceInverse == surfaceInverse &&
@@ -1429,6 +1458,8 @@ class SldsRawColorTokens {
     bannerWarningTitle,
     badgeArchivedText,
     badgeDraftText,
+    errorStateCode,
+    errorStateDescription,
     listBackground,
     listBackgroundHover,
     surfaceInverse,

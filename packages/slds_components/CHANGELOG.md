@@ -229,6 +229,13 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   Small), so it is now an `SldsButton` of that variant and size: Secondary
   colours in every theme (dark: `#444444` fill, `#565656` border, white
   label) and no ripple (#32).
+- `SldsErrorState` matches Figma's Error State: the status code is
+  `Mobile/Display 1` (36px, 500; was 44px, 700) in `Text/Tertiary` `#BCBCBC`
+  (was `#6C6C6C`), and the description is `Mobile/Caption 2` (11px; was
+  14px) in `Text/Secondary` `#676767` (was `#717171`) (#33, #34). New
+  `errorStateCode`/`errorStateDescription` tokens carry the colours so the
+  shared `textTertiary`/`textSecondary` are unchanged. The code measures
+  1.77:1 on the page, exempted pending design review.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

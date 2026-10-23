@@ -253,6 +253,15 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   `progressFill` tokens, leaving the shared `surfaceHover`/`success` as they
   were (#39, #40). The label slot now reserves the width of "100%", so 100%
   no longer wraps onto two lines (#41).
+- `SldsBanner`'s action is now `SldsLinkButton`, the Link button instance
+  Figma uses in every severity (`Text/Secondary` `#676767`, 16px, 400); the
+  private `_BannerActionLink` drawn in the message colour is removed. Figma's
+  `#676767` clears AA on all four banner tints (4.87–5.66:1) (#43). The
+  narrower action also keeps the Success banner on one row at 375pt
+  (iPhone 12 mini / SE) (#44).
+- `SldsBanner` Success icon and border use Figma's `Banner/Success/Icon` and
+  `Banner/Success/Border` `#1FAA63` (was `success` `#00833C`) via a new
+  `bannerSuccess` token, leaving the shared `success` unchanged (#45, #46).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

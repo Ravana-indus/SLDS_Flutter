@@ -86,7 +86,7 @@ void main() {
     final colors = SldsTokenSet.light().colors;
     final expected = <SldsBannerSeverity, (Color, Color)>{
       SldsBannerSeverity.success: (
-        colors.success,
+        colors.bannerSuccess,
         colors.badgeSuccessBackground,
       ),
       SldsBannerSeverity.warning: (
@@ -138,5 +138,54 @@ void main() {
 
     final text = tester.widget<Text>(find.text('Session expiring.'));
     expect(text.style?.color, SldsTokenSet.light().colors.bannerWarningTitle);
+  });
+
+  testWidgets('success banner matches Figma (#42, #43, #45, #46)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      wrap(
+        SldsBanner(
+          message: 'Your changes have been saved successfully.',
+          severity: SldsBannerSeverity.success,
+          actionLabel: 'View details',
+          onAction: () {},
+          onDismiss: () {},
+        ),
+      ),
+    );
+
+    // Banner/Success/Icon and Banner/Success/Border.
+    expect(
+      tester.widget<Icon>(find.byIcon(Icons.check_circle)).color,
+      const Color(0xFF1FAA63),
+    );
+    final border =
+        (tester
+                    .widget<Container>(
+                      find
+                          .descendant(
+                            of: find.byType(SldsBanner),
+                            matching: find.byType(Container),
+                          )
+                          .first,
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .border!
+            .top;
+    expect(border.color, const Color(0xFF1FAA63));
+
+    // Message: Text/Primary.
+    expect(
+      tester
+          .widget<Text>(find.text('Your changes have been saved successfully.'))
+          .style!
+          .color,
+      const Color(0xFF17171A),
+    );
+
+    // Action: Figma's Link button instance.
+    expect(find.byType(SldsLinkButton), findsOneWidget);
   });
 }

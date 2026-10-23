@@ -248,6 +248,9 @@ class SldsColorTokens {
   /// Figma Progress/Fill — the filled bar.
   Color get progressFill => Color(tokens.progressFill);
 
+  /// Figma Banner/Success/Icon and Banner/Success/Border.
+  Color get bannerSuccess => Color(tokens.bannerSuccess);
+
   /// Figma List/Background — Service Card and List Item resting fill.
   Color get listBackground => Color(tokens.listBackground);
 

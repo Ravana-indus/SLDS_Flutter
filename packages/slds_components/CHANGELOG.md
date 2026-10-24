@@ -314,6 +314,21 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsComboBox` multi-select chips match Figma's Multi Select layout: the
   chip row is padded 8px inline like the placeholder (the first chip sat
   against the field's edge), and chips sit 10px apart (was 4px) (#90).
+- `SldsComboBox` open state matches Figma's Combo Box (Filling / Multi
+  Select) and its list item component (#92–#100):
+  - The field keeps its default 1px `#BCBCBC` border while open or typing;
+    the gold border and focus glow are gone (#95).
+  - The caret is Figma's grey (`inputIcon`) down caret in every state, open
+    included; the toggle's tooltip still says expanded/collapsed (#92).
+  - Rows are inset 8px in the panel, like the search bar (#92).
+  - The search bar is Figma's: 44px, `#DDDDDD` 1.5px, 12px padding, and its
+    14/18 text centred on the 20px icon (#96).
+  - Rows use Figma's 16px list checkbox, 8px from the text (the 20px
+    `SldsCheckbox` and its 48dp tap target left a 24px gap) (#97).
+  - A selected row is shown by its checked `#FFC700` box; only hover/focus
+    fills the row `#EEEEEE` (radius 8, no ripple), as Figma's list item (#99).
+  - Panel `#F7F7F7`, `#DDDDDD` 1px, radius 16 and `Elevation/3` were already
+    Figma's (#100); row text `Desktop/Body 2` `#17171A` too (#98).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

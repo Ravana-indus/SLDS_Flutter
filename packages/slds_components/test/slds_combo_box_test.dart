@@ -109,9 +109,8 @@ void main() {
     },
   );
 
-  testWidgets('selected option row gets a highlighted background', (
-    tester,
-  ) async {
+  testWidgets('rows follow Figma: selection is the yellow checkbox, hover '
+      'fills the row (#99)', (tester) async {
     await pump(
       tester,
       build(multiple: true, selectedValues: const ['Colombo']),
@@ -119,28 +118,52 @@ void main() {
     await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
     await tester.pump();
 
-    final row = tester.widget<Container>(
+    // Figma's list item has no selected-row fill: a selected row shows a
+    // checked #FFC700 box, and only Hover/Focus fill the row #EEEEEE.
+    Container box(String option) => tester.widget<Container>(
       find
-          .ancestor(
-            of: find.text('Colombo'),
-            matching: find.byType(Container),
+          .descendant(
+            of: find.ancestor(
+              of: find.text(option),
+              matching: find.byType(InkWell),
+            ),
+            matching: find.byWidgetPredicate(
+              (w) => w is Container && w.constraints?.maxWidth == 16,
+            ),
           )
           .first,
     );
-    final decoration = row.decoration! as BoxDecoration;
-    final tokens = SldsTheme.light.extension<SldsTokenSet>()!;
-    expect(decoration.color, tokens.colors.badgeNeutralBackground);
-
-    final unselectedRow = tester.widget<Container>(
-      find
-          .ancestor(
-            of: find.text('Batticaloa'),
-            matching: find.byType(Container),
-          )
-          .first,
+    expect(
+      (box('Colombo').decoration! as BoxDecoration).color,
+      const Color(0xFFFFC700),
     );
-    final unselectedDecoration = unselectedRow.decoration! as BoxDecoration;
-    expect(unselectedDecoration.color, isNull);
+    expect(
+      (box('Batticaloa').decoration! as BoxDecoration).color,
+      const Color(0xFFF7F7F7),
+    );
+    final row = tester.widget<InkWell>(
+      find.ancestor(of: find.text('Colombo'), matching: find.byType(InkWell)),
+    );
+    expect(row.hoverColor, const Color(0xFFEEEEEE));
+    // Only the panel row: the selected value also shows as a grey chip.
+    final rowFinder = find.ancestor(
+      of: find.text('Colombo').last,
+      matching: find.byType(InkWell),
+    );
+    expect(
+      tester
+          .widgetList<Container>(
+            find.descendant(
+              of: rowFinder.first,
+              matching: find.byType(Container),
+            ),
+          )
+          .map((c) => (c.decoration as BoxDecoration?)?.color)
+          .whereType<Color>()
+          .where((c) => c == const Color(0xFFEEEEEE)),
+      isEmpty,
+      reason: 'no selected-row fill',
+    );
   });
 
   testWidgets('multi-select: tapping a selected option again removes it', (

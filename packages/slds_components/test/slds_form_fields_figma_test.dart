@@ -34,7 +34,14 @@ void main() {
   /// styles down the span tree (Text.rich puts the label in a child span).
   TextStyle spanStyle(WidgetTester tester, String text) {
     final root = tester
-        .renderObject<RenderParagraph>(find.textContaining(text).first)
+        .renderObject<RenderParagraph>(
+          find
+              .descendant(
+                of: find.textContaining(text).first,
+                matching: find.byType(RichText),
+              )
+              .first,
+        )
         .text;
     TextStyle? found;
     void visit(InlineSpan span, TextStyle inherited) {
@@ -363,5 +370,86 @@ void main() {
     // overlaps the padding) — the same inset as the placeholder text.
     expect(chip('Colombo').left - fieldRect.left, 1 + 4 + 8);
     expect(chip('Jaffna').left - chip('Colombo').right, 10);
+  });
+
+  testWidgets('combo box open state matches Figma (#92-#98, #100)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsComboBox(
+        label: 'District',
+        helperText: 'Help Combo',
+        placeholder: 'Select district',
+        options: const ['Batticaloa', 'Colombo'],
+        selectedValues: const ['Colombo'],
+        multiple: true,
+        visualState: SldsComboBoxState.filling,
+        onSelectionChanged: (_) {},
+      ),
+    );
+    // #93, #94: Mobile/Body 2 #17171A label, #676767 help text.
+    final labelStyle = spanStyle(tester, 'District');
+    expect(labelStyle.fontSize, 14);
+    expect(labelStyle.color, label);
+    expect(painted(tester, 'Help Combo').color, help);
+
+    // #95: the field keeps its default 1px #BCBCBC border, no focus glow.
+    final field = fieldBox(tester, SldsComboBox);
+    expect(field.border!.top.color, const Color(0xFFBCBCBC));
+    expect(field.border!.top.width, 1);
+    expect(field.boxShadow, isNull);
+
+    // #92: a grey CaretDown even while open.
+    final caret = tester.widget<Icon>(find.byIcon(Icons.keyboard_arrow_down));
+    expect(caret.color, const Color(0xFF898989));
+    expect(find.byIcon(Icons.keyboard_arrow_up), findsNothing);
+
+    // #100: panel #F7F7F7, #DDDDDD 1px, radius 16, Elevation/3 shadow.
+    final panel = tester
+        .widgetList<Container>(find.byType(Container))
+        .map((c) => c.decoration)
+        .whereType<BoxDecoration>()
+        .firstWhere((d) => d.borderRadius == BorderRadius.circular(16));
+    expect(panel.color, const Color(0xFFF7F7F7));
+    expect(panel.border!.top.color, const Color(0xFFDDDDDD));
+    expect(panel.border!.top.width, 1);
+    final shadow = panel.boxShadow!.single;
+    expect(shadow.offset, const Offset(0, 10));
+    expect(shadow.blurRadius, 15);
+    expect(shadow.spreadRadius, -3);
+
+    // #96: search bar 44px, #DDDDDD 1.5px, icon and text on one centre line.
+    final search = tester.getRect(
+      find
+          .ancestor(
+            of: find.byIcon(Icons.search),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    expect(search.height, 44);
+    expect(
+      tester.getRect(find.byType(EditableText)).center.dy,
+      closeTo(tester.getRect(find.byIcon(Icons.search)).center.dy, 0.5),
+    );
+
+    // #97, #98: 16px box 8px from Desktop/Body 2 #17171A text.
+    final rowText = find.text('Batticaloa');
+    final checkbox = find.descendant(
+      of: find.ancestor(of: rowText, matching: find.byType(InkWell)),
+      matching: find.byWidgetPredicate(
+        (w) => w is Container && w.constraints?.maxWidth == 16,
+      ),
+    );
+    expect(tester.getSize(checkbox), const Size(16, 16));
+    expect(
+      tester.getRect(rowText).left - tester.getRect(checkbox).right,
+      8,
+    );
+    final rowStyle = painted(tester, 'Batticaloa');
+    expect(rowStyle.fontSize, 14);
+    expect(rowStyle.fontSize! * rowStyle.height!, closeTo(22, 0.01));
+    expect(rowStyle.color, label);
   });
 }

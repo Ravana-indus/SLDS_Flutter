@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
 
@@ -260,7 +261,7 @@ void main() {
     }
   });
 
-  testWidgets('dark Success background matches Figma #064E3B (#55)', (
+  testWidgets('dark Success background and action match Figma (#55, #56)', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -268,10 +269,12 @@ void main() {
         theme: SldsTheme.dark,
         localizationsDelegates: SldsLocalizations.localizationsDelegates,
         supportedLocales: SldsLocalizations.supportedLocales,
-        home: const Scaffold(
+        home: Scaffold(
           body: SldsBanner(
             message: 'Message',
             severity: SldsBannerSeverity.success,
+            actionLabel: 'View details',
+            onAction: () {},
           ),
         ),
       ),
@@ -289,5 +292,12 @@ void main() {
                 .decoration!
             as BoxDecoration;
     expect(box.color, const Color(0xFF064E3B));
+
+    // #56: the action is Figma's Link button, #CDCDCD in dark mode.
+    final action = tester
+        .renderObject<RenderParagraph>(find.text('View details'))
+        .text
+        .style!;
+    expect(action.color, const Color(0xFFCDCDCD));
   });
 }

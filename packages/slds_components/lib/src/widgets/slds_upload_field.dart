@@ -159,14 +159,14 @@ class SldsUploadField extends StatelessWidget {
           children: [
             Text(
               label,
-              style: tokens.typography.fieldLabel.copyWith(
+              style: tokens.typography.compactLabel.copyWith(
                 color: colors.inputLabel,
               ),
             ),
             if (required)
               Text(
                 ' *',
-                style: tokens.typography.fieldLabel.copyWith(
+                style: tokens.typography.compactLabel.copyWith(
                   color: colors.inputBorderError,
                 ),
               ),

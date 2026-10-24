@@ -131,7 +131,6 @@ class SldsRawColorTokens {
   ///   borderDefault      0xffbcbcbc -> 0xff8f8f8f  (1.90 -> 3.23 on card)
   ///   focusRing          0xffffd740 -> 0xff1a1a1a  (1.30 -> 16.25 on page)
   ///   focusRingError     0xfff47272 -> 0xffe86666  (2.80 -> 3.00 on page)
-  ///   inputHelper        0xff898989 -> 0xff717171  (3.50 -> 4.56 on card)
   ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
   ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
   ///
@@ -265,9 +264,10 @@ class SldsRawColorTokens {
     textInverse: 0xffffffff,
     datePickerRangeHighlight: 0xfffff7d6,
     serviceCardSelectedBackground: 0xffe3edff,
-    inputLabel: 0xff222222,
+    // Figma Mobile/Body 2 label and Help Text colours (#68-#84).
+    inputLabel: 0xff17171a,
     inputPlaceholder: 0xffbcbcbc,
-    inputHelper: 0xff717171,
+    inputHelper: 0xff676767,
     inputIcon: 0xff717171,
     inputBorderDefault: 0xffbcbcbc,
     inputBorderFocused: 0xffffc700,

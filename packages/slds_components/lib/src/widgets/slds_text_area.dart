@@ -184,8 +184,7 @@ class _SldsTextAreaState extends State<SldsTextArea> {
     // maxLines and at large text scales instead of clipping.
     double boxHeight(double counterHeight, double width) {
       final floor = dimensions.textAreaHeight;
-      final chrome =
-          dimensions.space12 * 2 + dimensions.space8 + counterHeight;
+      final chrome = dimensions.space12 * 2 + dimensions.space8 + counterHeight;
       final style = typography.body1.copyWith(color: colors.textPrimary);
       final painter = TextPainter(
         text: TextSpan(text: _controller.text, style: style),
@@ -214,9 +213,8 @@ class _SldsTextAreaState extends State<SldsTextArea> {
       children: [
         Text.rich(
           TextSpan(
-            // Figma labels the field in Body 2 (14px), matching the
-            // single-line input.
-            style: typography.body2.copyWith(
+            // Figma labels the field in Mobile/Body 2 (14/18).
+            style: typography.fieldLabel.copyWith(
               color: widget.enabled
                   ? colors.inputLabel
                   : colors.disabledForeground,

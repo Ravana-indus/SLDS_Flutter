@@ -204,7 +204,7 @@ class _SldsTextFieldState extends State<SldsTextField> {
 
     // Compact sets both the label and the value in Caption 1; the standard
     // density splits them across Body 2 and Body 1.
-    final labelStyle = compact ? typography.caption1 : typography.body2;
+    final labelStyle = compact ? typography.caption1 : typography.fieldLabel;
     final valueStyle = compact ? typography.caption1 : typography.body1;
 
     // Only the focused state thickens the stroke — every other state carries

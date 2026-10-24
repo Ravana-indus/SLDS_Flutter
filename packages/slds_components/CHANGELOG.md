@@ -278,6 +278,26 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   `#444444`). New `bannerError`, `bannerErrorBackground` and
   `bannerInfoBackground` tokens carry them, so `error`, `surfaceCard` and the
   badge backgrounds are unchanged. Light and high-contrast are unchanged.
+- Form fields match Figma's Input page (#70–#86):
+  - `inputLabel` `#17171A` (was `#222222`) and `inputHelper` `#676767` (was
+    `#717171`, an AA workaround for the old `#898989`; Figma's value passes).
+  - `fieldLabel` is Figma's `Mobile/Body 2` at 14/18 (was 16/20), and every
+    field label uses it (Input, Input Mask, Mobile Number, Text Field,
+    Password, Text Area, Dropdown, Combo Box), so labels share one line box
+    and the label-to-field spacing is consistent. `SldsUploadField` moves to
+    `compactLabel`, keeping its Figma 16px label unchanged.
+  - Disabled `SldsInput` and `SldsMobileNumberInput` stay white, as Figma.
+  - `SldsInputMask` prefix/suffix cells span the full field height so their
+    dividers do, and the value cell has Figma's 16px padding.
+  - The value in `SldsInput`, `SldsInputMask` and `SldsMobileNumberInput` is
+    padded to exactly the 48dp tap target. The old slack sat it 2–3px above
+    the prefix it should line up with.
+  - `SldsMobileNumberInput`: the value sits 18px after the country code
+    (Figma 10 + 8); `errorText` now puts it in the error state, like its
+    siblings; the error state shows Figma's red XCircle status icon.
+  - The required `*` is hidden from screen readers where "required" is
+    already spoken (`SldsInput`, and `SldsComboBox`, whose label now says it).
+  - New `slds_form_fields_figma_test.dart` covers all of the above.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

@@ -184,16 +184,23 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                   Flexible(
                     child: Text(
                       widget.label,
+                      // "required" is spoken with the label; the asterisk is
+                      // visual only.
+                      semanticsLabel: widget.required
+                          ? '${widget.label}, ${context.sldsStrings.required}'
+                          : null,
                       style: tokens.typography.fieldLabel.copyWith(
                         color: colors.inputLabel,
                       ),
                     ),
                   ),
                   if (widget.required)
-                    Text(
-                      '*',
-                      style: tokens.typography.fieldLabel.copyWith(
-                        color: colors.inputBorderError,
+                    ExcludeSemantics(
+                      child: Text(
+                        '*',
+                        style: tokens.typography.fieldLabel.copyWith(
+                          color: colors.inputBorderError,
+                        ),
                       ),
                     ),
                 ],

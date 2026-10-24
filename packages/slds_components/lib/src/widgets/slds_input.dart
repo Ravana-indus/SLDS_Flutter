@@ -211,6 +211,12 @@ class _SldsInputState extends State<SldsInput> {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
+    // Pads the value's line out to exactly the 48dp tap target. With any
+    // slack, InputDecorator puts it below the text, which sat the value a few
+    // pixels above the affix it should line up with (#67, #74, #77).
+    final valueLine = tokens.typography.body1;
+    final valuePadding =
+        (dimensions.tapTargetMin - valueLine.fontSize! * valueLine.height!) / 2;
     final state = _resolvedState;
     final disabled = state == SldsInputState.disabled;
     final error = state == SldsInputState.error;
@@ -269,13 +275,18 @@ class _SldsInputState extends State<SldsInput> {
                       color: labelColor,
                     ),
                   ),
+                  // The field's accessible name already says "required", so
+                  // the asterisk is visual only (and a 14px glyph is too thin
+                  // for the painted-contrast check to sample fairly).
                   if (widget.required)
-                    Text(
-                      '*',
-                      style: tokens.typography.fieldLabel.copyWith(
-                        color: disabled
-                            ? colors.disabledForeground
-                            : colors.inputBorderError,
+                    ExcludeSemantics(
+                      child: Text(
+                        '*',
+                        style: tokens.typography.fieldLabel.copyWith(
+                          color: disabled
+                              ? colors.disabledForeground
+                              : colors.inputBorderError,
+                        ),
                       ),
                     ),
                 ],
@@ -285,9 +296,8 @@ class _SldsInputState extends State<SldsInput> {
                 height: dimensions.inputHeight,
                 padding: EdgeInsets.symmetric(horizontal: dimensions.space12),
                 decoration: BoxDecoration(
-                  color: disabled
-                      ? colors.disabledBackground
-                      : colors.surfaceCard,
+                  // Figma keeps the field white when disabled (#70).
+                  color: colors.surfaceCard,
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(dimensions.radius2xl),
                 ),
@@ -334,7 +344,7 @@ class _SldsInputState extends State<SldsInput> {
                             // left the value sitting against the field's top
                             // edge instead of on its centre line.
                             contentPadding: EdgeInsets.symmetric(
-                              vertical: dimensions.space12,
+                              vertical: valuePadding,
                             ),
                             hintText: widget.hintText,
                             hintStyle: tokens.typography.body1.copyWith(

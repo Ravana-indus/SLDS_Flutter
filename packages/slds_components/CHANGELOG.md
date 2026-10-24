@@ -268,6 +268,9 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsBanner` Success background uses a new `bannerSuccessBackground` token
   (Figma `Banner/Success/Background`): dark mode is now `#064E3B` (was the
   badge's `#062B1A`); light is unchanged `#E0F2EC` (#55).
+- `SldsBanner` Warning background uses a new `bannerWarningBackground` token
+  (Figma `Banner/Warning/Background`): dark mode is now `#503D00` (was the
+  badge's `#2E2200`); light is unchanged `#FFF8D6` (#57).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

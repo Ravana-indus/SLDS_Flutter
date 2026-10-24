@@ -82,7 +82,7 @@ class SldsBanner extends StatelessWidget {
     SldsBannerSeverity.warning => (
       Icons.error,
       colors.bannerWarning,
-      colors.badgePendingBackground,
+      colors.bannerWarningBackground,
     ),
     SldsBannerSeverity.error => (
       Icons.cancel,

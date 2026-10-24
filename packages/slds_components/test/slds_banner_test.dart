@@ -92,7 +92,7 @@ void main() {
       ),
       SldsBannerSeverity.warning: (
         colors.bannerWarning,
-        colors.badgePendingBackground,
+        colors.bannerWarningBackground,
       ),
       SldsBannerSeverity.error: (colors.error, colors.badgeErrorBackground),
       SldsBannerSeverity.info: (colors.info, colors.surfaceCard),
@@ -299,5 +299,36 @@ void main() {
         .text
         .style!;
     expect(action.color, const Color(0xFFCDCDCD));
+  });
+
+  testWidgets('dark Warning background matches Figma #503D00 (#57)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: SldsTheme.dark,
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: SldsBanner(
+            message: 'Message',
+            severity: SldsBannerSeverity.warning,
+          ),
+        ),
+      ),
+    );
+    final box =
+        tester
+                .widget<Container>(
+                  find
+                      .descendant(
+                        of: find.byType(SldsBanner),
+                        matching: find.byType(Container),
+                      )
+                      .first,
+                )
+                .decoration!
+            as BoxDecoration;
+    expect(box.color, const Color(0xFF503D00));
   });
 }

@@ -189,13 +189,14 @@ void main() {
     expect(find.byType(SldsLinkButton), findsOneWidget);
   });
 
-  testWidgets('warning and error banners match Figma (#47-#51)', (
+  testWidgets('warning, error and info banners match Figma (#47-#53)', (
     tester,
   ) async {
     // (severity, icon, Figma icon/border, Figma message colour)
     const cases = [
       (SldsBannerSeverity.warning, Icons.error, 0xFFFFC700, 0xFF503D00),
       (SldsBannerSeverity.error, Icons.cancel, 0xFFD32F2F, 0xFF17171A),
+      (SldsBannerSeverity.info, Icons.info, 0xFF0D6B7B, 0xFF17171A),
     ];
     for (final (severity, icon, accent, message) in cases) {
       await tester.pumpWidget(
@@ -235,6 +236,27 @@ void main() {
       );
       // Figma's action is the Link button in every severity.
       expect(find.byType(SldsLinkButton), findsOneWidget);
+    }
+  });
+
+  testWidgets('close button is Figma\'s 16px icon in every severity (#54)', (
+    tester,
+  ) async {
+    for (final severity in SldsBannerSeverity.values) {
+      await tester.pumpWidget(
+        wrap(
+          SldsBanner(
+            message: 'Message',
+            severity: severity,
+            onDismiss: () {},
+          ),
+        ),
+      );
+      expect(
+        tester.getSize(find.byIcon(Icons.close)),
+        const Size(16, 16),
+        reason: '$severity',
+      );
     }
   });
 }

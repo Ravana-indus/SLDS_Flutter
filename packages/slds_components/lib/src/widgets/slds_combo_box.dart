@@ -236,11 +236,15 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                     Expanded(
                       child: displayChips
                           ? Padding(
+                              // Figma Multi Select: the chip row is padded 8px
+                              // inline like the placeholder (first chip 12px
+                              // from the edge) and chips sit 10px apart (#90).
                               padding: EdgeInsets.symmetric(
+                                horizontal: dimensions.space8,
                                 vertical: dimensions.space8,
                               ),
                               child: Wrap(
-                                spacing: dimensions.space4,
+                                spacing: dimensions.space10,
                                 runSpacing: dimensions.space4,
                                 children: [
                                   for (final value in widget.selectedValues)

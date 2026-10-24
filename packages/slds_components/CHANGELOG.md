@@ -311,6 +311,9 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   space (`Description*`), as Figma.
 - `SldsDropdown` help text sits 6px below the field (was 4px), Figma's gap
   on every form field (#91).
+- `SldsComboBox` multi-select chips match Figma's Multi Select layout: the
+  chip row is padded 8px inline like the placeholder (the first chip sat
+  against the field's edge), and chips sit 10px apart (was 4px) (#90).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

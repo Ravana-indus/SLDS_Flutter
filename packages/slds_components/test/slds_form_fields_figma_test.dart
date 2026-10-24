@@ -323,4 +323,45 @@ void main() {
       );
     }
   });
+
+  testWidgets('combo box chips sit 12px in and 10px apart (#90)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsComboBox(
+        label: 'District',
+        placeholder: 'Select',
+        options: const ['Colombo', 'Jaffna'],
+        selectedValues: const ['Colombo', 'Jaffna'],
+        multiple: true,
+        onSelectionChanged: (_) {},
+      ),
+    );
+    Rect chip(String value) => tester.getRect(
+      find
+          .ancestor(of: find.text(value), matching: find.byType(Container))
+          .first,
+    );
+    final field = fieldBox(tester, SldsComboBox);
+    expect(field.borderRadius, BorderRadius.circular(12));
+    final fieldRect = tester.getRect(
+      find
+          .descendant(
+            of: find.byType(SldsComboBox),
+            matching: find.byWidgetPredicate(
+              (w) =>
+                  w is Container &&
+                  w.decoration is BoxDecoration &&
+                  (w.decoration! as BoxDecoration).border != null,
+            ),
+          )
+          .first,
+    );
+    // Figma: 4px content padding + 8px chip-row padding, inside the 1px
+    // border (Flutter insets content by its border; Figma's inside stroke
+    // overlaps the padding) — the same inset as the placeholder text.
+    expect(chip('Colombo').left - fieldRect.left, 1 + 4 + 8);
+    expect(chip('Jaffna').left - chip('Colombo').right, 10);
+  });
 }

@@ -271,6 +271,13 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsBanner` Warning background uses a new `bannerWarningBackground` token
   (Figma `Banner/Warning/Background`): dark mode is now `#503D00` (was the
   badge's `#2E2200`); light is unchanged `#FFF8D6` (#57).
+- `SldsBanner` dark mode matches Figma's dark Notification Banners (#58–#66):
+  Warning icon/border `#B38A00` (was `#FFE880`); Error background
+  `#7F1D1D` (was `#330D0D`) and icon/border `#D32F2F` (was the shared
+  `error` `#F47272`); Info background `#17171A` (was `surfaceCard`
+  `#444444`). New `bannerError`, `bannerErrorBackground` and
+  `bannerInfoBackground` tokens carry them, so `error`, `surfaceCard` and the
+  badge backgrounds are unchanged. Light and high-contrast are unchanged.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

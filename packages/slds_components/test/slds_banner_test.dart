@@ -94,8 +94,11 @@ void main() {
         colors.bannerWarning,
         colors.bannerWarningBackground,
       ),
-      SldsBannerSeverity.error: (colors.error, colors.badgeErrorBackground),
-      SldsBannerSeverity.info: (colors.info, colors.surfaceCard),
+      SldsBannerSeverity.error: (
+        colors.bannerError,
+        colors.bannerErrorBackground,
+      ),
+      SldsBannerSeverity.info: (colors.info, colors.bannerInfoBackground),
     };
 
     for (final entry in expected.entries) {
@@ -330,5 +333,62 @@ void main() {
                 .decoration!
             as BoxDecoration;
     expect(box.color, const Color(0xFF503D00));
+  });
+
+  testWidgets('dark Warning, Error and Info banners match Figma (#58-#66)', (
+    tester,
+  ) async {
+    // (severity, icon, Figma icon/border, Figma background), Frame 3.
+    const cases = [
+      (SldsBannerSeverity.warning, Icons.error, 0xFFB38A00, 0xFF503D00),
+      (SldsBannerSeverity.error, Icons.cancel, 0xFFD32F2F, 0xFF7F1D1D),
+      (SldsBannerSeverity.info, Icons.info, 0xFF7DD8E8, 0xFF17171A),
+    ];
+    for (final (severity, icon, accent, background) in cases) {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: SldsTheme.dark,
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SldsBanner(
+              message: 'Message',
+              severity: severity,
+              actionLabel: 'Action',
+              onAction: () {},
+            ),
+          ),
+        ),
+      );
+      final box =
+          tester
+                  .widget<Container>(
+                    find
+                        .descendant(
+                          of: find.byType(SldsBanner),
+                          matching: find.byType(Container),
+                        )
+                        .first,
+                  )
+                  .decoration!
+              as BoxDecoration;
+      expect(box.color, Color(background), reason: '$severity background');
+      expect(box.border!.top.color, Color(accent), reason: '$severity border');
+      expect(
+        tester.widget<Icon>(find.byIcon(icon)).color,
+        Color(accent),
+        reason: '$severity icon',
+      );
+      // Action: Figma's Link button, #CDCDCD in dark mode.
+      expect(
+        tester
+            .renderObject<RenderParagraph>(find.text('Action'))
+            .text
+            .style!
+            .color,
+        const Color(0xFFCDCDCD),
+        reason: '$severity action',
+      );
+    }
   });
 }

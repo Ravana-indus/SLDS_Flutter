@@ -86,13 +86,13 @@ class SldsBanner extends StatelessWidget {
     ),
     SldsBannerSeverity.error => (
       Icons.cancel,
-      colors.error,
-      colors.badgeErrorBackground,
+      colors.bannerError,
+      colors.bannerErrorBackground,
     ),
     SldsBannerSeverity.info => (
       Icons.info,
       colors.info,
-      colors.surfaceCard,
+      colors.bannerInfoBackground,
     ),
   };
 

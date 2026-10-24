@@ -73,6 +73,9 @@ class SldsRawColorTokens {
     required this.bannerWarning,
     required this.bannerSuccessBackground,
     required this.bannerWarningBackground,
+    required this.bannerError,
+    required this.bannerErrorBackground,
+    required this.bannerInfoBackground,
     required this.listBackground,
     required this.listBackgroundHover,
     required this.surfaceInverse,
@@ -252,6 +255,10 @@ class SldsRawColorTokens {
     bannerSuccessBackground: 0xffe0f2ec,
     // Figma Banner/Warning/Background (dark: #57).
     bannerWarningBackground: 0xfffff8d6,
+    // Figma Banner/Error/* and Banner/Info/Background (dark: #61, #63-#65).
+    bannerError: 0xffd32f2f,
+    bannerErrorBackground: 0xfffdecea,
+    bannerInfoBackground: 0xffffffff,
     listBackground: 0xfff7f7f7,
     listBackgroundHover: 0xffeeeeee,
     surfaceInverse: 0xff000000,
@@ -388,9 +395,12 @@ class SldsRawColorTokens {
     progressTrack: 0xff444444,
     progressFill: 0xff5dc896,
     bannerSuccess: 0xff5dc896,
-    bannerWarning: 0xffffe880,
+    bannerWarning: 0xffb38a00,
     bannerSuccessBackground: 0xff064e3b,
     bannerWarningBackground: 0xff503d00,
+    bannerError: 0xffd32f2f,
+    bannerErrorBackground: 0xff7f1d1d,
+    bannerInfoBackground: 0xff17171a,
     listBackground: 0xff111111,
     listBackgroundHover: 0xff444444,
     surfaceInverse: 0xff000000,
@@ -495,6 +505,9 @@ class SldsRawColorTokens {
     bannerWarning: 0xff503d00,
     bannerSuccessBackground: 0xffffffff,
     bannerWarningBackground: 0xffffffff,
+    bannerError: 0xffb91c1c,
+    bannerErrorBackground: 0xffffffff,
+    bannerInfoBackground: 0xffffffff,
     listBackground: 0xffffffff,
     listBackgroundHover: 0xffe8e8e8,
     surfaceInverse: 0xff000000,
@@ -717,6 +730,15 @@ class SldsRawColorTokens {
   /// Figma Banner/Warning/Background.
   final int bannerWarningBackground;
 
+  /// Figma Banner/Error/Icon and Banner/Error/Border.
+  final int bannerError;
+
+  /// Figma Banner/Error/Background.
+  final int bannerErrorBackground;
+
+  /// Figma Banner/Info/Background.
+  final int bannerInfoBackground;
+
   /// Figma List/Background — Service Card and List Item resting fill.
   final int listBackground;
 
@@ -913,6 +935,9 @@ class SldsRawColorTokens {
     int? bannerWarning,
     int? bannerSuccessBackground,
     int? bannerWarningBackground,
+    int? bannerError,
+    int? bannerErrorBackground,
+    int? bannerInfoBackground,
     int? listBackground,
     int? listBackgroundHover,
     int? surfaceInverse,
@@ -1027,6 +1052,10 @@ class SldsRawColorTokens {
           bannerSuccessBackground ?? this.bannerSuccessBackground,
       bannerWarningBackground:
           bannerWarningBackground ?? this.bannerWarningBackground,
+      bannerError: bannerError ?? this.bannerError,
+      bannerErrorBackground:
+          bannerErrorBackground ?? this.bannerErrorBackground,
+      bannerInfoBackground: bannerInfoBackground ?? this.bannerInfoBackground,
       listBackground: listBackground ?? this.listBackground,
       listBackgroundHover: listBackgroundHover ?? this.listBackgroundHover,
       surfaceInverse: surfaceInverse ?? this.surfaceInverse,
@@ -1245,6 +1274,17 @@ class SldsRawColorTokens {
         b.bannerWarningBackground,
         t,
       ),
+      bannerError: lerpArgb(a.bannerError, b.bannerError, t),
+      bannerErrorBackground: lerpArgb(
+        a.bannerErrorBackground,
+        b.bannerErrorBackground,
+        t,
+      ),
+      bannerInfoBackground: lerpArgb(
+        a.bannerInfoBackground,
+        b.bannerInfoBackground,
+        t,
+      ),
       listBackground: lerpArgb(a.listBackground, b.listBackground, t),
       surfaceInverse: lerpArgb(a.surfaceInverse, b.surfaceInverse, t),
       textInverse: lerpArgb(a.textInverse, b.textInverse, t),
@@ -1424,6 +1464,9 @@ class SldsRawColorTokens {
         other.bannerWarning == bannerWarning &&
         other.bannerSuccessBackground == bannerSuccessBackground &&
         other.bannerWarningBackground == bannerWarningBackground &&
+        other.bannerError == bannerError &&
+        other.bannerErrorBackground == bannerErrorBackground &&
+        other.bannerInfoBackground == bannerInfoBackground &&
         other.listBackground == listBackground &&
         other.listBackgroundHover == listBackgroundHover &&
         other.surfaceInverse == surfaceInverse &&
@@ -1530,6 +1573,9 @@ class SldsRawColorTokens {
     bannerWarning,
     bannerSuccessBackground,
     bannerWarningBackground,
+    bannerError,
+    bannerErrorBackground,
+    bannerInfoBackground,
     listBackground,
     listBackgroundHover,
     surfaceInverse,

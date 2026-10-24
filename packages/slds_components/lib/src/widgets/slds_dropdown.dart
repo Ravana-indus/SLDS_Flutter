@@ -370,7 +370,9 @@ class _SldsDropdownState<T> extends State<SldsDropdown<T>> {
         ],
         if (_hasError ||
             (widget.helpText != null && widget.helpText!.isNotEmpty)) ...[
-          SizedBox(height: dimensions.space4),
+          // Figma: 6px between the field and its help text, as on every
+          // other form field (#91).
+          SizedBox(height: dimensions.space6),
           Text(
             _hasError ? widget.errorText! : widget.helpText!,
             style: tokens.typography.caption1.copyWith(

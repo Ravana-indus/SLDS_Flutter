@@ -274,4 +274,53 @@ void main() {
       );
     }
   });
+
+  testWidgets('help text sits 6px below every field (#91)', (tester) async {
+    final fields = <Type, Widget>{
+      SldsInput: const SldsInput(label: 'L', helperText: 'Help'),
+      SldsInputMask: const SldsInputMask(label: 'L', helperText: 'Help'),
+      SldsMobileNumberInput: const SldsMobileNumberInput(
+        label: 'L',
+        helperText: 'Help',
+      ),
+      SldsDropdown<String>: SldsDropdown<String>(
+        label: 'L',
+        helpText: 'Help',
+        items: const ['Colombo'],
+        itemLabel: (v) => v,
+        onChanged: (_) {},
+      ),
+      SldsComboBox: SldsComboBox(
+        label: 'L',
+        helperText: 'Help',
+        placeholder: 'Select',
+        options: const ['Colombo'],
+        selectedValues: const [],
+        onSelectionChanged: (_) {},
+      ),
+    };
+    for (final entry in fields.entries) {
+      await pump(tester, entry.value);
+      // The bordered field box is the widest Container with a border.
+      final field = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(entry.key),
+              matching: find.byType(Container),
+            ),
+          )
+          .where(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                (c.decoration! as BoxDecoration).border != null,
+          )
+          .first;
+      final fieldBottom = tester.getRect(find.byWidget(field)).bottom;
+      expect(
+        tester.getRect(find.text('Help')).top - fieldBottom,
+        6,
+        reason: '${entry.key} field-to-help gap',
+      );
+    }
+  });
 }

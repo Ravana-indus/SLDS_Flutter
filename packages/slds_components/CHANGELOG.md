@@ -309,6 +309,8 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   floor that had pushed it darker.
 - `SldsTextArea`/`SldsTextField` required marker follows the label with no
   space (`Description*`), as Figma.
+- `SldsDropdown` help text sits 6px below the field (was 4px), Figma's gap
+  on every form field (#91).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

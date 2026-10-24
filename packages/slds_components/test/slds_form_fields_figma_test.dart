@@ -246,4 +246,32 @@ void main() {
     );
     expect(find.byIcon(Icons.close), findsNothing);
   });
+
+  testWidgets('input mask, dropdown and combo box share the 12px radius '
+      '(#89)', (tester) async {
+    final fields = <Type, Widget>{
+      SldsInputMask: const SldsInputMask(label: 'Mask'),
+      SldsDropdown<String>: SldsDropdown<String>(
+        label: 'Dropdown',
+        items: const ['Colombo'],
+        itemLabel: (v) => v,
+        onChanged: (_) {},
+      ),
+      SldsComboBox: SldsComboBox(
+        label: 'Combo',
+        placeholder: 'Select',
+        options: const ['Colombo'],
+        selectedValues: const [],
+        onSelectionChanged: (_) {},
+      ),
+    };
+    for (final entry in fields.entries) {
+      await pump(tester, entry.value);
+      expect(
+        fieldBox(tester, entry.key).borderRadius,
+        BorderRadius.circular(12),
+        reason: '${entry.key} field radius (Figma radius-2xl)',
+      );
+    }
+  });
 }

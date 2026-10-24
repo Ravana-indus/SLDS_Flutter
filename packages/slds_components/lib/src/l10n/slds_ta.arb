@@ -64,6 +64,10 @@
       }
     }
   },
+  "clear": "அழி",
+  "@clear": {
+    "description": "Accessible name for the button that empties a form field."
+  },
   "clearSearch": "தேடலை அழி",
   "@clearSearch": {
     "description": "Accessible name for the button that empties the search field."

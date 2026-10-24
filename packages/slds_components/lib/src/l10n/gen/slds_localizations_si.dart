@@ -155,6 +155,9 @@ class SldsLocalizationsSi extends SldsLocalizations {
   }
 
   @override
+  String get clear => 'හිස් කරන්න';
+
+  @override
   String get clearSearch => 'සෙවීම හිස් කරන්න';
 
   @override

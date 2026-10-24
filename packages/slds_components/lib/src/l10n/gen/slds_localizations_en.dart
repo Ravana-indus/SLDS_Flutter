@@ -156,6 +156,9 @@ class SldsLocalizationsEn extends SldsLocalizations {
   }
 
   @override
+  String get clear => 'Clear';
+
+  @override
   String get clearSearch => 'Clear search';
 
   @override

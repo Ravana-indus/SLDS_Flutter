@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma visual states for [SldsMobileNumberInput], matching node `510:3072`.
 enum SldsMobileNumberInputState {
@@ -41,6 +43,7 @@ class SldsMobileNumberInput extends StatefulWidget {
     this.countryFlag,
     this.onCountryPressed,
     this.countrySemanticLabel,
+    this.onClear,
     this.trailing,
     this.trailingWidth,
     this.onChanged,
@@ -91,6 +94,11 @@ class SldsMobileNumberInput extends StatefulWidget {
 
   /// Optional state-specific status or action icon at the end of the field.
   final Widget? trailing;
+
+  /// Shows Figma's grey clear (X) button at the end of the field. Tapping it
+  /// empties [controller] (pass one so it can) and then calls this. Null
+  /// hides the button; it is also hidden while disabled.
+  final VoidCallback? onClear;
 
   /// Width reserved for [trailing].
   ///
@@ -323,6 +331,29 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                         ),
                       ),
                     ),
+                    // Figma: a 20px grey X in a 36px ghost button, ahead of
+                    // any status icon. The 48dp hit area overflows the 36px
+                    // box rather than widening the row.
+                    if (widget.onClear != null && !disabled)
+                      Semantics(
+                        button: true,
+                        label: context.sldsStrings.clear,
+                        excludeSemantics: true,
+                        child: SldsOverflowTapTarget(
+                          onTap: () {
+                            widget.controller?.clear();
+                            widget.onClear!();
+                          },
+                          child: SizedBox.square(
+                            dimension: dimensions.buttonHeightMedium,
+                            child: Icon(
+                              Icons.close,
+                              size: dimensions.iconSizeMedium,
+                              color: colors.inputIcon,
+                            ),
+                          ),
+                        ),
+                      ),
                     if (widget.trailing != null) ...[
                       SizedBox(width: dimensions.space4),
                       SizedBox(

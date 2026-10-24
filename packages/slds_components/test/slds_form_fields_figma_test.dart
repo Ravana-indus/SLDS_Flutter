@@ -187,4 +187,63 @@ void main() {
       isTrue,
     );
   });
+
+  testWidgets('input value sits 22px from its prefix and suffix (#67)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsInput(
+        label: 'Input',
+        prefixText: 'LKR',
+        suffixText: 'KG',
+        controller: TextEditingController(text: '1250'),
+      ),
+    );
+    final value = tester.getRect(find.byType(EditableText));
+    // Figma: the affix's 4px pad + 10px gap + the value's 8px pad.
+    expect(value.left - tester.getRect(find.text('LKR')).right, 22);
+    expect(tester.getRect(find.text('KG')).left - value.right, 22);
+    expect(value.center.dy, tester.getRect(find.text('LKR')).center.dy);
+  });
+
+  testWidgets('required marker sits right after the label, as Figma', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const SldsTextArea(label: 'Description', isRequired: true),
+    );
+    expect(find.text('Description*'), findsOneWidget);
+    await pump(tester, const SldsTextField(label: 'Email', isRequired: true));
+    expect(find.text('Email*'), findsOneWidget);
+  });
+
+  testWidgets('mobile number clear button: Figma grey X that empties the '
+      'field', (tester) async {
+    final controller = TextEditingController(text: '712345678');
+    var cleared = false;
+    await pump(
+      tester,
+      SldsMobileNumberInput(
+        label: 'Mobile',
+        controller: controller,
+        onClear: () => cleared = true,
+      ),
+    );
+    final icon = tester.widget<Icon>(find.byIcon(Icons.close));
+    expect(icon.color, const Color(0xFF898989));
+    expect(icon.size, 20);
+    expect(find.bySemanticsLabel('Clear'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.close));
+    expect(controller.text, isEmpty);
+    expect(cleared, isTrue);
+
+    await pump(
+      tester,
+      SldsMobileNumberInput(label: 'Mobile', enabled: false, onClear: () {}),
+    );
+    expect(find.byIcon(Icons.close), findsNothing);
+  });
 }

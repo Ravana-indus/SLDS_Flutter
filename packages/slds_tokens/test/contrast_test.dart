@@ -203,7 +203,6 @@ final _pairs = <_Pair>[
   // Inputs.
   _Pair('input label on card', (c) => c.inputLabel, (c) => c.surfaceCard),
   _Pair('input helper on card', (c) => c.inputHelper, (c) => c.surfaceCard),
-  _Pair('input icon on card', (c) => c.inputIcon, (c) => c.surfaceCard),
   _Pair(
     'placeholder on input background',
     (c) => c.inputPlaceholder,
@@ -233,6 +232,8 @@ final _pairs = <_Pair>[
 /// Non-text UI components need 3:1 against what they sit on (WCAG 1.4.11).
 final _nonTextPairs = <_Pair>[
   _Pair('default border on card', (c) => c.borderDefault, (c) => c.surfaceCard),
+  // An icon is a graphic, so WCAG 1.4.11's 3:1 applies, not the text floor.
+  _Pair('input icon on card', (c) => c.inputIcon, (c) => c.surfaceCard),
   _Pair('focus ring on page', (c) => c.focusRing, (c) => c.surfacePage),
   _Pair('focus ring on card', (c) => c.focusRing, (c) => c.surfaceCard),
   _Pair(

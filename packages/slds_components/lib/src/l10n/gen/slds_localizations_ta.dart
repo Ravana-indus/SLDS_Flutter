@@ -156,6 +156,9 @@ class SldsLocalizationsTa extends SldsLocalizations {
   }
 
   @override
+  String get clear => 'அழி';
+
+  @override
   String get clearSearch => 'தேடலை அழி';
 
   @override

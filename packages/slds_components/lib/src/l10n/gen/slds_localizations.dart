@@ -346,6 +346,12 @@ abstract class SldsLocalizations {
   /// **'Digit {position} of {total}'**
   String digitOf(int position, int total);
 
+  /// Accessible name for the button that empties a form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
   /// Accessible name for the button that empties the search field.
   ///
   /// In en, this message translates to:

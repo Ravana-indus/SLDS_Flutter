@@ -225,7 +225,7 @@ class _SldsTextAreaState extends State<SldsTextArea> {
                 TextSpan(
                   // Disabled greys the whole label, asterisk included.
                   style: widget.enabled ? TextStyle(color: colors.error) : null,
-                  text: ' *',
+                  text: '*',
                 ),
             ],
           ),

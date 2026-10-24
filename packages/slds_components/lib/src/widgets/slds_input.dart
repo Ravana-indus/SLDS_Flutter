@@ -303,6 +303,8 @@ class _SldsInputState extends State<SldsInput> {
                 ),
                 child: Row(
                   children: [
+                    // Figma: affix 4px pad + 10px gap + the value's 8px pad,
+                    // so the value sits 22px from LKR/KG (#67).
                     if (widget.prefixText != null) ...[
                       Text(
                         widget.prefixText!,
@@ -310,7 +312,7 @@ class _SldsInputState extends State<SldsInput> {
                           color: affixColor,
                         ),
                       ),
-                      SizedBox(width: dimensions.space8),
+                      SizedBox(width: dimensions.space4 + dimensions.space10),
                     ],
                     Expanded(
                       child: Semantics(
@@ -344,6 +346,7 @@ class _SldsInputState extends State<SldsInput> {
                             // left the value sitting against the field's top
                             // edge instead of on its centre line.
                             contentPadding: EdgeInsets.symmetric(
+                              horizontal: dimensions.space8,
                               vertical: valuePadding,
                             ),
                             hintText: widget.hintText,
@@ -355,7 +358,7 @@ class _SldsInputState extends State<SldsInput> {
                       ),
                     ),
                     if (widget.suffixText != null) ...[
-                      SizedBox(width: dimensions.space8),
+                      SizedBox(width: dimensions.space4 + dimensions.space10),
                       Text(
                         widget.suffixText!,
                         style: tokens.typography.body1.copyWith(

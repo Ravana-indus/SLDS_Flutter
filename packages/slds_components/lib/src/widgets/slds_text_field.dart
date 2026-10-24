@@ -293,7 +293,7 @@ class _SldsTextFieldState extends State<SldsTextField> {
               TextSpan(text: widget.label),
               if (widget.isRequired)
                 TextSpan(
-                  text: ' *',
+                  text: '*',
                   style: TextStyle(color: colors.error),
                 ),
             ],

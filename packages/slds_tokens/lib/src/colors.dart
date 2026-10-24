@@ -131,7 +131,6 @@ class SldsRawColorTokens {
   ///   borderDefault      0xffbcbcbc -> 0xff8f8f8f  (1.90 -> 3.23 on card)
   ///   focusRing          0xffffd740 -> 0xff1a1a1a  (1.30 -> 16.25 on page)
   ///   focusRingError     0xfff47272 -> 0xffe86666  (2.80 -> 3.00 on page)
-  ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
   ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
   ///
   /// focusRing is the significant one: the previous pale yellow measured
@@ -268,7 +267,8 @@ class SldsRawColorTokens {
     inputLabel: 0xff17171a,
     inputPlaceholder: 0xffbcbcbc,
     inputHelper: 0xff676767,
-    inputIcon: 0xff717171,
+    // Figma's input icon grey (clear X, eye, caret, search): #898989.
+    inputIcon: 0xff898989,
     inputBorderDefault: 0xffbcbcbc,
     inputBorderFocused: 0xffffc700,
     inputBorderError: 0xffd32f2f,

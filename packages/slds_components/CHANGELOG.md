@@ -298,6 +298,17 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   - The required `*` is hidden from screen readers where "required" is
     already spoken (`SldsInput`, and `SldsComboBox`, whose label now says it).
   - New `slds_form_fields_figma_test.dart` covers all of the above.
+- `SldsInput` value sits 22px from its prefix and suffix, Figma's affix pad +
+  gap + value pad (was 8px) (#67).
+- `SldsMobileNumberInput.onClear` shows Figma's grey clear (X) button: it
+  empties `controller`, then calls `onClear`. New localized `clear` string
+  for its accessible name (si/ta machine-drafted, needs review).
+- `inputIcon` is Figma's input icon grey `#898989` (was `#717171`): clear X,
+  password eye, search and caret icons. An icon is a graphic, so the
+  contrast test now holds it to WCAG 1.4.11's 3:1 (3.54:1), not the text
+  floor that had pushed it darker.
+- `SldsTextArea`/`SldsTextField` required marker follows the label with no
+  space (`Description*`), as Figma.
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

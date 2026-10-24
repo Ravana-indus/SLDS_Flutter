@@ -77,7 +77,7 @@ class SldsBanner extends StatelessWidget {
     SldsBannerSeverity.success => (
       Icons.check_circle,
       colors.bannerSuccess,
-      colors.badgeSuccessBackground,
+      colors.bannerSuccessBackground,
     ),
     SldsBannerSeverity.warning => (
       Icons.error,

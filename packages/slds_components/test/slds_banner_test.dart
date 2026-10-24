@@ -87,7 +87,7 @@ void main() {
     final expected = <SldsBannerSeverity, (Color, Color)>{
       SldsBannerSeverity.success: (
         colors.bannerSuccess,
-        colors.badgeSuccessBackground,
+        colors.bannerSuccessBackground,
       ),
       SldsBannerSeverity.warning: (
         colors.bannerWarning,
@@ -239,7 +239,7 @@ void main() {
     }
   });
 
-  testWidgets('close button is Figma\'s 16px icon in every severity (#54)', (
+  testWidgets("close button is Figma's 16px icon in every severity (#54)", (
     tester,
   ) async {
     for (final severity in SldsBannerSeverity.values) {
@@ -258,5 +258,36 @@ void main() {
         reason: '$severity',
       );
     }
+  });
+
+  testWidgets('dark Success background matches Figma #064E3B (#55)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: SldsTheme.dark,
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: SldsBanner(
+            message: 'Message',
+            severity: SldsBannerSeverity.success,
+          ),
+        ),
+      ),
+    );
+    final box =
+        tester
+                .widget<Container>(
+                  find
+                      .descendant(
+                        of: find.byType(SldsBanner),
+                        matching: find.byType(Container),
+                      )
+                      .first,
+                )
+                .decoration!
+            as BoxDecoration;
+    expect(box.color, const Color(0xFF064E3B));
   });
 }

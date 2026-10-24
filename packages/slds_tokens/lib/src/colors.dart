@@ -71,6 +71,7 @@ class SldsRawColorTokens {
     required this.progressFill,
     required this.bannerSuccess,
     required this.bannerWarning,
+    required this.bannerSuccessBackground,
     required this.listBackground,
     required this.listBackgroundHover,
     required this.surfaceInverse,
@@ -246,6 +247,8 @@ class SldsRawColorTokens {
     bannerSuccess: 0xff1faa63,
     // Figma Banner/Warning/Icon and Banner/Warning/Border (#48, #49).
     bannerWarning: 0xffffc700,
+    // Figma Banner/Success/Background (dark: #55).
+    bannerSuccessBackground: 0xffe0f2ec,
     listBackground: 0xfff7f7f7,
     listBackgroundHover: 0xffeeeeee,
     surfaceInverse: 0xff000000,
@@ -383,6 +386,7 @@ class SldsRawColorTokens {
     progressFill: 0xff5dc896,
     bannerSuccess: 0xff5dc896,
     bannerWarning: 0xffffe880,
+    bannerSuccessBackground: 0xff064e3b,
     listBackground: 0xff111111,
     listBackgroundHover: 0xff444444,
     surfaceInverse: 0xff000000,
@@ -485,6 +489,7 @@ class SldsRawColorTokens {
     progressFill: 0xff065f46,
     bannerSuccess: 0xff065f46,
     bannerWarning: 0xff503d00,
+    bannerSuccessBackground: 0xffffffff,
     listBackground: 0xffffffff,
     listBackgroundHover: 0xffe8e8e8,
     surfaceInverse: 0xff000000,
@@ -701,6 +706,9 @@ class SldsRawColorTokens {
   /// Figma Banner/Warning/Icon and Banner/Warning/Border.
   final int bannerWarning;
 
+  /// Figma Banner/Success/Background.
+  final int bannerSuccessBackground;
+
   /// Figma List/Background — Service Card and List Item resting fill.
   final int listBackground;
 
@@ -895,6 +903,7 @@ class SldsRawColorTokens {
     int? progressFill,
     int? bannerSuccess,
     int? bannerWarning,
+    int? bannerSuccessBackground,
     int? listBackground,
     int? listBackgroundHover,
     int? surfaceInverse,
@@ -1005,6 +1014,8 @@ class SldsRawColorTokens {
       progressFill: progressFill ?? this.progressFill,
       bannerSuccess: bannerSuccess ?? this.bannerSuccess,
       bannerWarning: bannerWarning ?? this.bannerWarning,
+      bannerSuccessBackground:
+          bannerSuccessBackground ?? this.bannerSuccessBackground,
       listBackground: listBackground ?? this.listBackground,
       listBackgroundHover: listBackgroundHover ?? this.listBackgroundHover,
       surfaceInverse: surfaceInverse ?? this.surfaceInverse,
@@ -1213,6 +1224,11 @@ class SldsRawColorTokens {
       progressFill: lerpArgb(a.progressFill, b.progressFill, t),
       bannerSuccess: lerpArgb(a.bannerSuccess, b.bannerSuccess, t),
       bannerWarning: lerpArgb(a.bannerWarning, b.bannerWarning, t),
+      bannerSuccessBackground: lerpArgb(
+        a.bannerSuccessBackground,
+        b.bannerSuccessBackground,
+        t,
+      ),
       listBackground: lerpArgb(a.listBackground, b.listBackground, t),
       surfaceInverse: lerpArgb(a.surfaceInverse, b.surfaceInverse, t),
       textInverse: lerpArgb(a.textInverse, b.textInverse, t),
@@ -1390,6 +1406,7 @@ class SldsRawColorTokens {
         other.progressFill == progressFill &&
         other.bannerSuccess == bannerSuccess &&
         other.bannerWarning == bannerWarning &&
+        other.bannerSuccessBackground == bannerSuccessBackground &&
         other.listBackground == listBackground &&
         other.listBackgroundHover == listBackgroundHover &&
         other.surfaceInverse == surfaceInverse &&
@@ -1494,6 +1511,7 @@ class SldsRawColorTokens {
     progressFill,
     bannerSuccess,
     bannerWarning,
+    bannerSuccessBackground,
     listBackground,
     listBackgroundHover,
     surfaceInverse,

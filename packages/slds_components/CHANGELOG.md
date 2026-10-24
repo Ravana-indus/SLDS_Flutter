@@ -262,6 +262,9 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsBanner` Success icon and border use Figma's `Banner/Success/Icon` and
   `Banner/Success/Border` `#1FAA63` (was `success` `#00833C`) via a new
   `bannerSuccess` token, leaving the shared `success` unchanged (#45, #46).
+- `SldsBanner` Warning icon and border use Figma's `Banner/Warning/Icon` and
+  `Banner/Warning/Border` `#FFC700` (was `warning` `#B38A00`) via a new
+  `bannerWarning` token, leaving the shared `warning` unchanged (#48, #49).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

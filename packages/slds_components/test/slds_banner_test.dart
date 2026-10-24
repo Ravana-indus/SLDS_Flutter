@@ -90,7 +90,7 @@ void main() {
         colors.badgeSuccessBackground,
       ),
       SldsBannerSeverity.warning: (
-        colors.warning,
+        colors.bannerWarning,
         colors.badgePendingBackground,
       ),
       SldsBannerSeverity.error: (colors.error, colors.badgeErrorBackground),
@@ -187,5 +187,54 @@ void main() {
 
     // Action: Figma's Link button instance.
     expect(find.byType(SldsLinkButton), findsOneWidget);
+  });
+
+  testWidgets('warning and error banners match Figma (#47-#51)', (
+    tester,
+  ) async {
+    // (severity, icon, Figma icon/border, Figma message colour)
+    const cases = [
+      (SldsBannerSeverity.warning, Icons.error, 0xFFFFC700, 0xFF503D00),
+      (SldsBannerSeverity.error, Icons.cancel, 0xFFD32F2F, 0xFF17171A),
+    ];
+    for (final (severity, icon, accent, message) in cases) {
+      await tester.pumpWidget(
+        wrap(
+          SldsBanner(
+            message: 'Message',
+            severity: severity,
+            actionLabel: 'Action',
+            onAction: () {},
+          ),
+        ),
+      );
+      expect(
+        tester.widget<Icon>(find.byIcon(icon)).color,
+        Color(accent),
+        reason: '$severity icon',
+      );
+      final border =
+          (tester
+                      .widget<Container>(
+                        find
+                            .descendant(
+                              of: find.byType(SldsBanner),
+                              matching: find.byType(Container),
+                            )
+                            .first,
+                      )
+                      .decoration!
+                  as BoxDecoration)
+              .border!
+              .top;
+      expect(border.color, Color(accent), reason: '$severity border');
+      expect(
+        tester.widget<Text>(find.text('Message')).style!.color,
+        Color(message),
+        reason: '$severity message',
+      );
+      // Figma's action is the Link button in every severity.
+      expect(find.byType(SldsLinkButton), findsOneWidget);
+    }
   });
 }

@@ -251,6 +251,9 @@ class SldsColorTokens {
   /// Figma Banner/Success/Icon and Banner/Success/Border.
   Color get bannerSuccess => Color(tokens.bannerSuccess);
 
+  /// Figma Banner/Warning/Icon and Banner/Warning/Border.
+  Color get bannerWarning => Color(tokens.bannerWarning);
+
   /// Figma List/Background — Service Card and List Item resting fill.
   Color get listBackground => Color(tokens.listBackground);
 

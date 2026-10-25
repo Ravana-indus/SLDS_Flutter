@@ -189,13 +189,13 @@ class _NavItem extends StatelessWidget {
                     ),
                     if (item.badgeCount != null && item.badgeCount! > 0)
                       // Figma (342:254) hangs the badge off the icon's
-                      // top-right corner. Anchored by its bottom-start corner
-                      // it grows up and away as text scales; anchored by its
-                      // end edge it grew back over the icon (#108). Same 1x
-                      // spot as before: 8px in, top 4px above the icon.
+                      // top-right corner: 2px above it and 2px past its end.
+                      // Anchored by its bottom-start corner it grows up and
+                      // away as text scales; anchored by its end edge it
+                      // grew back over the icon (#108).
                       PositionedDirectional(
-                        start: 8,
-                        bottom: 6,
+                        start: dimensions.iconSizeMedium - 14,
+                        bottom: dimensions.iconSizeMedium - 12,
                         child: _CountBadge(
                           count: item.badgeCount!,
                           background: colors.notificationBadgeBackground,
@@ -228,21 +228,23 @@ class _CountBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.slds;
     final label = count > 99 ? '99+' : '$count';
+    // Figma's Badges frame: a #DC2626 pill padded 4px either side around a
+    // 12/400 label on a 14px line; a single digit is 16x14.
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+      padding: EdgeInsets.symmetric(horizontal: tokens.dimensions.space4),
+      constraints: const BoxConstraints(minWidth: 16),
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(tokens.dimensions.radiusFull),
       ),
       alignment: Alignment.center,
       child: Text(
         label,
-        style: const TextStyle(
+        style: tokens.typography.caption1.copyWith(
+          height: 14 / 12,
           color: Colors.white,
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
         ),
       ),
     );

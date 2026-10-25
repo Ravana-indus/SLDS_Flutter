@@ -340,7 +340,9 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   already 1.5px (#106).
 - `SldsBottomNav`'s count badge is anchored by its bottom-start corner, so
   at large text scales it grows up and away from the icon instead of over it
-  (#108). Unchanged at 1x.
+  (#108). The badge itself is now Figma's: a 16x14 `#DC2626` pill with a
+  12/400 white label on a 14px line, 2px above the icon and 2px past its end
+  (was 18x18 with a 10px bold label).
 - `SldsSearchBar` is Figma's 52px with 16px vertical padding and 14/18 text,
   so the hint sits on the icon's centre line (it was 2px high in a 50px bar)
   (#109).

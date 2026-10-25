@@ -266,4 +266,31 @@ void main() {
     expect(atTwo.width, lessThanOrEqualTo(atOne.width));
     expect(atTwo.height, lessThanOrEqualTo(atOne.height));
   });
+
+  // Figma Bottom Navigation element (342:254): a 16x14 #DC2626 pill, 12/400
+  // white label, 2px above the icon and 2px past its end.
+  testWidgets('count badge matches Figma', (tester) async {
+    await pump(
+      tester,
+      SldsBottomNav(items: items, currentIndex: 0, onTap: (_) {}),
+    );
+
+    final badgeFinder = find
+        .ancestor(of: find.text('2'), matching: find.byType(Container))
+        .first;
+    final badge = tester.getRect(badgeFinder);
+    final icon = tester.getRect(find.byIcon(Icons.notifications));
+    expect(badge.size, const Size(16, 14));
+    expect(badge.top, icon.top - 2);
+    expect(badge.right, icon.right + 2);
+
+    final box =
+        tester.widget<Container>(badgeFinder).decoration! as BoxDecoration;
+    expect(box.color, const Color(0xFFDC2626));
+    final style = tester.widget<Text>(find.text('2')).style!;
+    expect(style.fontSize, 12);
+    expect(style.fontWeight, FontWeight.w400);
+    expect(style.fontSize! * style.height!, closeTo(14, 0.01));
+    expect(style.color, const Color(0xFFFFFFFF));
+  });
 }

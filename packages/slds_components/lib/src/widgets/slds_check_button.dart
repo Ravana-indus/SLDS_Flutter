@@ -80,10 +80,17 @@ class SldsCheckButton extends StatelessWidget {
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: tokens.typography.compactLabel.copyWith(
-              color: foreground,
-              fontWeight: FontWeight.w600,
-            ),
+            // Figma Check Button: selected is Desktop/Body 2 Strong, 14/500
+            // on a 22px line (#143); unselected 16/400 on a 26px line.
+            style: selected
+                ? tokens.typography.body2.copyWith(
+                    color: foreground,
+                    fontWeight: FontWeight.w500,
+                  )
+                : tokens.typography.body1.copyWith(
+                    height: 26 / 16,
+                    color: foreground,
+                  ),
           ),
         ),
       ),

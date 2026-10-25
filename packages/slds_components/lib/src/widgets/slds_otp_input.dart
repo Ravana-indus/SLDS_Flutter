@@ -254,8 +254,10 @@ class _SldsOtpInputState extends State<SldsOtpInput> {
       textColor = colors.inputBorderError;
       emphasized = true;
     } else if (widget.success) {
-      borderColor = colors.success;
-      textColor = colors.success;
+      // Figma Success: border and digit #1FAA63, the feedback green (#155,
+      // #156) — lighter than the text-safe `success` #00833C.
+      borderColor = colors.badgeSuccessText;
+      textColor = colors.badgeSuccessText;
       emphasized = true;
     } else if (focused) {
       // Gold — the active box, whether or not it already holds a digit.

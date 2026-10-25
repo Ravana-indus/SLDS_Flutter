@@ -113,7 +113,7 @@ void main() {
 
     for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
       final border = field.decoration!.enabledBorder! as OutlineInputBorder;
-      expect(border.borderSide.color, SldsColorTokens.light().success);
+      expect(border.borderSide.color, SldsColorTokens.light().badgeSuccessText);
     }
   });
 
@@ -227,7 +227,7 @@ void main() {
 
     final field = tester.widget<TextField>(find.byType(TextField).first);
     final border = field.decoration!.enabledBorder! as OutlineInputBorder;
-    expect(border.borderSide.color, SldsColorTokens.dark().success);
+    expect(border.borderSide.color, SldsColorTokens.dark().badgeSuccessText);
   });
 
   group('Figma state fidelity', () {
@@ -246,7 +246,7 @@ void main() {
       await pump(tester, const SldsOtpInput(length: 2, success: true));
 
       final field = tester.widget<TextField>(find.byType(TextField).first);
-      expect(field.style!.color, SldsColorTokens.light().success);
+      expect(field.style!.color, SldsColorTokens.light().badgeSuccessText);
     });
 
     testWidgets('focused, error and success draw the emphasized 1.5px stroke', (
@@ -321,5 +321,27 @@ void main() {
       final field = tester.widget<TextField>(find.byType(TextField).first);
       expect(field.decoration!.fillColor, SldsColorTokens.light().surfaceCard);
     });
+  });
+
+  // Figma OTP Verification: Success border and digit #1FAA63 (#155, #156);
+  // Filled digit #17171A (#157).
+  testWidgets('success and default colours match Figma (#155-#157)', (
+    tester,
+  ) async {
+    OutlineInputBorder border() =>
+        tester
+                .widget<TextField>(find.byType(TextField).first)
+                .decoration!
+                .enabledBorder!
+            as OutlineInputBorder;
+    TextStyle digit() =>
+        tester.widget<TextField>(find.byType(TextField).first).style!;
+
+    await pump(tester, const SldsOtpInput(length: 4));
+    expect(digit().color, const Color(0xFF17171A));
+
+    await pump(tester, const SldsOtpInput(length: 4, success: true));
+    expect(border().borderSide.color, const Color(0xFF1FAA63));
+    expect(digit().color, const Color(0xFF1FAA63));
   });
 }

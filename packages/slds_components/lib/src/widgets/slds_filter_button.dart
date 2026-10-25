@@ -90,25 +90,40 @@ class SldsFilterButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                label,
-                style: tokens.typography.compactLabel.copyWith(
-                  color: foreground,
+              // Flexible so a long label (Sinhala or Tamil at 2x text) wraps
+              // inside the pill instead of pushing the count and caret out
+              // of it (#151). Figma: 14/22, 400 deselected (#152) and 500
+              // selected.
+              Flexible(
+                child: Text(
+                  label,
+                  style: tokens.typography.body2.copyWith(
+                    color: foreground,
+                    fontWeight: _active ? FontWeight.w500 : FontWeight.w400,
+                  ),
                 ),
               ),
               if (_active) ...[
                 SizedBox(width: dimensions.space8),
+                // Figma: a 20px white circle round a 14/400 #17171A count
+                // (#150). The line is held to the circle's 20px so the
+                // badge stays round; a pill once the count needs more room.
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: dimensions.space6),
+                  constraints: const BoxConstraints(
+                    minWidth: 20,
+                    minHeight: 20,
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: dimensions.space4),
                   decoration: BoxDecoration(
                     color: colors.surfaceCard,
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(dimensions.radiusFull),
                   ),
                   child: Text(
                     '$count',
-                    style: tokens.typography.caption2.copyWith(
+                    textAlign: TextAlign.center,
+                    style: tokens.typography.body2.copyWith(
+                      height: 20 / 14,
                       color: colors.textPrimary,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

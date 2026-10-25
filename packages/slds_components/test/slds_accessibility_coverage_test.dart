@@ -72,7 +72,19 @@ const _knownTapTargetExceptions = {'chip'};
 // exactly (issue #34): 1.77:1 on the page, below 3:1 for large text. Pending
 // design review — same exemption as 'light: error state code on page' in
 // contrast_test; the description is covered by its own token pairing.
-const _knownTextContrastExceptions = {'process_list', 'tooltip', 'error_state'};
+//
+// SldsErrorSummary's links are Figma's 16/400 #D32F2F (issue #149), each in
+// a row held to the 48px tap floor so its semantics rect is 48px tall. The
+// guideline averages the thin 400-weight glyphs over that whole row and
+// reports 3.04:1; the painted pair, #D32F2F on white, is 4.98:1, and the
+// stricter #D32F2F on #F7F7F7 is checked by 'error text on page' in
+// contrast_test. Same artifact as the tooltip's.
+const _knownTextContrastExceptions = {
+  'process_list',
+  'tooltip',
+  'error_state',
+  'error_summary',
+};
 
 void main() {
   for (final fixture in sldsFixtures()) {

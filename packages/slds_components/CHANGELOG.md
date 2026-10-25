@@ -381,6 +381,27 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   #140).
 - `SldsPasswordField` (#131–#134) and `SldsSummaryList` (#135, #136) colours
   are now pinned by tests; they already matched Figma.
+- `SldsCheckButton`'s label follows Figma per state: selected 14/500/22,
+  unselected 16/400/26 (was 16/600 for both) (#143).
+- `SldsCheckbox` matches Figma Checkbox (542:442): `SldsCheckboxSize.small`
+  is 16px (was 20px); both sizes use a 2px radius; resting `#F7F7F7` with a
+  `#BCBCBC` border (1.5px Large, 1px Small); checked/indeterminate marks
+  `#FDFDFD` (were black); disabled `#DDDDDD` with a `#BCBCBC` border and
+  mark (#144–#147).
+- `SldsErrorSummary` title is 18/500/28 (was 24px) and its links 16/400/24
+  (were 14/600) (#148, #149).
+- `SldsFilterButton`'s count is 14/400 `#17171A` in a 20px white circle
+  (was 11/600) (#150). Its label is Figma's 14/22, 400 deselected and 500
+  selected (was 16/20) (#152), and wraps inside the pill instead of pushing
+  the count and caret out of it at large text scales (#151).
+- `SldsTabStrip` is drawn in its dark style under a dark theme, as Figma's
+  dark mode draws it: the selected pill is `#010102` (was `#111111`) (#154).
+- `SldsOtpInput`'s Success border and digit are Figma's `#1FAA63` (were
+  `success` `#00833C`) (#155, #156).
+- `SldsToggle` matches Figma Toggle (543:6036): the large track is 50x28
+  (was 48), the thumb sits 4px from the ends, off track `#DDDDDD`, thumb
+  `#F7F7F7`, disabled thumb `#BCBCBC` (were translucent scheme overlays)
+  (#158–#160).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

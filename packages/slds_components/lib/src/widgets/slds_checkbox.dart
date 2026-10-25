@@ -8,8 +8,8 @@ enum SldsCheckboxSize {
   /// 24px box with a 16px check.
   large(box: 24, icon: 16),
 
-  /// 20px box with a 14px check.
-  small(box: 20, icon: 14)
+  /// 16px box with a 12px check — Figma's Size=Default (#145).
+  small(box: 16, icon: 12)
   ;
 
   const SldsCheckboxSize({required this.box, required this.icon});
@@ -101,29 +101,30 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
     final accent = scheme.primary;
     final filled = (widget.value ?? false) || widget.value == null;
 
+    // Figma Checkbox (542:442): resting #F7F7F7 with a #BCBCBC border
+    // (#147); checked/indeterminate #FFC700 with a #FDFDFD mark (#146);
+    // disabled #DDDDDD with a #BCBCBC border and mark.
+    final colors = context.slds.colors;
     final Color boxColor;
     final Color borderColor;
     final Color iconColor;
     if (!_enabled) {
-      boxColor = filled
-          ? context.slds.colors.disabledBackground
-          : Colors.transparent;
-      borderColor = context.slds.colors.disabledBorder;
-      iconColor = context.slds.colors.disabledForeground;
+      boxColor = colors.disabledBackground;
+      borderColor = colors.inputBorderDefault;
+      iconColor = colors.disabledForeground;
     } else if (filled) {
       boxColor = accent;
       borderColor = accent;
-      iconColor =
-          ThemeData.estimateBrightnessForColor(accent) == Brightness.dark
-          ? Colors.white
-          : Colors.black;
+      iconColor = colors.surfacePrimary;
     } else {
-      boxColor = Colors.transparent;
-      borderColor = scheme.outline;
+      boxColor = colors.surfacePage;
+      borderColor = colors.inputBorderDefault;
       iconColor = Colors.transparent;
     }
 
-    final radius = widget.size.box / 6;
+    // Figma: radius-sm on both sizes; Large strokes 1.5px, Default 1px.
+    final radius = dimensions.radiusSm;
+    final large = widget.size == SldsCheckboxSize.large;
 
     // Role, state and name in one node. Without this a screen reader reaches
     // an unlabelled box with no indication that it is checkable at all.
@@ -165,13 +166,20 @@ class _SldsCheckboxState extends State<SldsCheckbox> {
                 decoration: BoxDecoration(
                   color: boxColor,
                   borderRadius: BorderRadius.circular(radius),
-                  border: Border.all(color: borderColor, width: 1.5),
+                  border: Border.all(
+                    color: borderColor,
+                    width: large
+                        ? dimensions.emphasizedBorderWidth
+                        : dimensions.controlBorderWidth,
+                  ),
                 ),
                 child: widget.value == null
                     ? Center(
+                        // Figma's dash: half the box wide, 3px (Large) or
+                        // 2px (Default) thick.
                         child: Container(
-                          width: widget.size.icon * 0.7,
-                          height: 2,
+                          width: widget.size.box / 2,
+                          height: large ? 3 : 2,
                           color: iconColor,
                         ),
                       )

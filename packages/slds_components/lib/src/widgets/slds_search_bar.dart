@@ -176,7 +176,8 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
                     enabled: widget.enabled,
                     onChanged: widget.onChanged,
                     onSubmitted: widget.onSubmitted,
-                    style: tokens.typography.body1.copyWith(
+                    // Figma Search Bar Default/Typing: 14/18 text.
+                    style: tokens.typography.fieldLabel.copyWith(
                       color: colors.textPrimary,
                     ),
                     decoration: InputDecoration(
@@ -188,11 +189,16 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
                       constraints: BoxConstraints(
                         minHeight: dimensions.tapTargetMin,
                       ),
+                      // Figma pads 16px above and below: 16 + 18 + 16 fills
+                      // the 52px bar inside its border, so the text centres
+                      // on the icon. The old 12px left 4px of the 48dp
+                      // minimum as slack under the text, lifting it 2px
+                      // (#109).
                       contentPadding: EdgeInsets.symmetric(
-                        vertical: dimensions.space12,
+                        vertical: dimensions.space16,
                       ),
                       hintText: widget.hintText ?? context.sldsStrings.search,
-                      hintStyle: tokens.typography.body1.copyWith(
+                      hintStyle: tokens.typography.fieldLabel.copyWith(
                         color: colors.inputPlaceholder,
                       ),
                     ),

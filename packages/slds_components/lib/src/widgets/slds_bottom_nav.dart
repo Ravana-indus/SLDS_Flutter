@@ -188,9 +188,14 @@ class _NavItem extends StatelessWidget {
                       color: iconColor,
                     ),
                     if (item.badgeCount != null && item.badgeCount! > 0)
+                      // Figma (342:254) hangs the badge off the icon's
+                      // top-right corner. Anchored by its bottom-start corner
+                      // it grows up and away as text scales; anchored by its
+                      // end edge it grew back over the icon (#108). Same 1x
+                      // spot as before: 8px in, top 4px above the icon.
                       PositionedDirectional(
-                        end: -6,
-                        top: -4,
+                        start: 8,
+                        bottom: 6,
                         child: _CountBadge(
                           count: item.badgeCount!,
                           background: colors.notificationBadgeBackground,

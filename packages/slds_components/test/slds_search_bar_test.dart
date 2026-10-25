@@ -175,4 +175,27 @@ void main() {
 
     expect(find.byIcon(Icons.check), findsNothing);
   });
+
+  // Figma Search Bar, Device=Web, State=Default (543:5292): 52px bar, 20px
+  // magnifier, 8px gap, "Search" 14/18 #BCBCBC, all on one centre line.
+  testWidgets('icon and hint line up as in Figma (#109)', (tester) async {
+    await pump(tester, const SldsSearchBar());
+
+    final bar = tester.getRect(find.byType(SldsSearchBar));
+    final icon = tester.getRect(find.byIcon(Icons.search));
+    final hint = tester.getRect(find.text('Search'));
+    expect(bar.height, 52);
+    expect(icon.size, const Size(20, 20));
+    expect(hint.left - icon.right, 8);
+    expect(hint.center.dy, icon.center.dy);
+    expect(icon.center.dy, bar.center.dy);
+
+    final style = tester
+        .widget<TextField>(find.byType(TextField))
+        .decoration!
+        .hintStyle!;
+    expect(style.fontSize, 14);
+    expect(style.fontSize! * style.height!, closeTo(18, 0.01));
+    expect(style.color, const Color(0xFFBCBCBC));
+  });
 }

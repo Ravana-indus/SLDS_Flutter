@@ -207,8 +207,9 @@ class _SldsTextFieldState extends State<SldsTextField> {
     final labelStyle = compact ? typography.caption1 : typography.fieldLabel;
     final valueStyle = compact ? typography.caption1 : typography.body1;
 
-    // Only the focused state thickens the stroke — every other state carries
-    // itself in the colour alone.
+    // Focus thickens the stroke, and so does error: Figma's Text Input and
+    // Password Error variants draw #D32F2F at 1.5px (1px when compact) (#106).
+    final errorEmphasized = !compact;
     OutlineInputBorder border(Color borderColor, {bool emphasized = false}) =>
         OutlineInputBorder(
           borderRadius: BorderRadius.circular(
@@ -371,18 +372,22 @@ class _SldsTextFieldState extends State<SldsTextField> {
                   vertical: dimensions.space8,
                 ),
                 border: border(colors.inputBorderDefault),
-                enabledBorder: border(
-                  _hasError
-                      ? colors.inputBorderError
-                      : colors.inputBorderDefault,
-                ),
+                enabledBorder: _hasError
+                    ? border(
+                        colors.inputBorderError,
+                        emphasized: errorEmphasized,
+                      )
+                    : border(colors.inputBorderDefault),
                 focusedBorder: border(
                   _hasError
                       ? colors.inputBorderError
                       : colors.inputBorderFocused,
                   emphasized: true,
                 ),
-                errorBorder: border(colors.inputBorderError),
+                errorBorder: border(
+                  colors.inputBorderError,
+                  emphasized: errorEmphasized,
+                ),
                 focusedErrorBorder: border(
                   colors.inputBorderError,
                   emphasized: true,

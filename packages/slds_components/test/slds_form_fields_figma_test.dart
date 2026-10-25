@@ -372,7 +372,7 @@ void main() {
     expect(chip('Jaffna').left - chip('Colombo').right, 10);
   });
 
-  testWidgets('combo box open state matches Figma (#92-#98, #100)', (
+  testWidgets('combo box open state matches Figma (#92-#98, #100, #105)', (
     tester,
   ) async {
     await pump(
@@ -451,5 +451,70 @@ void main() {
     expect(rowStyle.fontSize, 14);
     expect(rowStyle.fontSize! * rowStyle.height!, closeTo(22, 0.01));
     expect(rowStyle.color, label);
+
+    // #105: Figma's _dropdown list item rows are 38px (8 + 22 + 8) and sit
+    // edge to edge, with no gap between them.
+    Rect row(String text) => tester.getRect(
+      find.ancestor(of: find.text(text).last, matching: find.byType(InkWell)),
+    );
+    expect(row('Batticaloa').height, 38);
+    expect(row('Colombo').top - row('Batticaloa').bottom, 0);
+  });
+
+  // Figma Error variants: Text Input, Password, Text Area and OTP draw
+  // #D32F2F at 1.5px; compact Text Input at 1px. Figma's Dropdown has no
+  // Error variant, so it follows the other fields.
+  testWidgets('error borders are 1.5px, 1px when compact (#106)', (
+    tester,
+  ) async {
+    double restingWidth(int index) {
+      final d = tester
+          .widgetList<TextField>(find.byType(TextField))
+          .elementAt(index)
+          .decoration!;
+      final hasError = d.errorText != null || d.error != null;
+      return (hasError ? d.errorBorder : d.enabledBorder)!.borderSide.width;
+    }
+
+    final fields = <String, (Widget, double)>{
+      'text field': (
+        const SldsTextField(label: 'Email', errorText: 'Error'),
+        1.5,
+      ),
+      'compact text field': (
+        const SldsTextField(label: 'Email', errorText: 'Error', compact: true),
+        1,
+      ),
+      'password field': (const SldsPasswordField(errorText: 'Error'), 1.5),
+      'text area': (const SldsTextArea(label: 'Bio', errorText: 'Error'), 1.5),
+      'otp input': (const SldsOtpInput(length: 4, errorText: 'Error'), 1.5),
+    };
+    for (final MapEntry(key: name, value: (field, width)) in fields.entries) {
+      await pump(tester, field);
+      expect(restingWidth(0), width, reason: name);
+      final d = tester.widget<TextField>(find.byType(TextField).first);
+      final hasError =
+          d.decoration!.errorText != null || d.decoration!.error != null;
+      expect(
+        (hasError ? d.decoration!.errorBorder : d.decoration!.enabledBorder)!
+            .borderSide
+            .color,
+        const Color(0xFFD32F2F),
+        reason: name,
+      );
+    }
+
+    await pump(
+      tester,
+      SldsDropdown<String>(
+        label: 'District',
+        items: const ['Colombo'],
+        itemLabel: (s) => s,
+        errorText: 'Error',
+      ),
+    );
+    final dropdown = fieldBox(tester, SldsDropdown<String>).border!.top;
+    expect(dropdown.width, 1.5);
+    expect(dropdown.color, const Color(0xFFD32F2F));
   });
 }

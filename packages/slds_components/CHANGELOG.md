@@ -334,6 +334,18 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   `SldsFilterDropdown` Apply button and every other primary button (#104).
   The filter's option text and Cancel label already matched Figma (#102,
   #103).
+- `SldsTextField` (and so `SldsPasswordField`) and `SldsDropdown` draw the
+  error border at 1.5px like Figma's Error variants (was 1px until focused);
+  compact `SldsTextField` stays 1px. `SldsTextArea` and `SldsOtpInput` were
+  already 1.5px (#106).
+- `SldsBottomNav`'s count badge is anchored by its bottom-start corner, so
+  at large text scales it grows up and away from the icon instead of over it
+  (#108). Unchanged at 1x.
+- `SldsSearchBar` is Figma's 52px with 16px vertical padding and 14/18 text,
+  so the hint sits on the icon's centre line (it was 2px high in a 50px bar)
+  (#109).
+- `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
+  test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

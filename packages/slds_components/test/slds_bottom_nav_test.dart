@@ -229,4 +229,41 @@ void main() {
       ),
     );
   });
+
+  testWidgets('the badge grows away from the icon at 2x text (#108)', (
+    tester,
+  ) async {
+    Future<Rect> overlapAt(double scale) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          theme: SldsTheme.light,
+          home: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+            child: Scaffold(
+              bottomNavigationBar: SldsBottomNav(
+                items: items,
+                currentIndex: 0,
+                onTap: (_) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      final icon = tester.getRect(find.byIcon(Icons.notifications));
+      final badge = tester.getRect(
+        find
+            .ancestor(of: find.text('2'), matching: find.byType(Container))
+            .first,
+      );
+      return icon.intersect(badge);
+    }
+
+    final atOne = await overlapAt(1);
+    final atTwo = await overlapAt(2);
+    // The badge covers no more of the icon at 2x than it does at 1x.
+    expect(atTwo.width, lessThanOrEqualTo(atOne.width));
+    expect(atTwo.height, lessThanOrEqualTo(atOne.height));
+  });
 }

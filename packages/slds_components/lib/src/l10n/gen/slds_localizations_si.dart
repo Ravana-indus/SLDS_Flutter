@@ -161,6 +161,9 @@ class SldsLocalizationsSi extends SldsLocalizations {
   String get clearSearch => 'සෙවීම හිස් කරන්න';
 
   @override
+  String get voiceSearch => 'හඬ සෙවීම';
+
+  @override
   String recentSearch(String label) {
     return 'මෑත සෙවීම: $label';
   }

@@ -358,6 +358,12 @@ abstract class SldsLocalizations {
   /// **'Clear search'**
   String get clearSearch;
 
+  /// Accessible name for the microphone button that starts a voice search.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice search'**
+  String get voiceSearch;
+
   /// Accessible name for a row in the recent-searches list, distinguishing it from a live suggestion.
   ///
   /// In en, this message translates to:

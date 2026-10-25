@@ -24,6 +24,12 @@ Widget buildSldsSearchBarUseCase(BuildContext context) {
     label: 'Show recent searches',
     initialValue: true,
   );
+  // Figma's Mobile Default microphone; the bar shows it only when the app
+  // wires a voice handler, so the knob stands in for one (#112).
+  final voiceSearch = context.knobs.boolean(
+    label: 'Voice search',
+    initialValue: true,
+  );
 
   return Padding(
     padding: const EdgeInsets.all(24),
@@ -31,6 +37,7 @@ Widget buildSldsSearchBarUseCase(BuildContext context) {
       hintText: hintText.isEmpty ? null : hintText,
       isEnabled: isEnabled,
       showRecent: showRecent,
+      voiceSearch: voiceSearch,
     ),
   );
 }
@@ -42,11 +49,13 @@ class _SearchBarDemo extends StatefulWidget {
     required this.hintText,
     required this.isEnabled,
     required this.showRecent,
+    required this.voiceSearch,
   });
 
   final String? hintText;
   final bool isEnabled;
   final bool showRecent;
+  final bool voiceSearch;
 
   @override
   State<_SearchBarDemo> createState() => _SearchBarDemoState();
@@ -84,6 +93,8 @@ class _SearchBarDemoState extends State<_SearchBarDemo> {
           : const [],
       onChanged: _onChanged,
       onSuggestionSelected: (s) => setState(() => _suggestions = const []),
+      // No speech engine in the catalog; the tap only proves the wiring.
+      onVoiceSearch: widget.voiceSearch ? () {} : null,
     );
   }
 }

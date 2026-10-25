@@ -72,6 +72,10 @@
   "@clearSearch": {
     "description": "Accessible name for the button that empties the search field."
   },
+  "voiceSearch": "குரல் தேடல்",
+  "@voiceSearch": {
+    "description": "Accessible name for the microphone button that starts a voice search."
+  },
   "recentSearch": "சமீபத்திய தேடல்: {label}",
   "@recentSearch": {
     "description": "Accessible name for a row in the recent-searches list, distinguishing it from a live suggestion.",

@@ -162,6 +162,9 @@ class SldsLocalizationsEn extends SldsLocalizations {
   String get clearSearch => 'Clear search';
 
   @override
+  String get voiceSearch => 'Voice search';
+
+  @override
   String recentSearch(String label) {
     return 'Recent search: $label';
   }

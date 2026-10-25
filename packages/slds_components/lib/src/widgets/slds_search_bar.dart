@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:slds_components/src/l10n/slds_strings.dart';
 
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// SLDS search bar — a pill-shaped field with a leading search icon and a
 /// clear (×) trailing icon once text is entered, a gold focus ring, and an
@@ -35,6 +36,7 @@ class SldsSearchBar extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.onSuggestionSelected,
+    this.onVoiceSearch,
     this.focusNode,
     this.enabled = true,
     this.semanticLabel,
@@ -66,6 +68,11 @@ class SldsSearchBar extends StatefulWidget {
   /// Invoked when a row in [suggestions] or [recentSearches] is tapped —
   /// typically you'll set the query to the tapped value and close the panel.
   final ValueChanged<String>? onSuggestionSelected;
+
+  /// Starts a voice search. When non-null, Figma's microphone shows at the
+  /// trailing edge while the bar is idle and empty; null hides it, since the
+  /// library has no speech input of its own.
+  final VoidCallback? onVoiceSearch;
 
   /// Supply one to drive focus externally. When null the bar owns an
   /// internal node.
@@ -115,6 +122,14 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
     _focusNode.unfocus();
   }
 
+  /// Figma's back arrow: leaves the search, emptying the query and closing
+  /// the keyboard, which returns the bar to its default state.
+  void _exit() {
+    _controller.clear();
+    widget.onChanged?.call('');
+    _focusNode.unfocus();
+  }
+
   bool get _panelOpen =>
       _focusNode.hasFocus &&
       (widget.suggestions.isNotEmpty || widget.recentSearches.isNotEmpty);
@@ -126,6 +141,9 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
     final dimensions = tokens.dimensions;
     final focused = _focusNode.hasFocus;
     final hasText = _controller.text.isNotEmpty;
+    // Figma's Mobile Typing and Filled states swap the magnifier for a back
+    // arrow; Default (idle and empty) keeps the magnifier (#113).
+    final active = widget.enabled && (focused || hasText);
 
     final borderColor = !widget.enabled
         ? colors.inputBorderDisabled
@@ -140,10 +158,9 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
         Container(
           padding: EdgeInsets.symmetric(horizontal: dimensions.space12),
           decoration: BoxDecoration(
-            // Resting gray fill (not surfaceCard/white) — matches the
-            // reference's neutral search-field look, not an active input.
+            // Figma Search Bar fill: Surface/Page #F7F7F7 (#110).
             color: widget.enabled
-                ? colors.surfaceRaised
+                ? colors.surfacePage
                 : colors.disabledBackground,
             border: Border.all(
               color: borderColor,
@@ -155,11 +172,18 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.search,
-                size: dimensions.iconSizeMedium,
-                color: colors.inputIcon,
-              ),
+              if (active)
+                _BarIcon(
+                  icon: Icons.arrow_back,
+                  label: context.sldsStrings.back,
+                  onTap: _exit,
+                )
+              else
+                Icon(
+                  Icons.search,
+                  size: dimensions.iconSizeMedium,
+                  color: colors.inputIcon,
+                ),
               SizedBox(width: dimensions.space8),
               Expanded(
                 child: Semantics(
@@ -228,58 +252,95 @@ class _SldsSearchBarState extends State<SldsSearchBar> {
                       ),
                     ),
                   ),
+                )
+              // Figma Mobile Default: a microphone at the trailing edge
+              // while idle and empty (#112).
+              else if (!focused &&
+                  widget.enabled &&
+                  widget.onVoiceSearch != null)
+                _BarIcon(
+                  icon: Icons.mic_none,
+                  label: context.sldsStrings.voiceSearch,
+                  onTap: widget.onVoiceSearch!,
                 ),
             ],
           ),
         ),
         if (_panelOpen) ...[
           SizedBox(height: dimensions.space8),
+          // Figma Search Suggestion (543:5302): #F7F7F7 panel, #DDDDDD 1px,
+          // radius 12; suggestions inset 8px and 4px apart, a full-width
+          // divider, then the recent-searches heading and rows (#113).
           Container(
             decoration: BoxDecoration(
-              color: colors.surfaceCard,
-              border: Border.all(color: colors.borderDefault),
+              color: colors.surfacePage,
+              border: Border.all(color: colors.borderDecorative),
               borderRadius: BorderRadius.circular(dimensions.radius2xl),
             ),
-            padding: EdgeInsets.symmetric(vertical: dimensions.space8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final suggestion in widget.suggestions)
-                  _SuggestionRow(
-                    label: suggestion,
-                    highlighted: suggestion == _controller.text,
-                    onTap: () => _select(suggestion),
-                  ),
-                if (widget.suggestions.isNotEmpty &&
-                    widget.recentSearches.isNotEmpty) ...[
-                  SizedBox(height: dimensions.space8),
-                  Divider(height: 1, color: colors.borderDecorative),
-                  SizedBox(height: dimensions.space8),
-                ],
-                if (widget.recentSearches.isNotEmpty) ...[
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: dimensions.space16,
-                      vertical: dimensions.space4,
-                    ),
-                    child: Text(
-                      widget.recentSearchesLabel ??
-                          context.sldsStrings.recentSearches,
-                      style: tokens.typography.caption2.copyWith(
-                        color: colors.textTertiary,
+            padding: EdgeInsets.symmetric(vertical: dimensions.space4),
+            // Ink paints on the nearest Material; without this one the
+            // panel's own fill hides the hover row.
+            child: Material(
+              type: MaterialType.transparency,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.suggestions.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        dimensions.space8,
+                        0,
+                        dimensions.space8,
+                        dimensions.space8,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: dimensions.space4,
+                        children: [
+                          for (final suggestion in widget.suggestions)
+                            _SuggestionRow(
+                              label: suggestion,
+                              highlighted: suggestion == _controller.text,
+                              onTap: () => _select(suggestion),
+                            ),
+                        ],
                       ),
                     ),
-                  ),
-                  for (final recent in widget.recentSearches)
-                    _SuggestionRow(
-                      label: recent,
-                      icon: Icons.history,
-                      isRecent: true,
-                      onTap: () => _select(recent),
+                  if (widget.suggestions.isNotEmpty &&
+                      widget.recentSearches.isNotEmpty)
+                    Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: colors.borderDecorative,
                     ),
+                  if (widget.recentSearches.isNotEmpty) ...[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        dimensions.space6 + dimensions.space8,
+                        dimensions.space8 + 1,
+                        dimensions.space6 + dimensions.space8,
+                        0,
+                      ),
+                      child: Text(
+                        widget.recentSearchesLabel ??
+                            context.sldsStrings.recentSearches,
+                        style: tokens.typography.caption1.copyWith(
+                          height: 14 / 12,
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                    ),
+                    for (final recent in widget.recentSearches)
+                      _SuggestionRow(
+                        label: recent,
+                        icon: Icons.history,
+                        isRecent: true,
+                        onTap: () => _select(recent),
+                      ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ],
@@ -304,9 +365,9 @@ class _SuggestionRow extends StatelessWidget {
   /// search from a live suggestion visually, and announces nothing.
   final bool isRecent;
 
-  /// True for the suggestion row matching the current query — gets a gray
-  /// background and a trailing checkmark (never applies to recent-search
-  /// rows, which have no notion of "currently matches").
+  /// True for the suggestion row matching the current query — Figma fills
+  /// it #EEEEEE, radius 8 (never applies to recent-search rows, which have
+  /// no notion of "currently matches").
   final bool highlighted;
   final VoidCallback onTap;
 
@@ -322,22 +383,29 @@ class _SuggestionRow extends StatelessWidget {
           ? context.sldsStrings.recentSearch(label)
           : context.sldsStrings.suggestion(label),
       excludeSemantics: true,
+      // Figma's _dropdown list item: 8px padding round a 14/22 label, 38px
+      // tall; recent rows lead with a 16px clock, 8px from the text. No
+      // trailing check — Figma hides it in the search panel (#113).
       child: InkWell(
         onTap: onTap,
-        child: Container(
-          width: double.infinity,
-          color: highlighted ? colors.surfaceHover : null,
-          padding: EdgeInsets.symmetric(
-            horizontal: tokens.dimensions.space16,
-            vertical: tokens.dimensions.space12,
+        borderRadius: BorderRadius.circular(tokens.dimensions.radiusXl),
+        hoverColor: colors.surfaceHover,
+        focusColor: colors.surfaceHover,
+        highlightColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
+        child: Ink(
+          decoration: BoxDecoration(
+            color: highlighted ? colors.surfaceHover : null,
+            borderRadius: BorderRadius.circular(tokens.dimensions.radiusXl),
           ),
+          padding: EdgeInsets.all(tokens.dimensions.space8),
           child: Row(
             children: [
               if (icon != null) ...[
                 Icon(
                   icon,
-                  size: tokens.dimensions.iconSizeMedium,
-                  color: colors.textTertiary,
+                  size: tokens.dimensions.iconSizeSmall,
+                  color: colors.textPrimary,
                 ),
                 SizedBox(width: tokens.dimensions.space8),
               ],
@@ -345,19 +413,46 @@ class _SuggestionRow extends StatelessWidget {
                 child: Text(
                   label,
                   overflow: TextOverflow.ellipsis,
-                  style: tokens.typography.body1.copyWith(
+                  style: tokens.typography.body2.copyWith(
                     color: colors.textPrimary,
                   ),
                 ),
               ),
-              if (highlighted)
-                Icon(
-                  Icons.check,
-                  size: tokens.dimensions.iconSizeMedium,
-                  color: colors.textPrimary,
-                ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A 20px bar icon that acts as a button: Figma's back arrow and
+/// microphone. The hit area grows to 48dp without widening the 52px bar.
+class _BarIcon extends StatelessWidget {
+  const _BarIcon({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.slds;
+    return Semantics(
+      button: true,
+      label: label,
+      onTap: onTap,
+      excludeSemantics: true,
+      child: SldsOverflowTapTarget(
+        onTap: onTap,
+        child: Icon(
+          icon,
+          size: tokens.dimensions.iconSizeMedium,
+          color: tokens.colors.inputIcon,
         ),
       ),
     );

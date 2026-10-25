@@ -162,6 +162,9 @@ class SldsLocalizationsTa extends SldsLocalizations {
   String get clearSearch => 'தேடலை அழி';
 
   @override
+  String get voiceSearch => 'குரல் தேடல்';
+
+  @override
   String recentSearch(String label) {
     return 'சமீபத்திய தேடல்: $label';
   }

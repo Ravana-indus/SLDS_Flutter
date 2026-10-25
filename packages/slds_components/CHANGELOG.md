@@ -346,6 +346,18 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsSearchBar` is Figma's 52px with 16px vertical padding and 14/18 text,
   so the hint sits on the icon's centre line (it was 2px high in a 50px bar)
   (#109).
+- `SldsSearchBar` matches the rest of Figma's Search Bar (#110–#113):
+  - The bar is Surface/Page `#F7F7F7` (was `#EEEEEE`) (#110); typed text is
+    14/400 `#17171A` (#111, from #109).
+  - New `onVoiceSearch`: when set, Figma's 20px microphone shows at the
+    trailing edge while the bar is idle and empty, labelled "Voice search"
+    (new `voiceSearch` string; si/ta machine-drafted) (#112).
+  - While focused or holding text the magnifier becomes Figma's back arrow,
+    which empties the query and closes the keyboard (#113).
+  - The suggestion panel is Figma's: `#F7F7F7`, `#DDDDDD` 1px, radius 12;
+    38px rows (8px padding, 14/22 text), 4px apart, the matching one filled
+    `#EEEEEE` radius 8 with no trailing check; a `RECENT SEARCHES` heading
+    in 12/14 `#676767`; recent rows lead with a 16px `#17171A` clock (#113).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

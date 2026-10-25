@@ -283,8 +283,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                 child: Text(
                   _monthNames[_displayedMonth.month - 1],
                   overflow: TextOverflow.ellipsis,
+                  // Figma: 14/400/22 #17171A, like the year (#124).
                   style: tokens.typography.body2.copyWith(
-                    fontWeight: FontWeight.w500,
                     color: colors.textPrimary,
                   ),
                 ),
@@ -350,7 +350,6 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
               Text(
                 '${_displayedMonth.year}',
                 style: tokens.typography.body2.copyWith(
-                  fontWeight: FontWeight.w500,
                   color: colors.textPrimary,
                 ),
               ),
@@ -366,7 +365,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       ),
     );
 
-    // Weekdays Row — dark text matching Figma spec and meeting WCAG AA
+    // Weekdays Row — dark text matching Figma spec and meeting WCAG AA.
     final weekdaysRow = SizedBox(
       height: 32,
       child: Row(
@@ -377,8 +376,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
                 child: Center(
                   child: Text(
                     day,
+                    // Figma: weekday names are 14/400/22 (#125).
                     style: tokens.typography.body2.copyWith(
-                      fontWeight: FontWeight.w500,
                       color: colors.textPrimary,
                     ),
                   ),

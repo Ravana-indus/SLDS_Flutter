@@ -215,7 +215,7 @@ class SldsRawColorTokens {
     buttonPrimaryHover: 0xffe0ae00,
     buttonPrimaryPressed: 0xffe0ae00,
     buttonSecondaryBackground: 0xffffffff,
-    buttonSecondaryLabel: 0xff222222,
+    buttonSecondaryLabel: 0xff17171a,
     buttonSecondaryBorder: 0xffcdcdcd,
     buttonSecondaryHover: 0xffeeeeee,
     buttonSecondaryPressed: 0xffdddddd,
@@ -261,7 +261,7 @@ class SldsRawColorTokens {
     listBackgroundHover: 0xffeeeeee,
     surfaceInverse: 0xff000000,
     textInverse: 0xffffffff,
-    datePickerRangeHighlight: 0xfffff7d6,
+    datePickerRangeHighlight: 0xfffff8d6,
     serviceCardSelectedBackground: 0xffe3edff,
     // Figma Mobile/Body 2 label and Help Text colours (#68-#84).
     inputLabel: 0xff17171a,

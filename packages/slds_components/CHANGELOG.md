@@ -368,7 +368,11 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   24px heading above unboxed fields, 16px apart) (#119, #120, #122). The
   playground uses Text Inputs with example placeholders (#121).
 - `SldsDatePicker`'s month and year pills are both Figma's 36px (was 40px)
-  (#123).
+  (#123). Month, year and weekday names are 14/400 (were 500) (#124,
+  #125); the range band is Figma's `#FFF8D6` (was `#FFF7D6`) (#130).
+- Secondary button label is Figma `#17171A` in light (was `#222222`); dark
+  stays `#FFFFFF`. Shows on the `SldsDatePicker` Cancel button and every
+  other secondary button (#127).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
 
@@ -115,5 +116,55 @@ void main() {
 
     expect(pillHeight('January'), 36);
     expect(pillHeight('2026'), 36);
+  });
+
+  // Figma Date Pickers (1091:8107): month, year, weekday and date text are
+  // 14/400 #17171A; Cancel is a white Small Secondary and Apply a Small
+  // Primary, both labelled 14/400 #17171A; the range band is #FFF8D6.
+  testWidgets('typography and colours match Figma (#124-#130)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsDatePicker(initialDate: DateTime(2026, 1, 15), onCancel: () {}),
+    );
+
+    const ink = Color(0xFF17171A);
+    TextStyle style(String text) =>
+        tester.widget<Text>(find.text(text).first).style!;
+
+    for (final text in ['January', '2026', 'Mo', '20']) {
+      expect(style(text).fontSize, 14, reason: text);
+      expect(style(text).fontWeight, FontWeight.w400, reason: text);
+      expect(style(text).color, ink, reason: text);
+    }
+
+    for (final label in ['Cancel', 'Apply']) {
+      final painted = tester
+          .renderObject<RenderParagraph>(
+            find
+                .descendant(
+                  of: find.text(label),
+                  matching: find.byType(RichText),
+                )
+                .first,
+          )
+          .text
+          .style!;
+      expect(painted.fontSize, 14, reason: label);
+      expect(painted.fontWeight, FontWeight.w400, reason: label);
+      expect(painted.color, ink, reason: label);
+    }
+    final cancel = tester
+        .widget<OutlinedButton>(find.byType(OutlinedButton))
+        .style!
+        .backgroundColor!
+        .resolve({});
+    expect(cancel, const Color(0xFFFFFFFF));
+
+    expect(
+      SldsColorTokens.light().datePickerRangeHighlight,
+      const Color(0xFFFFF8D6),
+    );
   });
 }

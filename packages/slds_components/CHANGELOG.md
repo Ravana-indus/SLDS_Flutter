@@ -329,6 +329,11 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
     fills the row `#EEEEEE` (radius 8, no ripple), as Figma's list item (#99).
   - Panel `#F7F7F7`, `#DDDDDD` 1px, radius 16 and `Elevation/3` were already
     Figma's (#100); row text `Desktop/Body 2` `#17171A` too (#98).
+- Primary button label is Figma `Button/Primary/Label` `#17171A` in light and
+  dark (was `#222222`); high contrast stays `#000000`. Shows on the
+  `SldsFilterDropdown` Apply button and every other primary button (#104).
+  The filter's option text and Cancel label already matched Figma (#102,
+  #103).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

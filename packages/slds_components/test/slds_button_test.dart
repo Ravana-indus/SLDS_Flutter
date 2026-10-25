@@ -133,9 +133,9 @@ void main() {
 
     expect(resolvedBackground, scheme.primary);
     // The gold accent is the same in every palette, and because the fill does
-    // not change, Figma keeps the label on it identical too (Action/Primary
-    // Foreground is #222222 in both light and dark; only the high-contrast
-    // palette darkens it to #000000).
+    // not change, Figma keeps the label on it identical too
+    // (Button/Primary/Label is #17171A in both light and dark, issue #104;
+    // only the high-contrast palette darkens it to #000000).
     expect(resolvedBackground, SldsColorTokens.dark().buttonPrimaryBackground);
     expect(
       style.foregroundColor!.resolve({}),

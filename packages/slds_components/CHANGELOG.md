@@ -373,6 +373,14 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - Secondary button label is Figma `#17171A` in light (was `#222222`); dark
   stays `#FFFFFF`. Shows on the `SldsDatePicker` Cancel button and every
   other secondary button (#127).
+- `SldsNotificationIcon`'s document type paints Figma's Phosphor FileDoc
+  glyph (a page marked "DOC") instead of Material's `description_outlined`
+  (#137). `SldsNotificationCard`'s unread dot is Figma's DataViz/2 `#1A56D6`
+  (was `info` `#0D6B7B`) (#138), and its title sits on Figma's 20px line
+  (#139). Title, subtitle and timestamp colours already matched (#139,
+  #140).
+- `SldsPasswordField` (#131–#134) and `SldsSummaryList` (#135, #136) colours
+  are now pinned by tests; they already matched Figma.
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

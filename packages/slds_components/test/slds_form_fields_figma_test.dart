@@ -612,4 +612,32 @@ void main() {
     expect(spanStyle(tester, 'City').fontSize, 14);
     expect(spanStyle(tester, 'City').color, label);
   });
+
+  // Figma Password (510:2758) shares Text Input's styling: label #17171A,
+  // placeholder 16px #BCBCBC, help #676767, asterisk #BCBCBC when disabled.
+  testWidgets('password field label, placeholder, help and disabled '
+      'asterisk (#131-#134)', (tester) async {
+    await pump(
+      tester,
+      const SldsPasswordField(helpText: 'Help Text', isRequired: true),
+    );
+    expect(spanStyle(tester, 'Password').color, label); // #131
+    final hint = tester
+        .widget<TextField>(find.byType(TextField))
+        .decoration!
+        .hintStyle!;
+    expect(hint.fontSize, 16); // #132
+    expect(hint.color, const Color(0xFFBCBCBC));
+    expect(painted(tester, 'Help Text').color, help); // #133
+
+    await pump(
+      tester,
+      const SldsPasswordField(
+        helpText: 'Help Text',
+        isRequired: true,
+        enabled: false,
+      ),
+    );
+    expect(spanStyle(tester, '*').color, const Color(0xFFBCBCBC)); // #134
+  });
 }

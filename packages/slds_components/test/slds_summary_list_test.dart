@@ -95,4 +95,21 @@ void main() {
       findsOneWidget,
     );
   });
+
+  // Figma Summary List: label Text/Secondary #676767, value Text/Primary
+  // #17171A (#135, #136).
+  testWidgets('label is #676767 and value #17171A (#135, #136)', (
+    tester,
+  ) async {
+    await pump(tester, const SldsSummaryList(rows: rows));
+
+    expect(
+      tester.widget<Text>(find.text('Application ID')).style!.color,
+      const Color(0xFF676767),
+    );
+    expect(
+      tester.widget<Text>(find.text('APP-2026-001234')).style!.color,
+      const Color(0xFF17171A),
+    );
+  });
 }

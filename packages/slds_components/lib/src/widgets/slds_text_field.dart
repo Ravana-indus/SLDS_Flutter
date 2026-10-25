@@ -273,7 +273,9 @@ class _SldsTextFieldState extends State<SldsTextField> {
           box: compact
               ? dimensions.buttonHeightSmall
               : dimensions.iconButtonMedium,
-          color: iconColor,
+          // Figma's Info glyph is #17171A, and #898989 when disabled — darker
+          // than the grey star icons beside it (#116).
+          color: widget.enabled ? colors.textPrimary : colors.inputIcon,
           tooltip: widget.infoTooltip,
           onPressed: widget.onInfoPressed,
         ),
@@ -293,9 +295,10 @@ class _SldsTextFieldState extends State<SldsTextField> {
             children: [
               TextSpan(text: widget.label),
               if (widget.isRequired)
+                // Disabled, Figma greys the asterisk with the label (#117).
                 TextSpan(
                   text: '*',
-                  style: TextStyle(color: colors.error),
+                  style: widget.enabled ? TextStyle(color: colors.error) : null,
                 ),
             ],
           ),

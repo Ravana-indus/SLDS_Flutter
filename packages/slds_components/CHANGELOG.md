@@ -358,6 +358,17 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
     38px rows (8px padding, 14/22 text), 4px apart, the matching one filled
     `#EEEEEE` radius 8 with no trailing check; a `RECENT SEARCHES` heading
     in 12/14 `#676767`; recent rows lead with a 16px `#17171A` clock (#113).
+- `SldsTextField`'s info icon is Figma's `#17171A` (`#898989` disabled), and
+  its required asterisk greys out with the label when disabled (#116,
+  #117). Label `#17171A`, placeholder 16px `#BCBCBC` and help `#676767`
+  already matched; now pinned by a test (#114, #115, #118).
+- `SldsFieldset` is Figma's Form Fieldset: a white box, `#BCBCBC` 1px,
+  radius 16, 32px padding, with the legend (16/400/24 `#17171A`) set into
+  the top border as a white chip; fields default to 24px apart (was a bare
+  24px heading above unboxed fields, 16px apart) (#119, #120, #122). The
+  playground uses Text Inputs with example placeholders (#121).
+- `SldsDatePicker`'s month and year pills are both Figma's 36px (was 40px)
+  (#123).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

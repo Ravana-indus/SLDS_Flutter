@@ -241,7 +241,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     // doesn't touch layout.
     final monthPill = Expanded(
       child: Container(
-        height: 40,
+        // Figma Month and Year (1090:7421): both pills are 36px (#123).
+        height: 36,
         padding: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
           color: colors.buttonSecondaryBackground,
@@ -329,7 +330,7 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       },
       child: SldsTapTarget(
         child: Container(
-          height: 40,
+          height: 36,
           padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: colors.buttonSecondaryBackground,

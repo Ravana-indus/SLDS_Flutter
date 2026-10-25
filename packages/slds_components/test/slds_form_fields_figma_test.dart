@@ -517,4 +517,99 @@ void main() {
     expect(dropdown.width, 1.5);
     expect(dropdown.color, const Color(0xFFD32F2F));
   });
+
+  // Figma Text Input (391:2786 Default, 498:240 Disabled).
+  testWidgets('text field label, placeholder, help, info and asterisk '
+      '(#114-#118)', (tester) async {
+    Widget field({required bool enabled}) => SldsTextField(
+      label: 'Email',
+      hintText: 'info@example.com',
+      helpText: 'Help Text',
+      isRequired: true,
+      enabled: enabled,
+      infoIcon: Icons.info,
+      infoTooltip: 'About this field',
+    );
+
+    await pump(tester, field(enabled: true));
+    expect(spanStyle(tester, 'Email').color, label); // #114
+    final hint = tester
+        .widget<TextField>(find.byType(TextField))
+        .decoration!
+        .hintStyle!;
+    expect(hint.fontSize, 16); // #115
+    expect(hint.color, const Color(0xFFBCBCBC));
+    expect(painted(tester, 'Help Text').color, help); // #118
+    final info = tester.widget<Icon>(find.byIcon(Icons.info));
+    expect(info.color, label); // #116
+    expect(tester.getSize(find.byIcon(Icons.info)), const Size(20, 20));
+    expect(spanStyle(tester, '*').color, const Color(0xFFD32F2F));
+
+    await pump(tester, field(enabled: false));
+    expect(spanStyle(tester, '*').color, const Color(0xFFBCBCBC)); // #117
+    expect(spanStyle(tester, 'Email').color, const Color(0xFFBCBCBC));
+    expect(
+      tester.widget<Icon>(find.byIcon(Icons.info)).color,
+      const Color(0xFF898989),
+    );
+  });
+
+  // Figma Form Fieldset (1097:5140): bordered white box, legend chip on the
+  // top border, Text Inputs 32px inside and 24px apart.
+  testWidgets('fieldset is a bordered box with its legend on the border '
+      '(#119, #120, #122)', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: SldsTheme.light,
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 600,
+              child: SldsFieldset(
+                legend: 'Mailing Address',
+                children: [
+                  SldsTextField(label: 'Street Address', hintText: '123'),
+                  SldsTextField(label: 'City', hintText: 'Colombo'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final set = tester.getRect(find.byType(SldsFieldset));
+    final frame = tester
+        .widgetList<DecoratedBox>(
+          find.descendant(
+            of: find.byType(SldsFieldset),
+            matching: find.byType(DecoratedBox),
+          ),
+        )
+        .map((d) => d.decoration)
+        .whereType<BoxDecoration>()
+        .firstWhere((d) => d.border != null);
+    expect(frame.color, white);
+    expect(frame.border!.top.color, const Color(0xFFBCBCBC));
+    expect(frame.border!.top.width, 1);
+    expect(frame.borderRadius, BorderRadius.circular(16));
+    // Box (12px below the legend's top) is Figma's 600x244.
+    expect(set.height - 12, 244);
+
+    final legend = tester.getRect(find.textContaining('Mailing Address'));
+    expect(legend.topLeft - set.topLeft, const Offset(36, 2));
+    final legendStyle = spanStyle(tester, 'Mailing Address');
+    expect(legendStyle.fontSize, 16);
+    expect(legendStyle.fontWeight, FontWeight.w400);
+    expect(legendStyle.color, label);
+
+    final street = tester.getRect(find.textContaining('Street Address'));
+    final city = tester.getRect(find.textContaining('City'));
+    expect(street.topLeft - set.topLeft, const Offset(32, 44));
+    expect(city.top - street.top, 78 + 24);
+    expect(spanStyle(tester, 'City').fontSize, 14);
+    expect(spanStyle(tester, 'City').color, label);
+  });
 }

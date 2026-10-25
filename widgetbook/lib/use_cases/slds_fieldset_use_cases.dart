@@ -47,25 +47,30 @@ Widget buildSldsFieldsetUseCase(BuildContext context) {
           ? 'Please complete every field before continuing.'
           : null,
       children: [
-        SldsInput(
+        SldsTextField(
           label: copy['Street address'],
-          required: true,
+          // Figma's Form Fieldset holds Text Inputs with example input in
+          // each field (#121).
+          hintText: copy['123 Main Street'],
+          isRequired: true,
           enabled: isEnabled,
         ),
         Row(
           children: [
             Expanded(
-              child: SldsInput(
+              child: SldsTextField(
                 label: copy['City'],
-                required: true,
+                hintText: copy['Colombo'],
+                isRequired: true,
                 enabled: isEnabled,
               ),
             ),
             SizedBox(width: 12),
             Expanded(
-              child: SldsInput(
+              child: SldsTextField(
                 label: copy['Postal code'],
-                required: true,
+                hintText: '00100',
+                isRequired: true,
                 enabled: isEnabled,
               ),
             ),

@@ -122,6 +122,8 @@ const Map<String, String> _en = {
   'Street address': 'Street address',
   'City': 'City',
   'Postal code': 'Postal code',
+  '123 Main Street': '123 Main Street',
+  'Colombo': 'Colombo',
   'Date posted': 'Date posted',
   'Where should we deliver your order?': 'Where should we deliver your order?',
   'All fields in this group are required.':
@@ -252,6 +254,8 @@ const Map<String, String> _si = {
   'Street address': 'වීදි ලිපිනය',
   'City': 'නගරය',
   'Postal code': 'තැපැල් කේතය',
+  '123 Main Street': '123 ප්‍රධාන වීදිය',
+  'Colombo': 'කොළඹ',
   'Date posted': 'තැපැල් කළ දිනය',
   'Where should we deliver your order?': 'ඔබේ ඇණවුම කොහෙට බෙදාහරින්නද?',
   'All fields in this group are required.':
@@ -385,6 +389,8 @@ const Map<String, String> _ta = {
   'Street address': 'தெரு முகவரி',
   'City': 'நகரம்',
   'Postal code': 'அஞ்சல் குறியீடு',
+  '123 Main Street': '123 பிரதான வீதி',
+  'Colombo': 'கொழும்பு',
   'Date posted': 'அனுப்பிய தேதி',
   'Where should we deliver your order?': 'உங்கள் ஆர்டரை எங்கு வழங்க வேண்டும்?',
   'All fields in this group are required.':

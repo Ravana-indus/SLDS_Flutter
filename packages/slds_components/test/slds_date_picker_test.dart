@@ -94,4 +94,26 @@ void main() {
     await tester.tap(find.text('Apply'));
     expect(appliedResult, isNotNull);
   });
+
+  // Figma Month and Year (1090:7421): month and year pills are both 36px.
+  testWidgets('month and year pills are both 36px tall (#123)', (
+    tester,
+  ) async {
+    await pump(tester, SldsDatePicker(initialDate: DateTime(2026, 1, 15)));
+
+    // The pill is the bordered Container around each label.
+    double pillHeight(String text) {
+      final pill = find
+          .ancestor(of: find.text(text), matching: find.byType(Container))
+          .evaluate()
+          .firstWhere((e) {
+            final d = (e.widget as Container).decoration;
+            return d is BoxDecoration && d.border != null;
+          });
+      return pill.size!.height;
+    }
+
+    expect(pillHeight('January'), 36);
+    expect(pillHeight('2026'), 36);
+  });
 }

@@ -35,7 +35,7 @@ void main() {
         children: [Text('Field')],
       ),
     );
-    expect(find.text('*'), findsOneWidget);
+    expect(find.text('Group*', findRichText: true), findsOneWidget);
 
     await pump(
       tester,
@@ -44,7 +44,8 @@ void main() {
         children: [Text('Field')],
       ),
     );
-    expect(find.text('*'), findsNothing);
+    expect(find.text('Group*', findRichText: true), findsNothing);
+    expect(find.text('Group', findRichText: true), findsOneWidget);
   });
 
   testWidgets('shows description when provided', (tester) async {
@@ -103,8 +104,15 @@ void main() {
       ),
     );
 
-    final legend = tester.widget<Text>(find.text('Group'));
-    expect(legend.style?.color, SldsColorTokens.light().disabledForeground);
+    final legend = tester.widget<RichText>(
+      find.text('Group', findRichText: true),
+    );
+    // RichText wraps Text.rich's span in the ambient default style.
+    final span = (legend.text as TextSpan).children!.first;
+    expect(
+      span.style?.color,
+      SldsColorTokens.light().disabledForeground,
+    );
   });
 
   testWidgets(

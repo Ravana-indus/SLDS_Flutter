@@ -401,7 +401,18 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsToggle` matches Figma Toggle (543:6036): the large track is 50x28
   (was 48), the thumb sits 4px from the ends, off track `#DDDDDD`, thumb
   `#F7F7F7`, disabled thumb `#BCBCBC` (were translucent scheme overlays)
-  (#158–#160).
+  (#158–#162). New `SldsToggle.focusNode`; focus draws the shared
+  Focus/Default ring round the track instead of a border that shrank it
+  (#163).
+- `SldsTextField` (and so `SldsPasswordField` and `SldsTimePicker`) lays out
+  like Figma's Text Input Content: trailing icons sit 8px inside the border
+  (were flush against it), the leading icon box 8px in (was centred in a
+  48px slot), text 16px in (44px after a leading icon) and no longer shifts
+  4px on focus, and the value sits on Figma's 24px line centred in the 52px
+  box (was 2px high) (#169).
+- `SldsTimePicker`'s dialog carries the caller's theme and localizations
+  into its route, so it no longer throws where those are installed below
+  the Navigator, as in Widgetbook (#170).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

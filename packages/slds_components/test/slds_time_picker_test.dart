@@ -100,4 +100,33 @@ void main() {
     expect(find.byType(SldsTimePickerDialog), findsNothing);
     expect(changedTime, isNotNull);
   });
+
+  // Widgetbook installs SLDS localizations and theme below the Navigator,
+  // so the dialog route sees neither unless the picker carries them across.
+  // Before #170 the dialog read its strings there and threw.
+  testWidgets('opens when localizations sit below the Navigator (#170)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) => Localizations.override(
+            context: context,
+            locale: const Locale('en'),
+            delegates: SldsLocalizations.localizationsDelegates,
+            child: Theme(
+              data: SldsTheme.light,
+              child: const Scaffold(body: SldsTimePicker(label: 'Time')),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(SldsTimePicker));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(SldsTimePickerDialog), findsOneWidget);
+  });
 }

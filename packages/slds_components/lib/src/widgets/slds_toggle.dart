@@ -45,6 +45,7 @@ class SldsToggle extends StatefulWidget {
     this.size = SldsToggleSize.large,
     this.enabled = true,
     this.semanticLabel,
+    this.focusNode,
   });
 
   /// Whether the switch is on.
@@ -65,25 +66,30 @@ class SldsToggle extends StatefulWidget {
   /// screen-reader user nothing.
   final String? semanticLabel;
 
+  /// Optional focus node, to move keyboard focus to the switch
+  /// programmatically. When null the switch owns an internal node.
+  final FocusNode? focusNode;
+
   @override
   State<SldsToggle> createState() => _SldsToggleState();
 }
 
 class _SldsToggleState extends State<SldsToggle> {
-  final _focusNode = FocusNode();
+  late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
   bool _focused = false;
+
+  void _onFocusChanged() => setState(() => _focused = _focusNode.hasFocus);
 
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(
-      () => setState(() => _focused = _focusNode.hasFocus),
-    );
+    _focusNode.addListener(_onFocusChanged);
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    _focusNode.removeListener(_onFocusChanged);
+    if (widget.focusNode == null) _focusNode.dispose();
     super.dispose();
   }
 
@@ -144,51 +150,39 @@ class _SldsToggleState extends State<SldsToggle> {
                 minHeight: dimensions.tapTargetMin,
               ),
               alignment: Alignment.center,
-              child: Container(
-                width: widget.size.width,
-                height: widget.size.height,
-                padding: _focused
-                    ? EdgeInsets.all(dimensions.controlBorderWidth * 2)
-                    : EdgeInsets.zero,
-                // focusRing, not the accent: only the former is
-                // contrast-checked
-                // against every surface the control can sit on (WCAG 1.4.11).
-                decoration: _focused
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          (widget.size.height +
-                                  dimensions.controlBorderWidth * 4) /
-                              2,
-                        ),
-                        border: Border.all(
-                          color: context.slds.colors.focusRing,
-                          width: dimensions.emphasizedBorderWidth,
-                        ),
-                      )
-                    : null,
-                child: AnimatedContainer(
-                  duration: tokens.motion.fast,
-                  // Figma insets the thumb 4px from the track's ends.
-                  padding: EdgeInsets.symmetric(
-                    horizontal: dimensions.space4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: trackColor,
-                    borderRadius: BorderRadius.circular(widget.size.height / 2),
-                  ),
-                  // Directional: "on" belongs at the trailing edge of the
-                  // track, which is the left edge in an RTL locale.
-                  alignment: widget.value
-                      ? AlignmentDirectional.centerEnd
-                      : AlignmentDirectional.centerStart,
+              // Figma's Default/Checked - Focus: the shared Focus/Default
+              // gold ring round the track, which keeps its size (#163).
+              child: SldsFocusRing(
+                focused: _focused,
+                child: SizedBox(
+                  width: widget.size.width,
+                  height: widget.size.height,
                   child: AnimatedContainer(
                     duration: tokens.motion.fast,
-                    curve: Curves.easeOut,
-                    width: widget.size.thumb,
-                    height: widget.size.thumb,
+                    // Figma insets the thumb 4px from the track's ends.
+                    padding: EdgeInsets.symmetric(
+                      horizontal: dimensions.space4,
+                    ),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: thumbColor,
+                      color: trackColor,
+                      borderRadius: BorderRadius.circular(
+                        widget.size.height / 2,
+                      ),
+                    ),
+                    // Directional: "on" belongs at the trailing edge of the
+                    // track, which is the left edge in an RTL locale.
+                    alignment: widget.value
+                        ? AlignmentDirectional.centerEnd
+                        : AlignmentDirectional.centerStart,
+                    child: AnimatedContainer(
+                      duration: tokens.motion.fast,
+                      curve: Curves.easeOut,
+                      width: widget.size.thumb,
+                      height: widget.size.thumb,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: thumbColor,
+                      ),
                     ),
                   ),
                 ),

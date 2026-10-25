@@ -9,7 +9,8 @@ import '../support/demo_copy.dart';
 /// shows copy that matches the tone rather than one string in four colours.
 const _messages = <SldsBannerSeverity, String>{
   SldsBannerSeverity.success: 'Your changes have been saved successfully.',
-  SldsBannerSeverity.warning: 'Your session will expire soon. Please save '
+  SldsBannerSeverity.warning:
+      'Your session will expire soon. Please save '
       'your work.',
   SldsBannerSeverity.error: 'Something went wrong. Please try again later.',
   SldsBannerSeverity.info: 'New updates are available. Refresh to see changes.',
@@ -38,7 +39,8 @@ Widget buildSldsBannerUseCase(BuildContext context) {
   final messageOverride = context.knobs.string(
     label: 'Message',
     initialValue: '',
-    description: 'Blank follows the Severity and Locale addons; type to '
+    description:
+        'Blank follows the Severity and Locale addons; type to '
         'override.',
   );
   final showAction = context.knobs.boolean(

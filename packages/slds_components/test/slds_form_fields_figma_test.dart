@@ -640,4 +640,75 @@ void main() {
     );
     expect(spanStyle(tester, '*').color, const Color(0xFFBCBCBC)); // #134
   });
+
+  // The Time Picker field is a Figma Text Input: label #17171A, placeholder
+  // 16px #BCBCBC, label and asterisk #BCBCBC when disabled, no space before
+  // the asterisk (#164-#168).
+  testWidgets('time picker label, placeholder and disabled state '
+      '(#164-#168)', (tester) async {
+    await pump(
+      tester,
+      const SldsTimePicker(label: 'Time', isRequired: true),
+    );
+    expect(spanStyle(tester, 'Time').color, label); // #164
+    final hint = tester
+        .widget<TextField>(find.byType(TextField))
+        .decoration!
+        .hintStyle!;
+    expect(hint.fontSize, 16); // #165
+    expect(hint.color, const Color(0xFFBCBCBC));
+    expect(find.text('Time*', findRichText: true), findsOneWidget); // #168
+
+    await pump(
+      tester,
+      const SldsTimePicker(
+        label: 'Time',
+        isRequired: true,
+        enabled: false,
+      ),
+    );
+    expect(spanStyle(tester, 'Time').color, const Color(0xFFBCBCBC)); // #166
+    expect(spanStyle(tester, '*').color, const Color(0xFFBCBCBC)); // #167
+  });
+
+  // Figma Text Input Content: 8px pad, 28px icon boxes, 8px text pad; the
+  // 24px line centred in the 52px box (#169). Measured from the box edge.
+  testWidgets('text field insets and centring match Figma (#169)', (
+    tester,
+  ) async {
+    for (final lead in [true, false]) {
+      await pump(
+        tester,
+        SldsTextField(
+          label: 'Email',
+          hintText: 'info@example.com',
+          leadingIcon: lead ? Icons.star_border : null,
+          trailingIcon: Icons.star_border,
+          infoIcon: Icons.info,
+        ),
+      );
+      final box = tester.getRect(find.byType(InputDecorator));
+      final hint = tester.getRect(find.text('info@example.com'));
+      final stars = find.byIcon(Icons.star_border);
+      expect(hint.left - box.left, lead ? 44 : 16, reason: 'lead=$lead');
+      expect(hint.top - box.top, 14);
+      expect(hint.height, 24);
+      if (lead) expect(tester.getRect(stars.first).left - box.left, 14);
+      expect(box.right - tester.getRect(stars.last).right, 50);
+      expect(box.right - tester.getRect(find.byIcon(Icons.info)).right, 16);
+      expect(
+        tester.getRect(stars.last).center.dy,
+        closeTo(box.center.dy, 0.01),
+      );
+    }
+
+    // The Time Picker's clock sits 14px from the edge, like the star.
+    await pump(tester, const SldsTimePicker(label: 'Time'));
+    final box = tester.getRect(find.byType(InputDecorator));
+    expect(tester.getRect(find.text('HH:MM')).left - box.left, 16);
+    expect(
+      box.right - tester.getRect(find.byIcon(Icons.access_time)).right,
+      14,
+    );
+  });
 }

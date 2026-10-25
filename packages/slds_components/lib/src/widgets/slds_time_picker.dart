@@ -654,18 +654,18 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
   }
 
   Future<void> _showTimePicker(BuildContext context) async {
-    // Resolved here, from this State's own context, rather than inside the
-    // builder below: the builder runs against the dialog route's context,
-    // where SldsLocalizations is not reliably in scope (Widgetbook installs
-    // its delegates below the Navigator, so reading them there throws).
+    // The dialog route builds above wherever the host installed the SLDS
+    // theme and localizations (Widgetbook adds both below the Navigator),
+    // and the dialog reads its own strings, so it threw there (#170). The
+    // caller's themes and localizations are carried into the route below.
     final strings = context.sldsStrings;
     final cancelLabel = widget.cancelText ?? strings.cancel;
     final applyLabel = widget.applyText ?? strings.apply;
 
     final picked = await showDialog<TimeOfDay>(
       context: context,
-      builder: (BuildContext context) {
-        return Dialog(
+      builder: (BuildContext dialogContext) {
+        final dialog = Dialog(
           backgroundColor: Colors.transparent,
           elevation: 0,
           // The dialog is a fixed ~500px column (header, digital row, 210px
@@ -681,13 +681,17 @@ class _SldsTimePickerState extends State<SldsTimePicker> {
               cancelText: cancelLabel,
               applyText: applyLabel,
               onApply: (TimeOfDay time) {
-                Navigator.of(context).pop(time);
+                Navigator.of(dialogContext).pop(time);
               },
               onCancel: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
             ),
           ),
+        );
+        return InheritedTheme.captureAll(
+          context,
+          Localizations.override(context: context, child: dialog),
         );
       },
     );

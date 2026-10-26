@@ -413,6 +413,16 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
 - `SldsTimePicker`'s dialog carries the caller's theme and localizations
   into its route, so it no longer throws where those are installed below
   the Navigator, as in Widgetbook (#170).
+- `SldsUploadField` follows Figma Upload (543:5715): the required asterisk
+  follows the label with no space (#175); the box pads 8px (was 12), which
+  puts each state's leading icon at Figma's spot (#174, #177–#179); the
+  empty state's icon button is 48px, white, 2px `#CDCDCD`, radius 12, round
+  a 24px glyph (was 40px), its "Upload" line `#676767` without an underline
+  (#172) and 6px above the helper (#174); filename and caption lines sit on
+  Figma's 24px and 14px lines; the uploading spinner is `#17171A` (was
+  gold) (#177) and the uploaded check `#1FAA63` (was `#00833C`) (#178).
+  Label, helper, filename and close-icon colours already matched (#171,
+  #173, #176, #180).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

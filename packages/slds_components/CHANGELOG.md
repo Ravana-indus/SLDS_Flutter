@@ -460,7 +460,15 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   11/12 title and description lines in a 2px-padded text block (#206–#209).
   Quick Action places its icon 18px down, an 8px gap above the label (was
   4) and the "NEW" pill 14px tall, 7px above the card (#203–#205).
-- `SldsProcessList` colours already matched Figma; now pinned (#210).
+- `SldsProcessList` colours already matched Figma; now pinned (#210). Its
+  step numbers are Mobile/Title 1, 18/500/24 (were 16/600), and a done
+  step uses the Badge/Success pair, `#1FAA63` (was Approved `#059669`)
+  (#211–#213).
+- `SldsServiceCard` follows Figma Service Card (533:2563): the default
+  card is white (was `#F7F7F7`, invisible on the page) with a 16px radius
+  (#214, #220); title 14/400/18 and description 12/400/18 (were 16 and 14)
+  (#216, #217); the badge is a 22px pill with 12/500/14 text (#218); the
+  caret is 16px `#898989` (#219).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

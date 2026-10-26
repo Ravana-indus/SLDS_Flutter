@@ -65,9 +65,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # Figma's Icon Card artwork (533:2742 slots), exported at 3x.
+  # Figma's slot artwork (Icon Card 533:2742, Service Card 533:2563),
+  # exported at 3x.
   assets:
     - assets/icon_card/
+    - assets/service_card/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

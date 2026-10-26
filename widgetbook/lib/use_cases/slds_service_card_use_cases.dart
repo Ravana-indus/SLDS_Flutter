@@ -51,7 +51,8 @@ Widget buildSldsServiceCardUseCase(BuildContext context) {
     child: SizedBox(
       width: 400,
       child: SldsServiceCard(
-        icon: const Icon(Icons.description, color: Colors.deepPurple),
+        // Figma's own slot artwork (533:2752) (#215).
+        icon: Image.asset('assets/service_card/document.png'),
         title: title,
         description: description,
         badgeText: badgeText.isEmpty ? null : badgeText,

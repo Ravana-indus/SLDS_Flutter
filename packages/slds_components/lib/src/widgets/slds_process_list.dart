@@ -107,9 +107,10 @@ class _ProcessStepTile extends StatelessWidget {
     final dimensions = tokens.dimensions;
 
     final (Color background, Color foreground) = switch (step.status) {
+      // Figma's success slot is the Badge/Success pair, #1FAA63 (#211).
       SldsProcessStepStatus.done => (
-        colors.badgeApprovedBackground,
-        colors.badgeApprovedText,
+        colors.badgeSuccessBackground,
+        colors.badgeSuccessText,
       ),
       SldsProcessStepStatus.current => (
         colors.badgePendingBackground,
@@ -146,12 +147,10 @@ class _ProcessStepTile extends StatelessWidget {
                 color: background,
                 borderRadius: BorderRadius.circular(dimensions.radiusMd),
               ),
+              // Figma Mobile/Title 1: 18/500/24 in every state (#211-#213).
               child: Text(
                 '$index',
-                style: tokens.typography.body1.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: tokens.typography.title1.copyWith(color: foreground),
               ),
             ),
             SizedBox(width: dimensions.space16),

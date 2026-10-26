@@ -39,6 +39,9 @@ class SldsRawColorTokens {
     required this.headerBorder,
     required this.headerProgressTrack,
     required this.barBackgroundDark,
+    required this.barIdleIconDark,
+    required this.barIdleLabelDark,
+    required this.barPressedDark,
     required this.buttonPrimaryBackground,
     required this.buttonPrimaryLabel,
     required this.buttonPrimaryHover,
@@ -213,6 +216,9 @@ class SldsRawColorTokens {
     headerBorder: 0xffdddddd,
     headerProgressTrack: 0xffffffff,
     barBackgroundDark: 0xff010102,
+    barIdleIconDark: 0xffbcbcbc,
+    barIdleLabelDark: 0xffcdcdcd,
+    barPressedDark: 0xff17171a,
     buttonPrimaryBackground: 0xffffc700,
     buttonPrimaryLabel: 0xff17171a,
     buttonPrimaryHover: 0xffe0ae00,
@@ -361,6 +367,9 @@ class SldsRawColorTokens {
     headerBorder: 0xff565656,
     headerProgressTrack: 0xff111111,
     barBackgroundDark: 0xff010102,
+    barIdleIconDark: 0xffbcbcbc,
+    barIdleLabelDark: 0xffcdcdcd,
+    barPressedDark: 0xff17171a,
     buttonPrimaryBackground: 0xffffc700,
     buttonPrimaryLabel: 0xff17171a,
     buttonPrimaryHover: 0xffffd740,
@@ -477,6 +486,9 @@ class SldsRawColorTokens {
     headerBorder: 0xff000000,
     headerProgressTrack: 0xffffffff,
     barBackgroundDark: 0xff010102,
+    barIdleIconDark: 0xffbcbcbc,
+    barIdleLabelDark: 0xffcdcdcd,
+    barPressedDark: 0xff17171a,
     buttonPrimaryBackground: 0xffffc700,
     buttonPrimaryLabel: 0xff000000,
     buttonPrimaryHover: 0xffe0ae00,
@@ -637,6 +649,15 @@ class SldsRawColorTokens {
   /// #010102. The same in every palette: the dark tab strip and top
   /// navigation bar use it under either theme.
   final int barBackgroundDark;
+
+  /// Dark tab bar idle icon — Figma #BCBCBC, the same in every palette.
+  final int barIdleIconDark;
+
+  /// Dark tab bar idle label — Figma #CDCDCD, the same in every palette.
+  final int barIdleLabelDark;
+
+  /// Dark tab bar pressed pill — Figma #17171A, the same in every palette.
+  final int barPressedDark;
 
   /// Primary button background.
   final int buttonPrimaryBackground;
@@ -918,6 +939,9 @@ class SldsRawColorTokens {
     int? headerBorder,
     int? headerProgressTrack,
     int? barBackgroundDark,
+    int? barIdleIconDark,
+    int? barIdleLabelDark,
+    int? barPressedDark,
     int? buttonPrimaryBackground,
     int? buttonPrimaryLabel,
     int? buttonPrimaryHover,
@@ -1025,6 +1049,9 @@ class SldsRawColorTokens {
       headerBorder: headerBorder ?? this.headerBorder,
       headerProgressTrack: headerProgressTrack ?? this.headerProgressTrack,
       barBackgroundDark: barBackgroundDark ?? this.barBackgroundDark,
+      barIdleIconDark: barIdleIconDark ?? this.barIdleIconDark,
+      barIdleLabelDark: barIdleLabelDark ?? this.barIdleLabelDark,
+      barPressedDark: barPressedDark ?? this.barPressedDark,
       buttonPrimaryBackground:
           buttonPrimaryBackground ?? this.buttonPrimaryBackground,
       buttonPrimaryLabel: buttonPrimaryLabel ?? this.buttonPrimaryLabel,
@@ -1173,6 +1200,9 @@ class SldsRawColorTokens {
         t,
       ),
       barBackgroundDark: lerpArgb(a.barBackgroundDark, b.barBackgroundDark, t),
+      barIdleIconDark: lerpArgb(a.barIdleIconDark, b.barIdleIconDark, t),
+      barIdleLabelDark: lerpArgb(a.barIdleLabelDark, b.barIdleLabelDark, t),
+      barPressedDark: lerpArgb(a.barPressedDark, b.barPressedDark, t),
       buttonPrimaryBackground: lerpArgb(
         a.buttonPrimaryBackground,
         b.buttonPrimaryBackground,
@@ -1453,6 +1483,9 @@ class SldsRawColorTokens {
         other.headerBorder == headerBorder &&
         other.headerProgressTrack == headerProgressTrack &&
         other.barBackgroundDark == barBackgroundDark &&
+        other.barIdleIconDark == barIdleIconDark &&
+        other.barIdleLabelDark == barIdleLabelDark &&
+        other.barPressedDark == barPressedDark &&
         other.buttonPrimaryBackground == buttonPrimaryBackground &&
         other.buttonPrimaryLabel == buttonPrimaryLabel &&
         other.buttonPrimaryHover == buttonPrimaryHover &&
@@ -1564,6 +1597,9 @@ class SldsRawColorTokens {
     headerBorder,
     headerProgressTrack,
     barBackgroundDark,
+    barIdleIconDark,
+    barIdleLabelDark,
+    barPressedDark,
     buttonPrimaryBackground,
     buttonPrimaryLabel,
     buttonPrimaryHover,

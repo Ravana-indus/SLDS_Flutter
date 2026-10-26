@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart' hide RefreshCallback;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:slds_components/slds_components.dart'
@@ -59,6 +60,13 @@ class SldsPullToRefresh extends StatelessWidget {
     final dark = style == SldsPullToRefreshStyle.dark;
 
     return CustomScrollView(
+      // Flutter drag-scrolls with touch and stylus only by default, so a
+      // mouse pull in a desktop browser (Widgetbook) never reached the
+      // trigger distance and the refresh never fired (#199). The pull is the
+      // whole point of this widget, so every pointer kind may drag it.
+      scrollBehavior: ScrollConfiguration.of(
+        context,
+      ).copyWith(dragDevices: PointerDeviceKind.values.toSet()),
       // Pull-to-refresh needs overscroll past the top to register at all —
       // the platform-default physics (ClampingScrollPhysics on Android)
       // refuses that, so the gesture would silently do nothing there

@@ -143,13 +143,12 @@ class _NavItemState extends State<_NavItem> {
 
     // Disabled: a neutral (white on light, near-black on dark) pill with a
     // dark/light-but-muted icon and a gray label — never selected-looking,
-    // never interactive, regardless of style. Dark bar: selected pill is
-    // solid gold with a dark icon *inside* it for contrast — but the label
-    // sits below the pill on the black background, so it stays white
-    // regardless of selection (dark-on-black would be invisible). Light
-    // bar: selected pill is solid gold too (matches the Figma "Bottom
-    // Navigation element" spec, not a soft tint); unselected is plain gray
-    // with no pill.
+    // never interactive, regardless of style. Figma's Bottom tab bars
+    // (342:584 light, 342:597 dark): the selected pill is solid gold with a
+    // black icon in both; light idle icons #898989 (#191) with #676767
+    // labels (#195); dark idle icons #BCBCBC (#192) with #CDCDCD labels
+    // (#197) and a white selected label. Pressed fills the pill white on
+    // the light bar (#190) and #17171A with a white icon on the dark (#193).
     final Color iconColor;
     final Color labelColor;
     final Color pillColor;
@@ -158,21 +157,25 @@ class _NavItemState extends State<_NavItem> {
       labelColor = colors.disabledForeground;
       pillColor = dark ? colors.disabledBackground : colors.textInverse;
     } else if (dark) {
-      iconColor = selected ? colors.textStaticBlack : colors.textInverse;
-      labelColor = colors.textInverse;
-      pillColor = selected ? accent : Colors.transparent;
+      iconColor = selected
+          ? colors.textStaticBlack
+          : (_pressed ? colors.textInverse : colors.barIdleIconDark);
+      labelColor = selected ? colors.textInverse : colors.barIdleLabelDark;
+      pillColor = selected
+          ? accent
+          : (_pressed ? colors.barPressedDark : Colors.transparent);
     } else {
-      iconColor = selected ? colors.textStaticBlack : colors.textTertiary;
-      labelColor = selected ? colors.textPrimary : colors.textTertiary;
-      // Figma Selected=Pressed (877:10456): a white state layer fills the
-      // pill while pressed (#190).
+      iconColor = selected
+          ? colors.textStaticBlack
+          : (_pressed ? colors.textPrimary : colors.inputIcon);
+      labelColor = selected ? colors.textPrimary : colors.textSecondary;
       pillColor = selected
           ? accent
           : (_pressed ? colors.surfaceCard : Colors.transparent);
     }
-    // On the light bar the white pill is the press feedback, so the ripple
-    // across the whole item is dropped.
-    final pillFeedback = !dark && item.enabled;
+    // The filled pill is the press feedback, so the ripple across the whole
+    // item is dropped.
+    final pillFeedback = item.enabled;
 
     return Semantics(
       container: true,
@@ -231,7 +234,9 @@ class _NavItemState extends State<_NavItem> {
                 item.label,
                 style: tokens.typography.caption1.copyWith(
                   color: labelColor,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                  // Figma: 12/400/14 whether selected or not (#194-#197).
+                  height: 14 / 12,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],

@@ -154,6 +154,15 @@ class SldsColorTokens {
   /// Dark top-bar surface, Figma `Tab Bar/Background` in dark mode.
   Color get barBackgroundDark => Color(tokens.barBackgroundDark);
 
+  /// Dark tab bar idle icon — Figma #BCBCBC, the same in every palette.
+  Color get barIdleIconDark => Color(tokens.barIdleIconDark);
+
+  /// Dark tab bar idle label — Figma #CDCDCD, the same in every palette.
+  Color get barIdleLabelDark => Color(tokens.barIdleLabelDark);
+
+  /// Dark tab bar pressed pill — Figma #17171A, the same in every palette.
+  Color get barPressedDark => Color(tokens.barPressedDark);
+
   /// Primary button background.
   Color get buttonPrimaryBackground => Color(tokens.buttonPrimaryBackground);
 

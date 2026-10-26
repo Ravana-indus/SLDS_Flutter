@@ -441,6 +441,15 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   16/400/26 (were 14px) (#189).
 - `SldsBottomNav`: pressing an unselected item on the light bar fills its
   icon pill white, Figma's Pressed state, instead of a ripple (#190).
+  Figma's Bottom tab bars throughout: idle icons `#898989` light /
+  `#BCBCBC` dark (were `#6C6C6C` / white) (#191, #192), idle labels
+  `#676767` / `#CDCDCD` (#195, #197), the selected label white on the dark
+  bar, every label 12/400/14 (selected was 600) (#194, #196), and pressing
+  on the dark bar fills the pill `#17171A` with a white icon (#193). New
+  tokens `barIdleIconDark`, `barIdleLabelDark` and `barPressedDark` carry
+  the dark bar's fixed values.
+- `SldsPullToRefresh` accepts drags from every pointer kind, so a mouse pull
+  in a desktop browser (Widgetbook) now triggers the refresh (#199).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

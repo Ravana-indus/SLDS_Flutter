@@ -55,6 +55,9 @@ const _exemptions = <String, String>{
   'light: error state code on page':
       'Matches Figma Text/Tertiary #BCBCBC exactly (issue #34): 1.77:1 on '
       '#F7F7F7, below 3:1 for large text. Pending design review.',
+  'light: flyout group header on card':
+      'Matches Figma Text/Tertiary #BCBCBC exactly (issue #188): 1.92:1 on '
+      'the white flyout. Pending design review.',
   'dark: destructive link on card':
       'Matches Figma Feedback/Error Text #F47272 exactly (issue #16): 3.48:1 '
       'on the #444444 card. Pending design review; still checked on the page.',
@@ -109,6 +112,13 @@ final _pairs = <_Pair>[
     (c) => c.errorStateCode,
     (c) => c.surfacePage,
     largeText: true,
+  ),
+
+  // Flyout group caption: 12px text on the flyout's card surface.
+  _Pair(
+    'flyout group header on card',
+    (c) => c.flyoutGroupHeader,
+    (c) => c.surfaceCard,
   ),
 
   // Inline text links. Body-sized interactive text, so the 4.5:1 floor

@@ -38,6 +38,7 @@ class SldsRawColorTokens {
     required this.tagNotice,
     required this.headerBorder,
     required this.headerProgressTrack,
+    required this.barBackgroundDark,
     required this.buttonPrimaryBackground,
     required this.buttonPrimaryLabel,
     required this.buttonPrimaryHover,
@@ -67,6 +68,7 @@ class SldsRawColorTokens {
     required this.badgeArchivedText,
     required this.badgeDraftText,
     required this.errorStateCode,
+    required this.flyoutGroupHeader,
     required this.progressTrack,
     required this.progressFill,
     required this.bannerSuccess,
@@ -210,6 +212,7 @@ class SldsRawColorTokens {
     tagNotice: 0xfff57c00,
     headerBorder: 0xffdddddd,
     headerProgressTrack: 0xffffffff,
+    barBackgroundDark: 0xff010102,
     buttonPrimaryBackground: 0xffffc700,
     buttonPrimaryLabel: 0xff17171a,
     buttonPrimaryHover: 0xffe0ae00,
@@ -242,6 +245,7 @@ class SldsRawColorTokens {
     badgeDraftText: 0xff898989,
     // Figma Error State status code: Text/Tertiary (#34).
     errorStateCode: 0xffbcbcbc,
+    flyoutGroupHeader: 0xffbcbcbc,
     // Figma Progress/Track and Progress/Fill (issues #39, #40).
     progressTrack: 0xffffffff,
     progressFill: 0xff1faa63,
@@ -356,6 +360,7 @@ class SldsRawColorTokens {
     tagNotice: 0xffffe880,
     headerBorder: 0xff565656,
     headerProgressTrack: 0xff111111,
+    barBackgroundDark: 0xff010102,
     buttonPrimaryBackground: 0xffffc700,
     buttonPrimaryLabel: 0xff17171a,
     buttonPrimaryHover: 0xffffd740,
@@ -392,6 +397,7 @@ class SldsRawColorTokens {
     badgeArchivedText: 0xff898989,
     badgeDraftText: 0xffbcbcbc,
     errorStateCode: 0xffbcbcbc,
+    flyoutGroupHeader: 0xffbcbcbc,
     progressTrack: 0xff444444,
     progressFill: 0xff5dc896,
     bannerSuccess: 0xff5dc896,
@@ -470,6 +476,7 @@ class SldsRawColorTokens {
     tagNotice: 0xff000000,
     headerBorder: 0xff000000,
     headerProgressTrack: 0xffffffff,
+    barBackgroundDark: 0xff010102,
     buttonPrimaryBackground: 0xffffc700,
     buttonPrimaryLabel: 0xff000000,
     buttonPrimaryHover: 0xffe0ae00,
@@ -499,6 +506,7 @@ class SldsRawColorTokens {
     badgeArchivedText: 0xff565656,
     badgeDraftText: 0xff565656,
     errorStateCode: 0xff000000,
+    flyoutGroupHeader: 0xff000000,
     progressTrack: 0xffe2e2e2,
     progressFill: 0xff065f46,
     bannerSuccess: 0xff065f46,
@@ -625,6 +633,11 @@ class SldsRawColorTokens {
   /// Incomplete top navigation progress segment.
   final int headerProgressTrack;
 
+  /// Dark top-bar surface — Figma `Tab Bar/Background` in dark mode,
+  /// #010102. The same in every palette: the dark tab strip and top
+  /// navigation bar use it under either theme.
+  final int barBackgroundDark;
+
   /// Primary button background.
   final int buttonPrimaryBackground;
 
@@ -711,6 +724,10 @@ class SldsRawColorTokens {
 
   /// Figma Error State status code (404/500/401) — Text/Tertiary.
   final int errorStateCode;
+
+  /// Figma Flyout group caption ("Powerfull and Simple") — Text/Tertiary
+  /// #BCBCBC, lighter than [textTertiary].
+  final int flyoutGroupHeader;
 
   /// Figma Progress/Track — the unfilled bar.
   final int progressTrack;
@@ -900,6 +917,7 @@ class SldsRawColorTokens {
     int? tagNotice,
     int? headerBorder,
     int? headerProgressTrack,
+    int? barBackgroundDark,
     int? buttonPrimaryBackground,
     int? buttonPrimaryLabel,
     int? buttonPrimaryHover,
@@ -929,6 +947,7 @@ class SldsRawColorTokens {
     int? badgeArchivedText,
     int? badgeDraftText,
     int? errorStateCode,
+    int? flyoutGroupHeader,
     int? progressTrack,
     int? progressFill,
     int? bannerSuccess,
@@ -1005,6 +1024,7 @@ class SldsRawColorTokens {
       tagNotice: tagNotice ?? this.tagNotice,
       headerBorder: headerBorder ?? this.headerBorder,
       headerProgressTrack: headerProgressTrack ?? this.headerProgressTrack,
+      barBackgroundDark: barBackgroundDark ?? this.barBackgroundDark,
       buttonPrimaryBackground:
           buttonPrimaryBackground ?? this.buttonPrimaryBackground,
       buttonPrimaryLabel: buttonPrimaryLabel ?? this.buttonPrimaryLabel,
@@ -1044,6 +1064,7 @@ class SldsRawColorTokens {
       badgeArchivedText: badgeArchivedText ?? this.badgeArchivedText,
       badgeDraftText: badgeDraftText ?? this.badgeDraftText,
       errorStateCode: errorStateCode ?? this.errorStateCode,
+      flyoutGroupHeader: flyoutGroupHeader ?? this.flyoutGroupHeader,
       progressTrack: progressTrack ?? this.progressTrack,
       progressFill: progressFill ?? this.progressFill,
       bannerSuccess: bannerSuccess ?? this.bannerSuccess,
@@ -1151,6 +1172,7 @@ class SldsRawColorTokens {
         b.headerProgressTrack,
         t,
       ),
+      barBackgroundDark: lerpArgb(a.barBackgroundDark, b.barBackgroundDark, t),
       buttonPrimaryBackground: lerpArgb(
         a.buttonPrimaryBackground,
         b.buttonPrimaryBackground,
@@ -1260,6 +1282,7 @@ class SldsRawColorTokens {
       badgeArchivedText: lerpArgb(a.badgeArchivedText, b.badgeArchivedText, t),
       badgeDraftText: lerpArgb(a.badgeDraftText, b.badgeDraftText, t),
       errorStateCode: lerpArgb(a.errorStateCode, b.errorStateCode, t),
+      flyoutGroupHeader: lerpArgb(a.flyoutGroupHeader, b.flyoutGroupHeader, t),
       progressTrack: lerpArgb(a.progressTrack, b.progressTrack, t),
       progressFill: lerpArgb(a.progressFill, b.progressFill, t),
       bannerSuccess: lerpArgb(a.bannerSuccess, b.bannerSuccess, t),
@@ -1429,6 +1452,7 @@ class SldsRawColorTokens {
         other.tagNotice == tagNotice &&
         other.headerBorder == headerBorder &&
         other.headerProgressTrack == headerProgressTrack &&
+        other.barBackgroundDark == barBackgroundDark &&
         other.buttonPrimaryBackground == buttonPrimaryBackground &&
         other.buttonPrimaryLabel == buttonPrimaryLabel &&
         other.buttonPrimaryHover == buttonPrimaryHover &&
@@ -1458,6 +1482,7 @@ class SldsRawColorTokens {
         other.badgeArchivedText == badgeArchivedText &&
         other.badgeDraftText == badgeDraftText &&
         other.errorStateCode == errorStateCode &&
+        other.flyoutGroupHeader == flyoutGroupHeader &&
         other.progressTrack == progressTrack &&
         other.progressFill == progressFill &&
         other.bannerSuccess == bannerSuccess &&
@@ -1538,6 +1563,7 @@ class SldsRawColorTokens {
     tagNotice,
     headerBorder,
     headerProgressTrack,
+    barBackgroundDark,
     buttonPrimaryBackground,
     buttonPrimaryLabel,
     buttonPrimaryHover,
@@ -1567,6 +1593,7 @@ class SldsRawColorTokens {
     badgeArchivedText,
     badgeDraftText,
     errorStateCode,
+    flyoutGroupHeader,
     progressTrack,
     progressFill,
     bannerSuccess,

@@ -172,11 +172,12 @@ class _FlyoutItem extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
+                    // Figma: 18/500 on a 28px line, Text/Primary (#187).
                     child: Text(
                       item.label,
-                      style: tokens.typography.body2.copyWith(
+                      style: tokens.typography.title1.copyWith(
+                        height: 28 / 18,
                         color: colors.textPrimary,
-                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -204,10 +205,12 @@ class _FlyoutItem extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                       horizontal: dimensions.space20,
                     ),
+                    // Figma Desktop/Caption 1, Text/Tertiary #BCBCBC (#188).
                     child: Text(
                       group.header,
                       style: tokens.typography.caption1.copyWith(
-                        color: colors.textTertiary,
+                        height: 18 / 12,
+                        color: colors.flyoutGroupHeader,
                       ),
                     ),
                   ),
@@ -238,9 +241,11 @@ class _FlyoutItem extends StatelessWidget {
                                 SizedBox(width: dimensions.space12),
                               ],
                               Expanded(
+                                // Figma: 16/400 on a 26px line (#189).
                                 child: Text(
                                   entry.label,
-                                  style: tokens.typography.body2.copyWith(
+                                  style: tokens.typography.body1.copyWith(
+                                    height: 26 / 16,
                                     color: colors.textPrimary,
                                   ),
                                 ),

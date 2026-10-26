@@ -108,7 +108,7 @@ class SldsBottomNav extends StatelessWidget {
   }
 }
 
-class _NavItem extends StatelessWidget {
+class _NavItem extends StatefulWidget {
   const _NavItem({
     required this.item,
     required this.selected,
@@ -124,10 +124,22 @@ class _NavItem extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<_NavItem> createState() => _NavItemState();
+}
+
+class _NavItemState extends State<_NavItem> {
+  bool _pressed = false;
+
+  @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
+    final item = widget.item;
+    final selected = widget.selected;
+    final dark = widget.dark;
+    final accent = widget.accent;
+    final onTap = widget.onTap;
 
     // Disabled: a neutral (white on light, near-black on dark) pill with a
     // dark/light-but-muted icon and a gray label — never selected-looking,
@@ -152,8 +164,15 @@ class _NavItem extends StatelessWidget {
     } else {
       iconColor = selected ? colors.textStaticBlack : colors.textTertiary;
       labelColor = selected ? colors.textPrimary : colors.textTertiary;
-      pillColor = selected ? accent : Colors.transparent;
+      // Figma Selected=Pressed (877:10456): a white state layer fills the
+      // pill while pressed (#190).
+      pillColor = selected
+          ? accent
+          : (_pressed ? colors.surfaceCard : Colors.transparent);
     }
+    // On the light bar the white pill is the press feedback, so the ripple
+    // across the whole item is dropped.
+    final pillFeedback = !dark && item.enabled;
 
     return Semantics(
       container: true,
@@ -164,6 +183,9 @@ class _NavItem extends StatelessWidget {
       label: item.label,
       child: InkWell(
         onTap: item.enabled ? onTap : null,
+        onHighlightChanged: (pressed) => setState(() => _pressed = pressed),
+        splashFactory: pillFeedback ? NoSplash.splashFactory : null,
+        highlightColor: pillFeedback ? Colors.transparent : null,
         borderRadius: BorderRadius.circular(dimensions.radiusFull),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: dimensions.space4),

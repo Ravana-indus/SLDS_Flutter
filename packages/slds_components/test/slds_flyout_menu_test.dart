@@ -196,4 +196,32 @@ void main() {
       expect(row.hoverColor, SldsColorTokens.light().surfaceHover);
     }
   });
+
+  // Figma Flyout Mobile (1018:33957): titles 18/500/28 #17171A; expanded
+  // captions 12/400/18 #BCBCBC; expanded titles 16/400/26 #17171A.
+  testWidgets('title, caption and entry typography match Figma (#187-#189)', (
+    tester,
+  ) async {
+    await pump(tester, const SldsFlyoutMenu(items: items));
+    var style = tester.widget<Text>(find.text('Navigation 02')).style!;
+    expect(style.fontSize, 18);
+    expect(style.fontWeight, FontWeight.w500);
+    expect(style.fontSize! * style.height!, closeTo(28, 0.01));
+    expect(style.color, const Color(0xFF17171A));
+
+    await tester.tap(find.text('Navigation 01'));
+    await tester.pumpAndSettle();
+
+    final header = items.first.groups.first;
+    style = tester.widget<Text>(find.text(header.header)).style!;
+    expect(style.fontSize, 12);
+    expect(style.fontSize! * style.height!, closeTo(18, 0.01));
+    expect(style.color, const Color(0xFFBCBCBC));
+
+    style = tester.widget<Text>(find.text(header.entries.first.label)).style!;
+    expect(style.fontSize, 16);
+    expect(style.fontWeight, FontWeight.w400);
+    expect(style.fontSize! * style.height!, closeTo(26, 0.01));
+    expect(style.color, const Color(0xFF17171A));
+  });
 }

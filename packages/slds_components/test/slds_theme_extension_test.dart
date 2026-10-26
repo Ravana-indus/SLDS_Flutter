@@ -136,7 +136,7 @@ void main() {
     // The regression this guards: `dark` in these widgets is a *style
     // variant*, not Theme.brightness, so a reader that greps for brightness
     // misses that high contrast never reached them.
-    testWidgets('the dark top nav paints the inverse token', (tester) async {
+    testWidgets('the dark top nav paints the dark bar token', (tester) async {
       await tester.pumpWidget(
         wrap(
           const SldsTopNavBar(title: 'Licence', style: SldsTopNavBarStyle.dark),
@@ -145,7 +145,7 @@ void main() {
         ),
       );
 
-      final expected = SldsTokenSet.highContrast().colors.surfaceInverse;
+      final expected = SldsTokenSet.highContrast().colors.barBackgroundDark;
       final container = tester.widget<Container>(
         find
             .descendant(
@@ -154,8 +154,7 @@ void main() {
             )
             .first,
       );
-      final decoration = container.decoration! as BoxDecoration;
-      expect(decoration.color, expected);
+      expect(container.color, expected);
     });
   });
 }

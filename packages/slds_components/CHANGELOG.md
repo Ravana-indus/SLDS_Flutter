@@ -423,6 +423,24 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   gold) (#177) and the uploaded check `#1FAA63` (was `#00833C`) (#178).
   Label, helper, filename and close-icon colours already matched (#171,
   #173, #176, #180).
+- `SldsTopNavBar` is Figma's 64px bar: 8px padding, no divider, on Tab
+  Bar/Background (`#F7F7F7` light, `#010102` dark, was white/black)
+  (#183, #184); the title is Mobile/Title 1, 18/500/24 (was 700), 4px past
+  the back button and centred in the bar (#181); pending progress steps
+  are `#FFFFFF` (`headerProgressTrack`, was `#8F8F8F`) (#186). It no longer
+  wraps itself in a `SafeArea` — the inset pushed the row to the bottom of
+  a taller bar wherever the bar was not at the top of the screen. Place it
+  inside a `SafeArea` instead. Under a dark theme it draws its dark style,
+  like `SldsTabStrip`.
+- New colour tokens: `barBackgroundDark` (`#010102`, Figma Tab
+  Bar/Background in dark mode; `SldsTabStrip` now uses it too) and
+  `flyoutGroupHeader` (Figma Text/Tertiary `#BCBCBC` in light; 1.92:1 on
+  white, a recorded contrast exemption pending design review).
+- `SldsFlyoutMenu` titles are 18/500/28 (were 14/600) (#187), expanded
+  group captions 12/400/18 `#BCBCBC` (were `#6C6C6C`) (#188) and entries
+  16/400/26 (were 14px) (#189).
+- `SldsBottomNav`: pressing an unselected item on the light bar fills its
+  icon pill white, Figma's Pressed state, instead of a ripple (#190).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

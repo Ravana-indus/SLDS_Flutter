@@ -293,4 +293,36 @@ void main() {
     expect(style.fontSize! * style.height!, closeTo(14, 0.01));
     expect(style.color, const Color(0xFFFFFFFF));
   });
+
+  // Figma Selected=Pressed (877:10456): a white pill behind the icon while
+  // an unselected item is pressed (#190).
+  testWidgets('pressing an item fills its pill white (#190)', (tester) async {
+    await pump(
+      tester,
+      SldsBottomNav(items: items, currentIndex: 0, onTap: (_) {}),
+    );
+    Color? pill() =>
+        (tester
+                    .widget<Container>(
+                      find
+                          .ancestor(
+                            of: find.byIcon(Icons.search),
+                            matching: find.byType(Container),
+                          )
+                          .first,
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .color;
+
+    expect(pill(), Colors.transparent);
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byIcon(Icons.search)),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(pill(), const Color(0xFFFFFFFF));
+    await gesture.up();
+    await tester.pumpAndSettle();
+    expect(pill(), Colors.transparent);
+  });
 }

@@ -151,6 +151,9 @@ class SldsColorTokens {
   /// Incomplete top navigation progress segment.
   Color get headerProgressTrack => Color(tokens.headerProgressTrack);
 
+  /// Dark top-bar surface, Figma `Tab Bar/Background` in dark mode.
+  Color get barBackgroundDark => Color(tokens.barBackgroundDark);
+
   /// Primary button background.
   Color get buttonPrimaryBackground => Color(tokens.buttonPrimaryBackground);
 
@@ -241,6 +244,9 @@ class SldsColorTokens {
 
   /// Figma Error State status code (404/500/401) — Text/Tertiary.
   Color get errorStateCode => Color(tokens.errorStateCode);
+
+  /// Flyout group caption, Figma Text/Tertiary #BCBCBC.
+  Color get flyoutGroupHeader => Color(tokens.flyoutGroupHeader);
 
   /// Figma Progress/Track — the unfilled bar.
   Color get progressTrack => Color(tokens.progressTrack);

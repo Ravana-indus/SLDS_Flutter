@@ -106,4 +106,25 @@ void main() {
       );
     },
   );
+
+  // Figma Process List (533:3256): titles Text/Primary #17171A, descriptions
+  // Text/Secondary #676767 (#210).
+  testWidgets('title and subtext colours match Figma (#210)', (tester) async {
+    await pump(tester, const SldsProcessList(steps: steps));
+    expect(
+      tester.widget<Text>(find.text('Prepare documents')).style!.color,
+      const Color(0xFF17171A),
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.text(
+              'Gather all required identification and supporting files',
+            ),
+          )
+          .style!
+          .color,
+      const Color(0xFF676767),
+    );
+  });
 }

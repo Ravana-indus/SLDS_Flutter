@@ -258,4 +258,76 @@ void main() {
       ),
     );
   });
+
+  // Figma Icon Card (533:2742): Quick Action 797:10019, Featured Services
+  // 797:10028. Measured from the card's top-left.
+  testWidgets('quick action and featured layouts match Figma (#203-#209)', (
+    tester,
+  ) async {
+    Future<Rect Function(Finder)> show(SldsIconCardVariant variant) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: SldsTheme.light,
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Center(
+              child: SldsIconCard(
+                title: 'Fuel Pass',
+                description: 'Apply for a fuel quota pass',
+                badgeLabel: 'NEW',
+                icon: const SizedBox.expand(key: Key('icon')),
+                variant: variant,
+                onTap: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+      final card = tester.getRect(find.byType(SldsIconCard));
+      return (Finder f) => tester.getRect(f).shift(-card.topLeft);
+    }
+
+    const icon = Key('icon');
+    TextStyle style(String text) => tester.widget<Text>(find.text(text)).style!;
+
+    // Small (Quick Action).
+    var at = await show(SldsIconCardVariant.quickAction);
+    expect(tester.getSize(find.byType(SldsIconCard)), const Size(96, 96));
+    expect(at(find.byKey(icon)), const Rect.fromLTWH(28, 18, 40, 40)); // #205
+    final title = at(find.text('Fuel Pass'));
+    expect(title.top, 66); // #204
+    expect(title.center.dx, 48);
+    expect(style('Fuel Pass').fontSize, 11);
+    expect(style('Fuel Pass').color, const Color(0xFF17171A));
+    final pill = at(
+      find
+          .ancestor(of: find.text('NEW'), matching: find.byType(Container))
+          .first,
+    );
+    expect(pill.top, -7); // #203
+    expect(pill.height, 14);
+    expect(pill.center.dx, 48);
+    expect(style('NEW').fontSize, 12);
+    expect(style('NEW').fontWeight, FontWeight.w400);
+
+    // Large (Featured Services).
+    at = await show(SldsIconCardVariant.featuredServices);
+    expect(
+      tester.getSize(find.byType(SldsIconCard)),
+      const Size(240, 118),
+    ); // #206
+    expect(at(find.byKey(icon)), const Rect.fromLTWH(16, 16, 48, 48)); // #205
+    expect(
+      at(find.text('Fuel Pass')).topLeft,
+      const Offset(18, 76),
+    ); // #207, #209
+    expect(at(find.text('Apply for a fuel quota pass')).top, 90); // #208, #209
+    for (final text in ['Fuel Pass', 'Apply for a fuel quota pass']) {
+      expect(style(text).fontSize, 11, reason: text);
+      expect(style(text).fontSize! * style(text).height!, closeTo(12, 0.01));
+    }
+    expect(style('Fuel Pass').color, const Color(0xFF17171A));
+    expect(style('Apply for a fuel quota pass').color, const Color(0xFF676767));
+  });
 }

@@ -450,6 +450,17 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   the dark bar's fixed values.
 - `SldsPullToRefresh` accepts drags from every pointer kind, so a mouse pull
   in a desktop browser (Widgetbook) now triggers the refresh (#199).
+- `SldsAvatar` follows Figma Avatar (502:3768): initials `#17171A` (were
+  black, bold) in Figma's per-size type — 12/400 small, 16/400 medium,
+  18/500 large, 24/500 extra large, 22/700 huge (#202) — and the default
+  glyph is Figma's Phosphor User, painted at 16/20/24/24/28px (was
+  Material's `person_outline`) (#201).
+- `SldsIconCard`: a Featured Services card sizes to its content (it took
+  all the height offered, 600px in Widgetbook) and is Figma's 240x118, with
+  11/12 title and description lines in a 2px-padded text block (#206–#209).
+  Quick Action places its icon 18px down, an 8px gap above the label (was
+  4) and the "NEW" pill 14px tall, 7px above the card (#203–#205).
+- `SldsProcessList` colours already matched Figma; now pinned (#210).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

@@ -106,4 +106,44 @@ void main() {
     );
     expect(box.constraints?.maxWidth, 20);
   });
+
+  // Figma Radio (541:307): a 1px ring; resting #FFFFFF with a #BCBCBC ring
+  // (#224); disabled #DDDDDD with a #BCBCBC ring and dot (#225).
+  testWidgets('ring, fill and dot match Figma (#224, #225)', (tester) async {
+    BoxDecoration ring() => tester
+        .widgetList<Container>(
+          find.descendant(
+            of: find.byType(SldsRadio<int>),
+            matching: find.byType(Container),
+          ),
+        )
+        .map((c) => c.decoration)
+        .whereType<BoxDecoration>()
+        .firstWhere((d) => d.border != null && d.color != null);
+    Color? dot() =>
+        (tester
+                    .widget<AnimatedContainer>(find.byType(AnimatedContainer))
+                    .decoration!
+                as BoxDecoration)
+            .color;
+
+    await pump(
+      tester,
+      SldsRadio<int>(value: 1, groupValue: 2, onChanged: (_) {}),
+    );
+    var d = ring();
+    expect(d.color, const Color(0xFFFFFFFF));
+    expect((d.border! as Border).top.color, const Color(0xFFBCBCBC));
+    expect((d.border! as Border).top.width, 1);
+
+    await pump(
+      tester,
+      const SldsRadio<int>(value: 1, groupValue: 1, onChanged: null),
+    );
+    await tester.pumpAndSettle();
+    d = ring();
+    expect(d.color, const Color(0xFFDDDDDD));
+    expect((d.border! as Border).top.color, const Color(0xFFBCBCBC));
+    expect(dot(), const Color(0xFFBCBCBC));
+  });
 }

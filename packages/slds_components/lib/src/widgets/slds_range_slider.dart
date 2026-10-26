@@ -53,8 +53,10 @@ class SldsRangeSlider extends StatelessWidget {
 
     final activeColor = interactive ? accent : colors.disabledForeground;
     final inactiveColor = interactive
-        ? colors.borderDefault
-        : colors.disabledBackground;
+        // Figma Range Slider (1112:1635): track #BCBCBC (#226), #EEEEEE
+        // when disabled (#227).
+        ? colors.inputBorderDefault
+        : colors.disabledBorder;
     final thumbColor = interactive ? accent : colors.disabledForeground;
 
     return SliderTheme(
@@ -66,7 +68,7 @@ class SldsRangeSlider extends StatelessWidget {
         overlayColor: accent.withValues(alpha: 0.12),
         thumbShape: const RoundSliderThumbShape(),
         disabledActiveTrackColor: colors.disabledForeground,
-        disabledInactiveTrackColor: colors.disabledBackground,
+        disabledInactiveTrackColor: colors.disabledBorder,
         disabledThumbColor: colors.disabledForeground,
       ),
       child: Slider(

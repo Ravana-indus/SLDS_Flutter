@@ -272,7 +272,7 @@ class SldsRawColorTokens {
     surfaceInverse: 0xff000000,
     textInverse: 0xffffffff,
     datePickerRangeHighlight: 0xfffff8d6,
-    serviceCardSelectedBackground: 0xffe3edff,
+    serviceCardSelectedBackground: 0xffdddddd,
     // Figma Mobile/Body 2 label and Help Text colours (#68-#84).
     inputLabel: 0xff17171a,
     inputPlaceholder: 0xffbcbcbc,

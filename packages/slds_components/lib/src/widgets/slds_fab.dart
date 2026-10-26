@@ -69,8 +69,13 @@ class SldsFab extends StatelessWidget {
   bool get _enabled => onPressed != null && !isLoading;
   bool get _isFilled => variant != SldsButtonVariant.secondary;
 
+  // Colours follow "disabled", not "not tappable": Figma's Loading keeps the
+  // variant's fill and draws its spinner in the variant's foreground, like
+  // SldsButton (#222, #223). Loading used the grey disabled pair.
+  bool get _disabled => onPressed == null;
+
   Color _background(SldsColorTokens colors) {
-    if (!_enabled) return colors.disabledBackground;
+    if (_disabled) return colors.disabledBackground;
     return switch (variant) {
       SldsButtonVariant.destructive => colors.buttonDestructiveBackground,
       SldsButtonVariant.secondary => colors.buttonSecondaryBackground,
@@ -79,7 +84,7 @@ class SldsFab extends StatelessWidget {
   }
 
   Color _foreground(SldsColorTokens colors) {
-    if (!_enabled) return colors.disabledForeground;
+    if (_disabled) return colors.disabledForeground;
     return switch (variant) {
       SldsButtonVariant.destructive => colors.buttonDestructiveLabel,
       SldsButtonVariant.secondary => colors.buttonSecondaryLabel,
@@ -170,9 +175,9 @@ class SldsFab extends StatelessWidget {
             ? const CircleBorder()
             : CircleBorder(
                 side: BorderSide(
-                  color: _enabled
-                      ? colors.buttonSecondaryBorder
-                      : colors.disabledBorder,
+                  color: _disabled
+                      ? colors.disabledBorder
+                      : colors.buttonSecondaryBorder,
                   width: dimensions.controlBorderWidth,
                 ),
               ),

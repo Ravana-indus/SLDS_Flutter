@@ -102,7 +102,7 @@ void main() {
     expect(material.color, colors.surfaceCard);
   });
 
-  testWidgets('forced selected state renders blue-100 background', (
+  testWidgets('forced selected state renders Figma #DDDDDD (#221)', (
     tester,
   ) async {
     await pump(
@@ -116,7 +116,7 @@ void main() {
     );
 
     final material = tester.widget<Material>(cardMaterial());
-    expect(material.color, const Color(0xffE3EDFF));
+    expect(material.color, const Color(0xFFDDDDDD));
   });
 
   testWidgets('exposes button and selected semantics', (tester) async {

@@ -468,7 +468,17 @@ SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.
   card is white (was `#F7F7F7`, invisible on the page) with a 16px radius
   (#214, #220); title 14/400/18 and description 12/400/18 (were 16 and 14)
   (#216, #217); the badge is a 22px pill with 12/500/14 text (#218); the
-  caret is 16px `#898989` (#219).
+  caret is 16px `#898989` (#219). Selected is Figma's `#DDDDDD` (was
+  `#E3EDFF`) (#221).
+- `SldsFab` keeps its variant's fill and foreground while loading — Figma's
+  Loading draws the spinner in the variant's colours — instead of turning
+  grey like a disabled button (#222, #223).
+- `SldsRadio` follows Figma Radio (541:307): a 1px ring (was 1.5),
+  resting `#FFFFFF` with a `#BCBCBC` ring (was transparent with
+  `#8F8F8F`) (#224), selected on `#F7F7F7`, disabled `#DDDDDD` with a
+  `#BCBCBC` ring and dot (were translucent) (#225).
+- `SldsRangeSlider`'s track is `#BCBCBC` (was `#8F8F8F`) and `#EEEEEE`
+  when disabled (was `#DDDDDD`) (#226, #227).
 - `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
   test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
@@ -117,5 +118,37 @@ void main() {
     expect(find.text('Loading…'), findsOneWidget);
     await gesture.up();
     await tester.pumpAndSettle();
+  });
+
+  // A desktop browser (Widgetbook) pulls with a mouse, which Flutter does
+  // not drag-scroll by default — so the pull never reached the trigger
+  // distance and the refresh never fired (#199).
+  testWidgets('a mouse pull triggers the refresh (#199)', (tester) async {
+    var refreshed = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: SldsTheme.light,
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: Scaffold(
+          body: SizedBox(
+            height: 400,
+            child: SldsPullToRefresh(
+              onRefresh: () async => refreshed++,
+              child: const Text('Item 1'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.drag(
+      find.text('Item 1'),
+      const Offset(0, 300),
+      kind: PointerDeviceKind.mouse,
+    );
+    await tester.pump();
+    await tester.pumpAndSettle();
+    expect(refreshed, 1);
   });
 }

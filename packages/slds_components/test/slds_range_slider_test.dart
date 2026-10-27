@@ -107,4 +107,20 @@ void main() {
     final sliderSize = tester.getSize(find.byType(Slider));
     expect(sliderSize.width, 250);
   });
+
+  // Figma Range Slider (1112:1635): track #BCBCBC (#226), #EEEEEE when
+  // disabled (#227).
+  testWidgets('track colours match Figma (#226, #227)', (tester) async {
+    await pump(tester, SldsRangeSlider(value: 40, onChanged: (_) {}));
+    var theme = tester.widget<SliderTheme>(find.byType(SliderTheme).last).data;
+    expect(theme.inactiveTrackColor, const Color(0xFFBCBCBC));
+
+    await pump(
+      tester,
+      SldsRangeSlider(value: 40, enabled: false, onChanged: (_) {}),
+    );
+    theme = tester.widget<SliderTheme>(find.byType(SliderTheme).last).data;
+    expect(theme.inactiveTrackColor, const Color(0xFFEEEEEE));
+    expect(theme.disabledInactiveTrackColor, const Color(0xFFEEEEEE));
+  });
 }

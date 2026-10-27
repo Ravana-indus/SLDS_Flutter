@@ -150,4 +150,61 @@ void main() {
     expect(find.text('Awaiting payment'), findsOneWidget);
     expect(find.text('Pending'), findsNothing);
   });
+
+  testWidgets('text matches Figma: weight 500, Success label #1FAA63', (
+    tester,
+  ) async {
+    for (final status in SldsBadgeStatus.values) {
+      await pump(tester, SldsBadge(label: 'Label', status: status));
+      final text = tester.widget<Text>(find.text('Label'));
+      expect(text.style!.fontWeight, FontWeight.w500, reason: '$status');
+    }
+
+    await pump(
+      tester,
+      const SldsBadge(label: 'Success', status: SldsBadgeStatus.success),
+    );
+    expect(
+      tester.widget<Text>(find.text('Success')).style!.color,
+      const Color(0xFF1FAA63),
+    );
+  });
+
+  testWidgets('Pending label matches Figma #503D00', (tester) async {
+    await pump(
+      tester,
+      const SldsBadge(label: 'Pending', status: SldsBadgeStatus.pending),
+    );
+    expect(
+      tester.widget<Text>(find.text('Pending')).style!.color,
+      const Color(0xFF503D00),
+    );
+  });
+
+  testWidgets('label and background colours match Figma (#21-#31)', (
+    tester,
+  ) async {
+    // (status, Figma label, Figma background) from Badge set 459:1448.
+    const figma = [
+      (SldsBadgeStatus.error, 0xFFD32F2F, 0xFFFDECEA),
+      (SldsBadgeStatus.info, 0xFF0D6B7B, 0xFFFFFFFF),
+      (SldsBadgeStatus.neutral, 0xFF676767, 0xFFEEEEEE),
+      (SldsBadgeStatus.draft, 0xFF898989, 0xFFEEEEEE),
+      (SldsBadgeStatus.submitted, 0xFF0E9DB0, 0xFFD0F0F5),
+      (SldsBadgeStatus.approved, 0xFF059669, 0xFFE0F2EC),
+      (SldsBadgeStatus.rejected, 0xFFD32F2F, 0xFFFDECEA),
+      (SldsBadgeStatus.escalated, 0xFFF57C00, 0xFFFEF0E3),
+      (SldsBadgeStatus.onHold, 0xFF6747C7, 0xFFEDE9FF),
+      (SldsBadgeStatus.archived, 0xFFBCBCBC, 0xFFEEEEEE),
+    ];
+    for (final (status, label, background) in figma) {
+      await pump(tester, SldsBadge(label: 'Label', status: status));
+      expect(
+        tester.widget<Text>(find.text('Label')).style!.color,
+        Color(label),
+        reason: '$status label',
+      );
+      expect(backgroundOf(tester), Color(background), reason: '$status bg');
+    }
+  });
 }

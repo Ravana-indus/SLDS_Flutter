@@ -6,14 +6,14 @@ import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_flyout_menu.dart'
     show SldsFlyoutMenu;
 
-/// SLDS bottom sheet — a full-height sheet with a back chevron, centered
-/// [title], a close button, and [child] content below. Use for a
-/// full-screen mobile flow launched from a lower-emphasis surface (e.g.
-/// picking a detail from a list) — [SldsFlyoutMenu]/`showSldsFlyoutMenu`
-/// covers the compact "menu that slides up" case instead.
+/// SLDS bottom sheet — a half-height sheet with a back chevron, centered
+/// [title], a close button, and [child] content below. Use for a mobile
+/// flow launched from a lower-emphasis surface (e.g. picking a detail from
+/// a list) — [SldsFlyoutMenu]/`showSldsFlyoutMenu` covers the compact "menu
+/// that slides up" case instead.
 ///
-/// This is the panel content only — wrap it in `showSldsBottomSheet` (a
-/// full-height `showModalBottomSheet`) or your own sheet/route if you need
+/// This is the panel content only — wrap it in [SldsBottomSheet.show] (a
+/// half-height `showModalBottomSheet`) or your own sheet/route if you need
 /// different framing.
 class SldsBottomSheet extends StatelessWidget {
   /// Creates a bottom sheet.
@@ -37,10 +37,9 @@ class SldsBottomSheet extends StatelessWidget {
   /// Null hides the close (X) button.
   final VoidCallback? onClose;
 
-  /// Shows [SldsBottomSheet] via [showModalBottomSheet], filling the full
-  /// screen height (per the Figma reference) rather than the default
-  /// content-sized sheet. [onClose] defaults to popping the navigator when
-  /// not supplied.
+  /// Shows [SldsBottomSheet] via [showModalBottomSheet], sized to half the
+  /// screen height rather than the default content-sized sheet. [onClose]
+  /// defaults to popping the navigator when not supplied.
   static Future<T?> show<T>(
     BuildContext context, {
     required String title,
@@ -53,7 +52,7 @@ class SldsBottomSheet extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height * 0.5,
         child: SldsBottomSheet(
           title: title,
           onBack: onBack,

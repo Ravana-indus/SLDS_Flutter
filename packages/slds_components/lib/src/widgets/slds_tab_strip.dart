@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
     show SldsBottomNav;
-import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// One tab in an [SldsTabStrip].
 class SldsTabStripItem {
@@ -31,7 +30,8 @@ class SldsTabStripItem {
 }
 
 /// Visual container styles for [SldsTabStrip] — mirrors [SldsBottomNav]'s
-/// light/dark choice; independent of the app's own light/dark theme.
+/// light/dark choice. Under a dark theme the strip is always drawn [dark],
+/// as Figma's dark mode draws it, whichever style is passed.
 enum SldsTabStripStyle {
   /// Dark text on a light strip.
   light,
@@ -73,55 +73,48 @@ class SldsTabStrip extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final dark = style == SldsTabStripStyle.dark;
+    // Figma's dark mode draws the dark strip (selected pill #010102); the
+    // light style under a dark theme gave a #111111 pill instead (#154).
+    final dark =
+        style == SldsTabStripStyle.dark ||
+        Theme.of(context).brightness == Brightness.dark;
     final track = dark ? colors.surfaceInverse : colors.surfaceSunken;
     // The selected pill must read as raised *above* the track, so it is the
-    // lighter of the two in both styles. No token carries Figma's dark
-    // tab-bar/background, so it is spelled out here rather than borrowed
-    // from a surface token that would invert the relationship.
-    // ponytail: literal #010102, promote to a tab-bar token if a second
-    // component needs it.
-    final pill = dark ? const Color(0xff010102) : colors.surfacePage;
+    // lighter of the two in both styles: Figma's Tab Bar/Background.
+    final pill = dark ? colors.barBackgroundDark : colors.surfacePage;
     final labelColor = dark ? colors.textInverse : colors.textPrimary;
 
     return Container(
       padding: EdgeInsets.all(dimensions.space4),
       decoration: BoxDecoration(
         color: track,
-        borderRadius: BorderRadius.circular(dimensions.radius3xl),
+        borderRadius: BorderRadius.circular(dimensions.radiusFull),
       ),
-      // The strip hugs its content vertically: a decorated Container in a
-      // height-unbounded parent (a Center, a Column) would otherwise stretch
-      // to the full available height and drag every tab with it.
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < items.length; i++) ...[
-                if (i > 0) SizedBox(width: dimensions.space8),
-                Flexible(
-                  child: _Tab(
-                    item: items[i],
-                    selected: i == currentIndex,
-                    pillColor: pill,
-                    textColor: labelColor,
-                    onTap: onTap == null ? null : () => onTap!(i),
-                  ),
-                ),
-              ],
-            ],
-          ),
+          for (var i = 0; i < items.length; i++) ...[
+            if (i > 0) SizedBox(width: dimensions.space8),
+            Flexible(
+              child: _Tab(
+                item: items[i],
+                selected: i == currentIndex,
+                pillColor: pill,
+                textColor: labelColor,
+                onTap: onTap == null ? null : () => onTap!(i),
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
-/// Figma's inner gap between a tab's icon, label and badge. Off the
-/// spacing scale (3px), so it is not a spacing token.
-const double _gap = 3;
+/// The tab label's line height. Figma's Text Container pins this to
+/// Line Height/caption_1 (18) rather than body_2's own 22, so the label is
+/// set from the token scale and only its leading is overridden here.
+const double _labelLineHeight = 18;
 
 class _Tab extends StatelessWidget {
   const _Tab({
@@ -153,89 +146,96 @@ class _Tab extends StatelessWidget {
       button: true,
       selected: selected,
       label: item.label,
-      child: SldsTapTarget(
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(dimensions.radiusFull),
-          child: Container(
-            // The pill is the tap target, so it carries the 48dp floor
-            // itself: Expanded above constrains width only (WCAG 2.5.8).
-            constraints: BoxConstraints(minHeight: dimensions.tapTargetMin),
-            alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(
-              horizontal: dimensions.space12,
-              vertical: dimensions.space4,
-            ),
-            decoration: BoxDecoration(
-              color: selected ? pillColor : Colors.transparent,
-              borderRadius: BorderRadius.circular(dimensions.radius2xl),
-              // Figma Elevation/1 - Raised, on the selected tab only.
-              boxShadow: selected
-                  ? const [
-                      BoxShadow(
-                        color: Color(0x0d000000),
-                        offset: Offset(0, 1),
-                        blurRadius: 2,
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (item.leadingIcon) ...[
-                  Icon(
-                    Icons.circle_outlined,
-                    size: dimensions.iconSizeMedium,
-                    color: textColor,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(dimensions.radiusFull),
+        child: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(
+            horizontal: dimensions.space12,
+            vertical: dimensions.space4,
+          ),
+          decoration: BoxDecoration(
+            color: selected ? pillColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(dimensions.radiusFull),
+            // Figma Elevation/1 - Raised, on the selected tab only.
+            boxShadow: selected
+                ? const [
+                    BoxShadow(
+                      color: Color(0x0d000000),
+                      offset: Offset(0, 1),
+                      blurRadius: 2,
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (item.leadingIcon) ...[
+                Icon(
+                  Icons.circle_outlined,
+                  size: dimensions.iconSizeSmall,
+                  color: textColor,
+                ),
+                SizedBox(width: dimensions.space4),
+              ],
+              // Figma wraps the label in a "Text Container" (346:220) that
+              // carries space-4 on all four sides, and pins the line height
+              // to caption_1 (18) rather than body_2's own 22.
+              Flexible(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: dimensions.space4,
+                    horizontal: dimensions.space4,
                   ),
-                  const SizedBox(width: _gap),
-                ],
-                Flexible(
                   child: Text(
                     item.label,
                     overflow: TextOverflow.ellipsis,
-                    style: tokens.typography.body2.copyWith(color: textColor),
+                    style: tokens.typography.body2.copyWith(
+                      color: textColor,
+                      height: _labelLineHeight / 14,
+                    ),
                   ),
                 ),
-                if (item.trailingIcon) ...[
-                  const SizedBox(width: _gap),
-                  Icon(
-                    Icons.circle_outlined,
-                    size: dimensions.iconSizeMedium,
-                    color: textColor,
-                  ),
-                ],
-                if (item.count != null) ...[
-                  const SizedBox(width: _gap),
-                  Container(
-                    constraints: const BoxConstraints(
-                      minWidth: 16,
-                      maxWidth: 34,
-                    ),
-                    alignment: Alignment.center,
-                    height: 16,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: dimensions.space8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colors.badgeInReviewBackground,
-                      borderRadius: BorderRadius.circular(
-                        dimensions.radiusFull,
-                      ),
-                    ),
-                    child: Text(
-                      '${item.count}',
-                      textAlign: TextAlign.center,
-                      style: tokens.typography.caption2.copyWith(
-                        color: colors.badgeInReviewText,
-                      ),
-                    ),
-                  ),
-                ],
+              ),
+              if (item.trailingIcon) ...[
+                SizedBox(width: dimensions.space4),
+                Icon(
+                  Icons.circle_outlined,
+                  size: dimensions.iconSizeSmall,
+                  color: textColor,
+                ),
               ],
-            ),
+              if (item.count != null) ...[
+                SizedBox(width: dimensions.space4),
+                Container(
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    maxWidth: 34,
+                  ),
+                  alignment: Alignment.center,
+                  height: 16,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: dimensions.space8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colors.badgeInReviewBackground,
+                    borderRadius: BorderRadius.circular(
+                      dimensions.radiusFull,
+                    ),
+                  ),
+                  child: Text(
+                    '${item.count}',
+                    textAlign: TextAlign.center,
+                    style: tokens.typography.caption2.copyWith(
+                      color: colors.badgeInReviewText,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
       ),

@@ -6,7 +6,8 @@ import 'package:slds_components/src/widgets/slds_bottom_nav.dart'
     show SldsBottomNav;
 
 /// Visual container styles for [SldsTopNavBar] — mirrors [SldsBottomNav]'s
-/// light/dark choice; independent of the app's own light/dark theme.
+/// light/dark choice. Under a dark theme the bar is always drawn [dark],
+/// as Figma's dark mode draws it, whichever style is passed.
 enum SldsTopNavBarStyle {
   /// Dark content on a light bar.
   light,
@@ -20,6 +21,9 @@ enum SldsTopNavBarStyle {
 /// step indicator), and a trailing hamburger menu icon. Responsive: the
 /// title/progress area expands to fill whatever width remains between the
 /// two fixed icon buttons.
+///
+/// The bar is Figma's 64px and carries no status-bar inset: place it inside
+/// a [SafeArea] (or below an [AppBar]) at the top of the screen.
 class SldsTopNavBar extends StatelessWidget {
   /// A bar showing a plain [title] between the back and menu icons.
   const SldsTopNavBar({
@@ -44,8 +48,8 @@ class SldsTopNavBar extends StatelessWidget {
     this.style = SldsTopNavBarStyle.light,
   }) : title = null;
 
-  /// Centred heading. Null in the progress variant, which shows a step
-  /// indicator instead.
+  /// The page heading, beside the back button and centred vertically.
+  /// Null in the progress variant, which shows a step indicator instead.
   final String? title;
 
   /// Total steps in the flow, for the progress variant.
@@ -68,60 +72,66 @@ class SldsTopNavBar extends StatelessWidget {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
-    final dark = style == SldsTopNavBarStyle.dark;
+    // As with SldsTabStrip, a dark theme draws the dark bar, as Figma's
+    // dark mode does (#184).
+    final dark =
+        style == SldsTopNavBarStyle.dark ||
+        Theme.of(context).brightness == Brightness.dark;
     final accent = colors.buttonPrimaryBackground;
     final foreground = dark ? colors.textInverse : colors.textPrimary;
 
+    // Figma Top Navigation Bar (346:2950): a 64px bar, 8px padding, on
+    // Tab Bar/Background — #F7F7F7 light (#183), #010102 dark (#184) — with
+    // no divider. The content is centred in it; the bar carries no
+    // status-bar inset of its own, which pushed the row to the bottom of a
+    // taller bar wherever it was not at the very top of the screen (#181).
+    // Wrap the screen in a SafeArea to keep the bar below the status bar.
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: dimensions.space16,
-        vertical: dimensions.space12,
-      ),
-      decoration: BoxDecoration(
-        color: dark ? colors.surfaceInverse : colors.surfaceCard,
-        border: dark
-            ? null
-            : Border(bottom: BorderSide(color: colors.borderDefault)),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Row(
-          children: [
-            _IconSlot(
-              icon: Icons.chevron_left,
-              onTap: onBack,
-              color: foreground,
-              semanticLabel: context.sldsStrings.back,
-            ),
-            SizedBox(width: dimensions.space12),
-            Expanded(
-              child: totalSteps != null
-                  ? _StepProgress(
+      padding: EdgeInsets.all(dimensions.space8),
+      color: dark ? colors.barBackgroundDark : colors.surfacePage,
+      child: Row(
+        children: [
+          _IconSlot(
+            icon: Icons.chevron_left,
+            onTap: onBack,
+            color: foreground,
+            semanticLabel: context.sldsStrings.back,
+          ),
+          SizedBox(width: dimensions.space4),
+          Expanded(
+            child: totalSteps != null
+                // Figma's Stepper insets the steps 16px inside the title slot.
+                ? Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: dimensions.space16,
+                    ),
+                    child: _StepProgress(
                       total: totalSteps!,
                       current: currentStep!,
                       accent: accent,
+                      // Figma Progress/Track: #FFFFFF pending steps (#186).
                       inactiveColor: dark
                           ? colors.textInverse
-                          : colors.borderDefault,
-                    )
-                  : Text(
-                      title!,
-                      overflow: TextOverflow.ellipsis,
-                      style: tokens.typography.desktopTitle1.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.w700,
-                      ),
+                          : colors.headerProgressTrack,
                     ),
-            ),
-            SizedBox(width: dimensions.space12),
-            _IconSlot(
-              icon: Icons.menu,
-              onTap: onMenu,
-              color: foreground,
-              semanticLabel: context.sldsStrings.menu,
-            ),
-          ],
-        ),
+                  )
+                // Figma Mobile/Title 1: 18/500/24, Text/Primary (#181).
+                : Text(
+                    title!,
+                    overflow: TextOverflow.ellipsis,
+                    style: tokens.typography.title1.copyWith(
+                      color: foreground,
+                    ),
+                  ),
+          ),
+          SizedBox(width: dimensions.space4),
+          _IconSlot(
+            icon: Icons.menu,
+            onTap: onMenu,
+            color: foreground,
+            semanticLabel: context.sldsStrings.menu,
+          ),
+        ],
       ),
     );
   }

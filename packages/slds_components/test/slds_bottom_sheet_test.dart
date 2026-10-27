@@ -78,8 +78,14 @@ void main() {
   });
 
   testWidgets(
-    'show opens full-height via showModalBottomSheet and pops on close',
+    'show opens at half screen height via showModalBottomSheet and pops on '
+    'close',
     (tester) async {
+      const screenHeight = 800.0;
+      tester.view.physicalSize = const Size(400, screenHeight);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: SldsLocalizations.localizationsDelegates,
@@ -107,6 +113,18 @@ void main() {
 
       expect(find.text('Sheet Title'), findsOneWidget);
       expect(find.text('Content'), findsOneWidget);
+
+      // Half the screen, not full height — the SizedBox showModalBottomSheet
+      // sizes SldsBottomSheet into.
+      final sizedBox = tester.widget<SizedBox>(
+        find
+            .ancestor(
+              of: find.byType(SldsBottomSheet),
+              matching: find.byType(SizedBox),
+            )
+            .first,
+      );
+      expect(sizedBox.height, screenHeight * 0.5);
 
       await tester.tap(find.byIcon(Icons.close));
       await tester.pumpAndSettle();

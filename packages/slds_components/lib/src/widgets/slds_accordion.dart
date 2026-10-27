@@ -124,7 +124,14 @@ class _AccordionTile extends StatelessWidget {
                 ),
                 if (expanded) ...[
                   SizedBox(height: dimensions.space16),
-                  item.body,
+                  // Figma's content text is Desktop/Body 2 in Text/Secondary;
+                  // plain Text bodies inherit it.
+                  DefaultTextStyle.merge(
+                    style: tokens.typography.body2.copyWith(
+                      color: colors.textSecondary,
+                    ),
+                    child: item.body,
+                  ),
                 ],
               ],
             ),

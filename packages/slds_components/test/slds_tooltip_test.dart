@@ -119,4 +119,38 @@ void main() {
     );
     expect(tester.getSize(find.byType(SldsTooltip)).width, 300);
   });
+
+  testWidgets('action is the Figma Secondary/Small button, in every theme', (
+    tester,
+  ) async {
+    for (final theme in [SldsTheme.light, SldsTheme.dark]) {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          theme: theme,
+          home: Scaffold(
+            body: SldsTooltip(
+              title: 'Tooltip Title',
+              description: 'Enter the description text',
+              actionLabel: 'Action',
+              onAction: () {},
+            ),
+          ),
+        ),
+      );
+      final button = tester.widget<SldsButton>(find.byType(SldsButton));
+      expect(button.variant, SldsButtonVariant.secondary);
+      expect(button.size, SldsButtonSize.small);
+
+      // SldsButton paints no ripple: its overlay is transparent.
+      final style = tester
+          .widget<OutlinedButton>(find.byType(OutlinedButton))
+          .style!;
+      expect(
+        style.overlayColor!.resolve({WidgetState.pressed}),
+        Colors.transparent,
+      );
+    }
+  });
 }

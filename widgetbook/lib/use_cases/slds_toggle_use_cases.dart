@@ -3,6 +3,8 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/focused_demo.dart';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsToggle,
@@ -16,20 +18,34 @@ Widget buildSldsToggleUseCase(BuildContext context) {
     labelBuilder: (s) => s.name,
     initialOption: SldsToggleSize.large,
   );
+  // Shows Figma's Default/Checked - Focus states (#163).
+  final isFocused = context.knobs.boolean(
+    label: 'Focused',
+    initialValue: false,
+  );
 
   return Padding(
     padding: const EdgeInsets.all(24),
-    child: _ToggleDemo(enabled: isEnabled, size: size),
+    child: FocusedDemo(
+      focused: isFocused,
+      builder: (focusNode) =>
+          _ToggleDemo(enabled: isEnabled, size: size, focusNode: focusNode),
+    ),
   );
 }
 
 /// Real [State] (not a closure-local var) so the value survives rebuilds —
 /// see the SldsCheckbox playground bug this pattern avoids.
 class _ToggleDemo extends StatefulWidget {
-  const _ToggleDemo({required this.enabled, required this.size});
+  const _ToggleDemo({
+    required this.enabled,
+    required this.size,
+    required this.focusNode,
+  });
 
   final bool enabled;
   final SldsToggleSize size;
+  final FocusNode focusNode;
 
   @override
   State<_ToggleDemo> createState() => _ToggleDemoState();
@@ -44,6 +60,7 @@ class _ToggleDemoState extends State<_ToggleDemo> {
       value: _value,
       enabled: widget.enabled,
       size: widget.size,
+      focusNode: widget.focusNode,
       onChanged: (v) => setState(() => _value = v),
     );
   }

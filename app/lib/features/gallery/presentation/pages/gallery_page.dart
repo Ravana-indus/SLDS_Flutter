@@ -85,6 +85,43 @@ class _StatefulState extends State<_Stateful> {
   Widget build(BuildContext context) => widget.builder(context, setState);
 }
 
+/// A minimal Sri Lanka flag, painted rather than an emoji glyph or an
+/// asset — demo-only stand-in for the countryFlag a real app supplies.
+class _LkFlagSwatch extends StatelessWidget {
+  const _LkFlagSwatch();
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: SizedBox(
+        width: 24,
+        height: 16,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: ColoredBox(color: const Color(0xFFFFB700)),
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(child: ColoredBox(color: const Color(0xFF00534E))),
+                  Expanded(child: ColoredBox(color: const Color(0xFFEA1B26))),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: ColoredBox(color: const Color(0xFF8D153A)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // Mutable demo state, kept module-level so the list below stays declarative.
 // ponytail: shared across page instances; lift into a Cubit if the gallery
 // ever needs more than one live copy.
@@ -93,6 +130,7 @@ var _toggled = true;
 var _radio = 'a';
 var _range = 40.0;
 var _tab = 0;
+var _tabDark = 0;
 var _nav = 0;
 var _chips = <String>['Colombo'];
 var _filters = <String>['Open'];
@@ -132,16 +170,7 @@ final _sections = <(String, Widget)>[
       ],
     ),
   ),
-  (
-    'SldsFab',
-    Wrap(
-      spacing: 12,
-      children: [
-        SldsFab(icon: Icons.add, onPressed: () {}),
-        SldsFab(icon: Icons.edit, badgeCount: 3, onPressed: () {}),
-      ],
-    ),
-  ),
+  ('SldsFab', SldsFab(icon: Icons.add, onPressed: () {})),
   (
     'SldsCheckButton',
     _Stateful(
@@ -227,16 +256,52 @@ final _sections = <(String, Widget)>[
   ('SldsTextField', const SldsTextField(label: 'Full name', hintText: 'Name')),
   (
     'SldsTextArea',
-    const SldsTextArea(label: 'Comments', hintText: 'Tell us more'),
+    // Mirrors the Figma Text Area frame: required label, its placeholder,
+    // and the help text that occupies the strip under the box.
+    const SldsTextArea(
+      label: 'Description',
+      isRequired: true,
+      hintText: 'Description placeholder',
+      helpText: 'Help Text',
+    ),
   ),
   ('SldsPasswordField', const SldsPasswordField(label: 'Password')),
   ('SldsInput', const SldsInput(label: 'Amount', prefixText: 'LKR')),
   (
     'SldsInputMask',
-    const SldsInputMask(label: 'NIC', hintText: '000000000V'),
+    const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SldsInputMask(label: 'NIC', hintText: '000000000V'),
+        SizedBox(height: 12),
+        // Prefix + suffix demo — the field's other supported shape.
+        SldsInputMask(
+          label: 'Website',
+          prefixText: 'http://',
+          suffixText: '.com',
+          hintText: 'slds',
+        ),
+      ],
+    ),
   ),
-  ('SldsMobileNumberInput', const SldsMobileNumberInput(label: 'Mobile')),
-  ('SldsOtpInput', const SldsOtpInput()),
+  // countryFlag is deliberately left to the caller (SLDS bakes in no flag
+  // asset). Flag emoji don't reliably render as a glyph (shows as a missing-
+  // character box on some platforms), so paint a small swatch instead of
+  // adding a flag-icon package for one demo.
+  (
+    'SldsMobileNumberInput',
+    const SldsMobileNumberInput(label: 'Mobile', countryFlag: _LkFlagSwatch()),
+  ),
+  (
+    // SldsOtpInput boxes are fixed-size, not stretchy (large is 56x80).
+    // 6 of them at `large` (376px) don't fit a phone's content width, so
+    // Wrap drops the last 2 to a second, shorter-looking row — that's Wrap
+    // doing its job, not a component bug. `small` is the size actually
+    // meant for this width; showing large/medium too, but at a shorter
+    // length, so the gallery demonstrates all three without wrapping.
+    'SldsOtpInput',
+    const SldsOtpInput(size: SldsOtpInputSize.small),
+  ),
   (
     'SldsUploadField',
     Column(
@@ -286,17 +351,28 @@ final _sections = <(String, Widget)>[
   (
     'SldsFilterDropdown',
     _Stateful(
-      (context, setState) => SldsFilterDropdown(
-        options: const ['Open', 'Closed', 'Pending'],
-        selectedValues: _filters,
-        onSelectionChanged: (v) => setState(() => _filters = v),
+      // Figma spec is a fixed 250px popover card, not a full-width banner
+      // — Align+SizedBox keeps it that size instead of stretching to the
+      // device width like a bare Wrap/Column child would.
+      (context, setState) => Align(
+        alignment: Alignment.centerLeft,
+        child: SizedBox(
+          width: 250,
+          child: SldsFilterDropdown(
+            options: const ['Open', 'Closed', 'Pending'],
+            selectedValues: _filters,
+            onSelectionChanged: (v) => setState(() => _filters = v),
+          ),
+        ),
       ),
     ),
   ),
   ('SldsSearchBar', const SldsSearchBar(hintText: 'Search services')),
   (
     'SldsDatePicker',
-    const SldsDatePicker(mode: SldsDatePickerMode.single),
+    // onCancel and onApply supplied so the gallery showcases the Figma spec
+    // with January 13–18 range highlight in active state.
+    SldsDatePicker(onCancel: () {}, onApply: (_) {}),
   ),
   ('SldsTimePicker', const SldsTimePicker(label: 'Appointment time')),
   (
@@ -316,7 +392,6 @@ final _sections = <(String, Widget)>[
       ],
     ),
   ),
-  ('SldsCard', const SldsCard(child: Text('Card content'))),
   (
     'SldsIconCard',
     // featuredServices has no fixed height (it grows with content), so its
@@ -435,15 +510,11 @@ final _sections = <(String, Widget)>[
     const SldsSummaryList(
       rows: [
         SldsSummaryRow(label: 'Application ID', value: 'APP-2024-001'),
-        SldsSummaryRow(
-          label: 'NIC',
-          value: '199012345678',
-          isSensitive: true,
-        ),
+        SldsSummaryRow(label: 'NIC', value: '199012345678', isSensitive: true),
         SldsSummaryRow(
           label: 'Status',
           value: 'Approved',
-          badgeStatus: SldsSummaryBadgeStatus.approved,
+          badgeStatus: SldsBadgeStatus.approved,
         ),
       ],
     ),
@@ -468,17 +539,37 @@ final _sections = <(String, Widget)>[
   ),
   (
     'SldsTabStrip',
-    _Stateful(
-      (context, setState) => SldsTabStrip(
-        currentIndex: _tab,
-        onTap: (i) => setState(() => _tab = i),
-        items: const [
-          SldsTabStripItem(label: 'All'),
-          SldsTabStripItem(label: 'Open', count: 3),
-          SldsTabStripItem(label: 'Closed'),
+    _Stateful((context, setState) {
+      const figmaItems = [
+        SldsTabStripItem(label: 'Label', count: 2),
+        SldsTabStripItem(label: 'Label', leadingIcon: true),
+        SldsTabStripItem(label: 'Label', trailingIcon: true),
+        SldsTabStripItem(label: 'Label', leadingIcon: true, count: 2),
+      ];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SldsTabStrip(
+              currentIndex: _tab,
+              onTap: (i) => setState(() => _tab = i),
+              items: figmaItems,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SldsTabStrip(
+              style: SldsTabStripStyle.dark,
+              currentIndex: _tabDark,
+              onTap: (i) => setState(() => _tabDark = i),
+              items: figmaItems,
+            ),
+          ),
         ],
-      ),
-    ),
+      );
+    }),
   ),
   (
     'SldsBottomNav',
@@ -536,6 +627,18 @@ final _sections = <(String, Widget)>[
     ),
   ),
   (
+    'SldsDivider',
+    Column(
+      children: [
+        const SldsDivider(),
+        const SizedBox(height: 24),
+        const SldsDivider(child: Text('or')),
+        const SizedBox(height: 24),
+        SldsDivider.withButton(buttonLabel: 'Button', onButtonPressed: () {}),
+      ],
+    ),
+  ),
+  (
     'SldsAvatar',
     Wrap(
       spacing: 12,
@@ -566,11 +669,30 @@ final _sections = <(String, Widget)>[
   ),
   (
     'SldsTooltip',
-    const SldsTooltip(
-      title: 'Tooltip title',
-      description: 'Extra guidance for this field.',
-      stepLabel: '1 of 3',
-      actionLabel: 'Next',
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SldsTooltip(
+          title: 'Tooltip Title',
+          description: 'Enter the description text',
+          stepLabel: '1 of 5',
+          actionLabel: 'Action',
+          onAction: () {},
+          onClose: () {},
+          tailAlignment: SldsTooltipTailAlignment.end,
+        ),
+        const SizedBox(height: 16),
+        const SldsTooltip(
+          title: 'Tooltip Title',
+          description: 'Enter the description text',
+          tailAlignment: SldsTooltipTailAlignment.end,
+        ),
+        const SizedBox(height: 16),
+        const SldsTooltip(
+          title: 'Title',
+          tailAlignment: SldsTooltipTailAlignment.end,
+        ),
+      ],
     ),
   ),
   // Both are full-screen states — SldsErrorState sizes itself to

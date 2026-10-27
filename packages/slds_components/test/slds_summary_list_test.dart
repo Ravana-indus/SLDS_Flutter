@@ -18,7 +18,7 @@ void main() {
     SldsSummaryRow(
       label: 'Current status',
       value: 'In Review',
-      badgeStatus: SldsSummaryBadgeStatus.inReview,
+      badgeStatus: SldsBadgeStatus.inReview,
     ),
   ];
 
@@ -29,6 +29,16 @@ void main() {
     expect(find.text('APP-2026-001234'), findsOneWidget);
     expect(find.text('Submitted date'), findsOneWidget);
     expect(find.text('28th June 2026'), findsOneWidget);
+  });
+
+  testWidgets('a status row renders the shared SldsBadge, per Figma', (
+    tester,
+  ) async {
+    await pump(tester, const SldsSummaryList(rows: rows));
+
+    final badge = tester.widget<SldsBadge>(find.byType(SldsBadge));
+    expect(badge.label, 'In Review');
+    expect(badge.status, SldsBadgeStatus.inReview);
   });
 
   testWidgets('renders a status row value as a badge with the right colors', (
@@ -83,6 +93,23 @@ void main() {
     expect(
       find.bySemanticsLabel('Application ID: APP-2026-001234'),
       findsOneWidget,
+    );
+  });
+
+  // Figma Summary List: label Text/Secondary #676767, value Text/Primary
+  // #17171A (#135, #136).
+  testWidgets('label is #676767 and value #17171A (#135, #136)', (
+    tester,
+  ) async {
+    await pump(tester, const SldsSummaryList(rows: rows));
+
+    expect(
+      tester.widget<Text>(find.text('Application ID')).style!.color,
+      const Color(0xFF676767),
+    );
+    expect(
+      tester.widget<Text>(find.text('APP-2026-001234')).style!.color,
+      const Color(0xFF17171A),
     );
   });
 }

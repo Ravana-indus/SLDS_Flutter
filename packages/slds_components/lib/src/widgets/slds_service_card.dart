@@ -89,7 +89,9 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
     final state = _resolvedState;
 
     final background = switch (state) {
-      SldsServiceCardState.defaultState => colors.surfacePage,
+      // Figma Default is white: #F7F7F7 matched the page behind the card,
+      // so the container vanished (#214).
+      SldsServiceCardState.defaultState => colors.surfaceCard,
       SldsServiceCardState.hover => colors.surfaceHover,
       SldsServiceCardState.selected => colors.serviceCardSelectedBackground,
       SldsServiceCardState.active => colors.buttonPrimaryBackground,
@@ -112,10 +114,11 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
         label: widget.semanticLabel ?? widget.title,
         child: Material(
           color: background,
-          borderRadius: BorderRadius.circular(dimensions.radiusMd),
+          // Figma: radius-3xl, 16px (#220).
+          borderRadius: BorderRadius.circular(dimensions.radius3xl),
           child: InkWell(
             onTap: widget.onTap,
-            borderRadius: BorderRadius.circular(dimensions.radiusMd),
+            borderRadius: BorderRadius.circular(dimensions.radius3xl),
             child: Padding(
               padding: EdgeInsetsDirectional.only(
                 start: dimensions.space16,
@@ -141,14 +144,20 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        // Figma: title 14/400/18 (#216), description
+                        // 12/400/18 (#217).
                         Text(
                           widget.title,
-                          style: typography.body1.copyWith(color: titleColor),
+                          style: typography.body2.copyWith(
+                            height: 18 / 14,
+                            color: titleColor,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           widget.description,
-                          style: typography.body2.copyWith(
+                          style: typography.caption1.copyWith(
+                            height: 18 / 12,
                             color: descriptionColor,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -158,28 +167,38 @@ class _SldsServiceCardState extends State<SldsServiceCard> {
                   ),
                   if (widget.badgeText != null) ...[
                     SizedBox(width: dimensions.space16),
+                    // Figma Badge: 12/500/14 #1FAA63 padded 12x4 into a
+                    // 22px pill, radius 16 (#218).
                     Container(
-                      height: 28,
                       padding: EdgeInsets.symmetric(
                         horizontal: dimensions.space12,
+                        vertical: dimensions.space4,
                       ),
-                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: colors.badgeSuccessBackground,
                         borderRadius: BorderRadius.circular(
-                          dimensions.radius2xl,
+                          dimensions.radius3xl,
                         ),
                       ),
                       child: Text(
                         widget.badgeText!,
                         style: typography.caption1.copyWith(
+                          height: 14 / 12,
+                          fontWeight: FontWeight.w500,
                           color: colors.badgeSuccessText,
                         ),
                       ),
                     ),
                   ],
                   SizedBox(width: dimensions.space8),
-                  Icon(Icons.chevron_right, size: 20, color: descriptionColor),
+                  // Figma CaretRight: 16px, Input/Icon #898989 (#219).
+                  Icon(
+                    Icons.chevron_right,
+                    size: dimensions.iconSizeSmall,
+                    color: state == SldsServiceCardState.active
+                        ? colors.textStaticBlack
+                        : colors.inputIcon,
+                  ),
                 ],
               ),
             ),

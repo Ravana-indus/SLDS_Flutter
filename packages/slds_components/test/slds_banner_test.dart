@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
 
@@ -86,15 +87,18 @@ void main() {
     final colors = SldsTokenSet.light().colors;
     final expected = <SldsBannerSeverity, (Color, Color)>{
       SldsBannerSeverity.success: (
-        colors.success,
-        colors.badgeSuccessBackground,
+        colors.bannerSuccess,
+        colors.bannerSuccessBackground,
       ),
       SldsBannerSeverity.warning: (
-        colors.warning,
-        colors.badgePendingBackground,
+        colors.bannerWarning,
+        colors.bannerWarningBackground,
       ),
-      SldsBannerSeverity.error: (colors.error, colors.badgeErrorBackground),
-      SldsBannerSeverity.info: (colors.info, colors.surfaceCard),
+      SldsBannerSeverity.error: (
+        colors.bannerError,
+        colors.bannerErrorBackground,
+      ),
+      SldsBannerSeverity.info: (colors.info, colors.bannerInfoBackground),
     };
 
     for (final entry in expected.entries) {
@@ -138,5 +142,253 @@ void main() {
 
     final text = tester.widget<Text>(find.text('Session expiring.'));
     expect(text.style?.color, SldsTokenSet.light().colors.bannerWarningTitle);
+  });
+
+  testWidgets('success banner matches Figma (#42, #43, #45, #46)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      wrap(
+        SldsBanner(
+          message: 'Your changes have been saved successfully.',
+          severity: SldsBannerSeverity.success,
+          actionLabel: 'View details',
+          onAction: () {},
+          onDismiss: () {},
+        ),
+      ),
+    );
+
+    // Banner/Success/Icon and Banner/Success/Border.
+    expect(
+      tester.widget<Icon>(find.byIcon(Icons.check_circle)).color,
+      const Color(0xFF1FAA63),
+    );
+    final border =
+        (tester
+                    .widget<Container>(
+                      find
+                          .descendant(
+                            of: find.byType(SldsBanner),
+                            matching: find.byType(Container),
+                          )
+                          .first,
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .border!
+            .top;
+    expect(border.color, const Color(0xFF1FAA63));
+
+    // Message: Text/Primary.
+    expect(
+      tester
+          .widget<Text>(find.text('Your changes have been saved successfully.'))
+          .style!
+          .color,
+      const Color(0xFF17171A),
+    );
+
+    // Action: Figma's Link button instance.
+    expect(find.byType(SldsLinkButton), findsOneWidget);
+  });
+
+  testWidgets('warning, error and info banners match Figma (#47-#53)', (
+    tester,
+  ) async {
+    // (severity, icon, Figma icon/border, Figma message colour)
+    const cases = [
+      (SldsBannerSeverity.warning, Icons.error, 0xFFFFC700, 0xFF503D00),
+      (SldsBannerSeverity.error, Icons.cancel, 0xFFD32F2F, 0xFF17171A),
+      (SldsBannerSeverity.info, Icons.info, 0xFF0D6B7B, 0xFF17171A),
+    ];
+    for (final (severity, icon, accent, message) in cases) {
+      await tester.pumpWidget(
+        wrap(
+          SldsBanner(
+            message: 'Message',
+            severity: severity,
+            actionLabel: 'Action',
+            onAction: () {},
+          ),
+        ),
+      );
+      expect(
+        tester.widget<Icon>(find.byIcon(icon)).color,
+        Color(accent),
+        reason: '$severity icon',
+      );
+      final border =
+          (tester
+                      .widget<Container>(
+                        find
+                            .descendant(
+                              of: find.byType(SldsBanner),
+                              matching: find.byType(Container),
+                            )
+                            .first,
+                      )
+                      .decoration!
+                  as BoxDecoration)
+              .border!
+              .top;
+      expect(border.color, Color(accent), reason: '$severity border');
+      expect(
+        tester.widget<Text>(find.text('Message')).style!.color,
+        Color(message),
+        reason: '$severity message',
+      );
+      // Figma's action is the Link button in every severity.
+      expect(find.byType(SldsLinkButton), findsOneWidget);
+    }
+  });
+
+  testWidgets("close button is Figma's 16px icon in every severity (#54)", (
+    tester,
+  ) async {
+    for (final severity in SldsBannerSeverity.values) {
+      await tester.pumpWidget(
+        wrap(
+          SldsBanner(
+            message: 'Message',
+            severity: severity,
+            onDismiss: () {},
+          ),
+        ),
+      );
+      expect(
+        tester.getSize(find.byIcon(Icons.close)),
+        const Size(16, 16),
+        reason: '$severity',
+      );
+    }
+  });
+
+  testWidgets('dark Success background and action match Figma (#55, #56)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: SldsTheme.dark,
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: Scaffold(
+          body: SldsBanner(
+            message: 'Message',
+            severity: SldsBannerSeverity.success,
+            actionLabel: 'View details',
+            onAction: () {},
+          ),
+        ),
+      ),
+    );
+    final box =
+        tester
+                .widget<Container>(
+                  find
+                      .descendant(
+                        of: find.byType(SldsBanner),
+                        matching: find.byType(Container),
+                      )
+                      .first,
+                )
+                .decoration!
+            as BoxDecoration;
+    expect(box.color, const Color(0xFF064E3B));
+
+    // #56: the action is Figma's Link button, #CDCDCD in dark mode.
+    final action = tester
+        .renderObject<RenderParagraph>(find.text('View details'))
+        .text
+        .style!;
+    expect(action.color, const Color(0xFFCDCDCD));
+  });
+
+  testWidgets('dark Warning background matches Figma #503D00 (#57)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: SldsTheme.dark,
+        localizationsDelegates: SldsLocalizations.localizationsDelegates,
+        supportedLocales: SldsLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: SldsBanner(
+            message: 'Message',
+            severity: SldsBannerSeverity.warning,
+          ),
+        ),
+      ),
+    );
+    final box =
+        tester
+                .widget<Container>(
+                  find
+                      .descendant(
+                        of: find.byType(SldsBanner),
+                        matching: find.byType(Container),
+                      )
+                      .first,
+                )
+                .decoration!
+            as BoxDecoration;
+    expect(box.color, const Color(0xFF503D00));
+  });
+
+  testWidgets('dark Warning, Error and Info banners match Figma (#58-#66)', (
+    tester,
+  ) async {
+    // (severity, icon, Figma icon/border, Figma background), Frame 3.
+    const cases = [
+      (SldsBannerSeverity.warning, Icons.error, 0xFFB38A00, 0xFF503D00),
+      (SldsBannerSeverity.error, Icons.cancel, 0xFFD32F2F, 0xFF7F1D1D),
+      (SldsBannerSeverity.info, Icons.info, 0xFF7DD8E8, 0xFF17171A),
+    ];
+    for (final (severity, icon, accent, background) in cases) {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: SldsTheme.dark,
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SldsBanner(
+              message: 'Message',
+              severity: severity,
+              actionLabel: 'Action',
+              onAction: () {},
+            ),
+          ),
+        ),
+      );
+      final box =
+          tester
+                  .widget<Container>(
+                    find
+                        .descendant(
+                          of: find.byType(SldsBanner),
+                          matching: find.byType(Container),
+                        )
+                        .first,
+                  )
+                  .decoration!
+              as BoxDecoration;
+      expect(box.color, Color(background), reason: '$severity background');
+      expect(box.border!.top.color, Color(accent), reason: '$severity border');
+      expect(
+        tester.widget<Icon>(find.byIcon(icon)).color,
+        Color(accent),
+        reason: '$severity icon',
+      );
+      // Action: Figma's Link button, #CDCDCD in dark mode.
+      expect(
+        tester
+            .renderObject<RenderParagraph>(find.text('Action'))
+            .text
+            .style!
+            .color,
+        const Color(0xFFCDCDCD),
+        reason: '$severity action',
+      );
+    }
   });
 }

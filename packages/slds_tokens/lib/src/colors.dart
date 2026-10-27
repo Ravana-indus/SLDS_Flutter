@@ -38,6 +38,10 @@ class SldsRawColorTokens {
     required this.tagNotice,
     required this.headerBorder,
     required this.headerProgressTrack,
+    required this.barBackgroundDark,
+    required this.barIdleIconDark,
+    required this.barIdleLabelDark,
+    required this.barPressedDark,
     required this.buttonPrimaryBackground,
     required this.buttonPrimaryLabel,
     required this.buttonPrimaryHover,
@@ -65,6 +69,18 @@ class SldsRawColorTokens {
     required this.notificationBadgeBackground,
     required this.bannerWarningTitle,
     required this.badgeArchivedText,
+    required this.badgeDraftText,
+    required this.errorStateCode,
+    required this.flyoutGroupHeader,
+    required this.progressTrack,
+    required this.progressFill,
+    required this.bannerSuccess,
+    required this.bannerWarning,
+    required this.bannerSuccessBackground,
+    required this.bannerWarningBackground,
+    required this.bannerError,
+    required this.bannerErrorBackground,
+    required this.bannerInfoBackground,
     required this.listBackground,
     required this.listBackgroundHover,
     required this.surfaceInverse,
@@ -120,12 +136,7 @@ class SldsRawColorTokens {
   ///   borderDefault      0xffbcbcbc -> 0xff8f8f8f  (1.90 -> 3.23 on card)
   ///   focusRing          0xffffd740 -> 0xff1a1a1a  (1.30 -> 16.25 on page)
   ///   focusRingError     0xfff47272 -> 0xffe86666  (2.80 -> 3.00 on page)
-  ///   textSecondary      0xff898989 -> 0xff717171  (3.27 -> 4.56 on page)
-  ///   inputHelper        0xff898989 -> 0xff717171  (3.50 -> 4.56 on card)
-  ///   linkLabel          0xff898989 -> 0xff717171  (3.27 -> 4.56 on page)
-  ///   inputIcon          0xffababab -> 0xff717171  (2.30 -> 4.56 on card)
   ///   success            0xff1faa63 -> 0xff00833c  (2.80 -> 4.55 on page)
-  ///   badge *Text (x7)                             (2.42-4.35 -> >=4.50)
   ///
   /// focusRing is the significant one: the previous pale yellow measured
   /// 1.30:1 against the page, so the focus indicator was effectively
@@ -178,8 +189,9 @@ class SldsRawColorTokens {
   /// Dark #24466F was rejected for the service card at 1.01 against the
   /// #444444 card — indistinguishable from an unselected one.
   factory SldsRawColorTokens.light() => const SldsRawColorTokens(
-    textPrimary: 0xff222222,
-    textSecondary: 0xff717171,
+    // Figma Text/Primary and Text/Secondary (issues #35, #36).
+    textPrimary: 0xff17171a,
+    textSecondary: 0xff676767,
     textTertiary: 0xff6c6c6c,
     surfacePage: 0xfff7f7f7,
     surfaceCard: 0xffffffff,
@@ -203,19 +215,24 @@ class SldsRawColorTokens {
     tagNotice: 0xfff57c00,
     headerBorder: 0xffdddddd,
     headerProgressTrack: 0xffffffff,
+    barBackgroundDark: 0xff010102,
+    barIdleIconDark: 0xffbcbcbc,
+    barIdleLabelDark: 0xffcdcdcd,
+    barPressedDark: 0xff17171a,
     buttonPrimaryBackground: 0xffffc700,
-    buttonPrimaryLabel: 0xff222222,
+    buttonPrimaryLabel: 0xff17171a,
     buttonPrimaryHover: 0xffe0ae00,
     buttonPrimaryPressed: 0xffe0ae00,
     buttonSecondaryBackground: 0xffffffff,
-    buttonSecondaryLabel: 0xff222222,
+    buttonSecondaryLabel: 0xff17171a,
     buttonSecondaryBorder: 0xffcdcdcd,
     buttonSecondaryHover: 0xffeeeeee,
     buttonSecondaryPressed: 0xffdddddd,
-    buttonGhostLabel: 0xff222222,
+    // Figma Button/Ghost/Label (issue #38).
+    buttonGhostLabel: 0xff17171a,
     buttonGhostHover: 0xffeeeeee,
     buttonGhostPressed: 0xffffffff,
-    linkLabel: 0xff717171,
+    linkLabel: 0xff676767,
     linkLabelHover: 0xff222222,
     linkDestructiveLabel: 0xffd32f2f,
     linkDestructiveLabelHover: 0xffb91c1c,
@@ -230,16 +247,38 @@ class SldsRawColorTokens {
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xff503d00,
     badgeArchivedText: 0xffbcbcbc,
+    // Figma Badge/Draft/Text (issue #24).
+    badgeDraftText: 0xff898989,
+    // Figma Error State status code: Text/Tertiary (#34).
+    errorStateCode: 0xffbcbcbc,
+    flyoutGroupHeader: 0xffbcbcbc,
+    // Figma Progress/Track and Progress/Fill (issues #39, #40).
+    progressTrack: 0xffffffff,
+    progressFill: 0xff1faa63,
+    // Figma Banner/Success/Icon and Banner/Success/Border (#45, #46).
+    bannerSuccess: 0xff1faa63,
+    // Figma Banner/Warning/Icon and Banner/Warning/Border (#48, #49).
+    bannerWarning: 0xffffc700,
+    // Figma Banner/Success/Background (dark: #55).
+    bannerSuccessBackground: 0xffe0f2ec,
+    // Figma Banner/Warning/Background (dark: #57).
+    bannerWarningBackground: 0xfffff8d6,
+    // Figma Banner/Error/* and Banner/Info/Background (dark: #61, #63-#65).
+    bannerError: 0xffd32f2f,
+    bannerErrorBackground: 0xfffdecea,
+    bannerInfoBackground: 0xffffffff,
     listBackground: 0xfff7f7f7,
     listBackgroundHover: 0xffeeeeee,
     surfaceInverse: 0xff000000,
     textInverse: 0xffffffff,
-    datePickerRangeHighlight: 0xfffff7d6,
-    serviceCardSelectedBackground: 0xffe3edff,
-    inputLabel: 0xff222222,
+    datePickerRangeHighlight: 0xfffff8d6,
+    serviceCardSelectedBackground: 0xffdddddd,
+    // Figma Mobile/Body 2 label and Help Text colours (#68-#84).
+    inputLabel: 0xff17171a,
     inputPlaceholder: 0xffbcbcbc,
-    inputHelper: 0xff717171,
-    inputIcon: 0xff717171,
+    inputHelper: 0xff676767,
+    // Figma's input icon grey (clear X, eye, caret, search): #898989.
+    inputIcon: 0xff898989,
     inputBorderDefault: 0xffbcbcbc,
     inputBorderFocused: 0xffffc700,
     inputBorderError: 0xffd32f2f,
@@ -248,23 +287,27 @@ class SldsRawColorTokens {
     success: 0xff00833c,
     warning: 0xffb38a00,
     info: 0xff0d6b7b,
-    badgeSuccessText: 0xff007d36,
+    // Figma Badge/Success/Label, matched exactly (issue #19): 2.59:1 on the
+    // badge background — pending design review.
+    badgeSuccessText: 0xff1faa63,
     badgeSuccessBackground: 0xffe0f2ec,
-    badgePendingText: 0xff946b00,
+    // Figma Badge/Pending/Label (issue #20).
+    badgePendingText: 0xff503d00,
     badgePendingBackground: 0xfffff8d6,
-    badgeErrorText: 0xffd02c2c,
+    badgeErrorText: 0xffd32f2f,
     badgeErrorBackground: 0xfffdecea,
     badgeInfoText: 0xff0d6b7b,
-    badgeInfoBackground: 0xffe3edff,
-    badgeNeutralText: 0xff6c6c6c,
+    badgeInfoBackground: 0xffffffff,
+    badgeNeutralText: 0xff676767,
     badgeNeutralBackground: 0xffeeeeee,
-    badgeSubmittedText: 0xff007487,
+    badgeSubmittedText: 0xff0e9db0,
     badgeSubmittedBackground: 0xffd0f0f5,
     badgeInReviewText: 0xff1a56d6,
     badgeInReviewBackground: 0xffe3edff,
-    badgeApprovedText: 0xff007c4f,
+    badgeApprovedText: 0xff059669,
     badgeApprovedBackground: 0xffe0f2ec,
-    badgeEscalatedText: 0xffc04700,
+    // Figma Badge/Escalated/Text (issue #29).
+    badgeEscalatedText: 0xfff57c00,
     badgeEscalatedBackground: 0xfffef0e3,
     badgeOnHoldText: 0xff6747c7,
     badgeOnHoldBackground: 0xffede9ff,
@@ -291,11 +334,6 @@ class SldsRawColorTokens {
   ///                 #F47272 (6.74:1), which is Figma's own Red/300 and the
   ///                 value its Border/Error dark already uses.
   ///   focusRing     0xffffd740 -> 0xffffffff  (invisible -> 18.88 on page)
-  ///   linkDestructiveLabel
-  ///                 Figma Feedback/Error Text #F47272 clears the page
-  ///                 (6.74:1) but is only 3.48:1 on the #444444 card, and an
-  ///                 inline link sits in body copy on either. Held at #FCA5A5
-  ///                 (9.95 page / 5.13 card).
   ///   linkDestructiveLabelHover
   ///                 Figma Feedback/Error Hover #B91C1C is 2.92:1 on the
   ///                 #111111 page — a light-theme value reused unchanged, so
@@ -328,8 +366,12 @@ class SldsRawColorTokens {
     tagNotice: 0xffffe880,
     headerBorder: 0xff565656,
     headerProgressTrack: 0xff111111,
+    barBackgroundDark: 0xff010102,
+    barIdleIconDark: 0xffbcbcbc,
+    barIdleLabelDark: 0xffcdcdcd,
+    barPressedDark: 0xff17171a,
     buttonPrimaryBackground: 0xffffc700,
-    buttonPrimaryLabel: 0xff222222,
+    buttonPrimaryLabel: 0xff17171a,
     buttonPrimaryHover: 0xffffd740,
     buttonPrimaryPressed: 0xffffd740,
     buttonSecondaryBackground: 0xff444444,
@@ -340,9 +382,11 @@ class SldsRawColorTokens {
     buttonGhostLabel: 0xffffffff,
     buttonGhostHover: 0xff444444,
     buttonGhostPressed: 0xff222222,
-    linkLabel: 0xffbcbcbc,
+    linkLabel: 0xffcdcdcd,
     linkLabelHover: 0xffffffff,
-    linkDestructiveLabel: 0xfffca5a5,
+    // Figma Feedback/Error Text, matched exactly (issue #16). Clears the page
+    // (6.74:1) but is 3.48:1 on the #444444 card — pending design review.
+    linkDestructiveLabel: 0xfff47272,
     // Brighter, not darker. Figma pairs its rest colour with a #b91c1c
     // hover, but that is a light-theme value: on the dark page it measures
     // 2.92:1, so the hover state would drop below AA precisely when the user
@@ -360,6 +404,18 @@ class SldsRawColorTokens {
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xffffe880,
     badgeArchivedText: 0xff898989,
+    badgeDraftText: 0xffbcbcbc,
+    errorStateCode: 0xffbcbcbc,
+    flyoutGroupHeader: 0xffbcbcbc,
+    progressTrack: 0xff444444,
+    progressFill: 0xff5dc896,
+    bannerSuccess: 0xff5dc896,
+    bannerWarning: 0xffb38a00,
+    bannerSuccessBackground: 0xff064e3b,
+    bannerWarningBackground: 0xff503d00,
+    bannerError: 0xffd32f2f,
+    bannerErrorBackground: 0xff7f1d1d,
+    bannerInfoBackground: 0xff17171a,
     listBackground: 0xff111111,
     listBackgroundHover: 0xff444444,
     surfaceInverse: 0xff000000,
@@ -429,6 +485,10 @@ class SldsRawColorTokens {
     tagNotice: 0xff000000,
     headerBorder: 0xff000000,
     headerProgressTrack: 0xffffffff,
+    barBackgroundDark: 0xff010102,
+    barIdleIconDark: 0xffbcbcbc,
+    barIdleLabelDark: 0xffcdcdcd,
+    barPressedDark: 0xff17171a,
     buttonPrimaryBackground: 0xffffc700,
     buttonPrimaryLabel: 0xff000000,
     buttonPrimaryHover: 0xffe0ae00,
@@ -456,6 +516,18 @@ class SldsRawColorTokens {
     notificationBadgeBackground: 0xffdc2626,
     bannerWarningTitle: 0xff503d00,
     badgeArchivedText: 0xff565656,
+    badgeDraftText: 0xff565656,
+    errorStateCode: 0xff000000,
+    flyoutGroupHeader: 0xff000000,
+    progressTrack: 0xffe2e2e2,
+    progressFill: 0xff065f46,
+    bannerSuccess: 0xff065f46,
+    bannerWarning: 0xff503d00,
+    bannerSuccessBackground: 0xffffffff,
+    bannerWarningBackground: 0xffffffff,
+    bannerError: 0xffb91c1c,
+    bannerErrorBackground: 0xffffffff,
+    bannerInfoBackground: 0xffffffff,
     listBackground: 0xffffffff,
     listBackgroundHover: 0xffe8e8e8,
     surfaceInverse: 0xff000000,
@@ -573,6 +645,20 @@ class SldsRawColorTokens {
   /// Incomplete top navigation progress segment.
   final int headerProgressTrack;
 
+  /// Dark top-bar surface — Figma `Tab Bar/Background` in dark mode,
+  /// #010102. The same in every palette: the dark tab strip and top
+  /// navigation bar use it under either theme.
+  final int barBackgroundDark;
+
+  /// Dark tab bar idle icon — Figma #BCBCBC, the same in every palette.
+  final int barIdleIconDark;
+
+  /// Dark tab bar idle label — Figma #CDCDCD, the same in every palette.
+  final int barIdleLabelDark;
+
+  /// Dark tab bar pressed pill — Figma #17171A, the same in every palette.
+  final int barPressedDark;
+
   /// Primary button background.
   final int buttonPrimaryBackground;
 
@@ -651,8 +737,45 @@ class SldsRawColorTokens {
   /// Figma Banner/Warning/Title — darker than the warning icon/border.
   final int bannerWarningTitle;
 
-  /// Figma Badge/Archived/Text — lighter than the shared Neutral/Draft text.
+  /// Figma Badge/Archived/Text — lighter than the Neutral text.
   final int badgeArchivedText;
+
+  /// Figma Badge/Draft/Text — lighter than the Neutral text.
+  final int badgeDraftText;
+
+  /// Figma Error State status code (404/500/401) — Text/Tertiary.
+  final int errorStateCode;
+
+  /// Figma Flyout group caption ("Powerfull and Simple") — Text/Tertiary
+  /// #BCBCBC, lighter than [textTertiary].
+  final int flyoutGroupHeader;
+
+  /// Figma Progress/Track — the unfilled bar.
+  final int progressTrack;
+
+  /// Figma Progress/Fill — the filled bar.
+  final int progressFill;
+
+  /// Figma Banner/Success/Icon and Banner/Success/Border.
+  final int bannerSuccess;
+
+  /// Figma Banner/Warning/Icon and Banner/Warning/Border.
+  final int bannerWarning;
+
+  /// Figma Banner/Success/Background.
+  final int bannerSuccessBackground;
+
+  /// Figma Banner/Warning/Background.
+  final int bannerWarningBackground;
+
+  /// Figma Banner/Error/Icon and Banner/Error/Border.
+  final int bannerError;
+
+  /// Figma Banner/Error/Background.
+  final int bannerErrorBackground;
+
+  /// Figma Banner/Info/Background.
+  final int bannerInfoBackground;
 
   /// Figma List/Background — Service Card and List Item resting fill.
   final int listBackground;
@@ -815,6 +938,10 @@ class SldsRawColorTokens {
     int? tagNotice,
     int? headerBorder,
     int? headerProgressTrack,
+    int? barBackgroundDark,
+    int? barIdleIconDark,
+    int? barIdleLabelDark,
+    int? barPressedDark,
     int? buttonPrimaryBackground,
     int? buttonPrimaryLabel,
     int? buttonPrimaryHover,
@@ -842,6 +969,18 @@ class SldsRawColorTokens {
     int? notificationBadgeBackground,
     int? bannerWarningTitle,
     int? badgeArchivedText,
+    int? badgeDraftText,
+    int? errorStateCode,
+    int? flyoutGroupHeader,
+    int? progressTrack,
+    int? progressFill,
+    int? bannerSuccess,
+    int? bannerWarning,
+    int? bannerSuccessBackground,
+    int? bannerWarningBackground,
+    int? bannerError,
+    int? bannerErrorBackground,
+    int? bannerInfoBackground,
     int? listBackground,
     int? listBackgroundHover,
     int? surfaceInverse,
@@ -909,6 +1048,10 @@ class SldsRawColorTokens {
       tagNotice: tagNotice ?? this.tagNotice,
       headerBorder: headerBorder ?? this.headerBorder,
       headerProgressTrack: headerProgressTrack ?? this.headerProgressTrack,
+      barBackgroundDark: barBackgroundDark ?? this.barBackgroundDark,
+      barIdleIconDark: barIdleIconDark ?? this.barIdleIconDark,
+      barIdleLabelDark: barIdleLabelDark ?? this.barIdleLabelDark,
+      barPressedDark: barPressedDark ?? this.barPressedDark,
       buttonPrimaryBackground:
           buttonPrimaryBackground ?? this.buttonPrimaryBackground,
       buttonPrimaryLabel: buttonPrimaryLabel ?? this.buttonPrimaryLabel,
@@ -946,6 +1089,21 @@ class SldsRawColorTokens {
           notificationBadgeBackground ?? this.notificationBadgeBackground,
       bannerWarningTitle: bannerWarningTitle ?? this.bannerWarningTitle,
       badgeArchivedText: badgeArchivedText ?? this.badgeArchivedText,
+      badgeDraftText: badgeDraftText ?? this.badgeDraftText,
+      errorStateCode: errorStateCode ?? this.errorStateCode,
+      flyoutGroupHeader: flyoutGroupHeader ?? this.flyoutGroupHeader,
+      progressTrack: progressTrack ?? this.progressTrack,
+      progressFill: progressFill ?? this.progressFill,
+      bannerSuccess: bannerSuccess ?? this.bannerSuccess,
+      bannerWarning: bannerWarning ?? this.bannerWarning,
+      bannerSuccessBackground:
+          bannerSuccessBackground ?? this.bannerSuccessBackground,
+      bannerWarningBackground:
+          bannerWarningBackground ?? this.bannerWarningBackground,
+      bannerError: bannerError ?? this.bannerError,
+      bannerErrorBackground:
+          bannerErrorBackground ?? this.bannerErrorBackground,
+      bannerInfoBackground: bannerInfoBackground ?? this.bannerInfoBackground,
       listBackground: listBackground ?? this.listBackground,
       listBackgroundHover: listBackgroundHover ?? this.listBackgroundHover,
       surfaceInverse: surfaceInverse ?? this.surfaceInverse,
@@ -1041,6 +1199,10 @@ class SldsRawColorTokens {
         b.headerProgressTrack,
         t,
       ),
+      barBackgroundDark: lerpArgb(a.barBackgroundDark, b.barBackgroundDark, t),
+      barIdleIconDark: lerpArgb(a.barIdleIconDark, b.barIdleIconDark, t),
+      barIdleLabelDark: lerpArgb(a.barIdleLabelDark, b.barIdleLabelDark, t),
+      barPressedDark: lerpArgb(a.barPressedDark, b.barPressedDark, t),
       buttonPrimaryBackground: lerpArgb(
         a.buttonPrimaryBackground,
         b.buttonPrimaryBackground,
@@ -1148,6 +1310,34 @@ class SldsRawColorTokens {
         t,
       ),
       badgeArchivedText: lerpArgb(a.badgeArchivedText, b.badgeArchivedText, t),
+      badgeDraftText: lerpArgb(a.badgeDraftText, b.badgeDraftText, t),
+      errorStateCode: lerpArgb(a.errorStateCode, b.errorStateCode, t),
+      flyoutGroupHeader: lerpArgb(a.flyoutGroupHeader, b.flyoutGroupHeader, t),
+      progressTrack: lerpArgb(a.progressTrack, b.progressTrack, t),
+      progressFill: lerpArgb(a.progressFill, b.progressFill, t),
+      bannerSuccess: lerpArgb(a.bannerSuccess, b.bannerSuccess, t),
+      bannerWarning: lerpArgb(a.bannerWarning, b.bannerWarning, t),
+      bannerSuccessBackground: lerpArgb(
+        a.bannerSuccessBackground,
+        b.bannerSuccessBackground,
+        t,
+      ),
+      bannerWarningBackground: lerpArgb(
+        a.bannerWarningBackground,
+        b.bannerWarningBackground,
+        t,
+      ),
+      bannerError: lerpArgb(a.bannerError, b.bannerError, t),
+      bannerErrorBackground: lerpArgb(
+        a.bannerErrorBackground,
+        b.bannerErrorBackground,
+        t,
+      ),
+      bannerInfoBackground: lerpArgb(
+        a.bannerInfoBackground,
+        b.bannerInfoBackground,
+        t,
+      ),
       listBackground: lerpArgb(a.listBackground, b.listBackground, t),
       surfaceInverse: lerpArgb(a.surfaceInverse, b.surfaceInverse, t),
       textInverse: lerpArgb(a.textInverse, b.textInverse, t),
@@ -1292,6 +1482,10 @@ class SldsRawColorTokens {
         other.tagNotice == tagNotice &&
         other.headerBorder == headerBorder &&
         other.headerProgressTrack == headerProgressTrack &&
+        other.barBackgroundDark == barBackgroundDark &&
+        other.barIdleIconDark == barIdleIconDark &&
+        other.barIdleLabelDark == barIdleLabelDark &&
+        other.barPressedDark == barPressedDark &&
         other.buttonPrimaryBackground == buttonPrimaryBackground &&
         other.buttonPrimaryLabel == buttonPrimaryLabel &&
         other.buttonPrimaryHover == buttonPrimaryHover &&
@@ -1319,6 +1513,18 @@ class SldsRawColorTokens {
         other.notificationBadgeBackground == notificationBadgeBackground &&
         other.bannerWarningTitle == bannerWarningTitle &&
         other.badgeArchivedText == badgeArchivedText &&
+        other.badgeDraftText == badgeDraftText &&
+        other.errorStateCode == errorStateCode &&
+        other.flyoutGroupHeader == flyoutGroupHeader &&
+        other.progressTrack == progressTrack &&
+        other.progressFill == progressFill &&
+        other.bannerSuccess == bannerSuccess &&
+        other.bannerWarning == bannerWarning &&
+        other.bannerSuccessBackground == bannerSuccessBackground &&
+        other.bannerWarningBackground == bannerWarningBackground &&
+        other.bannerError == bannerError &&
+        other.bannerErrorBackground == bannerErrorBackground &&
+        other.bannerInfoBackground == bannerInfoBackground &&
         other.listBackground == listBackground &&
         other.listBackgroundHover == listBackgroundHover &&
         other.surfaceInverse == surfaceInverse &&
@@ -1390,6 +1596,10 @@ class SldsRawColorTokens {
     tagNotice,
     headerBorder,
     headerProgressTrack,
+    barBackgroundDark,
+    barIdleIconDark,
+    barIdleLabelDark,
+    barPressedDark,
     buttonPrimaryBackground,
     buttonPrimaryLabel,
     buttonPrimaryHover,
@@ -1417,6 +1627,18 @@ class SldsRawColorTokens {
     notificationBadgeBackground,
     bannerWarningTitle,
     badgeArchivedText,
+    badgeDraftText,
+    errorStateCode,
+    flyoutGroupHeader,
+    progressTrack,
+    progressFill,
+    bannerSuccess,
+    bannerWarning,
+    bannerSuccessBackground,
+    bannerWarningBackground,
+    bannerError,
+    bannerErrorBackground,
+    bannerInfoBackground,
     listBackground,
     listBackgroundHover,
     surfaceInverse,

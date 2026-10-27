@@ -122,8 +122,9 @@ void main() {
   });
 
   testWidgets('each type renders its own icon', (tester) async {
+    // The document type paints Figma's FileDoc glyph instead of an Icon;
+    // see 'icon, unread dot and text match Figma'.
     for (final (type, icon) in [
-      (SldsNotificationType.document, Icons.description_outlined),
       (SldsNotificationType.warning, Icons.warning_amber_rounded),
       (SldsNotificationType.success, Icons.check_circle_outline),
       (SldsNotificationType.error, Icons.cancel_outlined),
@@ -176,5 +177,65 @@ void main() {
 
     final size = tester.getSize(find.byType(SldsNotificationCard));
     expect(size.width, 200);
+  });
+
+  // Figma Notification/Mobile Default (1615:6154) with New Indicator on.
+  testWidgets('icon, unread dot and text match Figma (#137-#140)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const SldsNotificationCard(
+        title: 'Your Birth Certificate is ready',
+        body: 'Download it now or collect it from your selected office.',
+        timestamp: 'Today, 12:00pm',
+        unread: true,
+      ),
+    );
+
+    // #137: the FileDoc glyph is painted at 28px, not a Material icon.
+    final glyph = find.descendant(
+      of: find.byType(SldsNotificationIcon),
+      matching: find.byType(CustomPaint),
+    );
+    expect(tester.getSize(glyph.last), const Size(28, 28));
+    expect(
+      find.descendant(
+        of: find.byType(SldsNotificationIcon),
+        matching: find.byType(Icon),
+      ),
+      findsNothing,
+    );
+
+    // #138: 14x14 #1A56D6 dot.
+    final dot = find.byWidgetPredicate(
+      (w) =>
+          w is Container &&
+          w.decoration is BoxDecoration &&
+          (w.decoration! as BoxDecoration).shape == BoxShape.circle &&
+          (w.decoration! as BoxDecoration).color == const Color(0xFF1A56D6),
+    );
+    expect(tester.getSize(dot), const Size(14, 14));
+
+    // #139: title 14/500 on a 20px line, #17171A.
+    final title = tester
+        .widget<Text>(find.text('Your Birth Certificate is ready'))
+        .style!;
+    expect(title.fontSize, 14);
+    expect(title.fontWeight, FontWeight.w500);
+    expect(title.fontSize! * title.height!, closeTo(20, 0.01));
+    expect(title.color, const Color(0xFF17171A));
+
+    // #140: description and timestamp #676767.
+    for (final text in [
+      'Download it now or collect it from your selected office.',
+      'Today, 12:00pm',
+    ]) {
+      expect(
+        tester.widget<Text>(find.text(text)).style!.color,
+        const Color(0xFF676767),
+        reason: text,
+      );
+    }
   });
 }

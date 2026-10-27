@@ -24,14 +24,14 @@ void main() {
     );
 
     expect(find.text('Upload'), findsWidgets); // label + affordance text
-    expect(find.text(' *'), findsOneWidget);
+    expect(find.text('Upload*', findRichText: true), findsOneWidget);
     expect(find.text('PDF, JPEG or PNG less than 5MB'), findsOneWidget);
     expect(find.byIcon(Icons.file_upload_outlined), findsOneWidget);
   });
 
   testWidgets('required=false hides the marker', (tester) async {
     await pump(tester, const SldsUploadField(label: 'Upload', required: false));
-    expect(find.text(' *'), findsNothing);
+    expect(find.text('Upload*', findRichText: true), findsNothing);
   });
 
   testWidgets('tapping empty state invokes onTap', (tester) async {
@@ -96,7 +96,7 @@ void main() {
     expect(find.text('Birth_certificate.pdf'), findsOneWidget);
     expect(find.text('Uploaded'), findsOneWidget);
     final icon = tester.widget<Icon>(find.byIcon(Icons.check));
-    expect(icon.color, SldsColorTokens.light().success);
+    expect(icon.color, SldsColorTokens.light().badgeSuccessText);
   });
 
   testWidgets('error state shows the error text and a close icon', (
@@ -295,5 +295,129 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
+  });
+
+  // Figma Upload (543:5715), all four states.
+  testWidgets('text, icons and spacing match Figma (#171-#180)', (
+    tester,
+  ) async {
+    Widget field(SldsUploadStatus status) => SldsUploadField(
+      label: 'Upload',
+      status: status,
+      fileName: 'Birth_certificate.pdf',
+      progress: 0.72,
+      errorText: 'File size is too big',
+      onTap: () {},
+      onRemove: () {},
+    );
+    TextStyle style(String text) => tester.widget<Text>(find.text(text)).style!;
+    Rect box() => tester.getRect(
+      find
+          .descendant(
+            of: find.byType(SldsUploadField),
+            matching: find.byWidgetPredicate(
+              (w) =>
+                  w is Container &&
+                  w.decoration is BoxDecoration &&
+                  (w.decoration! as BoxDecoration).border != null,
+            ),
+          )
+          .first,
+    );
+
+    // Empty.
+    await pump(tester, field(SldsUploadStatus.empty));
+    expect(find.text('Upload*', findRichText: true), findsOneWidget); // #175
+    final rich = tester.widget<RichText>(
+      find.text('Upload*', findRichText: true),
+    );
+    // RichText wraps Text.rich's span in the ambient default style.
+    final labelSpan = (rich.text as TextSpan).children!.first;
+    expect(labelSpan.style!.color, const Color(0xFF17171A)); // #171
+    final inner = style('Upload');
+    expect(inner.color, const Color(0xFF676767)); // #172
+    expect(inner.decoration, isNot(TextDecoration.underline));
+    expect(
+      style('PDF, JPEG or PNG less than 5MB').color,
+      const Color(0xFF676767),
+    ); // #173
+    final helperTop = tester
+        .getRect(find.text('PDF, JPEG or PNG less than 5MB'))
+        .top;
+    expect(helperTop - tester.getRect(find.text('Upload')).bottom, 6); // #174
+    final uploadIcon = tester.getRect(find.byIcon(Icons.file_upload_outlined));
+    expect(uploadIcon.size, const Size(24, 24));
+    // The 48px icon button sits 8px inside the box's 1px border.
+    expect(
+      uploadIcon.center - box().topLeft,
+      const Offset(1 + 8 + 24, 1 + 8 + 24),
+    );
+
+    // Uploading.
+    await pump(tester, field(SldsUploadStatus.uploading));
+    expect(
+      style('Birth_certificate.pdf').color,
+      const Color(0xFF17171A),
+    ); // #176
+    final spinner = find.byType(CupertinoActivityIndicator);
+    expect(
+      tester.widget<CupertinoActivityIndicator>(spinner).color,
+      const Color(0xFF17171A),
+    ); // #177
+    expect(
+      tester
+              .getRect(
+                find
+                    .ancestor(of: spinner, matching: find.byType(SizedBox))
+                    .first,
+              )
+              .topLeft -
+          box().topLeft,
+      const Offset(1 + 8, 1 + 8),
+    );
+    expect(style('72%').color, const Color(0xFF676767)); // #173
+
+    // Uploaded.
+    await pump(tester, field(SldsUploadStatus.uploaded));
+    final check = tester.widget<Icon>(find.byIcon(Icons.check));
+    expect(check.color, const Color(0xFF1FAA63)); // #178
+    expect(check.size, 16);
+    final badge = tester.getRect(
+      find
+          .ancestor(
+            of: find.byIcon(Icons.check),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    expect(badge.size, const Size(24, 24));
+    expect(badge.topLeft - box().topLeft, const Offset(1 + 8, 1 + 8));
+    expect(style('Uploaded').color, const Color(0xFF676767)); // #173
+    final close = find.byType(IconButton);
+    expect(
+      tester.widget<IconButton>(close).color,
+      const Color(0xFF898989),
+    ); // #180
+
+    // Error.
+    await pump(tester, field(SldsUploadStatus.error));
+    final cross = find.descendant(
+      of: find
+          .ancestor(
+            of: find.text('Birth_certificate.pdf'),
+            matching: find.byType(Row),
+          )
+          .last,
+      matching: find.byIcon(Icons.close),
+    );
+    expect(tester.getSize(cross.first), const Size(16, 16)); // #179
+    final errBadge = tester.getRect(
+      find.ancestor(of: cross.first, matching: find.byType(Container)).first,
+    );
+    expect(errBadge.topLeft - box().topLeft, const Offset(1 + 8, 1 + 8));
+    expect(
+      tester.widget<IconButton>(find.byType(IconButton)).color,
+      const Color(0xFF898989),
+    ); // #180
   });
 }

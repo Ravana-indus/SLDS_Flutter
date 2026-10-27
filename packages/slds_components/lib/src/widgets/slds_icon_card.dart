@@ -90,24 +90,26 @@ class _SldsIconCardMetrics {
         iconSize: 64,
         gap: d.space4,
       ),
-      // Figma's own numbers do not close here: a 96x96 tile with 20 padding
-      // leaves 56, and a 40 icon + 8 gap + a 12 label line needs 60. The
-      // footprint and the icon are the hard constraints (they are what the
-      // grid and the artwork are cut to), so the gap absorbs the 4.
+      // Figma's 40 icon + 8 gap + 12 label is 60, which overflows the 56
+      // its 20px padding leaves; Figma centres it anyway, putting the icon
+      // 18px from the top and the label at 66 (#203, #205). Padding the
+      // vertical to 17 (18 less the 1px border) lands both there exactly.
       SldsIconCardVariant.quickAction => _SldsIconCardMetrics(
         width: 96,
         height: 96,
         radius: d.radius3xl,
-        padding: EdgeInsets.all(d.space20),
+        padding: EdgeInsets.symmetric(horizontal: d.space20, vertical: 17),
         iconSize: 40,
-        gap: d.space4,
+        gap: d.space8,
       ),
       SldsIconCardVariant.featuredServices => _SldsIconCardMetrics(
         width: 240,
         // Figma pads 16 top and bottom; the height follows the content.
         height: null,
         radius: d.radius3xl,
-        padding: EdgeInsets.all(d.space16),
+        // 15 + the 1px border = Figma's 16 (its stroke sits inside the
+        // padding), so the card is Figma's 118px tall (#206).
+        padding: EdgeInsets.all(d.space16 - 1),
         iconSize: 48,
         gap: d.space12,
       ),
@@ -245,9 +247,10 @@ class _SldsIconCardState extends State<SldsIconCard> {
         typography.body1,
         typography.caption1,
       ),
+      // Figma Mobile/Caption 2: 11/400 on a 12px line for both (#207, #208).
       SldsIconCardVariant.featuredServices => (
-        typography.caption2,
-        typography.caption2,
+        typography.caption2.copyWith(height: 12 / 11),
+        typography.caption2.copyWith(height: 12 / 11),
       ),
     };
 
@@ -311,8 +314,9 @@ class _SldsIconCardState extends State<SldsIconCard> {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Positioned.fill(
-              child: Semantics(
+            _sizedByContent(
+              metrics.height == null,
+              Semantics(
                 container: true,
                 explicitChildNodes: true,
                 button: widget.onTap != null,
@@ -376,11 +380,23 @@ class _SldsIconCardState extends State<SldsIconCard> {
                               child: iconBlock,
                             ),
                             SizedBox(height: metrics.gap),
-                            titleText,
-                            if (descriptionText != null) ...[
-                              SizedBox(height: dimensions.space2),
-                              descriptionText,
-                            ],
+                            // Figma's text frame pads 2px either side, with
+                            // 2px between the lines (#209).
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: dimensions.space2,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  titleText,
+                                  if (descriptionText != null) ...[
+                                    SizedBox(height: dimensions.space2),
+                                    descriptionText,
+                                  ],
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       },
@@ -395,7 +411,8 @@ class _SldsIconCardState extends State<SldsIconCard> {
             if (widget.badgeLabel != null)
               if (variant == SldsIconCardVariant.quickAction)
                 Positioned(
-                  top: -dimensions.space8,
+                  // Figma: the 14px pill sits 7px above the card (#203).
+                  top: -7,
                   left: 0,
                   right: 0,
                   child: Align(
@@ -414,6 +431,12 @@ class _SldsIconCardState extends State<SldsIconCard> {
     );
   }
 
+  // A fixed-height tile fills its box; a content-sized one (Featured
+  // Services) must be the Stack's sizing child, or the Stack takes all the
+  // height it is offered — the 600px-tall card of #206.
+  Widget _sizedByContent(bool byContent, Widget card) =>
+      byContent ? card : Positioned.fill(child: card);
+
   Widget _badge(
     BuildContext context,
     SldsColorTokens colors,
@@ -428,7 +451,11 @@ class _SldsIconCardState extends State<SldsIconCard> {
       ),
       child: Text(
         widget.badgeLabel!,
-        style: typography.caption1.copyWith(color: colors.textInverse),
+        // Figma: 12/400 on a 14px line (#203).
+        style: typography.caption1.copyWith(
+          height: 14 / 12,
+          color: colors.textInverse,
+        ),
       ),
     );
   }

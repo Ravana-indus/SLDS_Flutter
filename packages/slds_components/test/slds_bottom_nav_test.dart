@@ -229,4 +229,179 @@ void main() {
       ),
     );
   });
+
+  testWidgets('the badge grows away from the icon at 2x text (#108)', (
+    tester,
+  ) async {
+    Future<Rect> overlapAt(double scale) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: SldsLocalizations.localizationsDelegates,
+          supportedLocales: SldsLocalizations.supportedLocales,
+          theme: SldsTheme.light,
+          home: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+            child: Scaffold(
+              bottomNavigationBar: SldsBottomNav(
+                items: items,
+                currentIndex: 0,
+                onTap: (_) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      final icon = tester.getRect(find.byIcon(Icons.notifications));
+      final badge = tester.getRect(
+        find
+            .ancestor(of: find.text('2'), matching: find.byType(Container))
+            .first,
+      );
+      return icon.intersect(badge);
+    }
+
+    final atOne = await overlapAt(1);
+    final atTwo = await overlapAt(2);
+    // The badge covers no more of the icon at 2x than it does at 1x.
+    expect(atTwo.width, lessThanOrEqualTo(atOne.width));
+    expect(atTwo.height, lessThanOrEqualTo(atOne.height));
+  });
+
+  // Figma Bottom Navigation element (342:254): a 16x14 #DC2626 pill, 12/400
+  // white label, 2px above the icon and 2px past its end.
+  testWidgets('count badge matches Figma', (tester) async {
+    await pump(
+      tester,
+      SldsBottomNav(items: items, currentIndex: 0, onTap: (_) {}),
+    );
+
+    final badgeFinder = find
+        .ancestor(of: find.text('2'), matching: find.byType(Container))
+        .first;
+    final badge = tester.getRect(badgeFinder);
+    final icon = tester.getRect(find.byIcon(Icons.notifications));
+    expect(badge.size, const Size(16, 14));
+    expect(badge.top, icon.top - 2);
+    expect(badge.right, icon.right + 2);
+
+    final box =
+        tester.widget<Container>(badgeFinder).decoration! as BoxDecoration;
+    expect(box.color, const Color(0xFFDC2626));
+    final style = tester.widget<Text>(find.text('2')).style!;
+    expect(style.fontSize, 12);
+    expect(style.fontWeight, FontWeight.w400);
+    expect(style.fontSize! * style.height!, closeTo(14, 0.01));
+    expect(style.color, const Color(0xFFFFFFFF));
+  });
+
+  // Figma Selected=Pressed (877:10456): a white pill behind the icon while
+  // an unselected item is pressed (#190).
+  testWidgets('pressing an item fills its pill white (#190)', (tester) async {
+    await pump(
+      tester,
+      SldsBottomNav(items: items, currentIndex: 0, onTap: (_) {}),
+    );
+    Color? pill() =>
+        (tester
+                    .widget<Container>(
+                      find
+                          .ancestor(
+                            of: find.byIcon(Icons.search),
+                            matching: find.byType(Container),
+                          )
+                          .first,
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .color;
+
+    expect(pill(), Colors.transparent);
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byIcon(Icons.search)),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(pill(), const Color(0xFFFFFFFF));
+    await gesture.up();
+    await tester.pumpAndSettle();
+    expect(pill(), Colors.transparent);
+  });
+
+  // Figma Bottom tab bars (342:584 light, 342:597 dark).
+  testWidgets('icons, labels and pressed pills match Figma (#191-#197)', (
+    tester,
+  ) async {
+    Color iconOf(IconData icon) =>
+        tester.widget<Icon>(find.byIcon(icon)).color!;
+    TextStyle labelOf(String text) =>
+        tester.widget<Text>(find.text(text)).style!;
+    Color? pillOf(IconData icon) =>
+        (tester
+                    .widget<Container>(
+                      find
+                          .ancestor(
+                            of: find.byIcon(icon),
+                            matching: find.byType(Container),
+                          )
+                          .first,
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .color;
+
+    for (final style in SldsBottomNavStyle.values) {
+      final dark = style == SldsBottomNavStyle.dark;
+      await pump(
+        tester,
+        SldsBottomNav(
+          items: items,
+          currentIndex: 0,
+          style: style,
+          onTap: (_) {},
+        ),
+      );
+      // Idle: #898989 / #676767 light (#191, #195), #BCBCBC / #CDCDCD dark
+      // (#192, #197).
+      expect(
+        iconOf(Icons.search),
+        dark ? const Color(0xFFBCBCBC) : const Color(0xFF898989),
+        reason: '$style',
+      );
+      expect(
+        labelOf('Search').color,
+        dark ? const Color(0xFFCDCDCD) : const Color(0xFF676767),
+        reason: '$style',
+      );
+      // Selected: #17171A light, white dark (#194, #196); every label is
+      // 12/400/14.
+      expect(
+        labelOf('Home').color,
+        dark ? const Color(0xFFFFFFFF) : const Color(0xFF17171A),
+      );
+      for (final label in ['Home', 'Search']) {
+        expect(labelOf(label).fontWeight, FontWeight.w400, reason: label);
+        expect(labelOf(label).fontSize, 12);
+        expect(
+          labelOf(label).fontSize! * labelOf(label).height!,
+          closeTo(14, 0.01),
+        );
+      }
+
+      // Pressed: white pill and #17171A icon light; #17171A pill and white
+      // icon dark (#193).
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byIcon(Icons.search)),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(
+        pillOf(Icons.search),
+        dark ? const Color(0xFF17171A) : const Color(0xFFFFFFFF),
+      );
+      expect(
+        iconOf(Icons.search),
+        dark ? const Color(0xFFFFFFFF) : const Color(0xFF17171A),
+      );
+      await gesture.up();
+      await tester.pumpAndSettle();
+    }
+  });
 }

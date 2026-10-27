@@ -87,6 +87,33 @@ SldsDatePicker(rangeColor: const Color(0xFFFFF7D6), onApply: _apply)
 SldsDatePicker(onApply: _apply)
 ```
 
+**`SldsButtonVariant.tertiary` and `.text` are replaced by `.ghost`**, to
+match the Figma Button set (Primary / Secondary / Ghost / Destructive).
+Ghost is borderless and transparent at rest — what `text` already rendered,
+pixel for pixel. `tertiary` drew a border Figma never specified, so
+`SldsDivider.withButton` (now ghost) loses that stray border.
+
+```dart
+// Before
+SldsButton(label: 'Cancel', variant: SldsButtonVariant.text, onPressed: _cancel)
+
+// After
+SldsButton(label: 'Cancel', variant: SldsButtonVariant.ghost, onPressed: _cancel)
+```
+
+**`SldsSummaryBadgeStatus` is removed; `SldsSummaryRow.badgeStatus` takes
+`SldsBadgeStatus`.** Figma's Summary List renders its status as an instance
+of the Badge component, so the row now renders the shared `SldsBadge`
+instead of a private copy of it. Rendering is unchanged.
+
+```dart
+// Before
+SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsSummaryBadgeStatus.approved)
+
+// After
+SldsSummaryRow(label: 'Status', value: 'Approved', badgeStatus: SldsBadgeStatus.approved)
+```
+
 ### Added
 
 - `SldsBanner` and `SldsBannerSeverity` (success/warning/error/info) — the
@@ -105,6 +132,9 @@ SldsDatePicker(onApply: _apply)
   exception at runtime (§7).
 - `SldsFocusRing` widget and an exported `sldsFocusRing`, so controls do not
   each reimplement WCAG 2.2 Focus Appearance.
+- `SldsButton.focusNode`, to move keyboard focus to a button
+  programmatically. The Widgetbook playground's new **Focused** knob uses it
+  to show the Focus state.
 - Library strings `close`, `retry`, `error`, `dismiss` and the plural
   `unreadCount`, in en/si/ta. Previously only `loading` existed (§6).
 - Golden test harness and matrix: variant × theme × text scale, plus si/ta at
@@ -154,6 +184,303 @@ SldsDatePicker(onApply: _apply)
   cancel and a confirm button were present.
 - `SldsFab` accepted the full `SldsButtonVariant` enum but rendered
   `tertiary` and `text` as a filled primary; it now asserts on them.
+- `SldsButton`'s loading state rendered in the grey disabled colours for
+  every variant (most visibly Destructive, which lost its red). Loading
+  blocks taps by nulling `onPressed`, which Material reports as disabled;
+  the Figma loading variants keep their resting colours, so it now does too.
+- `SldsCheckButton` had 6px rounded corners; Figma's Check Button
+  (`1164:7065`) is square-cornered, so the radius is removed.
+- `SldsFab` showed Material's ripple, translucent hover tint and hover/press
+  elevation lift. It now uses the Figma hover and pressed background tokens
+  (the same ones `SldsButton` uses), with no ripple and a constant shadow.
+- `SldsLinkButton` primary label colour follows Figma's updated
+  `Text/Secondary`: `#676767` light (was `#717171`), `#CDCDCD` dark (was
+  `#BCBCBC`). Both clear WCAG AA (5.28:1 and 11.88:1 on the page).
+- `SldsLinkButton` destructive label in dark mode matches Figma
+  `Feedback/Error Text` exactly: `#F47272` (was `#FCA5A5`). It clears the
+  page but is 3.48:1 on the `#444444` card, so that one pairing is exempted
+  in the contrast test pending design review.
+- `SldsFlyoutMenu` rows showed Material's ripple and pressed overlay. Figma's
+  flyout defines neither; rows now hover with `Surface/Hover` (`#EEEEEE`),
+  the fill Figma uses for list and dropdown item hover.
+- `SldsBadge` text now uses Figma's `Mobile/Caption 1 Strong` weight (500,
+  was 400) for every status, and the Success label is Figma's
+  `Badge/Success/Label` `#1FAA63` (was `#007D36`). The same token colours the
+  Success notification icon and the `SldsServiceCard` badge, which Figma
+  also draws in `#1FAA63`. It measures 2.59:1 on the `#E0F2EC` background,
+  so that pairing is exempted in the contrast test pending design review.
+- `SldsBadge` Pending label is Figma's `Badge/Pending/Label` `#503D00` (was
+  `#946B00`). The same token colours the Pending notification icon and the
+  `SldsProcessList` current step, which Figma also draws in `#503D00`.
+  9.78:1 on `#FFF8D6`.
+- `SldsBadge` light colours match the live Figma Badge set (#21–#27): Error
+  label `#D32F2F` (was `#D02C2C`), Info background `#FFFFFF` (was
+  `#E3EDFF`), Neutral label `#676767` (was `#6C6C6C`), Draft label `#898989`
+  via a new `badgeDraftText` token (Draft previously borrowed the Neutral
+  text), Submitted label `#0E9DB0` (was `#007487`), Approved label `#059669`
+  (was `#007C4F`). Error (4.35:1), Submitted (2.70:1) and Approved (3.24:1)
+  fall below AA on their backgrounds and are exempted pending design review;
+  the Approved pair also exempts `SldsProcessList`'s done step from the
+  painted-contrast check.
+- `SldsBadge` Escalated label is Figma's `Badge/Escalated/Text` `#F57C00`
+  (was `#C04700`), #29. 2.42:1 on `#FEF0E3`, exempted pending design review.
+- `SldsTooltip`'s action was a hand-built Material `InkWell` button (ripple,
+  card-surface colours). Figma's action is a Button instance (Secondary,
+  Small), so it is now an `SldsButton` of that variant and size: Secondary
+  colours in every theme (dark: `#444444` fill, `#565656` border, white
+  label) and no ripple (#32).
+- `SldsErrorState` matches Figma's Error State: the status code is
+  `Mobile/Display 1` (36px, 500; was 44px, 700) in `Text/Tertiary` `#BCBCBC`
+  (was `#6C6C6C`), and the description is `Mobile/Caption 2` (11px; was
+  14px) in `Text/Secondary` `#676767` (was `#717171`) (#33, #34). A new
+  `errorStateCode` token carries the code colour so the shared
+  `textTertiary` is unchanged. The code measures 1.77:1 on the page,
+  exempted pending design review.
+- `textPrimary` and `textSecondary` (light) now follow Figma's `Text/Primary`
+  `#17171A` (was `#222222`) and `Text/Secondary` `#676767` (was `#717171`).
+  `#717171` was an AA workaround for the old `#898989`; Figma's current value
+  passes (5.28:1 on the page). This restyles every widget using them.
+- `SldsAccordion` content inherits Figma's `Desktop/Body 2` in
+  `Text/Secondary`, so plain `Text` bodies no longer render in the default
+  colour (#35, #36).
+- `SldsDivider` line uses Figma's `List/Divider` (`borderDecorative`,
+  `#DDDDDD` light; was `borderDefault` `#8F8F8F`), 1px (#37).
+- `buttonGhostLabel` (light) is Figma's `Button/Ghost/Label` `#17171A` (was
+  `#222222`), so the `SldsDivider.withButton` label matches (#38). Every ghost
+  button and icon button uses it.
+- `SldsProgressBar` uses Figma's `Progress/Track` `#FFFFFF` (was `#EEEEEE`)
+  and `Progress/Fill` `#1FAA63` (was `#00833C`) via new `progressTrack` and
+  `progressFill` tokens, leaving the shared `surfaceHover`/`success` as they
+  were (#39, #40). The label slot now reserves the width of "100%", so 100%
+  no longer wraps onto two lines (#41).
+- `SldsBanner`'s action is now `SldsLinkButton`, the Link button instance
+  Figma uses in every severity (`Text/Secondary` `#676767`, 16px, 400); the
+  private `_BannerActionLink` drawn in the message colour is removed. Figma's
+  `#676767` clears AA on all four banner tints (4.87–5.66:1) (#43). The
+  narrower action also keeps the Success banner on one row at 375pt
+  (iPhone 12 mini / SE) (#44).
+- `SldsBanner` Success icon and border use Figma's `Banner/Success/Icon` and
+  `Banner/Success/Border` `#1FAA63` (was `success` `#00833C`) via a new
+  `bannerSuccess` token, leaving the shared `success` unchanged (#45, #46).
+- `SldsBanner` Warning icon and border use Figma's `Banner/Warning/Icon` and
+  `Banner/Warning/Border` `#FFC700` (was `warning` `#B38A00`) via a new
+  `bannerWarning` token, leaving the shared `warning` unchanged (#48, #49).
+- `SldsBanner` Success background uses a new `bannerSuccessBackground` token
+  (Figma `Banner/Success/Background`): dark mode is now `#064E3B` (was the
+  badge's `#062B1A`); light is unchanged `#E0F2EC` (#55).
+- `SldsBanner` Warning background uses a new `bannerWarningBackground` token
+  (Figma `Banner/Warning/Background`): dark mode is now `#503D00` (was the
+  badge's `#2E2200`); light is unchanged `#FFF8D6` (#57).
+- `SldsBanner` dark mode matches Figma's dark Notification Banners (#58–#66):
+  Warning icon/border `#B38A00` (was `#FFE880`); Error background
+  `#7F1D1D` (was `#330D0D`) and icon/border `#D32F2F` (was the shared
+  `error` `#F47272`); Info background `#17171A` (was `surfaceCard`
+  `#444444`). New `bannerError`, `bannerErrorBackground` and
+  `bannerInfoBackground` tokens carry them, so `error`, `surfaceCard` and the
+  badge backgrounds are unchanged. Light and high-contrast are unchanged.
+- Form fields match Figma's Input page (#70–#86):
+  - `inputLabel` `#17171A` (was `#222222`) and `inputHelper` `#676767` (was
+    `#717171`, an AA workaround for the old `#898989`; Figma's value passes).
+  - `fieldLabel` is Figma's `Mobile/Body 2` at 14/18 (was 16/20), and every
+    field label uses it (Input, Input Mask, Mobile Number, Text Field,
+    Password, Text Area, Dropdown, Combo Box), so labels share one line box
+    and the label-to-field spacing is consistent. `SldsUploadField` moves to
+    `compactLabel`, keeping its Figma 16px label unchanged.
+  - Disabled `SldsInput` and `SldsMobileNumberInput` stay white, as Figma.
+  - `SldsInputMask` prefix/suffix cells span the full field height so their
+    dividers do, and the value cell has Figma's 16px padding.
+  - The value in `SldsInput`, `SldsInputMask` and `SldsMobileNumberInput` is
+    padded to exactly the 48dp tap target. The old slack sat it 2–3px above
+    the prefix it should line up with.
+  - `SldsMobileNumberInput`: the value sits 18px after the country code
+    (Figma 10 + 8); `errorText` now puts it in the error state, like its
+    siblings; the error state shows Figma's red XCircle status icon.
+  - The required `*` is hidden from screen readers where "required" is
+    already spoken (`SldsInput`, and `SldsComboBox`, whose label now says it).
+  - New `slds_form_fields_figma_test.dart` covers all of the above.
+- `SldsInput` value sits 22px from its prefix and suffix, Figma's affix pad +
+  gap + value pad (was 8px) (#67).
+- `SldsMobileNumberInput.onClear` shows Figma's grey clear (X) button: it
+  empties `controller`, then calls `onClear`. New localized `clear` string
+  for its accessible name (si/ta machine-drafted, needs review).
+- `inputIcon` is Figma's input icon grey `#898989` (was `#717171`): clear X,
+  password eye, search and caret icons. An icon is a graphic, so the
+  contrast test now holds it to WCAG 1.4.11's 3:1 (3.54:1), not the text
+  floor that had pushed it darker.
+- `SldsTextArea`/`SldsTextField` required marker follows the label with no
+  space (`Description*`), as Figma.
+- `SldsDropdown` help text sits 6px below the field (was 4px), Figma's gap
+  on every form field (#91).
+- `SldsComboBox` multi-select chips match Figma's Multi Select layout: the
+  chip row is padded 8px inline like the placeholder (the first chip sat
+  against the field's edge), and chips sit 10px apart (was 4px) (#90).
+- `SldsComboBox` open state matches Figma's Combo Box (Filling / Multi
+  Select) and its list item component (#92–#100):
+  - The field keeps its default 1px `#BCBCBC` border while open or typing;
+    the gold border and focus glow are gone (#95).
+  - The caret is Figma's grey (`inputIcon`) down caret in every state, open
+    included; the toggle's tooltip still says expanded/collapsed (#92).
+  - Rows are inset 8px in the panel, like the search bar (#92).
+  - The search bar is Figma's: 44px, `#DDDDDD` 1.5px, 12px padding, and its
+    14/18 text centred on the 20px icon (#96).
+  - Rows use Figma's 16px list checkbox, 8px from the text (the 20px
+    `SldsCheckbox` and its 48dp tap target left a 24px gap) (#97).
+  - A selected row is shown by its checked `#FFC700` box; only hover/focus
+    fills the row `#EEEEEE` (radius 8, no ripple), as Figma's list item (#99).
+  - Panel `#F7F7F7`, `#DDDDDD` 1px, radius 16 and `Elevation/3` were already
+    Figma's (#100); row text `Desktop/Body 2` `#17171A` too (#98).
+- Primary button label is Figma `Button/Primary/Label` `#17171A` in light and
+  dark (was `#222222`); high contrast stays `#000000`. Shows on the
+  `SldsFilterDropdown` Apply button and every other primary button (#104).
+  The filter's option text and Cancel label already matched Figma (#102,
+  #103).
+- `SldsTextField` (and so `SldsPasswordField`) and `SldsDropdown` draw the
+  error border at 1.5px like Figma's Error variants (was 1px until focused);
+  compact `SldsTextField` stays 1px. `SldsTextArea` and `SldsOtpInput` were
+  already 1.5px (#106).
+- `SldsBottomNav`'s count badge is anchored by its bottom-start corner, so
+  at large text scales it grows up and away from the icon instead of over it
+  (#108). The badge itself is now Figma's: a 16x14 `#DC2626` pill with a
+  12/400 white label on a 14px line, 2px above the icon and 2px past its end
+  (was 18x18 with a 10px bold label).
+- `SldsSearchBar` is Figma's 52px with 16px vertical padding and 14/18 text,
+  so the hint sits on the icon's centre line (it was 2px high in a 50px bar)
+  (#109).
+- `SldsSearchBar` matches the rest of Figma's Search Bar (#110–#113):
+  - The bar is Surface/Page `#F7F7F7` (was `#EEEEEE`) (#110); typed text is
+    14/400 `#17171A` (#111, from #109).
+  - New `onVoiceSearch`: when set, Figma's 20px microphone shows at the
+    trailing edge while the bar is idle and empty, labelled "Voice search"
+    (new `voiceSearch` string; si/ta machine-drafted) (#112).
+  - While focused or holding text the magnifier becomes Figma's back arrow,
+    which empties the query and closes the keyboard (#113).
+  - The suggestion panel is Figma's: `#F7F7F7`, `#DDDDDD` 1px, radius 12;
+    38px rows (8px padding, 14/22 text), 4px apart, the matching one filled
+    `#EEEEEE` radius 8 with no trailing check; a `RECENT SEARCHES` heading
+    in 12/14 `#676767`; recent rows lead with a 16px `#17171A` clock (#113).
+- `SldsTextField`'s info icon is Figma's `#17171A` (`#898989` disabled), and
+  its required asterisk greys out with the label when disabled (#116,
+  #117). Label `#17171A`, placeholder 16px `#BCBCBC` and help `#676767`
+  already matched; now pinned by a test (#114, #115, #118).
+- `SldsFieldset` is Figma's Form Fieldset: a white box, `#BCBCBC` 1px,
+  radius 16, 32px padding, with the legend (16/400/24 `#17171A`) set into
+  the top border as a white chip; fields default to 24px apart (was a bare
+  24px heading above unboxed fields, 16px apart) (#119, #120, #122). The
+  playground uses Text Inputs with example placeholders (#121).
+- `SldsDatePicker`'s month and year pills are both Figma's 36px (was 40px)
+  (#123). Month, year and weekday names are 14/400 (were 500) (#124,
+  #125); the range band is Figma's `#FFF8D6` (was `#FFF7D6`) (#130).
+- Secondary button label is Figma `#17171A` in light (was `#222222`); dark
+  stays `#FFFFFF`. Shows on the `SldsDatePicker` Cancel button and every
+  other secondary button (#127).
+- `SldsNotificationIcon`'s document type paints Figma's Phosphor FileDoc
+  glyph (a page marked "DOC") instead of Material's `description_outlined`
+  (#137). `SldsNotificationCard`'s unread dot is Figma's DataViz/2 `#1A56D6`
+  (was `info` `#0D6B7B`) (#138), and its title sits on Figma's 20px line
+  (#139). Title, subtitle and timestamp colours already matched (#139,
+  #140).
+- `SldsPasswordField` (#131–#134) and `SldsSummaryList` (#135, #136) colours
+  are now pinned by tests; they already matched Figma.
+- `SldsCheckButton`'s label follows Figma per state: selected 14/500/22,
+  unselected 16/400/26 (was 16/600 for both) (#143).
+- `SldsCheckbox` matches Figma Checkbox (542:442): `SldsCheckboxSize.small`
+  is 16px (was 20px); both sizes use a 2px radius; resting `#F7F7F7` with a
+  `#BCBCBC` border (1.5px Large, 1px Small); checked/indeterminate marks
+  `#FDFDFD` (were black); disabled `#DDDDDD` with a `#BCBCBC` border and
+  mark (#144–#147).
+- `SldsErrorSummary` title is 18/500/28 (was 24px) and its links 16/400/24
+  (were 14/600) (#148, #149).
+- `SldsFilterButton`'s count is 14/400 `#17171A` in a 20px white circle
+  (was 11/600) (#150). Its label is Figma's 14/22, 400 deselected and 500
+  selected (was 16/20) (#152), and wraps inside the pill instead of pushing
+  the count and caret out of it at large text scales (#151).
+- `SldsTabStrip` is drawn in its dark style under a dark theme, as Figma's
+  dark mode draws it: the selected pill is `#010102` (was `#111111`) (#154).
+- `SldsOtpInput`'s Success border and digit are Figma's `#1FAA63` (were
+  `success` `#00833C`) (#155, #156).
+- `SldsToggle` matches Figma Toggle (543:6036): the large track is 50x28
+  (was 48), the thumb sits 4px from the ends, off track `#DDDDDD`, thumb
+  `#F7F7F7`, disabled thumb `#BCBCBC` (were translucent scheme overlays)
+  (#158–#162). New `SldsToggle.focusNode`; focus draws the shared
+  Focus/Default ring round the track instead of a border that shrank it
+  (#163).
+- `SldsTextField` (and so `SldsPasswordField` and `SldsTimePicker`) lays out
+  like Figma's Text Input Content: trailing icons sit 8px inside the border
+  (were flush against it), the leading icon box 8px in (was centred in a
+  48px slot), text 16px in (44px after a leading icon) and no longer shifts
+  4px on focus, and the value sits on Figma's 24px line centred in the 52px
+  box (was 2px high) (#169).
+- `SldsTimePicker`'s dialog carries the caller's theme and localizations
+  into its route, so it no longer throws where those are installed below
+  the Navigator, as in Widgetbook (#170).
+- `SldsUploadField` follows Figma Upload (543:5715): the required asterisk
+  follows the label with no space (#175); the box pads 8px (was 12), which
+  puts each state's leading icon at Figma's spot (#174, #177–#179); the
+  empty state's icon button is 48px, white, 2px `#CDCDCD`, radius 12, round
+  a 24px glyph (was 40px), its "Upload" line `#676767` without an underline
+  (#172) and 6px above the helper (#174); filename and caption lines sit on
+  Figma's 24px and 14px lines; the uploading spinner is `#17171A` (was
+  gold) (#177) and the uploaded check `#1FAA63` (was `#00833C`) (#178).
+  Label, helper, filename and close-icon colours already matched (#171,
+  #173, #176, #180).
+- `SldsTopNavBar` is Figma's 64px bar: 8px padding, no divider, on Tab
+  Bar/Background (`#F7F7F7` light, `#010102` dark, was white/black)
+  (#183, #184); the title is Mobile/Title 1, 18/500/24 (was 700), 4px past
+  the back button and centred in the bar (#181); pending progress steps
+  are `#FFFFFF` (`headerProgressTrack`, was `#8F8F8F`) (#186). It no longer
+  wraps itself in a `SafeArea` — the inset pushed the row to the bottom of
+  a taller bar wherever the bar was not at the top of the screen. Place it
+  inside a `SafeArea` instead. Under a dark theme it draws its dark style,
+  like `SldsTabStrip`.
+- New colour tokens: `barBackgroundDark` (`#010102`, Figma Tab
+  Bar/Background in dark mode; `SldsTabStrip` now uses it too) and
+  `flyoutGroupHeader` (Figma Text/Tertiary `#BCBCBC` in light; 1.92:1 on
+  white, a recorded contrast exemption pending design review).
+- `SldsFlyoutMenu` titles are 18/500/28 (were 14/600) (#187), expanded
+  group captions 12/400/18 `#BCBCBC` (were `#6C6C6C`) (#188) and entries
+  16/400/26 (were 14px) (#189).
+- `SldsBottomNav`: pressing an unselected item on the light bar fills its
+  icon pill white, Figma's Pressed state, instead of a ripple (#190).
+  Figma's Bottom tab bars throughout: idle icons `#898989` light /
+  `#BCBCBC` dark (were `#6C6C6C` / white) (#191, #192), idle labels
+  `#676767` / `#CDCDCD` (#195, #197), the selected label white on the dark
+  bar, every label 12/400/14 (selected was 600) (#194, #196), and pressing
+  on the dark bar fills the pill `#17171A` with a white icon (#193). New
+  tokens `barIdleIconDark`, `barIdleLabelDark` and `barPressedDark` carry
+  the dark bar's fixed values.
+- `SldsPullToRefresh` accepts drags from every pointer kind, so a mouse pull
+  in a desktop browser (Widgetbook) now triggers the refresh (#199).
+- `SldsAvatar` follows Figma Avatar (502:3768): initials `#17171A` (were
+  black, bold) in Figma's per-size type — 12/400 small, 16/400 medium,
+  18/500 large, 24/500 extra large, 22/700 huge (#202) — and the default
+  glyph is Figma's Phosphor User, painted at 16/20/24/24/28px (was
+  Material's `person_outline`) (#201).
+- `SldsIconCard`: a Featured Services card sizes to its content (it took
+  all the height offered, 600px in Widgetbook) and is Figma's 240x118, with
+  11/12 title and description lines in a 2px-padded text block (#206–#209).
+  Quick Action places its icon 18px down, an 8px gap above the label (was
+  4) and the "NEW" pill 14px tall, 7px above the card (#203–#205).
+- `SldsProcessList` colours already matched Figma; now pinned (#210). Its
+  step numbers are Mobile/Title 1, 18/500/24 (were 16/600), and a done
+  step uses the Badge/Success pair, `#1FAA63` (was Approved `#059669`)
+  (#211–#213).
+- `SldsServiceCard` follows Figma Service Card (533:2563): the default
+  card is white (was `#F7F7F7`, invisible on the page) with a 16px radius
+  (#214, #220); title 14/400/18 and description 12/400/18 (were 16 and 14)
+  (#216, #217); the badge is a 22px pill with 12/500/14 text (#218); the
+  caret is 16px `#898989` (#219). Selected is Figma's `#DDDDDD` (was
+  `#E3EDFF`) (#221).
+- `SldsFab` keeps its variant's fill and foreground while loading — Figma's
+  Loading draws the spinner in the variant's colours — instead of turning
+  grey like a disabled button (#222, #223).
+- `SldsRadio` follows Figma Radio (541:307): a 1px ring (was 1.5),
+  resting `#FFFFFF` with a `#BCBCBC` ring (was transparent with
+  `#8F8F8F`) (#224), selected on `#F7F7F7`, disabled `#DDDDDD` with a
+  `#BCBCBC` ring and dot (were translucent) (#225).
+- `SldsRangeSlider`'s track is `#BCBCBC` (was `#8F8F8F`) and `#EEEEEE`
+  when disabled (was `#DDDDDD`) (#226, #227).
+- `SldsComboBox` rows are already Figma's 38px with no gap; now pinned by a
+  test (#105).
 - `SldsFab` wrapped an empty `Tooltip` when no tooltip was given, adding a
   blank node to the semantics tree.
 - `SldsTopNavBar` reserved a different box for enabled and disabled actions,

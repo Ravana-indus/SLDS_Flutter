@@ -100,20 +100,24 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
 
+    // Figma Radio (541:307): a 1px ring. Resting #FFFFFF with a #BCBCBC
+    // ring (#224); selected #F7F7F7 with a gold ring and dot; disabled
+    // #DDDDDD with a #BCBCBC ring and dot (#225).
+    final colors = context.slds.colors;
+    final Color fillColor;
     final Color ringColor;
     final Color dotColor;
     if (!_enabled) {
-      ringColor = scheme.outline.withValues(
-        alpha: context.slds.opacities.disabled,
-      );
-      dotColor = scheme.onSurface.withValues(
-        alpha: context.slds.opacities.disabled,
-      );
+      fillColor = colors.disabledBackground;
+      ringColor = colors.inputBorderDefault;
+      dotColor = colors.disabledForeground;
     } else if (_selected) {
+      fillColor = colors.surfacePage;
       ringColor = accent;
       dotColor = accent;
     } else {
-      ringColor = scheme.outline;
+      fillColor = colors.surfaceCard;
+      ringColor = colors.inputBorderDefault;
       dotColor = Colors.transparent;
     }
 
@@ -155,7 +159,11 @@ class _SldsRadioState<T> extends State<SldsRadio<T>> {
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: ringColor, width: 1.5),
+                  color: fillColor,
+                  border: Border.all(
+                    color: ringColor,
+                    width: dimensions.controlBorderWidth,
+                  ),
                 ),
                 child: Center(
                   child: AnimatedContainer(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma visual states for [SldsMobileNumberInput], matching node `510:3072`.
 enum SldsMobileNumberInputState {
@@ -41,6 +43,7 @@ class SldsMobileNumberInput extends StatefulWidget {
     this.countryFlag,
     this.onCountryPressed,
     this.countrySemanticLabel,
+    this.onClear,
     this.trailing,
     this.trailingWidth,
     this.onChanged,
@@ -91,6 +94,11 @@ class SldsMobileNumberInput extends StatefulWidget {
 
   /// Optional state-specific status or action icon at the end of the field.
   final Widget? trailing;
+
+  /// Shows Figma's grey clear (X) button at the end of the field. Tapping it
+  /// empties [controller] (pass one so it can) and then calls this. Null
+  /// hides the button; it is also hidden while disabled.
+  final VoidCallback? onClear;
 
   /// Width reserved for [trailing].
   ///
@@ -179,10 +187,16 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
         widget.visualState == SldsMobileNumberInputState.disabled) {
       return SldsMobileNumberInputState.disabled;
     }
-    return widget.visualState ??
-        (_focusNode.hasFocus
-            ? SldsMobileNumberInputState.focused
-            : SldsMobileNumberInputState.defaultState);
+    if (widget.visualState != null) return widget.visualState!;
+    // Like SldsInput/SldsInputMask: an error message puts the field in its
+    // error state, so the message and the error icon actually show (#82).
+    final errorText = widget.errorText;
+    if (errorText != null && errorText.isNotEmpty) {
+      return SldsMobileNumberInputState.error;
+    }
+    return _focusNode.hasFocus
+        ? SldsMobileNumberInputState.focused
+        : SldsMobileNumberInputState.defaultState;
   }
 
   @override
@@ -190,6 +204,12 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
+    // Pads the value's line out to exactly the 48dp tap target. With any
+    // slack, InputDecorator puts it below the text, which sat the value a few
+    // pixels above the affix it should line up with (#67, #74, #77).
+    final valueLine = tokens.typography.body1;
+    final valuePadding =
+        (dimensions.tapTargetMin - valueLine.fontSize! * valueLine.height!) / 2;
     final state = _resolvedState;
     final disabled = state == SldsMobileNumberInputState.disabled;
     final error = state == SldsMobileNumberInputState.error;
@@ -247,9 +267,8 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                 height: dimensions.inputHeight,
                 padding: EdgeInsets.symmetric(horizontal: dimensions.space8),
                 decoration: BoxDecoration(
-                  color: disabled
-                      ? colors.disabledBackground
-                      : colors.surfaceCard,
+                  // Figma keeps the field white when disabled (#80).
+                  color: colors.surfaceCard,
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(dimensions.radius2xl),
                 ),
@@ -262,7 +281,7 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                       semanticLabel: widget.countrySemanticLabel,
                       disabled: disabled,
                     ),
-                    SizedBox(width: dimensions.space8),
+                    SizedBox(width: dimensions.space10),
                     Expanded(
                       child: Semantics(
                         textField: true,
@@ -300,7 +319,8 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                             // left the value sitting against the field's top
                             // edge instead of on its centre line.
                             contentPadding: EdgeInsets.symmetric(
-                              vertical: dimensions.space12,
+                              horizontal: dimensions.space8,
+                              vertical: valuePadding,
                             ),
                             hintText: widget.placeholder,
                             hintStyle: tokens.typography.body1.copyWith(
@@ -311,6 +331,29 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                         ),
                       ),
                     ),
+                    // Figma: a 20px grey X in a 36px ghost button, ahead of
+                    // any status icon. The 48dp hit area overflows the 36px
+                    // box rather than widening the row.
+                    if (widget.onClear != null && !disabled)
+                      Semantics(
+                        button: true,
+                        label: context.sldsStrings.clear,
+                        excludeSemantics: true,
+                        child: SldsOverflowTapTarget(
+                          onTap: () {
+                            widget.controller?.clear();
+                            widget.onClear!();
+                          },
+                          child: SizedBox.square(
+                            dimension: dimensions.buttonHeightMedium,
+                            child: Icon(
+                              Icons.close,
+                              size: dimensions.iconSizeMedium,
+                              color: colors.inputIcon,
+                            ),
+                          ),
+                        ),
+                      ),
                     if (widget.trailing != null) ...[
                       SizedBox(width: dimensions.space4),
                       SizedBox(
@@ -331,6 +374,20 @@ class _SldsMobileNumberInputState extends State<SldsMobileNumberInput> {
                         ),
                       ),
                     ],
+                    // Figma's error state ends with a red XCircle status icon
+                    // (20px in a 36px slot), after any caller action (#82).
+                    // Decorative: the error text below carries the meaning.
+                    if (error)
+                      ExcludeSemantics(
+                        child: SizedBox.square(
+                          dimension: dimensions.buttonHeightMedium,
+                          child: Icon(
+                            Icons.cancel,
+                            size: dimensions.iconSizeMedium,
+                            color: colors.error,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -375,13 +432,13 @@ class _MobileNumberLabel extends StatelessWidget {
           child: Text(
             label,
             locale: Localizations.maybeLocaleOf(context),
-            style: typography.body2.copyWith(color: color),
+            style: typography.fieldLabel.copyWith(color: color),
           ),
         ),
         if (required)
           Text(
             '*',
-            style: typography.body2.copyWith(color: requiredColor),
+            style: typography.fieldLabel.copyWith(color: requiredColor),
           ),
       ],
     );

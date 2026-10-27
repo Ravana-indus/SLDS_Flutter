@@ -13,11 +13,8 @@ enum SldsButtonVariant {
   /// Outlined, paired with primary.
   secondary,
 
-  /// Outlined, low-emphasis / ghost.
-  tertiary,
-
-  /// No border, no background.
-  text,
+  /// Low emphasis: no border, transparent at rest.
+  ghost,
 
   /// Filled, for delete/reject actions.
   destructive,
@@ -131,7 +128,7 @@ class _SldsButtonMetrics {
   final TextStyle textStyle;
 }
 
-/// SLDS action button — covers the Primary / Secondary / Tertiary / Text /
+/// SLDS action button — covers the Primary / Secondary / Ghost /
 /// Destructive variants, with hover, focus, and pressed states handled
 /// natively via [WidgetStateProperty], plus an explicit loading state
 /// (Flutter buttons have no built-in equivalent).
@@ -159,6 +156,7 @@ class SldsButton extends StatefulWidget {
     this.leadingIcon,
     this.trailingIcon,
     this.isLoading = false,
+    this.focusNode,
   });
 
   /// The button's text label.
@@ -193,6 +191,10 @@ class SldsButton extends StatefulWidget {
   /// The label stays visible and the trailing icon is hidden, per the Figma
   /// loading variants. The button is non-interactive while this is true.
   final bool isLoading;
+
+  /// Optional focus node, to move keyboard focus to the button
+  /// programmatically (e.g. the default action of a form step).
+  final FocusNode? focusNode;
 
   @override
   State<SldsButton> createState() => _SldsButtonState();
@@ -263,6 +265,11 @@ class _SldsButtonState extends State<SldsButton> {
     required _SldsButtonMetrics metrics,
     required double minWidth,
   }) {
+    // Loading nulls onPressed to block taps, which Material reports as
+    // disabled — but the Figma loading variants keep their resting colours,
+    // so the disabled state is dropped before the colours resolve.
+    Set<WidgetState> visual(Set<WidgetState> states) =>
+        widget.isLoading ? states.difference({WidgetState.disabled}) : states;
     return ButtonStyle(
       padding: WidgetStatePropertyAll(metrics.padding),
       textStyle: WidgetStatePropertyAll(metrics.textStyle),
@@ -272,16 +279,16 @@ class _SldsButtonState extends State<SldsButton> {
         ),
       ),
       backgroundColor: WidgetStateProperty.resolveWith(
-        (states) => _background(context, states),
+        (states) => _background(context, visual(states)),
       ),
       foregroundColor: WidgetStateProperty.resolveWith(
         (states) => _foreground(
           context,
-          selected: !states.contains(WidgetState.disabled),
+          selected: !visual(states).contains(WidgetState.disabled),
         ),
       ),
       side: WidgetStateProperty.resolveWith(
-        (states) => _border(context, states),
+        (states) => _border(context, visual(states)),
       ),
       // The per-state backgrounds in [_background] already carry hover, focus
       // and pressed feedback, so Material's own state layer is suppressed
@@ -356,19 +363,21 @@ class _SldsButtonState extends State<SldsButton> {
       SldsButtonVariant.destructive => FilledButton(
         onPressed: _enabled ? widget.onPressed : null,
         onFocusChange: _handleFocusChange,
+        focusNode: widget.focusNode,
         style: style,
         child: content,
       ),
-      SldsButtonVariant.secondary ||
-      SldsButtonVariant.tertiary => OutlinedButton(
+      SldsButtonVariant.secondary => OutlinedButton(
         onPressed: _enabled ? widget.onPressed : null,
         onFocusChange: _handleFocusChange,
+        focusNode: widget.focusNode,
         style: style,
         child: content,
       ),
-      SldsButtonVariant.text => TextButton(
+      SldsButtonVariant.ghost => TextButton(
         onPressed: _enabled ? widget.onPressed : null,
         onFocusChange: _handleFocusChange,
+        focusNode: widget.focusNode,
         style: style,
         child: content,
       ),
@@ -412,10 +421,9 @@ class _SldsButtonState extends State<SldsButton> {
   Color? _background(BuildContext context, Set<WidgetState> states) {
     final colors = context.slds.colors;
 
-    // Text and tertiary are borderless/transparent at rest; their feedback
-    // comes from the ghost overlay tokens.
-    if (variant == SldsButtonVariant.text ||
-        variant == SldsButtonVariant.tertiary) {
+    // Ghost is transparent at rest; its feedback comes from the ghost
+    // overlay tokens.
+    if (variant == SldsButtonVariant.ghost) {
       if (states.contains(WidgetState.disabled)) return null;
       if (states.contains(WidgetState.pressed)) {
         return colors.buttonGhostPressed;
@@ -458,26 +466,18 @@ class _SldsButtonState extends State<SldsButton> {
       SldsButtonVariant.primary => colors.buttonPrimaryLabel,
       SldsButtonVariant.destructive => colors.buttonDestructiveLabel,
       SldsButtonVariant.secondary => colors.buttonSecondaryLabel,
-      SldsButtonVariant.tertiary ||
-      SldsButtonVariant.text => colors.buttonGhostLabel,
+      SldsButtonVariant.ghost => colors.buttonGhostLabel,
     };
   }
 
   BorderSide? _border(BuildContext context, Set<WidgetState> states) {
-    if (variant != SldsButtonVariant.secondary &&
-        variant != SldsButtonVariant.tertiary) {
-      return null;
-    }
+    // Only the secondary variant is outlined — Figma's Ghost has no border.
+    if (variant != SldsButtonVariant.secondary) return null;
     final colors = context.slds.colors;
     final width = context.slds.dimensions.controlBorderWidth;
     if (states.contains(WidgetState.disabled)) {
       return BorderSide(color: colors.disabledBorder, width: width);
     }
-    return BorderSide(
-      color: variant == SldsButtonVariant.tertiary
-          ? colors.borderDefault
-          : colors.buttonSecondaryBorder,
-      width: width,
-    );
+    return BorderSide(color: colors.buttonSecondaryBorder, width: width);
   }
 }

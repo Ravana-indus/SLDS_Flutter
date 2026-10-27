@@ -346,11 +346,23 @@ abstract class SldsLocalizations {
   /// **'Digit {position} of {total}'**
   String digitOf(int position, int total);
 
+  /// Accessible name for the button that empties a form field.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
   /// Accessible name for the button that empties the search field.
   ///
   /// In en, this message translates to:
   /// **'Clear search'**
   String get clearSearch;
+
+  /// Accessible name for the microphone button that starts a voice search.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice search'**
+  String get voiceSearch;
 
   /// Accessible name for a row in the recent-searches list, distinguishing it from a live suggestion.
   ///

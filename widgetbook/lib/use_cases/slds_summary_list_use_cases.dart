@@ -14,9 +14,9 @@ Widget buildSldsSummaryListUseCase(BuildContext context) {
   final copy = DemoCopy.of(context);
   final status = context.knobs.object.dropdown(
     label: 'Status badge',
-    options: SldsSummaryBadgeStatus.values,
+    options: SldsBadgeStatus.values,
     labelBuilder: (s) => s.name,
-    initialOption: SldsSummaryBadgeStatus.inReview,
+    initialOption: SldsBadgeStatus.inReview,
   );
 
   return Padding(

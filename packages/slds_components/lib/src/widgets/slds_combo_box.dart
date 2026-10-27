@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
-import 'package:slds_components/src/widgets/slds_checkbox.dart';
-import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Figma states for [SldsComboBox], matching node `543:5821`.
 enum SldsComboBoxState {
@@ -148,10 +146,6 @@ class _SldsComboBoxState extends State<SldsComboBox> {
     final expanded =
         widget.visualState == SldsComboBoxState.inputExpanded ||
         (widget.visualState == null && widget.selectedValues.length > 2);
-    final focused =
-        _focusNode.hasFocus ||
-        widget.visualState == SldsComboBoxState.filling ||
-        widget.visualState == SldsComboBoxState.inputExpanded;
     final displayChips = widget.multiple && widget.selectedValues.isNotEmpty;
     // The collapsed field holds the trailing toggle, which is a tap target:
     // clamp up to the 48dp floor so the button is not squeezed under it
@@ -184,16 +178,23 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                   Flexible(
                     child: Text(
                       widget.label,
+                      // "required" is spoken with the label; the asterisk is
+                      // visual only.
+                      semanticsLabel: widget.required
+                          ? '${widget.label}, ${context.sldsStrings.required}'
+                          : null,
                       style: tokens.typography.fieldLabel.copyWith(
                         color: colors.inputLabel,
                       ),
                     ),
                   ),
                   if (widget.required)
-                    Text(
-                      '*',
-                      style: tokens.typography.fieldLabel.copyWith(
-                        color: colors.inputBorderError,
+                    ExcludeSemantics(
+                      child: Text(
+                        '*',
+                        style: tokens.typography.fieldLabel.copyWith(
+                          color: colors.inputBorderError,
+                        ),
                       ),
                     ),
                 ],
@@ -208,18 +209,16 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                 // needs as a tap target (WCAG 2.5.8). Children inset
                 // themselves.
                 padding: const EdgeInsetsDirectional.fromSTEB(4, 0, 8, 0),
+                // Figma's Filling / Multi Select states keep the default 1px
+                // #BCBCBC border while the panel is open: no gold border and
+                // no focus glow (#95).
                 decoration: BoxDecoration(
                   color: colors.surfaceCard,
                   border: Border.all(
-                    color: focused
-                        ? colors.inputBorderFocused
-                        : colors.inputBorderDefault,
-                    width: focused
-                        ? dimensions.emphasizedBorderWidth
-                        : dimensions.controlBorderWidth,
+                    color: colors.inputBorderDefault,
+                    width: dimensions.controlBorderWidth,
                   ),
                   borderRadius: BorderRadius.circular(dimensions.radius2xl),
-                  boxShadow: focused ? sldsFocusRing(tokens) : null,
                 ),
                 child: Row(
                   // Default centre alignment, not stretch: the field now grows
@@ -229,11 +228,15 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                     Expanded(
                       child: displayChips
                           ? Padding(
+                              // Figma Multi Select: the chip row is padded 8px
+                              // inline like the placeholder (first chip 12px
+                              // from the edge) and chips sit 10px apart (#90).
                               padding: EdgeInsets.symmetric(
+                                horizontal: dimensions.space8,
                                 vertical: dimensions.space8,
                               ),
                               child: Wrap(
-                                spacing: dimensions.space4,
+                                spacing: dimensions.space10,
                                 runSpacing: dimensions.space4,
                                 children: [
                                   for (final value in widget.selectedValues)
@@ -289,10 +292,11 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                         else
                           context.sldsStrings.collapsed,
                       ].join(', '),
+                      // Figma: a grey 20px CaretDown in every state, open
+                      // included; the tooltip carries expanded/collapsed (#92).
                       icon: Icon(
-                        _open || forcedOpen
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
+                        Icons.keyboard_arrow_down,
+                        color: colors.inputIcon,
                       ),
                       iconSize: 20,
                       constraints: BoxConstraints(
@@ -328,10 +332,10 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                     // rather than sitting flat on the page.
                     boxShadow: [
                       BoxShadow(
-                        color: colors.shadowColor,
+                        color: colors.shadowColor.withValues(alpha: 0.12),
                         blurRadius: dimensions.elevationBlur,
                         offset: Offset(0, dimensions.elevationOffsetY),
-                        spreadRadius: -dimensions.elevationSpread,
+                        spreadRadius: dimensions.elevationSpread,
                       ),
                     ],
                   ),
@@ -344,6 +348,9 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                           horizontal: dimensions.space8,
                         ),
                         child: Container(
+                          // Figma Search Bar: 44px tall, 12px padding, the
+                          // panel's #DDDDDD 1.5px outline (#96).
+                          height: 44,
                           padding: EdgeInsets.symmetric(
                             horizontal: dimensions.space12,
                           ),
@@ -352,13 +359,8 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                             borderRadius: BorderRadius.circular(
                               dimensions.radius2xl,
                             ),
-                            // Figma Search Bar: the input border tokens, not
-                            // the decorative one that outlines the panel, and
-                            // it turns gold in the Typing state.
                             border: Border.all(
-                              color: _controller.text.isEmpty
-                                  ? colors.inputBorderDefault
-                                  : colors.inputBorderFocused,
+                              color: colors.borderDecorative,
                               width: dimensions.emphasizedBorderWidth,
                             ),
                           ),
@@ -371,31 +373,24 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                               ),
                               SizedBox(width: dimensions.space8),
                               Expanded(
+                                // Collapsed so the 14/18 line centres on the
+                                // icon instead of riding padding slack.
                                 child: TextField(
                                   controller: _controller,
                                   focusNode: _focusNode,
-                                  style: tokens.typography.body2,
+                                  style: tokens.typography.fieldLabel.copyWith(
+                                    color: colors.textPrimary,
+                                  ),
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    isDense: true,
-                                    // The decorated field paints taller, but
-                                    // the text node is the tap target and must
-                                    // clear the 48dp floor (WCAG 2.5.8).
-                                    constraints: BoxConstraints(
-                                      minHeight: dimensions.tapTargetMin,
-                                    ),
-                                    // Vertical padding centres the line inside
-                                    // that 48dp box; EdgeInsets.zero
-                                    // top-aligns it.
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: dimensions.space12,
-                                    ),
+                                    isCollapsed: true,
                                     hintText:
                                         widget.searchPlaceholder ??
                                         context.sldsStrings.search,
-                                    hintStyle: tokens.typography.body2.copyWith(
-                                      color: colors.inputPlaceholder,
-                                    ),
+                                    hintStyle: tokens.typography.fieldLabel
+                                        .copyWith(
+                                          color: colors.inputPlaceholder,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -432,54 +427,69 @@ class _SldsComboBoxState extends State<SldsComboBox> {
                       SizedBox(height: dimensions.space4),
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 240),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: filtered.length,
-                          itemBuilder: (context, index) {
-                            final option = filtered[index];
-                            final selected = widget.selectedValues.contains(
-                              option,
-                            );
-                            // The row already carries the option name and its
-                            // selected state, so the checkbox inside it is
-                            // decorative to assistive tech.
-                            return MergeSemantics(
-                              child: Semantics(
-                                selected: selected,
-                                child: InkWell(
-                                  onTap: () => _select(option),
-                                  borderRadius: BorderRadius.circular(
-                                    dimensions.radiusXl,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(dimensions.space8),
-                                    child: Row(
-                                      children: [
-                                        ExcludeSemantics(
-                                          child: SldsCheckbox(
-                                            value: selected,
-                                            size: SldsCheckboxSize.small,
-                                            onChanged: (_) => _select(option),
+                        // Ink paints on the nearest Material; without this
+                        // one the panel's own fill hides the hover row.
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            // Figma's Dropdown menu insets the rows 8px (#92).
+                            padding: EdgeInsets.symmetric(
+                              horizontal: dimensions.space8,
+                            ),
+                            itemCount: filtered.length,
+                            itemBuilder: (context, index) {
+                              final option = filtered[index];
+                              final selected = widget.selectedValues.contains(
+                                option,
+                              );
+                              // The row already carries the option name and its
+                              // selected state, so the checkbox inside it is
+                              // decorative to assistive tech.
+                              return MergeSemantics(
+                                child: Semantics(
+                                  selected: selected,
+                                  child: InkWell(
+                                    onTap: () => _select(option),
+                                    borderRadius: BorderRadius.circular(
+                                      dimensions.radiusXl,
+                                    ),
+                                    // Figma's list item: Hover (and keyboard
+                                    // focus) fills the row #EEEEEE, radius 8; a
+                                    // selected row is shown by its checked box
+                                    // (#99). No ripple.
+                                    hoverColor: colors.surfaceHover,
+                                    focusColor: colors.surfaceHover,
+                                    highlightColor: Colors.transparent,
+                                    splashFactory: NoSplash.splashFactory,
+                                    child: Container(
+                                      padding: EdgeInsets.all(
+                                        dimensions.space8,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          // The row is the control; this is
+                                          // Figma's 16px box, 8px from the text
+                                          // (#97).
+                                          _RowCheckbox(checked: selected),
+                                          SizedBox(width: dimensions.space8),
+                                          Expanded(
+                                            child: Text(
+                                              option,
+                                              style: tokens.typography.body2
+                                                  .copyWith(
+                                                    color: colors.inputLabel,
+                                                  ),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: dimensions.space8),
-                                        Expanded(
-                                          child: Text(
-                                            option,
-                                            style: tokens.typography.body2
-                                                .copyWith(
-                                                  color: colors.inputLabel,
-                                                ),
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -549,6 +559,32 @@ class _SelectionChip extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Figma's dropdown-list checkbox (Size=Default): a 16px box, radius 2,
+/// #BCBCBC 1px outline on the panel fill, or #FFC700 with a light check once
+/// selected. Purely visual: the row carries the tap target and semantics.
+class _RowCheckbox extends StatelessWidget {
+  const _RowCheckbox({required this.checked});
+
+  final bool checked;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.slds.colors;
+    return Container(
+      width: 16,
+      height: 16,
+      decoration: BoxDecoration(
+        color: checked ? colors.buttonPrimaryBackground : colors.surfacePage,
+        borderRadius: BorderRadius.circular(2),
+        border: checked ? null : Border.all(color: colors.inputBorderDefault),
+      ),
+      child: checked
+          ? Icon(Icons.check, size: 12, color: colors.surfaceCard)
+          : null,
     );
   }
 }

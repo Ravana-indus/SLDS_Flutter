@@ -119,12 +119,24 @@ void main() {
   });
 
   testWidgets('maxLines caps growth when the caller sets it', (tester) async {
-    await pump(
-      tester,
-      const SldsTextArea(label: 'Description', maxLines: 4),
-    );
-    final field = tester.widget<TextField>(find.byType(TextField));
-    expect(field.maxLines, 4);
+    // Asserted on the rendered height rather than TextField.maxLines: the
+    // box fills a frame sized by the widget (so the counter stays inside the
+    // painted border), which requires the inner field's own maxLines to be
+    // null. The cap is applied to that frame instead.
+    Future<double> heightWith(int? maxLines) async {
+      await pump(
+        tester,
+        SldsTextArea(label: 'Description', maxLines: maxLines),
+      );
+      await tester.enterText(
+        find.byType(TextFormField),
+        List.filled(20, 'a line of text').join('\n'),
+      );
+      await tester.pumpAndSettle();
+      return tester.getSize(find.byType(TextFormField)).height;
+    }
+
+    expect(await heightWith(4), lessThan(await heightWith(null)));
   });
 
   group('Figma fidelity', () {

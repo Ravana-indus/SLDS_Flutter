@@ -162,9 +162,10 @@ class SldsRawTypographyTokens {
       lineHeight: 28,
       fontWeight: 500,
     ),
+    // Figma Mobile/Body 2, the label on every form field.
     fieldLabel: SldsTextStyleToken(
-      fontSize: 16,
-      lineHeight: 20,
+      fontSize: 14,
+      lineHeight: 18,
       fontWeight: 400,
     ),
     compactLabel: SldsTextStyleToken(

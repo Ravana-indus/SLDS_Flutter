@@ -214,9 +214,17 @@
       }
     }
   },
+  "clear": "Clear",
+  "@clear": {
+    "description": "Accessible name for the button that empties a form field."
+  },
   "clearSearch": "Clear search",
   "@clearSearch": {
     "description": "Accessible name for the button that empties the search field."
+  },
+  "voiceSearch": "Voice search",
+  "@voiceSearch": {
+    "description": "Accessible name for the microphone button that starts a voice search."
   },
   "recentSearch": "Recent search: {label}",
   "@recentSearch": {

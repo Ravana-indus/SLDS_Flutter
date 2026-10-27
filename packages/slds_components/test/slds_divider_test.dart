@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
 
@@ -32,5 +33,50 @@ void main() {
       const SizedBox(width: 300, child: SldsDivider(child: Text('Button'))),
     );
     expect(tester.getSize(find.byType(SldsDivider)).width, 300);
+  });
+
+  testWidgets('withButton builds a ghost, Small-scale + button and wires '
+      'the tap', (tester) async {
+    var tapped = false;
+    await pump(
+      tester,
+      SldsDivider.withButton(
+        buttonLabel: 'Add item',
+        onButtonPressed: () => tapped = true,
+      ),
+    );
+
+    expect(find.byType(Divider), findsNWidgets(2));
+    expect(find.text('Add item'), findsOneWidget);
+    expect(find.byIcon(Icons.add), findsOneWidget);
+
+    final button = tester.widget<SldsButton>(find.byType(SldsButton));
+    expect(button.variant, SldsButtonVariant.ghost);
+    expect(button.size, SldsButtonSize.small);
+
+    await tester.tap(find.byType(SldsButton));
+    expect(tapped, isTrue);
+  });
+
+  testWidgets('line and button label match Figma (#37, #38)', (tester) async {
+    await pump(
+      tester,
+      SldsDivider.withButton(buttonLabel: 'Button', onButtonPressed: () {}),
+    );
+
+    // Figma List/Divider: #DDDDDD, 1px.
+    for (final divider in tester.widgetList<Divider>(find.byType(Divider))) {
+      expect(divider.color, const Color(0xFFDDDDDD));
+      expect(divider.thickness, 1);
+    }
+
+    // Figma Button/Ghost/Label in Mobile/Body 2 (14px, 400).
+    final label = tester
+        .renderObject<RenderParagraph>(find.text('Button'))
+        .text
+        .style!;
+    expect(label.color, const Color(0xFF17171A));
+    expect(label.fontSize, 14);
+    expect(label.fontWeight, FontWeight.w400);
   });
 }

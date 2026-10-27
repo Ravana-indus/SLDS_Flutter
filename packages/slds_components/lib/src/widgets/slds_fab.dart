@@ -69,8 +69,13 @@ class SldsFab extends StatelessWidget {
   bool get _enabled => onPressed != null && !isLoading;
   bool get _isFilled => variant != SldsButtonVariant.secondary;
 
+  // Colours follow "disabled", not "not tappable": Figma's Loading keeps the
+  // variant's fill and draws its spinner in the variant's foreground, like
+  // SldsButton (#222, #223). Loading used the grey disabled pair.
+  bool get _disabled => onPressed == null;
+
   Color _background(SldsColorTokens colors) {
-    if (!_enabled) return colors.disabledBackground;
+    if (_disabled) return colors.disabledBackground;
     return switch (variant) {
       SldsButtonVariant.destructive => colors.buttonDestructiveBackground,
       SldsButtonVariant.secondary => colors.buttonSecondaryBackground,
@@ -79,13 +84,27 @@ class SldsFab extends StatelessWidget {
   }
 
   Color _foreground(SldsColorTokens colors) {
-    if (!_enabled) return colors.disabledForeground;
+    if (_disabled) return colors.disabledForeground;
     return switch (variant) {
       SldsButtonVariant.destructive => colors.buttonDestructiveLabel,
       SldsButtonVariant.secondary => colors.buttonSecondaryLabel,
       _ => colors.buttonPrimaryLabel,
     };
   }
+
+  // Figma's hover and pressed backgrounds. Painted as opaque ink over the
+  // fill, in place of Material's translucent overlay and ripple.
+  Color _hover(SldsColorTokens colors) => switch (variant) {
+    SldsButtonVariant.destructive => colors.buttonDestructiveHover,
+    SldsButtonVariant.secondary => colors.buttonSecondaryHover,
+    _ => colors.buttonPrimaryHover,
+  };
+
+  Color _pressed(SldsColorTokens colors) => switch (variant) {
+    SldsButtonVariant.destructive => colors.buttonDestructivePressed,
+    SldsButtonVariant.secondary => colors.buttonSecondaryPressed,
+    _ => colors.buttonPrimaryPressed,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -144,15 +163,21 @@ class SldsFab extends StatelessWidget {
         heroTag: heroTag,
         backgroundColor: _background(colors),
         foregroundColor: foreground,
+        hoverColor: _hover(colors),
+        splashColor: Colors.transparent,
         disabledElevation: 0,
+        // Figma keeps one shadow across states; Material would lift it on
+        // hover and press.
         elevation: dimensions.cardShadowBlur,
+        hoverElevation: dimensions.cardShadowBlur,
+        highlightElevation: dimensions.cardShadowBlur,
         shape: _isFilled
             ? const CircleBorder()
             : CircleBorder(
                 side: BorderSide(
-                  color: _enabled
-                      ? colors.buttonSecondaryBorder
-                      : colors.disabledBorder,
+                  color: _disabled
+                      ? colors.disabledBorder
+                      : colors.buttonSecondaryBorder,
                   width: dimensions.controlBorderWidth,
                 ),
               ),
@@ -160,6 +185,11 @@ class SldsFab extends StatelessWidget {
       ),
     );
 
-    return button;
+    // FloatingActionButton has no pressed-colour parameter; its ink reads
+    // the pressed highlight from the ambient theme.
+    return Theme(
+      data: Theme.of(context).copyWith(highlightColor: _pressed(colors)),
+      child: button,
+    );
   }
 }

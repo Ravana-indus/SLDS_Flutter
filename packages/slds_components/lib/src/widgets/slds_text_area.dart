@@ -179,6 +179,24 @@ class _SldsTextAreaState extends State<SldsTextArea> {
         ? colors.inputHelper
         : colors.disabledForeground;
 
+    // The painted box's height. Figma fixes the Content box at 128px; that
+    // is a floor rather than a clamp, so the box still grows for a caller's
+    // maxLines and at large text scales instead of clipping.
+    double boxHeight(double counterHeight, double width) {
+      final floor = dimensions.textAreaHeight;
+      final chrome = dimensions.space12 * 2 + dimensions.space8 + counterHeight;
+      final style = typography.body1.copyWith(color: colors.textPrimary);
+      final painter = TextPainter(
+        text: TextSpan(text: _controller.text, style: style),
+        textDirection: Directionality.of(context),
+        textScaler: MediaQuery.textScalerOf(context),
+        maxLines: widget.maxLines,
+      )..layout(maxWidth: width - dimensions.space12 * 2);
+      final needed = painter.height + chrome;
+      painter.dispose();
+      return needed > floor ? needed : floor;
+    }
+
     // The counter sits inside the box, so it needs to clear the reserved
     // strip at the bottom rather than overlap the last line of text.
     final counterStyle = typography.caption1.copyWith(
@@ -195,9 +213,8 @@ class _SldsTextAreaState extends State<SldsTextArea> {
       children: [
         Text.rich(
           TextSpan(
-            // Figma labels the field in Body 2 (14px), matching the
-            // single-line input.
-            style: typography.body2.copyWith(
+            // Figma labels the field in Mobile/Body 2 (14/18).
+            style: typography.fieldLabel.copyWith(
               color: widget.enabled
                   ? colors.inputLabel
                   : colors.disabledForeground,
@@ -208,7 +225,7 @@ class _SldsTextAreaState extends State<SldsTextArea> {
                 TextSpan(
                   // Disabled greys the whole label, asterisk included.
                   style: widget.enabled ? TextStyle(color: colors.error) : null,
-                  text: ' *',
+                  text: '*',
                 ),
             ],
           ),
@@ -216,75 +233,100 @@ class _SldsTextAreaState extends State<SldsTextArea> {
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: dimensions.space8),
-        Stack(
-          children: [
-            // MergeSemantics is load-bearing for the same reason as in
-            // SldsTextField: a FormField's semantics boundary drops a plain
-            // ancestor label, leaving the field with no name at all.
-            MergeSemantics(
-              child: Semantics(
-                textField: true,
-                label: _semanticLabel(context),
-                child: TextFormField(
-                  controller: _controller,
-                  focusNode: _node,
-                  enabled: widget.enabled,
-                  maxLines: widget.maxLines,
-                  textAlignVertical: TextAlignVertical.top,
-                  inputFormatters: widget.maxLength != null
-                      ? [LengthLimitingTextInputFormatter(widget.maxLength)]
-                      : null,
-                  onChanged: widget.onChanged,
-                  validator: widget.validator,
-                  style: typography.body1.copyWith(color: colors.textPrimary),
-                  decoration: InputDecoration(
-                    hintText: widget.hintText,
-                    hintStyle: typography.body1.copyWith(
-                      color: colors.inputPlaceholder,
+        // A floor, not a fixed height: the painted border and the counter
+        // positioned against it share the Stack's bounds, but the Stack is
+        // still free to grow with content. Sizing it by the decorator let
+        // the reserved counter strip extend past the border, stranding the
+        // counter below the box.
+        LayoutBuilder(
+          builder: (context, constraints) => SizedBox(
+            height: boxHeight(counterHeight, constraints.maxWidth),
+            child: Stack(
+              children: [
+                // MergeSemantics is load-bearing for the same reason as in
+                // SldsTextField: a FormField's semantics boundary drops a plain
+                // ancestor label, leaving the field with no name at all.
+                MergeSemantics(
+                  child: Semantics(
+                    textField: true,
+                    label: _semanticLabel(context),
+                    child: TextFormField(
+                      controller: _controller,
+                      focusNode: _node,
+                      enabled: widget.enabled,
+                      // expands fills the fixed frame above, which is what keeps
+                      // expands fills the frame, which is what keeps the
+                      // painted border and the counter on the same bounds.
+                      // It requires maxLines to be null; the caller's
+                      // maxLines caps the frame instead (see boxHeight).
+                      expands: true,
+                      maxLines: null,
+                      textAlignVertical: TextAlignVertical.top,
+                      inputFormatters: widget.maxLength != null
+                          ? [LengthLimitingTextInputFormatter(widget.maxLength)]
+                          : null,
+                      onChanged: widget.onChanged,
+                      validator: widget.validator,
+                      style: typography.body1.copyWith(
+                        color: colors.textPrimary,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: widget.hintText,
+                        hintStyle: typography.body1.copyWith(
+                          color: colors.inputPlaceholder,
+                        ),
+                        filled: true,
+                        // Figma's `Input/Background` is the card surface in
+                        // every state: disabled fades the border and text,
+                        // not the fill.
+                        fillColor: colors.surfaceCard,
+                        // Figma's Content box is a fixed 128px; the frame
+                        // above owns that height now.
+                        //
+                        // isCollapsed strips Flutter's own baseline padding, so
+                        // this contentPadding is the whole box: the 128px floor
+                        // therefore describes the *painted border*, and the
+                        // counter's reserved strip sits inside it rather than
+                        // extending the decorator below the border.
+                        isCollapsed: true,
+                        constraints: BoxConstraints(
+                          minHeight: dimensions.textAreaHeight,
+                        ),
+                        contentPadding: EdgeInsetsDirectional.fromSTEB(
+                          dimensions.space12,
+                          dimensions.space12,
+                          dimensions.space12,
+                          // Reserve room for the counter drawn over the box.
+                          dimensions.space8 + counterHeight,
+                        ),
+                        border: border(borderColor, borderWidth),
+                        enabledBorder: border(borderColor, borderWidth),
+                        focusedBorder: border(borderColor, borderWidth),
+                        errorBorder: border(borderColor, borderWidth),
+                        focusedErrorBorder: border(borderColor, borderWidth),
+                        disabledBorder: border(borderColor, borderWidth),
+                        // Figma puts the counter inside the box; Flutter's
+                        // own renders below the decorator, so it is
+                        // suppressed and drawn by the Stack instead.
+                        counterText: '',
+                      ),
                     ),
-                    filled: true,
-                    // Figma's `Input/Background` is the card surface in every
-                    // state: disabled fades the border and text, not the fill.
-                    fillColor: colors.surfaceCard,
-                    // Figma's Content box is a fixed 128px. Treat it as a floor
-                    // rather than a clamp so the box still grows with content
-                    // and at large text scales instead of clipping.
-                    constraints: BoxConstraints(
-                      minHeight: dimensions.textAreaHeight,
-                    ),
-                    contentPadding: EdgeInsetsDirectional.fromSTEB(
-                      dimensions.space12,
-                      dimensions.space8,
-                      dimensions.space12,
-                      // Reserve room for the counter drawn over the box.
-                      dimensions.space8 + counterHeight,
-                    ),
-                    border: border(borderColor, borderWidth),
-                    enabledBorder: border(borderColor, borderWidth),
-                    focusedBorder: border(borderColor, borderWidth),
-                    errorBorder: border(borderColor, borderWidth),
-                    focusedErrorBorder: border(borderColor, borderWidth),
-                    disabledBorder: border(borderColor, borderWidth),
-                    // Figma puts the counter inside the box; Flutter's own
-                    // counter renders below the decorator, so it is suppressed
-                    // and drawn by the Stack instead.
-                    counterText: '',
                   ),
                 ),
-              ),
+                if (showCounter)
+                  PositionedDirectional(
+                    end: dimensions.space12,
+                    bottom: dimensions.space8,
+                    child: IgnorePointer(
+                      child: Text(
+                        '${_controller.text.length}/${widget.maxLength}',
+                        style: counterStyle,
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            if (showCounter)
-              PositionedDirectional(
-                end: dimensions.space12,
-                bottom: dimensions.space8,
-                child: IgnorePointer(
-                  child: Text(
-                    '${_controller.text.length}/${widget.maxLength}',
-                    style: counterStyle,
-                  ),
-                ),
-              ),
-          ],
+          ),
         ),
         if (_hasError ||
             (widget.helpText != null && widget.helpText!.isNotEmpty)) ...[

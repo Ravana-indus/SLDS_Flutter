@@ -91,21 +91,20 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    _selectedSingleDate = widget.initialDate ?? now;
-
     if (widget.initialRange != null) {
       _rangeStartDate = widget.initialRange!.start;
       _rangeEndDate = widget.initialRange!.end;
       _displayedMonth = DateTime(_rangeStartDate!.year, _rangeStartDate!.month);
+      _selectedSingleDate = widget.initialDate ?? _rangeStartDate;
     } else {
-      // Default to January 2026 if matching screenshot spec, or current month
+      // Default to January 2026 matching Figma spec
       _displayedMonth = DateTime(
         widget.initialDate?.year ?? 2026,
         widget.initialDate?.month ?? 1,
       );
       _rangeStartDate = DateTime(2026, 1, 13);
       _rangeEndDate = DateTime(2026, 1, 18);
+      _selectedSingleDate = widget.initialDate ?? DateTime(2026, 1, 13);
     }
   }
 
@@ -226,222 +225,244 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
     final primaryAccent = colors.buttonPrimaryBackground;
     final rangeHighlight = colors.datePickerRangeHighlight;
 
-    return Container(
-      width: widget.width ?? 340,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-        color: colors.surfaceCard,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colors.borderDefault.withValues(alpha: 0.8)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
+    // Month Navigator Pill.
+    //
+    // Flexible, not Expanded: Figma's Buttons wrapper is flex-[1_0_0], but
+    // that's inside a 280px reference frame where the leftover space is
+    // small. At this component's actual width (328px+) stretching the pill
+    // to fill every pixel up to the year pill opens a wide, empty-looking
+    // gap between "January >" and "2026" that Figma's own screenshot never
+    // shows — content-sized keeps the two pills reading as a pair at any
+    // width. Still survives the 320dp floor at 200% text scale, same as
+    // Expanded. The chevrons keep Figma's tight visual size — no
+    // SldsTapTarget, which reserves 48dp of *layout* width per arrow and
+    // was ballooning the pill far past spec — and instead grow their *hit*
+    // area past their visible bounds via SldsOverflowTapTarget, which
+    // doesn't touch layout.
+    final monthPill = Expanded(
+      child: Container(
+        // Figma Month and Year (1090:7421): both pills are 36px (#123).
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: colors.buttonSecondaryBackground,
+          border: Border.all(color: colors.buttonSecondaryBorder),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x0D101828),
+              blurRadius: 2,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Semantics(
+              button: true,
+              label: context.sldsStrings.previousMonth,
+              child: SldsTapTarget(
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: _previousMonth,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      Icons.chevron_left,
+                      size: 18,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Text(
+                  _monthNames[_displayedMonth.month - 1],
+                  overflow: TextOverflow.ellipsis,
+                  // Figma: 14/400/22 #17171A, like the year (#124).
+                  style: tokens.typography.body2.copyWith(
+                    color: colors.textPrimary,
+                  ),
+                ),
+              ),
+            ),
+            Semantics(
+              button: true,
+              label: context.sldsStrings.nextMonth,
+              child: SldsTapTarget(
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: _nextMonth,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      Icons.chevron_right,
+                      size: 18,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-      // Same fixed-height problem as the time picker: header, weekday row,
-      // 6-week grid and footer come to ~500px, so any viewport shorter than
-      // that overflows and the RenderFlex throws. The grid's cells must keep
-      // their size to stay tappable, so scroll rather than shrink to fit.
+    );
+
+    // Year Selector Pill
+    final yearPill = PopupMenuButton<int>(
+      initialValue: _displayedMonth.year,
+      onSelected: (year) {
+        setState(() {
+          _displayedMonth = DateTime(year, _displayedMonth.month);
+        });
+      },
+      itemBuilder: (context) {
+        final currentYear = DateTime.now().year;
+        return List.generate(
+          20,
+          (i) => currentYear - 10 + i,
+        ).map((y) => PopupMenuItem<int>(value: y, child: Text('$y'))).toList();
+      },
+      child: SldsTapTarget(
+        child: Container(
+          height: 36,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            color: colors.buttonSecondaryBackground,
+            border: Border.all(color: colors.buttonSecondaryBorder),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0D101828),
+                blurRadius: 2,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '${_displayedMonth.year}',
+                style: tokens.typography.body2.copyWith(
+                  color: colors.textPrimary,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: 16,
+                color: colors.textPrimary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // Weekdays Row — dark text matching Figma spec and meeting WCAG AA.
+    final weekdaysRow = SizedBox(
+      height: 32,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: _weekdayNames
+            .map(
+              (day) => Expanded(
+                child: Center(
+                  child: Text(
+                    day,
+                    // Figma: weekday names are 14/400/22 (#125).
+                    style: tokens.typography.body2.copyWith(
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
+
+    return Container(
+      width: widget.width ?? 328,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: colors.surfaceSunken,
+        borderRadius: BorderRadius.circular(24),
+      ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Header: Month Navigator & Year Dropdown
+            // Header Row: Month Navigator & Year Pill
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Month Navigator Pill.
-                //
-                // Flexible so the header survives the 320dp floor at 200% text:
-                // both pills are intrinsically sized, and the 48dp tap targets
-                // on the arrows leave the month name nothing to give back.
-                Flexible(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: colors.borderDefault),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Semantics(
-                          button: true,
-                          label: context.sldsStrings.previousMonth,
-                          child: SldsTapTarget(
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: _previousMonth,
-                              child: const Padding(
-                                padding: EdgeInsets.all(4),
-                                child: Icon(Icons.chevron_left, size: 18),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
-                            child: Text(
-                              _monthNames[_displayedMonth.month - 1],
-                              overflow: TextOverflow.ellipsis,
-                              style: tokens.typography.body1.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: colors.textPrimary,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Semantics(
-                          button: true,
-                          label: context.sldsStrings.nextMonth,
-                          child: SldsTapTarget(
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: _nextMonth,
-                              child: const Padding(
-                                padding: EdgeInsets.all(4),
-                                child: Icon(Icons.chevron_right, size: 18),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Year Selector Pill
-                PopupMenuButton<int>(
-                  initialValue: _displayedMonth.year,
-                  onSelected: (year) {
-                    setState(() {
-                      _displayedMonth = DateTime(year, _displayedMonth.month);
-                    });
-                  },
-                  itemBuilder: (context) {
-                    final currentYear = DateTime.now().year;
-                    return List.generate(20, (i) => currentYear - 10 + i).map((
-                      y,
-                    ) {
-                      return PopupMenuItem<int>(value: y, child: Text('$y'));
-                    }).toList();
-                  },
-                  child: SldsTapTarget(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: colors.borderDefault),
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '${_displayedMonth.year}',
-                            style: tokens.typography.body1.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: colors.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          const Icon(Icons.keyboard_arrow_down, size: 16),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                monthPill,
+                const SizedBox(width: 8),
+                yearPill,
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             // Weekdays Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: _weekdayNames
-                  .map(
-                    (day) => Expanded(
-                      child: Center(
-                        child: Text(
-                          day,
-                          style: tokens.typography.caption1.copyWith(
-                            color: colors.textSecondary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
+            weekdaysRow,
 
             const SizedBox(height: 12),
 
-            // Days Grid
-            _buildDaysGrid(context, primaryAccent, rangeHighlight, colors),
+            // Date Grid
+            _buildDaysGrid(
+              context,
+              primaryAccent,
+              rangeHighlight,
+              colors,
+            ),
 
             const SizedBox(height: 16),
 
             // Horizontal Divider
             Divider(
-              color: colors.borderDefault.withValues(alpha: 0.6),
               height: 1,
+              thickness: 1,
+              color: colors.borderDecorative,
             ),
 
             const SizedBox(height: 16),
 
-            // Footer Action Bar — SldsButton goes full-width below the
-            // SldsBreakpoints.mobile screen width, so the row would overflow;
-            // stack Cancel/Apply instead on mobile, matching the button's own
-            // responsive behavior rather than fighting it.
-            if (context.sldsIsMobile)
-              Column(
-                children: [
-                  SldsButton(
-                    label: widget.applyText ?? context.sldsStrings.apply,
-                    onPressed: _handleApply,
-                  ),
-                  const SizedBox(height: 12),
-                  SldsButton(
-                    label: widget.cancelText ?? context.sldsStrings.cancel,
-                    onPressed: widget.onCancel,
-                    variant: SldsButtonVariant.secondary,
-                  ),
-                ],
-              )
-            else
-              // Flexible so a long/translated action label shrinks and
-              // ellipsizes instead of overflowing this fixed-width dialog.
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Flexible(
+            // Footer Action Bar
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: SizedBox(
+                    width: 80,
                     child: SldsButton(
                       label: widget.cancelText ?? context.sldsStrings.cancel,
                       onPressed: widget.onCancel,
                       variant: SldsButtonVariant.secondary,
+                      size: SldsButtonSize.small,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Flexible(
+                ),
+                const SizedBox(width: 12),
+                Flexible(
+                  child: SizedBox(
+                    width: 80,
                     child: SldsButton(
                       label: widget.applyText ?? context.sldsStrings.apply,
                       onPressed: _handleApply,
+                      size: SldsButtonSize.small,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -512,11 +533,12 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       }
 
       final disabled = _isDayDisabled(date);
+      final cellCol = dayWidgets.length % 7;
+      final isRowStart = cellCol == 0;
+      final isRowEnd = cellCol == 6;
+
       dayWidgets.add(
         Semantics(
-          // The cell shows a bare "05". Announcing the full formatted date
-          // is what makes the grid navigable — the month and year are only
-          // in the header, and selection is conveyed by a colour swatch.
           button: true,
           enabled: !disabled,
           selected: isSelected,
@@ -531,6 +553,8 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
               isRangeStart: isRangeStart,
               isRangeEnd: isRangeEnd,
               isInRange: isInRange,
+              isRowStart: isRowStart,
+              isRowEnd: isRowEnd,
               isDisabled: disabled,
               primaryAccent: primaryAccent,
               rangeHighlight: rangeHighlight,
@@ -555,24 +579,22 @@ class _SldsDatePickerState extends State<SldsDatePicker> {
       );
     }
 
-    // Render in 7-column Grid
+    // Render in 7-column Grid — 8px row gap matching Figma vertical breathing room
     return GridView.count(
       crossAxisCount: 7,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 6,
+      mainAxisSpacing: 8,
       children: dayWidgets,
     );
   }
 }
 
-/// Base Date Cell representing all 5 distinct design states shown in the
-/// specification:
+/// Base Date Cell representing distinct design states shown in the specification:
 /// 1. Neutral / Base day
-/// 2. Hover / Highlighted day
-/// 3. Selected day (vibrant circle badge, `buttonPrimaryBackground`)
-/// 4. In-Range selection (connecting pill, `datePickerRangeHighlight`)
-/// 5. Overflow / Muted day (faded text)
+/// 2. Selected start/end day (vibrant circle badge, `buttonPrimaryBackground`)
+/// 3. In-Range selection (connecting band with row-wrapped rounded caps, `datePickerRangeHighlight`)
+/// 4. Overflow / Muted day (faded text)
 class _SldsBaseDateCell extends StatelessWidget {
   const _SldsBaseDateCell({
     required this.dayText,
@@ -582,6 +604,8 @@ class _SldsBaseDateCell extends StatelessWidget {
     this.isRangeStart = false,
     this.isRangeEnd = false,
     this.isInRange = false,
+    this.isRowStart = false,
+    this.isRowEnd = false,
     this.isOverflow = false,
     this.isDisabled = false,
   });
@@ -591,6 +615,8 @@ class _SldsBaseDateCell extends StatelessWidget {
   final bool isRangeStart;
   final bool isRangeEnd;
   final bool isInRange;
+  final bool isRowStart;
+  final bool isRowEnd;
   final bool isOverflow;
   final bool isDisabled;
   final Color primaryAccent;
@@ -605,41 +631,46 @@ class _SldsBaseDateCell extends StatelessWidget {
       return Center(
         child: Text(
           dayText,
-          // No alpha: textTertiary is already the "de-emphasised" token and
-          // clears 4.5:1 on its own. Compositing it at 40% dropped an
-          // adjacent-month date to 1.74:1 — a real date, still selectable,
-          // that a low-vision user could not read (WCAG 1.4.3).
           style: tokens.typography.body2.copyWith(color: colors.textTertiary),
         ),
       );
     }
 
-    // The selected day sits on the gold accent circle, which is the same
-    // colour in every palette, so its label is the static-black role rather
-    // than the palette's own text colour.
     final textColor = isSelected
         ? colors.textStaticBlack
         : (isDisabled ? colors.disabledForeground : colors.textPrimary);
 
-    // Range background decoration connecting start, in-between, and end
+    // Range background decoration connecting start, in-between, and end with
+    // row-level pill rounding (Figma spec: rounded caps at row boundaries).
     BoxDecoration? rangeBackgroundDecoration;
     if (isInRange) {
-      rangeBackgroundDecoration = BoxDecoration(color: rangeHighlight);
-    } else if (isRangeStart && !isRangeEnd) {
+      BorderRadius? radius;
+      if (isRowStart && isRowEnd) {
+        radius = BorderRadius.circular(20);
+      } else if (isRowStart) {
+        radius = const BorderRadius.horizontal(left: Radius.circular(20));
+      } else if (isRowEnd) {
+        radius = const BorderRadius.horizontal(right: Radius.circular(20));
+      }
       rangeBackgroundDecoration = BoxDecoration(
         color: rangeHighlight,
-        // Directional: the range's first day is rounded on the leading edge,
-        // which is the right-hand side when the calendar runs right-to-left.
-        borderRadius: const BorderRadiusDirectional.horizontal(
-          start: Radius.circular(20),
-        ),
+        borderRadius: radius,
+      );
+    } else if (isRangeStart && !isRangeEnd) {
+      // Background extends to the trailing side behind the circle, rounded on leading edge
+      rangeBackgroundDecoration = BoxDecoration(
+        color: isRowEnd ? null : rangeHighlight,
+        borderRadius: isRowEnd
+            ? BorderRadius.circular(20)
+            : const BorderRadius.horizontal(left: Radius.circular(20)),
       );
     } else if (isRangeEnd && !isRangeStart) {
+      // Background extends to the leading side behind the circle, rounded on trailing edge
       rangeBackgroundDecoration = BoxDecoration(
-        color: rangeHighlight,
-        borderRadius: const BorderRadiusDirectional.horizontal(
-          end: Radius.circular(20),
-        ),
+        color: isRowStart ? null : rangeHighlight,
+        borderRadius: isRowStart
+            ? BorderRadius.circular(20)
+            : const BorderRadius.horizontal(right: Radius.circular(20)),
       );
     }
 
@@ -647,27 +678,17 @@ class _SldsBaseDateCell extends StatelessWidget {
       decoration: rangeBackgroundDecoration,
       child: Center(
         child: Container(
-          width: 36,
-          height: 36,
+          width: 40,
+          height: 40,
           decoration: isSelected
-              ? BoxDecoration(
-                  color: primaryAccent,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryAccent.withValues(alpha: 0.3),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                )
+              ? BoxDecoration(color: primaryAccent, shape: BoxShape.circle)
               : null,
           child: Center(
             child: Text(
               dayText,
               style: tokens.typography.body2.copyWith(
                 color: textColor,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               ),
             ),
           ),

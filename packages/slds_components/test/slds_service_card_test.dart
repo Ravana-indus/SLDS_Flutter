@@ -85,7 +85,9 @@ void main() {
     expect(title.style?.color, colors.textStaticBlack);
   });
 
-  testWidgets('default state renders surface page background', (tester) async {
+  testWidgets('default state renders the white card surface (#214)', (
+    tester,
+  ) async {
     await pump(
       tester,
       const SldsServiceCard(
@@ -97,10 +99,10 @@ void main() {
 
     final colors = SldsColorTokens.light();
     final material = tester.widget<Material>(cardMaterial());
-    expect(material.color, colors.surfacePage);
+    expect(material.color, colors.surfaceCard);
   });
 
-  testWidgets('forced selected state renders blue-100 background', (
+  testWidgets('forced selected state renders Figma #DDDDDD (#221)', (
     tester,
   ) async {
     await pump(
@@ -114,7 +116,7 @@ void main() {
     );
 
     final material = tester.widget<Material>(cardMaterial());
-    expect(material.color, const Color(0xffE3EDFF));
+    expect(material.color, const Color(0xFFDDDDDD));
   });
 
   testWidgets('exposes button and selected semantics', (tester) async {
@@ -142,5 +144,53 @@ void main() {
         hasSelectedState: true,
       ),
     );
+  });
+
+  // Figma Service Card Default (533:2564).
+  testWidgets('text, badge, caret and radius match Figma (#216-#220)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const SldsServiceCard(
+        icon: icon,
+        title: 'Service Name',
+        description: 'Enter the description text',
+        badgeText: 'Success',
+      ),
+    );
+    TextStyle style(String text) => tester.widget<Text>(find.text(text)).style!;
+
+    final title = style('Service Name');
+    expect(title.fontSize, 14); // #216
+    expect(title.fontSize! * title.height!, closeTo(18, 0.01));
+    expect(title.color, const Color(0xFF17171A));
+    final description = style('Enter the description text');
+    expect(description.fontSize, 12); // #217
+    expect(description.fontSize! * description.height!, closeTo(18, 0.01));
+    expect(description.color, const Color(0xFF676767));
+    final badge = style('Success');
+    expect(badge.fontWeight, FontWeight.w500); // #218
+    expect(badge.color, const Color(0xFF1FAA63));
+    expect(
+      tester
+          .getSize(
+            find
+                .ancestor(
+                  of: find.text('Success'),
+                  matching: find.byType(Container),
+                )
+                .first,
+          )
+          .height,
+      22,
+    );
+    final caret = tester.widget<Icon>(find.byIcon(Icons.chevron_right));
+    expect(caret.size, 16); // #219
+    expect(caret.color, const Color(0xFF898989));
+    expect(
+      tester.widget<Material>(cardMaterial()).borderRadius,
+      BorderRadius.circular(16),
+    ); // #220
   });
 }

@@ -34,8 +34,11 @@ class SldsProgressBar extends StatelessWidget {
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
     final clamped = value.clamp(0.0, 1.0);
-    final fill = colors.success;
+    final fill = colors.progressFill;
     final percent = (clamped * 100).round();
+    final labelStyle = tokens.typography.body1.copyWith(
+      color: colors.textSecondary,
+    );
 
     return Semantics(
       label: context.sldsStrings.progress,
@@ -51,7 +54,7 @@ class SldsProgressBar extends StatelessWidget {
                       Container(
                         height: 6,
                         decoration: BoxDecoration(
-                          color: colors.surfaceHover,
+                          color: colors.progressTrack,
                           borderRadius: BorderRadius.circular(
                             dimensions.radiusFull,
                           ),
@@ -76,15 +79,18 @@ class SldsProgressBar extends StatelessWidget {
             ),
             if (showLabel) ...[
               SizedBox(width: dimensions.space12),
-              SizedBox(
-                width: 40,
-                child: Text(
-                  '$percent%',
-                  textAlign: TextAlign.end,
-                  style: tokens.typography.body1.copyWith(
-                    color: colors.textSecondary,
+              // Reserve the width of the widest label, "100%", so the bar
+              // keeps one length and 100% never wraps — a fixed 40px box
+              // (as in Figma) is too narrow for it at 16px.
+              Stack(
+                alignment: AlignmentDirectional.centerEnd,
+                children: [
+                  Visibility.maintain(
+                    visible: false,
+                    child: Text('100%', style: labelStyle),
                   ),
-                ),
+                  Text('$percent%', style: labelStyle),
+                ],
               ),
             ],
           ],

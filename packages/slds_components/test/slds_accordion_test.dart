@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
 
@@ -56,4 +57,20 @@ void main() {
       expect(find.text('Body B'), findsOneWidget);
     },
   );
+
+  testWidgets('title and content colours match Figma (#35, #36)', (
+    tester,
+  ) async {
+    await pump(tester, const SldsAccordion(items: items));
+    await tester.tap(find.text('Section A'));
+    await tester.pumpAndSettle();
+
+    TextStyle painted(String text) =>
+        tester.renderObject<RenderParagraph>(find.text(text)).text.style!;
+    // Figma Text/Primary, Mobile/Body 1.
+    expect(painted('Section A').color, const Color(0xFF17171A));
+    // Figma Text/Secondary, Desktop/Body 2 — inherited by a plain Text body.
+    expect(painted('Body A').color, const Color(0xFF676767));
+    expect(painted('Body A').fontSize, 14);
+  });
 }

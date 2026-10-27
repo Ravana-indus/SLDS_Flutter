@@ -99,4 +99,53 @@ void main() {
     );
     await tester.tap(find.byType(SldsCheckButton)); // must not throw
   });
+
+  testWidgets('has square corners, per Figma', (tester) async {
+    for (final selected in [true, false]) {
+      await pump(
+        tester,
+        SldsCheckButton(
+          label: 'Option One',
+          selected: selected,
+          onChanged: (_) {},
+        ),
+      );
+      final box = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(SldsCheckButton),
+          matching: find.byType(Container),
+        ),
+      );
+      expect(
+        (box.decoration! as BoxDecoration).borderRadius,
+        isNull,
+        reason: 'selected: $selected',
+      );
+    }
+  });
+
+  // Figma Check Button (1164:7065): selected 14/500/22 #17171A, unselected
+  // 16/400/26.
+  testWidgets('label typography follows Figma per state (#143)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsCheckButton(label: 'Option One', selected: true, onChanged: (_) {}),
+    );
+    var style = tester.widget<Text>(find.text('Option One')).style!;
+    expect(style.fontSize, 14);
+    expect(style.fontWeight, FontWeight.w500);
+    expect(style.fontSize! * style.height!, closeTo(22, 0.01));
+    expect(style.color, const Color(0xFF17171A));
+
+    await pump(
+      tester,
+      SldsCheckButton(label: 'Option One', selected: false, onChanged: (_) {}),
+    );
+    style = tester.widget<Text>(find.text('Option One')).style!;
+    expect(style.fontSize, 16);
+    expect(style.fontWeight, FontWeight.w400);
+    expect(style.fontSize! * style.height!, closeTo(26, 0.01));
+  });
 }

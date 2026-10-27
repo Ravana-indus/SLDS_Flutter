@@ -39,11 +39,7 @@ Widget buildSldsTabStripUseCase(BuildContext context) {
           SldsTabStripItem(label: copy['Label'], count: 2),
           SldsTabStripItem(label: copy['Label'], leadingIcon: true),
           SldsTabStripItem(label: copy['Label'], trailingIcon: true),
-          SldsTabStripItem(
-            label: copy['Label'],
-            leadingIcon: true,
-            count: 2,
-          ),
+          SldsTabStripItem(label: copy['Label'], leadingIcon: true, count: 2),
         ],
       ),
     ),

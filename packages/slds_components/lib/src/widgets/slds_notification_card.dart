@@ -97,9 +97,11 @@ class SldsNotificationCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Figma Title: 14/500 on a 20px line, #17171A (#139).
                       Text(
                         title,
                         style: tokens.typography.body2.copyWith(
+                          height: 20 / 14,
                           color: colors.textPrimary,
                           fontWeight: FontWeight.w500,
                         ),
@@ -156,8 +158,10 @@ class SldsNotificationCard extends StatelessWidget {
                     // one if a second component needs this dot size.
                     width: 14,
                     height: 14,
+                    // Figma's New Indicator is DataViz/2 #1A56D6, the same
+                    // blue as the In Review badge text (#138).
                     decoration: BoxDecoration(
-                      color: colors.info,
+                      color: colors.badgeInReviewText,
                       shape: BoxShape.circle,
                     ),
                   ),

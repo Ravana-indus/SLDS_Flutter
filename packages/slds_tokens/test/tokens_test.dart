@@ -263,13 +263,18 @@ void main() {
       }
     });
 
-    // fieldLabel/compactLabel/compactDescription have no Figma text style of
-    // their own — they are component-level aliases that reuse an existing
-    // scale entry. Pinned so a change to them stays a deliberate act.
+    // fieldLabel/compactLabel/compactDescription are component-level styles.
+    // Pinned so a change to them stays a deliberate act.
     test('component-level styles alias the scale they were derived from', () {
       const t = SldsRawTypographyTokens.standard;
 
-      expect(t.fieldLabel, t.body1, reason: 'fieldLabel mirrors Mobile/Body 1');
+      // Figma labels every form field in Mobile/Body 2 at 14/18 (#75), which
+      // is not the scale's body2 (14/22), so it is pinned to the spec itself.
+      expect(
+        t.fieldLabel,
+        const SldsTextStyleToken(fontSize: 14, lineHeight: 18, fontWeight: 400),
+        reason: 'fieldLabel mirrors Mobile/Body 2 as the field label uses it',
+      );
       expect(
         t.compactLabel,
         t.body1,

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:slds_components/slds_components.dart'
-    show SldsSummaryBadgeStatus, SldsSummaryList;
+    show SldsBadgeStatus, SldsSummaryList;
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
-import 'package:slds_components/src/widgets/slds_summary_list.dart'
-    show SldsSummaryBadgeStatus, SldsSummaryList;
 
 /// Status of one [SldsProcessStep] — drives the numbered badge's color.
-/// Reuses the same tone pairing as [SldsSummaryBadgeStatus] (approved/green
+/// Reuses the same tone pairing as [SldsBadgeStatus] (approved/green
 /// for done, pending/yellow for current, neutral/gray for upcoming).
 enum SldsProcessStepStatus {
   /// Completed.
@@ -109,9 +107,10 @@ class _ProcessStepTile extends StatelessWidget {
     final dimensions = tokens.dimensions;
 
     final (Color background, Color foreground) = switch (step.status) {
+      // Figma's success slot is the Badge/Success pair, #1FAA63 (#211).
       SldsProcessStepStatus.done => (
-        colors.badgeApprovedBackground,
-        colors.badgeApprovedText,
+        colors.badgeSuccessBackground,
+        colors.badgeSuccessText,
       ),
       SldsProcessStepStatus.current => (
         colors.badgePendingBackground,
@@ -148,12 +147,10 @@ class _ProcessStepTile extends StatelessWidget {
                 color: background,
                 borderRadius: BorderRadius.circular(dimensions.radiusMd),
               ),
+              // Figma Mobile/Title 1: 18/500/24 in every state (#211-#213).
               child: Text(
                 '$index',
-                style: tokens.typography.body1.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: tokens.typography.title1.copyWith(color: foreground),
               ),
             ),
             SizedBox(width: dimensions.space16),

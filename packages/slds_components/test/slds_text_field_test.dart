@@ -110,7 +110,7 @@ void main() {
   });
 
   group('focus', () {
-    testWidgets('focusing thickens the border and widens the padding', (
+    testWidgets('focusing thickens the border and holds the text still', (
       tester,
     ) async {
       await pump(tester, const SldsTextField(label: 'Email'));
@@ -119,17 +119,13 @@ void main() {
 
       InputDecoration decoration() =>
           tester.widget<TextField>(find.byType(TextField)).decoration!;
+      // Figma's Default and Filled text share one position, so the padding
+      // is the same focused or not (#169).
+      final resting = decoration().contentPadding;
 
       expect(
         (decoration().enabledBorder! as OutlineInputBorder).borderSide.width,
         dimensions.controlBorderWidth,
-      );
-      expect(
-        decoration().contentPadding,
-        EdgeInsetsDirectional.symmetric(
-          horizontal: dimensions.space8,
-          vertical: dimensions.space8,
-        ),
       );
 
       await tester.tap(find.byType(TextField));
@@ -140,16 +136,10 @@ void main() {
         (decoration().focusedBorder! as OutlineInputBorder).borderSide.width,
         dimensions.emphasizedBorderWidth,
       );
-      expect(
-        decoration().contentPadding,
-        EdgeInsetsDirectional.symmetric(
-          horizontal: dimensions.space12,
-          vertical: dimensions.space8,
-        ),
-      );
+      expect(decoration().contentPadding, resting);
     });
 
-    testWidgets('an externally supplied focus node still drives the state', (
+    testWidgets('an externally supplied focus node still drives the field', (
       tester,
     ) async {
       final node = FocusNode();
@@ -160,16 +150,11 @@ void main() {
       node.requestFocus();
       await tester.pumpAndSettle();
 
-      final decoration = tester
-          .widget<TextField>(find.byType(TextField))
-          .decoration!;
       expect(
-        decoration.contentPadding,
-        EdgeInsetsDirectional.symmetric(
-          horizontal: SldsDimensionTokens.standard.space12,
-          vertical: SldsDimensionTokens.standard.space8,
-        ),
+        tester.widget<TextField>(find.byType(TextField)).focusNode,
+        same(node),
       );
+      expect(node.hasFocus, isTrue);
     });
   });
 

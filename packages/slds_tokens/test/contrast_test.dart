@@ -36,6 +36,31 @@ const _exemptions = <String, String>{
       'Placeholder is supplementary; the field label carries the requirement.',
   'decorative border on page':
       'Non-text decorative divider, not a UI component boundary (1.4.11).',
+  // Theme-scoped: '<theme>: <pair>' skips the pairing in that theme only.
+  'light: success badge':
+      'Matches Figma Badge/Success/Label #1FAA63 exactly (issue #19): 2.59:1 '
+      'on #E0F2EC. Pending design review.',
+  'light: error badge':
+      'Matches Figma Badge/Error/Label #D32F2F exactly (issue #21): 4.35:1 '
+      'on #FDECEA. Pending design review.',
+  'light: submitted badge':
+      'Matches Figma Badge/Submitted/Text #0E9DB0 exactly (issue #25): '
+      '2.70:1 on #D0F0F5. Pending design review.',
+  'light: approved badge':
+      'Matches Figma Badge/Approved/Text #059669 exactly (issue #27): '
+      '3.24:1 on #E0F2EC. Pending design review.',
+  'light: escalated badge':
+      'Matches Figma Badge/Escalated/Text #F57C00 exactly (issue #29): '
+      '2.42:1 on #FEF0E3. Pending design review.',
+  'light: error state code on page':
+      'Matches Figma Text/Tertiary #BCBCBC exactly (issue #34): 1.77:1 on '
+      '#F7F7F7, below 3:1 for large text. Pending design review.',
+  'light: flyout group header on card':
+      'Matches Figma Text/Tertiary #BCBCBC exactly (issue #188): 1.92:1 on '
+      'the white flyout. Pending design review.',
+  'dark: destructive link on card':
+      'Matches Figma Feedback/Error Text #F47272 exactly (issue #16): 3.48:1 '
+      'on the #444444 card. Pending design review; still checked on the page.',
 };
 
 final _pairs = <_Pair>[
@@ -71,6 +96,29 @@ final _pairs = <_Pair>[
     'ghost label on pressed surface',
     (c) => c.buttonGhostLabel,
     (c) => c.buttonGhostPressed,
+  ),
+
+  // Tooltip copy on its own surface. The painted check cannot cover it (see
+  // _knownTextContrastExceptions in slds_accessibility_coverage_test.dart).
+  _Pair(
+    'tooltip text on tooltip background',
+    (c) => c.tooltipText,
+    (c) => c.tooltipBackground,
+  ),
+
+  // Error State: the 36px status code is large text.
+  _Pair(
+    'error state code on page',
+    (c) => c.errorStateCode,
+    (c) => c.surfacePage,
+    largeText: true,
+  ),
+
+  // Flyout group caption: 12px text on the flyout's card surface.
+  _Pair(
+    'flyout group header on card',
+    (c) => c.flyoutGroupHeader,
+    (c) => c.surfaceCard,
   ),
 
   // Inline text links. Body-sized interactive text, so the 4.5:1 floor
@@ -165,7 +213,6 @@ final _pairs = <_Pair>[
   // Inputs.
   _Pair('input label on card', (c) => c.inputLabel, (c) => c.surfaceCard),
   _Pair('input helper on card', (c) => c.inputHelper, (c) => c.surfaceCard),
-  _Pair('input icon on card', (c) => c.inputIcon, (c) => c.surfaceCard),
   _Pair(
     'placeholder on input background',
     (c) => c.inputPlaceholder,
@@ -195,6 +242,8 @@ final _pairs = <_Pair>[
 /// Non-text UI components need 3:1 against what they sit on (WCAG 1.4.11).
 final _nonTextPairs = <_Pair>[
   _Pair('default border on card', (c) => c.borderDefault, (c) => c.surfaceCard),
+  // An icon is a graphic, so WCAG 1.4.11's 3:1 applies, not the text floor.
+  _Pair('input icon on card', (c) => c.inputIcon, (c) => c.surfaceCard),
   _Pair('focus ring on page', (c) => c.focusRing, (c) => c.surfacePage),
   _Pair('focus ring on card', (c) => c.focusRing, (c) => c.surfaceCard),
   _Pair(
@@ -215,8 +264,11 @@ void main() {
     group('${theme.key} theme', () {
       for (final pair in _pairs) {
         test('${pair.name} meets WCAG AA', () {
-          if (_exemptions.containsKey(pair.name)) {
-            markTestSkipped(_exemptions[pair.name]!);
+          final exemption =
+              _exemptions[pair.name] ??
+              _exemptions['${theme.key}: ${pair.name}'];
+          if (exemption != null) {
+            markTestSkipped(exemption);
             return;
           }
 

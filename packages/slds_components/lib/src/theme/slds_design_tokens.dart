@@ -151,6 +151,18 @@ class SldsColorTokens {
   /// Incomplete top navigation progress segment.
   Color get headerProgressTrack => Color(tokens.headerProgressTrack);
 
+  /// Dark top-bar surface, Figma `Tab Bar/Background` in dark mode.
+  Color get barBackgroundDark => Color(tokens.barBackgroundDark);
+
+  /// Dark tab bar idle icon — Figma #BCBCBC, the same in every palette.
+  Color get barIdleIconDark => Color(tokens.barIdleIconDark);
+
+  /// Dark tab bar idle label — Figma #CDCDCD, the same in every palette.
+  Color get barIdleLabelDark => Color(tokens.barIdleLabelDark);
+
+  /// Dark tab bar pressed pill — Figma #17171A, the same in every palette.
+  Color get barPressedDark => Color(tokens.barPressedDark);
+
   /// Primary button background.
   Color get buttonPrimaryBackground => Color(tokens.buttonPrimaryBackground);
 
@@ -233,8 +245,44 @@ class SldsColorTokens {
   /// Figma Banner/Warning/Title — darker than the warning icon/border.
   Color get bannerWarningTitle => Color(tokens.bannerWarningTitle);
 
-  /// Figma Badge/Archived/Text — lighter than the shared Neutral/Draft text.
+  /// Figma Badge/Archived/Text — lighter than the Neutral text.
   Color get badgeArchivedText => Color(tokens.badgeArchivedText);
+
+  /// Figma Badge/Draft/Text — lighter than the Neutral text.
+  Color get badgeDraftText => Color(tokens.badgeDraftText);
+
+  /// Figma Error State status code (404/500/401) — Text/Tertiary.
+  Color get errorStateCode => Color(tokens.errorStateCode);
+
+  /// Flyout group caption, Figma Text/Tertiary #BCBCBC.
+  Color get flyoutGroupHeader => Color(tokens.flyoutGroupHeader);
+
+  /// Figma Progress/Track — the unfilled bar.
+  Color get progressTrack => Color(tokens.progressTrack);
+
+  /// Figma Progress/Fill — the filled bar.
+  Color get progressFill => Color(tokens.progressFill);
+
+  /// Figma Banner/Success/Icon and Banner/Success/Border.
+  Color get bannerSuccess => Color(tokens.bannerSuccess);
+
+  /// Figma Banner/Warning/Icon and Banner/Warning/Border.
+  Color get bannerWarning => Color(tokens.bannerWarning);
+
+  /// Figma Banner/Success/Background.
+  Color get bannerSuccessBackground => Color(tokens.bannerSuccessBackground);
+
+  /// Figma Banner/Warning/Background.
+  Color get bannerWarningBackground => Color(tokens.bannerWarningBackground);
+
+  /// Figma Banner/Error/Icon and Banner/Error/Border.
+  Color get bannerError => Color(tokens.bannerError);
+
+  /// Figma Banner/Error/Background.
+  Color get bannerErrorBackground => Color(tokens.bannerErrorBackground);
+
+  /// Figma Banner/Info/Background.
+  Color get bannerInfoBackground => Color(tokens.bannerInfoBackground);
 
   /// Figma List/Background — Service Card and List Item resting fill.
   Color get listBackground => Color(tokens.listBackground);

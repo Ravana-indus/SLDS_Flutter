@@ -106,4 +106,42 @@ void main() {
       );
     },
   );
+
+  // Figma Process List (533:3256): titles Text/Primary #17171A, descriptions
+  // Text/Secondary #676767 (#210).
+  testWidgets('title and subtext colours match Figma (#210)', (tester) async {
+    await pump(tester, const SldsProcessList(steps: steps));
+    expect(
+      tester.widget<Text>(find.text('Prepare documents')).style!.color,
+      const Color(0xFF17171A),
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.text(
+              'Gather all required identification and supporting files',
+            ),
+          )
+          .style!
+          .color,
+      const Color(0xFF676767),
+    );
+  });
+
+  // Figma Process List slots: Mobile/Title 1 18/500/24 — success #1FAA63,
+  // pending #503D00, upcoming Badge/Neutral #676767 (#211-#213).
+  testWidgets('slot numbers match Figma (#211-#213)', (tester) async {
+    await pump(tester, const SldsProcessList(steps: steps));
+    final expected = {
+      SldsProcessStepStatus.done: const Color(0xFF1FAA63),
+      SldsProcessStepStatus.current: const Color(0xFF503D00),
+      SldsProcessStepStatus.upcoming: const Color(0xFF676767),
+    };
+    for (var i = 0; i < steps.length; i++) {
+      final style = tester.widget<Text>(find.text('${i + 1}')).style!;
+      expect(style.fontSize, 18, reason: 'slot ${i + 1}');
+      expect(style.fontWeight, FontWeight.w500, reason: 'slot ${i + 1}');
+      expect(style.color, expected[steps[i].status], reason: 'slot ${i + 1}');
+    }
+  });
 }

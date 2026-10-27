@@ -136,33 +136,41 @@ class SldsUploadField extends StatelessWidget {
 
     final leadingUploaded =
         uploadedWidget ??
-        Icon(uploadedIcon ?? Icons.check, color: colors.success, size: 16);
+        Icon(
+          uploadedIcon ?? Icons.check,
+          // Figma's Check is the feedback green #1FAA63 (#178).
+          color: colors.badgeSuccessText,
+          size: dimensions.iconSizeSmall,
+        );
 
     final leadingError =
         errorWidget ??
-        Icon(errorIcon ?? Icons.close, color: colors.error, size: 16);
+        Icon(
+          errorIcon ?? Icons.close,
+          color: colors.error,
+          size: dimensions.iconSizeSmall,
+        );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: tokens.typography.fieldLabel.copyWith(
-                color: colors.inputLabel,
-              ),
+        // The asterisk follows the label with no space, as on every other
+        // field (#175).
+        Text.rich(
+          TextSpan(
+            style: tokens.typography.compactLabel.copyWith(
+              color: colors.inputLabel,
             ),
-            if (required)
-              Text(
-                ' *',
-                style: tokens.typography.fieldLabel.copyWith(
-                  color: colors.inputBorderError,
+            children: [
+              TextSpan(text: label),
+              if (required)
+                TextSpan(
+                  text: '*',
+                  style: TextStyle(color: colors.inputBorderError),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
         SizedBox(height: dimensions.space4),
         Semantics(
@@ -183,10 +191,9 @@ class SldsUploadField extends StatelessWidget {
               constraints: BoxConstraints(
                 minHeight: dimensions.buttonHeightExtraLarge,
               ),
-              padding: EdgeInsets.symmetric(
-                horizontal: dimensions.space12,
-                vertical: dimensions.space12,
-              ),
+              // Figma's Content pads 8px on every side (#174), which also
+              // puts each state's leading icon at Figma's spot (#177-#179).
+              padding: EdgeInsets.all(dimensions.space8),
               decoration: BoxDecoration(
                 color: enabled ? colors.surfaceCard : colors.disabledBackground,
                 border: Border.all(color: colors.borderDefault),
@@ -255,18 +262,21 @@ class _EmptyRow extends StatelessWidget {
         customWidget ??
         Icon(
           icon ?? Icons.file_upload_outlined,
-          size: tokens.dimensions.avatarIconMedium,
+          size: tokens.dimensions.iconSizeLarge,
           color: iconColor,
         );
 
     return Row(
       children: [
+        // Figma's Icon Button (543:5705): 48px, white, 2px #CDCDCD border,
+        // radius 12, round a 24px upload glyph (#174).
         Container(
-          width: tokens.dimensions.avatarSize40,
-          height: tokens.dimensions.avatarSize40,
+          width: tokens.dimensions.tapTargetMin,
+          height: tokens.dimensions.tapTargetMin,
           decoration: BoxDecoration(
-            border: Border.all(color: colors.borderDefault),
-            borderRadius: BorderRadius.circular(tokens.dimensions.radiusLg),
+            color: colors.surfaceCard,
+            border: Border.all(color: colors.buttonSecondaryBorder, width: 2),
+            borderRadius: BorderRadius.circular(tokens.dimensions.radius2xl),
           ),
           child: Center(child: leadingChild),
         ),
@@ -279,16 +289,22 @@ class _EmptyRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Figma Link button: 16/400/24 #676767, not underlined (#172).
               Text(
                 'Upload',
                 style: tokens.typography.body1.copyWith(
-                  color: iconColor,
-                  decoration: TextDecoration.underline,
+                  height: 24 / 16,
+                  color: enabled
+                      ? colors.inputHelper
+                      : colors.disabledForeground,
                 ),
               ),
+              // Figma's gap-[6px] between the two lines (#174).
+              SizedBox(height: tokens.dimensions.space6),
               Text(
                 hintText ?? context.sldsStrings.uploadHint,
                 style: tokens.typography.caption1.copyWith(
+                  height: 14 / 12,
                   color: colors.inputHelper,
                 ),
               ),
@@ -312,16 +328,23 @@ class _UploadingRow extends StatelessWidget {
     final colors = tokens.colors;
 
     return Row(
+      // Figma's Frame 2147227085 (node 543:5766) is items-start: the
+      // 24px leading icon lines up with the filename's top edge, not the
+      // vertical centre of the two-line block.
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Figma's spinner glyph is size-[24px] on its own, not in a 40px
+        // circle (node 543:5757).
         SizedBox(
-          width: tokens.dimensions.avatarSize40,
-          height: tokens.dimensions.avatarSize40,
+          width: tokens.dimensions.avatarSize24,
+          height: tokens.dimensions.avatarSize24,
           // iOS-style spinner throughout — Cupertino has no determinate/
           // percentage ring, so the percent is shown as text below instead
           // of drawn into the indicator itself (matches the design: the
           // ring never actually renders "72%" as an arc, only as a label).
           child: Center(
-            child: CupertinoActivityIndicator(color: colors.inputBorderFocused),
+            // Figma's SpinnerGap is #17171A, not gold (#177).
+            child: CupertinoActivityIndicator(color: colors.textPrimary),
           ),
         ),
         SizedBox(width: tokens.dimensions.space12),
@@ -334,14 +357,19 @@ class _UploadingRow extends StatelessWidget {
                 fileName,
                 overflow: TextOverflow.ellipsis,
                 style: tokens.typography.body1.copyWith(
+                  height: 24 / 16,
                   color: colors.textPrimary,
                 ),
               ),
+              // Figma's gap-[6px] between filename and progress line
+              // (node 543:5723).
+              SizedBox(height: tokens.dimensions.space6),
               Text(
                 progress != null
                     ? '${(progress! * 100).round()}%'
                     : 'Uploading…',
                 style: tokens.typography.caption1.copyWith(
+                  height: 14 / 12,
                   color: colors.inputHelper,
                 ),
               ),
@@ -382,36 +410,57 @@ class _ResultRow extends StatelessWidget {
     final trailingWidget = removeWidget ?? Icon(removeIcon ?? Icons.close);
 
     return Row(
+      // Top-aligned so the badge and filename sit 8px inside the box, where
+      // Figma puts them (#178, #179): centred, the remove button's 48dp tap
+      // height pushed the group down.
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: tokens.dimensions.avatarSize40,
-          height: tokens.dimensions.avatarSize40,
-          decoration: BoxDecoration(
-            color: leadingBackground,
-            shape: BoxShape.circle,
-          ),
-          child: Center(child: leading),
-        ),
-        SizedBox(width: tokens.dimensions.space12),
         Expanded(
-          child: Column(
+          child: Row(
+            // items-start (node 543:5766): the badge lines up with the
+            // filename's top edge, not the centre of the two-line block.
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                fileName,
-                overflow: TextOverflow.ellipsis,
-                style: tokens.typography.body1.copyWith(
-                  color: colors.textPrimary,
+              // Figma's status badge is a 24px circle (size-[24px]), not
+              // 40 — the wider circle read as oversized/off-balance.
+              Container(
+                width: tokens.dimensions.avatarSize24,
+                height: tokens.dimensions.avatarSize24,
+                decoration: BoxDecoration(
+                  color: leadingBackground,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(child: leading),
+              ),
+              SizedBox(width: tokens.dimensions.space12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      fileName,
+                      overflow: TextOverflow.ellipsis,
+                      style: tokens.typography.body1.copyWith(
+                        height: 24 / 16,
+                        color: colors.textPrimary,
+                      ),
+                    ),
+                    if (caption != null) ...[
+                      // Figma's Content node uses gap-[6px] between the
+                      // filename and caption lines (node 543:5779/543:5752).
+                      SizedBox(height: tokens.dimensions.space6),
+                      Text(
+                        caption!,
+                        style: tokens.typography.caption1.copyWith(
+                          height: 14 / 12,
+                          color: captionColor,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              if (caption != null)
-                Text(
-                  caption!,
-                  style: tokens.typography.caption1.copyWith(
-                    color: captionColor,
-                  ),
-                ),
             ],
           ),
         ),

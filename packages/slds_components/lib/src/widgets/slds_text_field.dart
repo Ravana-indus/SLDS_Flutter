@@ -146,38 +146,13 @@ class SldsTextField extends StatefulWidget {
 
 class _SldsTextFieldState extends State<SldsTextField> {
   FocusNode? _internalNode;
-  late bool _focused;
 
   FocusNode get _node => widget.focusNode ?? (_internalNode ??= FocusNode());
 
   @override
-  void initState() {
-    super.initState();
-    _focused = _node.hasFocus;
-    _node.addListener(_onFocusChanged);
-  }
-
-  @override
-  void didUpdateWidget(SldsTextField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.focusNode != oldWidget.focusNode) {
-      (oldWidget.focusNode ?? _internalNode)?.removeListener(_onFocusChanged);
-      _node.addListener(_onFocusChanged);
-      _onFocusChanged();
-    }
-  }
-
-  @override
   void dispose() {
-    _node.removeListener(_onFocusChanged);
     _internalNode?.dispose();
     super.dispose();
-  }
-
-  void _onFocusChanged() {
-    if (_focused != _node.hasFocus) {
-      setState(() => _focused = _node.hasFocus);
-    }
   }
 
   bool get _hasError =>
@@ -204,11 +179,16 @@ class _SldsTextFieldState extends State<SldsTextField> {
 
     // Compact sets both the label and the value in Caption 1; the standard
     // density splits them across Body 2 and Body 1.
-    final labelStyle = compact ? typography.caption1 : typography.body2;
-    final valueStyle = compact ? typography.caption1 : typography.body1;
+    final labelStyle = compact ? typography.caption1 : typography.fieldLabel;
+    // Figma's value is Mobile/Body 1 on a 24px line; the shared body1 token
+    // carries 20, which left the text and its icons 2px above centre (#169).
+    final valueStyle = compact
+        ? typography.caption1
+        : typography.body1.copyWith(height: 24 / 16);
 
-    // Only the focused state thickens the stroke — every other state carries
-    // itself in the colour alone.
+    // Focus thickens the stroke, and so does error: Figma's Text Input and
+    // Password Error variants draw #D32F2F at 1.5px (1px when compact) (#106).
+    final errorEmphasized = !compact;
     OutlineInputBorder border(Color borderColor, {bool emphasized = false}) =>
         OutlineInputBorder(
           borderRadius: BorderRadius.circular(
@@ -272,7 +252,9 @@ class _SldsTextFieldState extends State<SldsTextField> {
           box: compact
               ? dimensions.buttonHeightSmall
               : dimensions.iconButtonMedium,
-          color: iconColor,
+          // Figma's Info glyph is #17171A, and #898989 when disabled — darker
+          // than the grey star icons beside it (#116).
+          color: widget.enabled ? colors.textPrimary : colors.inputIcon,
           tooltip: widget.infoTooltip,
           onPressed: widget.onInfoPressed,
         ),
@@ -292,9 +274,10 @@ class _SldsTextFieldState extends State<SldsTextField> {
             children: [
               TextSpan(text: widget.label),
               if (widget.isRequired)
+                // Disabled, Figma greys the asterisk with the label (#117).
                 TextSpan(
-                  text: ' *',
-                  style: TextStyle(color: colors.error),
+                  text: '*',
+                  style: widget.enabled ? TextStyle(color: colors.error) : null,
                 ),
             ],
           ),
@@ -332,23 +315,39 @@ class _SldsTextFieldState extends State<SldsTextField> {
               decoration: InputDecoration(
                 hintText: widget.hintText,
                 hintStyle: valueStyle.copyWith(color: colors.inputPlaceholder),
+                // Figma Text Input: the 28px leading icon box sits 8px in from
+                // the border, not centred in Flutter's 48px prefix slot.
                 prefixIcon:
                     widget.leadingWidget ??
                     (widget.leadingIcon != null
-                        ? iconSlot(
-                            icon: widget.leadingIcon!,
-                            box: dimensions.buttonHeightSmall,
-                            color: iconColor,
+                        ? Padding(
+                            // End 4: with the decorator's own 4px after a
+                            // prefix, the text starts 8px past the box, at
+                            // Figma's 44px.
+                            padding: EdgeInsetsDirectional.only(
+                              start: dimensions.space8,
+                              end: dimensions.space4,
+                            ),
+                            child: iconSlot(
+                              icon: widget.leadingIcon!,
+                              box: dimensions.buttonHeightSmall,
+                              color: iconColor,
+                            ),
                           )
                         : null),
-                prefixIconConstraints: widget.leadingWidget != null
-                    ? const BoxConstraints()
-                    : null,
+                prefixIconConstraints: const BoxConstraints(),
+                // Figma's Content box pads 8px inside the border on the
+                // trailing side too; the icons sat flush against it (#169).
                 suffixIcon: trailing.isEmpty
                     ? null
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: trailing,
+                    : Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          end: dimensions.space8,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: trailing,
+                        ),
                       ),
                 suffixIconConstraints: const BoxConstraints(),
                 filled: true,
@@ -364,25 +363,40 @@ class _SldsTextFieldState extends State<SldsTextField> {
                       ? dimensions.inputHeightCompact
                       : dimensions.inputHeight,
                 ),
-                // Focus widens the horizontal padding to keep the text from
-                // shifting under the thicker stroke.
+                // Text starts 16px in without a leading icon (Figma's 8px
+                // Content pad plus its 8px Text frame pad; the decorator adds
+                // 4px of its own) and holds still on focus: Figma's Default
+                // and Filled text share one position, so widening the pad on
+                // focus only made the text jump (#169).
+                // Vertically, the line is padded to fill the box exactly: any
+                // slack under the height floor fell below the text, leaving
+                // it and the icons 2px above centre.
                 contentPadding: EdgeInsetsDirectional.symmetric(
-                  horizontal: _focused ? dimensions.space12 : dimensions.space8,
-                  vertical: dimensions.space8,
+                  horizontal: dimensions.space12,
+                  vertical:
+                      ((compact
+                              ? dimensions.inputHeightCompact
+                              : dimensions.inputHeight) -
+                          valueStyle.fontSize! * valueStyle.height!) /
+                      2,
                 ),
                 border: border(colors.inputBorderDefault),
-                enabledBorder: border(
-                  _hasError
-                      ? colors.inputBorderError
-                      : colors.inputBorderDefault,
-                ),
+                enabledBorder: _hasError
+                    ? border(
+                        colors.inputBorderError,
+                        emphasized: errorEmphasized,
+                      )
+                    : border(colors.inputBorderDefault),
                 focusedBorder: border(
                   _hasError
                       ? colors.inputBorderError
                       : colors.inputBorderFocused,
                   emphasized: true,
                 ),
-                errorBorder: border(colors.inputBorderError),
+                errorBorder: border(
+                  colors.inputBorderError,
+                  emphasized: errorEmphasized,
+                ),
                 focusedErrorBorder: border(
                   colors.inputBorderError,
                   emphasized: true,

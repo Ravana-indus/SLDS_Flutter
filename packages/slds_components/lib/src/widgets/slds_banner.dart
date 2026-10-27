@@ -4,6 +4,7 @@ import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
 import 'package:slds_components/src/widgets/slds_button.dart';
 import 'package:slds_components/src/widgets/slds_icon_button.dart';
+import 'package:slds_components/src/widgets/slds_link_button.dart';
 
 /// Severity of an [SldsBanner] — drives the icon, the border and the tinted
 /// background as one set.
@@ -72,34 +73,28 @@ class SldsBanner extends StatelessWidget {
   final VoidCallback? onDismiss;
 
   /// The icon, border and background for [severity].
-  ///
-  /// The border reads the semantic status token rather than Figma's raw hex:
-  /// `success` was deliberately darkened from `#1FAA63` to `#00833C` for AA
-  /// (see the palette note in `slds_tokens/lib/src/colors.dart`), and
-  /// re-importing the Figma value here would quietly undo that.
-  (IconData, Color, Color) _tones(SldsColorTokens colors) =>
-      switch (severity) {
-        SldsBannerSeverity.success => (
-          Icons.check_circle,
-          colors.success,
-          colors.badgeSuccessBackground,
-        ),
-        SldsBannerSeverity.warning => (
-          Icons.error,
-          colors.warning,
-          colors.badgePendingBackground,
-        ),
-        SldsBannerSeverity.error => (
-          Icons.cancel,
-          colors.error,
-          colors.badgeErrorBackground,
-        ),
-        SldsBannerSeverity.info => (
-          Icons.info,
-          colors.info,
-          colors.surfaceCard,
-        ),
-      };
+  (IconData, Color, Color) _tones(SldsColorTokens colors) => switch (severity) {
+    SldsBannerSeverity.success => (
+      Icons.check_circle,
+      colors.bannerSuccess,
+      colors.bannerSuccessBackground,
+    ),
+    SldsBannerSeverity.warning => (
+      Icons.error,
+      colors.bannerWarning,
+      colors.bannerWarningBackground,
+    ),
+    SldsBannerSeverity.error => (
+      Icons.cancel,
+      colors.bannerError,
+      colors.bannerErrorBackground,
+    ),
+    SldsBannerSeverity.info => (
+      Icons.info,
+      colors.info,
+      colors.bannerInfoBackground,
+    ),
+  };
 
   /// The width [text] wants on a single unwrapped line, used to decide
   /// whether the actions still fit beside it.
@@ -117,25 +112,23 @@ class SldsBanner extends StatelessWidget {
   /// The width the action and dismiss controls occupy together.
   ///
   /// Measured from the same tokens the controls are built from rather than
-  /// laid out twice — they are a fixed-height button and a square icon
-  /// button, so their width is arithmetic, not a layout question.
+  /// laid out twice — a link is as wide as its text plus its own padding,
+  /// and the dismiss button is a fixed square, so their width is
+  /// arithmetic, not a layout question.
   double _actionsWidth(BuildContext context, {required bool showAction}) {
     final tokens = context.slds;
     final d = tokens.dimensions;
     var width = 0.0;
     if (showAction) {
-      // title1 and space16 either side are what SldsButton's Large metrics
-      // actually use — measuring with body1 would under-report the width and
-      // put the actions on a row they do not fit.
+      // body1 and space4 either side are what SldsLinkButton uses.
       width +=
-          _textWidth(
-            context,
-            actionLabel!,
-            tokens.typography.title1,
-          ) +
-          d.space16 * 2;
+          _textWidth(context, actionLabel!, tokens.typography.body1) +
+          d.space4 * 2;
     }
-    if (onDismiss != null) width += d.buttonHeightLarge;
+    // Figma's dismiss (459:3194) paints at the Small icon-button scale
+    // (28px), but SldsIconButton itself reserves the WCAG 2.5.8 floor
+    // around anything below it, so that's the real width this row claims.
+    if (onDismiss != null) width += d.tapTargetMin;
     return width;
   }
 
@@ -209,14 +202,19 @@ class SldsBanner extends StatelessWidget {
             final messageRoom =
                 constraints.maxWidth -
                 leading -
-                dimensions.space8 -
+                dimensions.space24 -
                 actionsWidth;
             final fitsOneRow =
                 messageRoom >= messageWidth ||
                 messageRoom >= constraints.maxWidth / 3;
 
             final messageRow = Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              // Figma's banner (459:3223) is items-center end to end — the
+              // icon, message and actions all sit on the row's vertical
+              // centre, even when the message wraps to two lines. Aligning
+              // the icon to start instead pinned it to the first line only.
+              // ignore: avoid_redundant_argument_values
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 // The icon repeats the severity the colour already carries,
@@ -244,19 +242,17 @@ class SldsBanner extends StatelessWidget {
             final actions = Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // Figma's action is a Link button instance (Primary) in every
+                // severity: Text/Secondary #676767, which clears AA on all
+                // four banner tints.
                 if (showAction)
-                  SldsButton(
-                    label: actionLabel!,
-                    onPressed: onAction,
-                    variant: SldsButtonVariant.text,
-                    size: SldsButtonSize.large,
-                  ),
+                  SldsLinkButton(label: actionLabel!, onPressed: onAction),
                 if (onDismiss != null)
                   SldsIconButton(
                     icon: Icons.close,
                     onPressed: onDismiss,
-                    variant: SldsButtonVariant.text,
-                    size: SldsButtonSize.large,
+                    variant: SldsButtonVariant.ghost,
+                    size: SldsButtonSize.small,
                     tooltip: context.sldsStrings.close,
                   ),
               ],
@@ -267,8 +263,17 @@ class SldsBanner extends StatelessWidget {
             if (fitsOneRow) {
               return Row(
                 children: [
-                  Flexible(child: messageRow),
-                  SizedBox(width: dimensions.space8),
+                  // Expanded, not Flexible: Figma's message container is
+                  // flex-[1_0_0] (tight fit) — it always claims the rest of
+                  // the row, pushing the actions to the card's right edge
+                  // even when the message is short. Flexible's loose fit let
+                  // the whole row shrink-wrap instead, leaving Action/×
+                  // stranded right after the text with empty space beyond.
+                  Expanded(child: messageRow),
+                  // Figma's banner (459:3223) puts a 24px gap between the
+                  // message and the button container, not 8 — 8 is the
+                  // tighter icon-to-text gap inside the message itself.
+                  SizedBox(width: dimensions.space24),
                   actions,
                 ],
               );

@@ -1,7 +1,6 @@
 /// SLDS — design tokens and components for Sri Lanka's government digital
 /// services, maintained by GovTech Sri Lanka.
 library;
-
 export 'src/format/slds_format.dart';
 export 'src/l10n/gen/slds_localizations.dart';
 export 'src/l10n/slds_strings.dart';

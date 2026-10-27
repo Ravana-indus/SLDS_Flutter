@@ -27,7 +27,19 @@ void main() {
   testWidgets('each type renders its own glyph', (tester) async {
     for (final type in SldsNotificationType.values) {
       await pump(tester, SldsNotificationIcon(type: type));
-      expect(find.byType(Icon), findsOneWidget);
+      // Document paints Figma's FileDoc glyph; the rest use an Icon.
+      if (type == SldsNotificationType.document) {
+        expect(find.byType(Icon), findsNothing);
+        expect(
+          find.descendant(
+            of: find.byType(SldsNotificationIcon),
+            matching: find.byType(CustomPaint),
+          ),
+          findsWidgets,
+        );
+      } else {
+        expect(find.byType(Icon), findsOneWidget);
+      }
     }
   });
 
@@ -35,14 +47,30 @@ void main() {
     final seen = <Color?>{};
     for (final type in SldsNotificationType.values) {
       await pump(tester, SldsNotificationIcon(type: type));
-      seen.add(tester.widget<Icon>(find.byType(Icon)).color);
+      // The circle's fill: each type pairs its own background.
+      final circle = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byType(SldsNotificationIcon),
+              matching: find.byType(Container),
+            )
+            .first,
+      );
+      seen.add((circle.decoration! as BoxDecoration).color);
     }
     expect(seen.length, SldsNotificationType.values.length);
   });
 
   testWidgets('semanticLabel is applied only when given', (tester) async {
-    await pump(tester, const SldsNotificationIcon());
+    await pump(
+      tester,
+      const SldsNotificationIcon(type: SldsNotificationType.warning),
+    );
     expect(tester.widget<Icon>(find.byType(Icon)).semanticLabel, isNull);
+
+    // The painted document glyph carries the label the same way.
+    await pump(tester, const SldsNotificationIcon(semanticLabel: 'Document'));
+    expect(find.bySemanticsLabel('Document'), findsOneWidget);
 
     await pump(
       tester,

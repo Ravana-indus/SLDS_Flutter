@@ -3,6 +3,8 @@ import 'package:slds_components/slds_components.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../support/focused_demo.dart';
+
 import '../support/demo_copy.dart';
 
 @widgetbook.UseCase(name: 'Playground', type: SldsButton, path: '[Actions]')
@@ -47,14 +49,25 @@ Widget buildSldsButtonUseCase(BuildContext context) {
     initialValue: false,
   );
   final isEnabled = context.knobs.boolean(label: 'Enabled', initialValue: true);
+  // Flutter buttons take focus from the keyboard, not from a click, and
+  // tabbing to the canvas means tabbing through the whole Widgetbook UI
+  // first — so this knob moves focus onto the button directly.
+  final isFocused = context.knobs.boolean(
+    label: 'Focused',
+    initialValue: false,
+  );
 
-  return SldsButton(
-    label: label,
-    variant: variant,
-    size: size,
-    isLoading: isLoading,
-    leadingIcon: showLeadingIcon ? Icons.chevron_left : null,
-    trailingIcon: showTrailingIcon ? Icons.chevron_right : null,
-    onPressed: isEnabled ? () {} : null,
+  return FocusedDemo(
+    focused: isFocused,
+    builder: (focusNode) => SldsButton(
+      focusNode: focusNode,
+      label: label,
+      variant: variant,
+      size: size,
+      isLoading: isLoading,
+      leadingIcon: showLeadingIcon ? Icons.chevron_left : null,
+      trailingIcon: showTrailingIcon ? Icons.chevron_right : null,
+      onPressed: isEnabled ? () {} : null,
+    ),
   );
 }

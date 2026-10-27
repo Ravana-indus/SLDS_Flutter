@@ -23,39 +23,36 @@ class HomePage extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: EdgeInsets.all(context.slds.dimensions.space16),
-            child: SldsCard(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'SLDS component library is wired up.',
-                    style: Theme.of(context).textTheme.titleMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: context.slds.dimensions.space12),
-                  SldsButton(
-                    label: 'Browse all components',
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const GalleryPage(),
-                      ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'SLDS component library is wired up.',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: context.slds.dimensions.space12),
+                SldsButton(
+                  label: 'Browse all components',
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const GalleryPage(),
                     ),
                   ),
-                  SizedBox(height: context.slds.dimensions.space12),
-                  BlocBuilder<ThemeModeCubit, ThemeMode>(
-                    builder: (context, mode) {
-                      return SldsButton(
-                        label: mode == ThemeMode.light
-                            ? 'Switch to dark'
-                            : 'Switch to light',
-                        onPressed: () =>
-                            context.read<ThemeModeCubit>().toggle(),
-                        variant: SldsButtonVariant.primary,
-                      );
-                    },
-                  ),
-                ],
-              ),
+                ),
+                SizedBox(height: context.slds.dimensions.space12),
+                BlocBuilder<ThemeModeCubit, ThemeMode>(
+                  builder: (context, mode) {
+                    return SldsButton(
+                      label: mode == ThemeMode.light
+                          ? 'Switch to dark'
+                          : 'Switch to light',
+                      onPressed: () => context.read<ThemeModeCubit>().toggle(),
+                      variant: SldsButtonVariant.primary,
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ),

@@ -117,9 +117,8 @@ void main() {
       SldsButtonVariant.primary: colors.buttonPrimaryBackground,
       SldsButtonVariant.destructive: colors.buttonDestructiveBackground,
       SldsButtonVariant.secondary: colors.buttonSecondaryBackground,
-      // Ghost variants are transparent at rest.
-      SldsButtonVariant.tertiary: null,
-      SldsButtonVariant.text: null,
+      // Ghost is transparent at rest.
+      SldsButtonVariant.ghost: null,
     };
 
     for (final entry in expected.entries) {
@@ -158,7 +157,7 @@ void main() {
     expect(styleOf(tester).overlayColor!.resolve({}), Colors.transparent);
   });
 
-  testWidgets('ghost variants get their feedback from the ghost tokens', (
+  testWidgets('ghost gets its feedback from the ghost tokens', (
     tester,
   ) async {
     final colors = SldsColorTokens.light();
@@ -167,7 +166,7 @@ void main() {
       SldsIconButton(
         icon: Icons.add,
         onPressed: () {},
-        variant: SldsButtonVariant.text,
+        variant: SldsButtonVariant.ghost,
       ),
     );
 
@@ -180,7 +179,6 @@ void main() {
   });
 
   testWidgets('only the secondary variant is outlined', (tester) async {
-    // Figma's Ghost has no border; tertiary previously drew one.
     for (final variant in SldsButtonVariant.values) {
       await pump(
         tester,

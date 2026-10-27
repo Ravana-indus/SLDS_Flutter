@@ -10,6 +10,9 @@ import '../support/demo_copy.dart';
 /// `initialOption`, so `auto` stands in for "no forced state".
 enum _ForcedState { auto, defaultState, hover, disabled }
 
+const _fuelPassArt = 'assets/icon_card/fuel_pass.png';
+const _passportArt = 'assets/icon_card/passport.png';
+
 @widgetbook.UseCase(
   name: 'Playground',
   type: SldsIconCard,
@@ -59,7 +62,12 @@ Widget buildSldsIconCardUseCase(BuildContext context) {
       title: title,
       description: description.isEmpty ? null : description,
       badgeLabel: badgeLabel.isEmpty ? null : badgeLabel,
-      icon: const Icon(Icons.local_gas_station, color: Colors.green),
+      // Figma's own artwork for each variant's slot (#205).
+      icon: Image.asset(
+        variant == SldsIconCardVariant.featuredServices
+            ? _passportArt
+            : _fuelPassArt,
+      ),
       variant: variant,
       state: switch (forced) {
         _ForcedState.auto => null,
@@ -93,12 +101,12 @@ Widget buildSldsIconCardVariantsUseCase(BuildContext context) {
         SldsIconCard(
           title: 'Fuel Pass',
           badgeLabel: 'NEW',
-          icon: Icon(Icons.local_gas_station, color: Colors.green),
+          icon: Image(image: AssetImage(_fuelPassArt)),
         ),
         SldsIconCard(
           title: 'Apply for Passport',
           description: 'Begin your passport request online.',
-          icon: Icon(Icons.public),
+          icon: Image(image: AssetImage(_passportArt)),
           variant: SldsIconCardVariant.featuredServices,
         ),
       ],

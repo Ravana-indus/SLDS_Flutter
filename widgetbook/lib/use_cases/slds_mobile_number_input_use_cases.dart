@@ -10,6 +10,9 @@ import '../support/demo_copy.dart';
 /// rather than passing `null` as an option itself.
 enum _ForcedState { auto, defaultState, filled, focused, error, disabled }
 
+// Kept across rebuilds so the clear (X) button has something to empty.
+final _controller = TextEditingController();
+
 SldsMobileNumberInputState? _toVisualState(_ForcedState state) =>
     switch (state) {
       _ForcedState.auto => null,
@@ -66,13 +69,16 @@ Widget buildSldsMobileNumberInputUseCase(BuildContext context) {
     child: SldsMobileNumberInput(
       label: label,
       placeholder: '77 123 4567',
+      controller: _controller,
       helperText: helperText,
-      errorText: errorText,
+      // Only when the error state is forced, as in the SldsInput use case: an
+      // errorText puts the field in its error state on its own.
+      errorText: forcedState == _ForcedState.error ? errorText : null,
       required: isRequired,
       enabled: isEnabled,
       visualState: _toVisualState(forcedState),
       countryFlag: const Text('🇱🇰', style: TextStyle(fontSize: 20)),
-      trailing: const Icon(Icons.close),
+      onClear: () {},
     ),
   );
 }

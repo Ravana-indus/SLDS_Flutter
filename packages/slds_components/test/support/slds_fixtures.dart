@@ -202,6 +202,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
       initialDate: DateTime(2026, 3, 14),
       mode: SldsDatePickerMode.single,
       onDateSelected: (_) {},
+      onCancel: () {},
     ),
     buildLocalized: null, // dates format through intl, not a caller label
   ),
@@ -605,7 +606,7 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
         SldsSummaryRow(
           label: 'Status',
           value: 'In Review',
-          badgeStatus: SldsSummaryBadgeStatus.inReview,
+          badgeStatus: SldsBadgeStatus.inReview,
         ),
       ],
     ),
@@ -656,7 +657,14 @@ List<SldsFixture> sldsFixtures() => <SldsFixture>[
   (
     name: 'time_picker_dialog',
     width: 340,
-    build: () => SldsTimePickerDialog(onTimeChanged: (_) {}),
+    // onCancel supplied: a real dialog always wires both actions (see
+    // SldsTimePicker._showTimePicker), so an un-wired, disabled-looking
+    // Cancel button isn't a state this component reaches in practice —
+    // and its low-contrast disabled palette isn't this fixture's to fix.
+    build: () => SldsTimePickerDialog(
+      onTimeChanged: (_) {},
+      onCancel: () {},
+    ),
     buildLocalized: null, // time digits only, formatted through intl
   ),
   (

@@ -51,4 +51,32 @@ void main() {
     await tester.tap(find.text('Enter your NIC Number correctly'));
     expect(tapped, isTrue);
   });
+
+  // Figma Error Summary (543:6335): title 18/500/28 #17171A; links
+  // 16/400/24 #D32F2F, underlined.
+  testWidgets('title and link typography match Figma (#148, #149)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const SldsErrorSummary(
+        errors: [SldsErrorSummaryItem('Enter your NIC Number correctly')],
+      ),
+    );
+
+    final title = tester.widget<Text>(find.text('There is a problem')).style!;
+    expect(title.fontSize, 18);
+    expect(title.fontWeight, FontWeight.w500);
+    expect(title.fontSize! * title.height!, closeTo(28, 0.01));
+    expect(title.color, const Color(0xFF17171A));
+
+    final link = tester
+        .widget<Text>(find.text('Enter your NIC Number correctly'))
+        .style!;
+    expect(link.fontSize, 16);
+    expect(link.fontWeight, FontWeight.w400);
+    expect(link.fontSize! * link.height!, closeTo(24, 0.01));
+    expect(link.color, const Color(0xFFD32F2F));
+    expect(link.decoration, TextDecoration.underline);
+  });
 }

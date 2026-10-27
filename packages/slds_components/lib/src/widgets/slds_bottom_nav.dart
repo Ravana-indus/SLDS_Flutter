@@ -108,7 +108,7 @@ class SldsBottomNav extends StatelessWidget {
   }
 }
 
-class _NavItem extends StatelessWidget {
+class _NavItem extends StatefulWidget {
   const _NavItem({
     required this.item,
     required this.selected,
@@ -124,20 +124,31 @@ class _NavItem extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<_NavItem> createState() => _NavItemState();
+}
+
+class _NavItemState extends State<_NavItem> {
+  bool _pressed = false;
+
+  @override
   Widget build(BuildContext context) {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
+    final item = widget.item;
+    final selected = widget.selected;
+    final dark = widget.dark;
+    final accent = widget.accent;
+    final onTap = widget.onTap;
 
     // Disabled: a neutral (white on light, near-black on dark) pill with a
     // dark/light-but-muted icon and a gray label — never selected-looking,
-    // never interactive, regardless of style. Dark bar: selected pill is
-    // solid gold with a dark icon *inside* it for contrast — but the label
-    // sits below the pill on the black background, so it stays white
-    // regardless of selection (dark-on-black would be invisible). Light
-    // bar: selected pill is solid gold too (matches the Figma "Bottom
-    // Navigation element" spec, not a soft tint); unselected is plain gray
-    // with no pill.
+    // never interactive, regardless of style. Figma's Bottom tab bars
+    // (342:584 light, 342:597 dark): the selected pill is solid gold with a
+    // black icon in both; light idle icons #898989 (#191) with #676767
+    // labels (#195); dark idle icons #BCBCBC (#192) with #CDCDCD labels
+    // (#197) and a white selected label. Pressed fills the pill white on
+    // the light bar (#190) and #17171A with a white icon on the dark (#193).
     final Color iconColor;
     final Color labelColor;
     final Color pillColor;
@@ -146,14 +157,25 @@ class _NavItem extends StatelessWidget {
       labelColor = colors.disabledForeground;
       pillColor = dark ? colors.disabledBackground : colors.textInverse;
     } else if (dark) {
-      iconColor = selected ? colors.textStaticBlack : colors.textInverse;
-      labelColor = colors.textInverse;
-      pillColor = selected ? accent : Colors.transparent;
+      iconColor = selected
+          ? colors.textStaticBlack
+          : (_pressed ? colors.textInverse : colors.barIdleIconDark);
+      labelColor = selected ? colors.textInverse : colors.barIdleLabelDark;
+      pillColor = selected
+          ? accent
+          : (_pressed ? colors.barPressedDark : Colors.transparent);
     } else {
-      iconColor = selected ? colors.textStaticBlack : colors.textTertiary;
-      labelColor = selected ? colors.textPrimary : colors.textTertiary;
-      pillColor = selected ? accent : Colors.transparent;
+      iconColor = selected
+          ? colors.textStaticBlack
+          : (_pressed ? colors.textPrimary : colors.inputIcon);
+      labelColor = selected ? colors.textPrimary : colors.textSecondary;
+      pillColor = selected
+          ? accent
+          : (_pressed ? colors.surfaceCard : Colors.transparent);
     }
+    // The filled pill is the press feedback, so the ripple across the whole
+    // item is dropped.
+    final pillFeedback = item.enabled;
 
     return Semantics(
       container: true,
@@ -164,6 +186,9 @@ class _NavItem extends StatelessWidget {
       label: item.label,
       child: InkWell(
         onTap: item.enabled ? onTap : null,
+        onHighlightChanged: (pressed) => setState(() => _pressed = pressed),
+        splashFactory: pillFeedback ? NoSplash.splashFactory : null,
+        highlightColor: pillFeedback ? Colors.transparent : null,
         borderRadius: BorderRadius.circular(dimensions.radiusFull),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: dimensions.space4),
@@ -188,9 +213,14 @@ class _NavItem extends StatelessWidget {
                       color: iconColor,
                     ),
                     if (item.badgeCount != null && item.badgeCount! > 0)
+                      // Figma (342:254) hangs the badge off the icon's
+                      // top-right corner: 2px above it and 2px past its end.
+                      // Anchored by its bottom-start corner it grows up and
+                      // away as text scales; anchored by its end edge it
+                      // grew back over the icon (#108).
                       PositionedDirectional(
-                        end: -6,
-                        top: -4,
+                        start: dimensions.iconSizeMedium - 14,
+                        bottom: dimensions.iconSizeMedium - 12,
                         child: _CountBadge(
                           count: item.badgeCount!,
                           background: colors.notificationBadgeBackground,
@@ -204,7 +234,9 @@ class _NavItem extends StatelessWidget {
                 item.label,
                 style: tokens.typography.caption1.copyWith(
                   color: labelColor,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                  // Figma: 12/400/14 whether selected or not (#194-#197).
+                  height: 14 / 12,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
@@ -223,21 +255,23 @@ class _CountBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.slds;
     final label = count > 99 ? '99+' : '$count';
+    // Figma's Badges frame: a #DC2626 pill padded 4px either side around a
+    // 12/400 label on a 14px line; a single digit is 16x14.
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+      padding: EdgeInsets.symmetric(horizontal: tokens.dimensions.space4),
+      constraints: const BoxConstraints(minWidth: 16),
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(tokens.dimensions.radiusFull),
       ),
       alignment: Alignment.center,
       child: Text(
         label,
-        style: const TextStyle(
+        style: tokens.typography.caption1.copyWith(
+          height: 14 / 12,
           color: Colors.white,
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
         ),
       ),
     );

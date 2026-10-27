@@ -64,9 +64,17 @@
       }
     }
   },
+  "clear": "හිස් කරන්න",
+  "@clear": {
+    "description": "Accessible name for the button that empties a form field."
+  },
   "clearSearch": "සෙවීම හිස් කරන්න",
   "@clearSearch": {
     "description": "Accessible name for the button that empties the search field."
+  },
+  "voiceSearch": "හඬ සෙවීම",
+  "@voiceSearch": {
+    "description": "Accessible name for the microphone button that starts a voice search."
   },
   "recentSearch": "මෑත සෙවීම: {label}",
   "@recentSearch": {

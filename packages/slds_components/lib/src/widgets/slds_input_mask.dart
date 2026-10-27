@@ -212,6 +212,12 @@ class _SldsInputMaskState extends State<SldsInputMask> {
     final tokens = context.slds;
     final colors = tokens.colors;
     final dimensions = tokens.dimensions;
+    // Pads the value's line out to exactly the 48dp tap target. With any
+    // slack, InputDecorator puts it below the text, which sat the value a few
+    // pixels above the affix it should line up with (#67, #74, #77).
+    final valueLine = tokens.typography.body1;
+    final valuePadding =
+        (dimensions.tapTargetMin - valueLine.fontSize! * valueLine.height!) / 2;
     final state = _resolvedState;
     final disabled = state == SldsInputMaskState.disabled;
     final error = state == SldsInputMaskState.error;
@@ -242,10 +248,11 @@ class _SldsInputMaskState extends State<SldsInputMask> {
         : error
         ? colors.error
         : colors.inputHelper;
-    // Boxier corners than SldsInput's pill-ish radius2xl — matches the
-    // reference's segmented-cell look (radiusLg is Figma's compact-field
-    // radius).
-    final radius = dimensions.radiusLg;
+    // Same radius2xl (12px) as SldsInput — confirmed against the Figma
+    // source (node 877:3628: rounded-[var(--radius-2xl,12px)]). The
+    // segmented-cell look comes from the divider borders between cells,
+    // not a tighter outer corner.
+    final radius = dimensions.radius2xl;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -289,13 +296,18 @@ class _SldsInputMaskState extends State<SldsInputMask> {
               Container(
                 height: dimensions.inputHeight,
                 decoration: BoxDecoration(
-                  color: disabled
-                      ? colors.disabledBackground
-                      : colors.surfaceCard,
+                  // Figma's disabled variant (node 877:3771) keeps the same
+                  // white input/background as every other state — only the
+                  // border and text dim. A flat grey fill (disabledBackground)
+                  // doesn't match the reference for this component.
+                  color: colors.surfaceCard,
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(radius),
                 ),
                 child: Row(
+                  // Stretch so each cell, and its divider, spans the full
+                  // field height as in Figma (#72).
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     if (widget.prefixText != null)
                       _MaskCell(
@@ -307,46 +319,49 @@ class _SldsInputMaskState extends State<SldsInputMask> {
                         typography: tokens.typography,
                       ),
                     Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: dimensions.space12,
-                        ),
-                        child: Semantics(
-                          // The visible label is a sibling Text, so the field
-                          // itself announces unnamed; required and error are
-                          // colour-only, so both are folded into the name.
-                          textField: true,
-                          label: _semanticLabel(context, error),
-                          child: TextField(
-                            controller: _controller,
-                            focusNode: _focusNode,
-                            enabled: !disabled,
-                            keyboardType: widget.keyboardType,
-                            inputFormatters: widget.inputFormatters,
-                            onChanged: widget.onChanged,
-                            onSubmitted: widget.onSubmitted,
-                            style: tokens.typography.body1.copyWith(
-                              color: valueColor,
-                            ),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              isDense: true,
-                              // The decorated field paints taller, but the
-                              // text node itself is the tappable target and
-                              // must clear the 48dp floor (WCAG 2.5.8).
-                              constraints: BoxConstraints(
-                                minHeight: dimensions.tapTargetMin,
+                      // The row stretches for full-height dividers; Center
+                      // keeps the value on the field's centre line.
+                      child: Center(
+                        child: Padding(
+                          // Figma's value cell: 8 + 8 horizontal padding (#74).
+                          padding: EdgeInsets.symmetric(
+                            horizontal: dimensions.space16,
+                          ),
+                          child: Semantics(
+                            // The visible label is a sibling Text, so the field
+                            // itself announces unnamed; required and error are
+                            // colour-only, so both are folded into the name.
+                            textField: true,
+                            label: _semanticLabel(context, error),
+                            child: TextField(
+                              controller: _controller,
+                              focusNode: _focusNode,
+                              enabled: !disabled,
+                              keyboardType: widget.keyboardType,
+                              inputFormatters: widget.inputFormatters,
+                              onChanged: widget.onChanged,
+                              onSubmitted: widget.onSubmitted,
+                              style: tokens.typography.body1.copyWith(
+                                color: valueColor,
                               ),
-                              // Vertical padding centres the line inside that
-                              // 48dp box. EdgeInsets.zero top-aligns it, which
-                              // left the value sitting against the field's top
-                              // edge instead of on its centre line.
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: dimensions.space12,
-                              ),
-                              hintText: widget.hintText,
-                              hintStyle: tokens.typography.body1.copyWith(
-                                color: colors.inputPlaceholder,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                isDense: true,
+                                // The decorated field paints taller, but the
+                                // text node itself is the tappable target and
+                                // must clear the 48dp floor (WCAG 2.5.8).
+                                constraints: BoxConstraints(
+                                  minHeight: dimensions.tapTargetMin,
+                                ),
+                                // Fills the 48dp box exactly, so the value
+                                // sits on the field's centre line.
+                                contentPadding: EdgeInsets.symmetric(
+                                  vertical: valuePadding,
+                                ),
+                                hintText: widget.hintText,
+                                hintStyle: tokens.typography.body1.copyWith(
+                                  color: colors.inputPlaceholder,
+                                ),
                               ),
                             ),
                           ),
@@ -413,6 +428,7 @@ class _MaskCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: dimensions.space12),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         border: Border(
           left: leading

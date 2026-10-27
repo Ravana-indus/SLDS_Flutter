@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:slds_components/slds_components.dart';
 
@@ -133,6 +134,35 @@ void main() {
     expect(cancelled, isTrue);
   });
 
+  testWidgets('onClose null hides the dismiss button; set, it fires', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsFilterDropdown(
+        options: options,
+        selectedValues: const [],
+        onSelectionChanged: (_) {},
+      ),
+    );
+    expect(find.byIcon(Icons.close), findsNothing);
+
+    var closed = false;
+    await pump(
+      tester,
+      SldsFilterDropdown(
+        options: options,
+        selectedValues: const [],
+        onSelectionChanged: (_) {},
+        onClose: () => closed = true,
+      ),
+    );
+    expect(find.byIcon(Icons.close), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.close));
+    expect(closed, isTrue);
+  });
+
   testWidgets('cancelText/applyText override the default footer labels', (
     tester,
   ) async {
@@ -151,5 +181,40 @@ void main() {
     expect(find.text('Save'), findsOneWidget);
     expect(find.text('Cancel'), findsNothing);
     expect(find.text('Apply'), findsNothing);
+  });
+
+  // Figma Filter Dropdown (1164:2066): option text is Input/Label #17171A
+  // (#102); Cancel and Apply labels are Mobile/Body 2, 14px/400, #17171A —
+  // Button/Ghost/Label and Button/Primary/Label (#103, #104).
+  testWidgets('option and footer text match Figma (#102-#104)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      SldsFilterDropdown(
+        options: options,
+        selectedValues: const [],
+        onSelectionChanged: (_) {},
+        onApply: (_) {},
+        onCancel: () {},
+      ),
+    );
+
+    TextStyle painted(String text) => tester
+        .renderObject<RenderParagraph>(
+          find
+              .descendant(of: find.text(text), matching: find.byType(RichText))
+              .first,
+        )
+        .text
+        .style!;
+
+    expect(painted('Option One').color, const Color(0xFF17171A));
+    for (final label in ['Cancel', 'Apply']) {
+      final style = painted(label);
+      expect(style.fontSize, 14, reason: label);
+      expect(style.fontWeight, FontWeight.w400, reason: label);
+      expect(style.color, const Color(0xFF17171A), reason: label);
+    }
   });
 }

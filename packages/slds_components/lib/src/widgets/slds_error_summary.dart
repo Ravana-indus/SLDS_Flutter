@@ -60,7 +60,9 @@ class SldsErrorSummary extends StatelessWidget {
           children: [
             Text(
               title ?? context.sldsStrings.thereIsAProblem,
-              style: tokens.typography.heading4.copyWith(
+              // Figma: 18/500 on a 28px line, #17171A (#148).
+              style: tokens.typography.title1.copyWith(
+                height: 28 / 18,
                 color: colors.textPrimary,
               ),
             ),
@@ -94,9 +96,11 @@ class SldsErrorSummary extends StatelessWidget {
                         alignment: AlignmentDirectional.centerStart,
                         child: Text(
                           error.message,
-                          style: tokens.typography.body2.copyWith(
+                          // Figma Link button: 16/400 on a 24px line,
+                          // underlined #D32F2F (#149).
+                          style: tokens.typography.body1.copyWith(
+                            height: 24 / 16,
                             color: colors.badgeErrorText,
-                            fontWeight: FontWeight.w600,
                             decoration: TextDecoration.underline,
                             decorationColor: colors.badgeErrorText,
                           ),

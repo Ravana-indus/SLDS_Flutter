@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:slds_components/src/l10n/slds_strings.dart';
 import 'package:slds_components/src/theme/slds_tokens.dart';
+import 'package:slds_components/src/widgets/slds_button.dart';
 import 'package:slds_components/src/widgets/slds_focus.dart';
 
 /// Which edge of [SldsTooltip] the pointer tail sticks out of — point it at
@@ -44,7 +45,7 @@ class SldsTooltip extends StatelessWidget {
     this.actionLabel,
     this.onAction,
     this.onClose,
-    this.tailAlignment = SldsTooltipTailAlignment.start,
+    this.tailAlignment = SldsTooltipTailAlignment.end,
     this.tailSide = SldsTooltipTailSide.top,
     this.width,
   });
@@ -121,10 +122,10 @@ class SldsTooltip extends StatelessWidget {
     // fractional inset drifts as the card grows.
     final tailInset = EdgeInsetsDirectional.only(
       start: tailAlignment == SldsTooltipTailAlignment.start
-          ? dimensions.space16
+          ? dimensions.space24
           : 0,
       end: tailAlignment == SldsTooltipTailAlignment.end
-          ? dimensions.space16
+          ? dimensions.space24
           : 0,
     );
 
@@ -207,16 +208,16 @@ class _CompactCard extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: dimensions.space12,
+        horizontal: dimensions.space16,
         vertical: dimensions.space8,
       ),
       decoration: BoxDecoration(
         color: colors.tooltipBackground,
-        borderRadius: BorderRadius.circular(dimensions.radiusMd),
+        borderRadius: BorderRadius.circular(dimensions.radiusXl),
       ),
       child: Text(
         title,
-        style: tokens.typography.caption1.copyWith(color: colors.tooltipText),
+        style: tokens.typography.body2.copyWith(color: colors.tooltipText),
       ),
     );
   }
@@ -253,14 +254,13 @@ class _FullCard extends StatelessWidget {
       padding: EdgeInsets.all(dimensions.space16),
       decoration: BoxDecoration(
         color: colors.tooltipBackground,
-        borderRadius: BorderRadius.circular(dimensions.radiusLg),
+        borderRadius: BorderRadius.circular(dimensions.radius2xl),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Text(
@@ -272,19 +272,22 @@ class _FullCard extends StatelessWidget {
                 ),
               ),
               if (onClose != null)
-                Semantics(
-                  button: true,
-                  label: context.sldsStrings.close,
-                  child: SldsTapTarget(
-                    child: InkWell(
-                      onTap: onClose,
-                      borderRadius: BorderRadius.circular(
-                        dimensions.radiusFull,
-                      ),
-                      child: Icon(
-                        Icons.close,
-                        size: dimensions.iconSizeMedium,
-                        color: colors.tooltipText,
+                Padding(
+                  padding: EdgeInsets.only(left: dimensions.space8),
+                  child: Semantics(
+                    button: true,
+                    label: context.sldsStrings.close,
+                    child: SldsTapTarget(
+                      child: InkWell(
+                        onTap: onClose,
+                        borderRadius: BorderRadius.circular(
+                          dimensions.radiusFull,
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          size: dimensions.iconSizeMedium,
+                          color: colors.tooltipText,
+                        ),
                       ),
                     ),
                   ),
@@ -297,7 +300,7 @@ class _FullCard extends StatelessWidget {
             style: tokens.typography.body2.copyWith(color: colors.tooltipText),
           ),
           if (showFooter) ...[
-            SizedBox(height: dimensions.space12),
+            SizedBox(height: dimensions.space16),
             Row(
               children: [
                 if (stepLabel != null)
@@ -308,40 +311,17 @@ class _FullCard extends StatelessWidget {
                         color: colors.tooltipText,
                       ),
                     ),
-                  ),
+                  )
+                else
+                  const Spacer(),
                 if (actionLabel != null)
-                  // The InkWell carries the semantics node, so the 48dp floor
-                  // has to land on *it* rather than on a wrapper around it
-                  // (WCAG 2.5.8) — a ConstrainedBox inside the Material, not
-                  // an SldsTapTarget outside it. The pill keeps its painted
-                  // size; only the hit area grows.
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: dimensions.tapTargetMin,
-                    ),
-                    child: Material(
-                      color: colors.surfaceCard,
-                      borderRadius: BorderRadius.circular(dimensions.radiusMd),
-                      child: InkWell(
-                        onTap: onAction,
-                        borderRadius: BorderRadius.circular(
-                          dimensions.radiusMd,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: dimensions.space12,
-                            vertical: dimensions.space6,
-                          ),
-                          child: Text(
-                            actionLabel!,
-                            style: tokens.typography.caption1.copyWith(
-                              color: colors.textPrimary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  // Figma's action is a Button instance (Secondary, Small),
+                  // so it takes that component's colours in every theme.
+                  SldsButton(
+                    label: actionLabel!,
+                    onPressed: onAction,
+                    variant: SldsButtonVariant.secondary,
+                    size: SldsButtonSize.small,
                   ),
               ],
             ),
